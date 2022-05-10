@@ -1,0 +1,184 @@
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.logo-aeto {
+  align-items: center;
+  display: flex;
+  height: auto;
+  justify-content: center;
+  width: 30px;
+}
+
+.btn-menu {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  font-size: 2rem;
+}
+
+.text {
+  font-size: 1rem;
+}
+
+.menu-li__left {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0 0.5rem 0;
+  width: 175px;
+}
+
+.nav-cont {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif !important;
+  background-color: #111;
+  font-size: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.menu {
+  align-items: flex-start;
+  background-color: inherit;
+  display: flex;
+  flex-flow: column nowrap;
+  font-size: 1.25rem;
+  gap: 1rem;
+  height: 100vh;
+  justify-content: center;
+  padding: 0 3rem;
+  position: fixed;
+  text-align: left;
+  transform: translateX(-100%);
+  transition: all 0.4s ease-in-out;
+  width: 100%;
+}
+
+.menu.active {
+  transform: translateX(0);
+}
+
+.menu > .btn-menu {
+  justify-content: flex-start;
+}
+
+.menu-items {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.menu-item {
+  display: block;
+  padding: 0.5rem;
+  transition: all 0.2s ease-in;
+  width: 100%;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background-color: #2f5161;
+  border-left: 6px solid #eee;
+}
+
+.menu-item > a {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.menu-item a > span:first-child {
+  font-size: 2rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .menu-li__left {
+    margin: 0.5rem 0 0.5rem 0.5rem;
+  }
+
+  .nav-cont {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .navbar {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .logo-aeto {
+    display: none;
+  }
+
+  .menu {
+    align-items: flex-start;
+    position: relative;
+    transform: translateX(0);
+    justify-content: space-between;
+    padding: 0;
+    flex-flow: column nowrap;
+    padding-top: 5vh;
+    padding-bottom: 1rem;
+    height: 100%;
+  }
+
+  .text {
+    display: none;
+  }
+
+  .menu.active .text {
+    display: inline;
+  }
+
+  .menu.active .menu-item > a {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .menu-items {
+    justify-content: center;
+    text-align: center;
+    margin: 0;
+  }
+
+  .menu-item > a {
+    justify-content: center;
+  }
+
+  .menu-item span {
+    font-size: 1rem;
+  }
+}

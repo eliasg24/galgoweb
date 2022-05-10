@@ -1,0 +1,437 @@
+/* ? Colors */
+
+.tire__top,
+.tire__bottom {
+  background-color: gray;
+}
+
+.btn-success {
+  margin-left: auto;
+}
+
+.good {
+  background-color: var(--main-blue);
+}
+
+.yellow {
+  background-color: var(--yellow-color);
+}
+
+.bad {
+  background-color: var(--red-color);
+}
+
+.purple {
+  background-color: var(--purple-color);
+}
+
+.config__container::-webkit-scrollbar,
+.absolute::-webkit-scrollbar,
+.form__container:nth-child(1)::-webkit-scrollbar {
+  width: 10px;
+}
+
+.config__container::-webkit-scrollbar-thumb,
+.absolute::-webkit-scrollbar-thumb,
+.form__container:nth-child(1)::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.config__container::-webkit-scrollbar-track,
+.absolute::-webkit-scrollbar-track,
+.form__container:nth-child(1)::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}
+
+.form__prof {
+  display: flex;
+  gap: 0.25rem;
+  flex-flow: row nowrap;
+}
+
+.form__prof > * {
+  flex: 1 1 auto;
+}
+
+.tire {
+  width: max-content;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.axle {
+  display: flex;
+  background-color: white;
+  height: 1rem;
+  opacity: 0.25;
+}
+
+.main__container {
+  align-items: center;
+  /* background-color: #202020; */
+  display: grid;
+  gap: 1rem;
+  margin: 1rem;
+  position: relative;
+}
+
+.config__container {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+
+.config__container > * {
+  flex: 1 1 auto;
+}
+
+.forms__container {
+  display: grid;
+  gap: 1rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.form__container,
+.absolute.form__container {
+  background-color: #202020;
+  display: flex;
+  gap: 1rem;
+  flex-flow: column nowrap;
+  border-radius: 0.25rem;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.form__container:nth-child(1) {
+  position: relative;
+  overflow-y: auto;
+}
+
+.form__wrapper {
+  display: flex;
+  gap: 1rem;
+  flex-flow: column nowrap;
+
+  /* opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0; */
+  display: none;
+}
+
+.form__wrapper.select {
+  display: flex;
+}
+
+.tire {
+  cursor: pointer;
+  position: relative;
+  opacity: 0.25;
+  transition: all 0.3s ease-in;
+}
+
+.tire.select {
+  opacity: 1;
+}
+
+.block {
+  display: block;
+  height: 100%;
+}
+
+.absolute {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.head__form {
+  padding: 1rem;
+}
+
+.config__wrapper {
+  max-width: 650px;
+  margin: auto;
+}
+
+.config__wrapper .absolute {
+  justify-content: center;
+}
+
+.config__container > .relative {
+  height: 100%;
+  min-height: 70vh;
+  width: 100%;
+}
+
+.relative {
+  position: relative;
+  height: 100%;
+}
+
+.relative.absolute {
+  overflow-y: auto;
+}
+
+.par-llantas,
+.par-doble-llanta {
+  width: 100%;
+}
+
+.tire__medium {
+  bottom: 30%;
+  padding: 0.25rem;
+}
+
+.icon-tire2 {
+  font-size: 6rem;
+}
+
+.dropdown__form {
+  cursor: pointer;
+  padding: 1rem;
+  border: thin solid var(--main-blue);
+}
+
+.drop__list {
+  position: relative;
+}
+
+.drop__btn {
+  background-color: transparent;
+  border-bottom: thin solid #fff;
+  color: #fff;
+  font-size: inherit;
+  padding: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.drop__content {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.input-check > i {
+  font-size: 3rem;
+  border: thin solid #fff;
+  padding: 0.5rem;
+}
+
+.observations__container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+}
+
+.observations__container div {
+  display: none;
+}
+
+.observations__container div i {
+  border: thin solid #fff;
+  font-size: 3rem;
+  padding: 0.5rem;
+}
+
+.observations__container div.visible {
+  display: block;
+}
+
+.input-check {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.checkmark {
+  top: auto;
+}
+
+/* .drop-input {
+  width: fit-content;
+} */
+
+.drop-search i {
+  top: 25%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.drop-search i {
+  font-size: 1.25rem;
+}
+
+/* drop */
+
+.drop-form {
+  position: relative;
+}
+
+.drop-options {
+  background-color: #202020;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: all 0.4s ease;
+  visibility: hidden;
+  width: 100%;
+  transform: scaleY(0);
+}
+
+.drop-input {
+  font-size: 1rem;
+}
+
+.drop-input:focus ~ .drop-options,
+.drop-options:hover {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+  z-index: 1;
+  transform: scaleY(1);
+  position: relative;
+}
+
+@media screen and (min-width: 1024px) {
+  .main__container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .absolute {
+    position: absolute;
+  }
+
+  .forms__container {
+    grid-template-rows: 220px 1fr auto;
+  }
+
+  .tire__medium {
+    bottom: 35%;
+    padding: 0.75rem;
+  }
+
+  .main__wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .par-doble-llanta.ejes__1 {
+    width: 50%;
+  }
+
+  .ejes__1 > .tire > .icon-tire2 {
+    font-size: 34vmin;
+  }
+
+  .ejes__1 > .axle {
+    height: 1.25rem;
+  }
+  /*end ejes__1*/
+
+  /*ejes__2*/
+
+  .ejes__2 > .tire > .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .par-doble-llanta.ejes__2 .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .ejes__2 > .axle {
+    height: 1.25rem;
+  }
+  /*end ejes__2*/
+
+  /*ejes__3*/
+  .ejes__3 > .tire > .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .par-doble-llanta.ejes__3 .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .ejes__3 > .axle {
+    height: 1.4rem;
+  }
+  /*end ejes__3*/
+
+  /*ejes__4*/
+
+  .ejes__4 > .tire > .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .par-doble-llanta.ejes__4 .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .ejes__4 > .axle {
+    height: 1.2rem;
+  }
+  /*end ejes__4*/
+
+  /*ejes__5*/
+  .ejes__5 > .tire > .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .par-doble-llanta.ejes__5 .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .ejes__5 > .axle {
+    height: 1rem;
+  }
+  /*end ejes__5*/
+
+  /*ejes__6*/
+
+  .ejes__6 > .tire > .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .par-doble-llanta.ejes__6 .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .ejes__6 > .axle {
+    height: 0.8rem;
+  }
+  /*end ejes__6*/
+
+  .ejes__7 > .tire > .icon-tire2 {
+    font-size: 12vmin;
+  }
+
+  .par-doble-llanta.ejes__7 .icon-tire2 {
+    font-size: 12vmin;
+  }
+
+  .ejes__7 > .axle {
+    height: 0.6rem;
+  }
+  /*end ejes__7*/
+
+  .icon-tire2 {
+    font-size: 20vmin;
+  }
+}

@@ -1,0 +1,42 @@
+.main-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+}
+
+.tire__container {
+  margin: auto;
+}
+
+.tire {
+  opacity: 1;
+}
+
+.tire__data {
+  font-size: 2rem;
+}
+
+.icon-tire2 {
+  font-size: 35vmax;
+}
+
+.tire__box {
+  background-color: #202020;
+  height: 100%;
+  padding: 1rem;
+}
+
+.tire__medium {
+  bottom: 40%;
+}
+
+.form__wrapper {
+  display: flex;
+}
+
+.forms__container {
+  grid-template-rows: 1fr auto;
+}
+
+@media screen and (min-width: 1024px) {
+}

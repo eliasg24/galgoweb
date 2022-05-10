@@ -1,0 +1,48 @@
+<div id="dd-cpk-flota" class="dd-cpk-graph active"></div>
+
+<script>
+    // Graph box-chart
+
+    anychart.onDocumentReady(function () {
+
+  //create data set on our data
+  var data = [
+  {% for flota, valores in cpk_flotas.items %}
+  {x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
+  normal:   {fill: "#12bcc8", stroke: "#12bcc8", medianStroke: "4 #000", whiskerWidth: 30},
+  hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8",medianStroke: "2 #12bcc8", whiskerWidth: 10},
+  selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8", medianStroke: "4 #12bcc8", whiskerWidth: 20}
+  },
+  {% endfor %}
+  ];
+
+  //create area chart
+  var chart = anychart.box(data);
+  chart.isVertical(true)
+  chart.yScale().ticks().interval();
+
+  // set the chart title
+  chart.title("Distribución de Datos");
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  //set container id for the chart
+  chart.container('dd-cpk-flota');
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+
+  //initiate chart drawing
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  });
+</script>

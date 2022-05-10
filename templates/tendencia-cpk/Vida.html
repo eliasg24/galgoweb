@@ -1,0 +1,96 @@
+<div id="tc-vida" class="tc-graph"></div>
+
+<script>
+    // Graph AreaLine-chart
+  anychart.onDocumentReady(function () {
+
+    // create a data set
+    var data = anychart.data.set([
+
+    ["{{mes_8}}", 0, 0],
+    ["{{mes_7}}", 0, 0],
+    ["{{mes_6}}", 0, 0],
+    ["{{mes_5}}", 0, 0],
+    ["{{mes_4}}", 0, 0],
+    ["{{mes_3}}", {% if tendencia_cpk_mes3 %} {{tendencia_cpk_mes3.cpk}}, 0 {% else %} 0, 0 {% endif %}],
+    ["{{mes_2}}", {% if tendencia_cpk_mes2 %} {{tendencia_cpk_mes2.cpk}}, 0 {% else %} 0, 0 {% endif %}],
+    ["{{mes_1}}", {% if cpk %}{{cpk}}{% else %}0{% endif %}, 0]
+    ]);
+
+    // map the data
+    var seriesData_1 = data.mapAs({x: 0, value: 1});
+    var seriesData_2 = data.mapAs({x: 0, value: 2});
+
+    // create a chart
+    var chart = anychart.area();
+
+    // create scale for line series and extraYAxis
+    // it force line series to not stuck values with over series
+    var scale = anychart.scales.linear();
+
+    // adjusting y axis title and setting additional axis
+    chart.yAxis(1).scale(scale);
+    chart.yAxis(1).orientation("right");
+    chart.yAxis(1).labels().format("${%value}");
+    chart.yAxis().labels().format("{%value}");
+
+    // configure y scale
+    chart.yScale().minimum(0).maximum(5);
+    chart.yScale().ticks().interval(1);
+
+    // create the first series, set the data and name
+    var series1 = chart.line(seriesData_1);
+    series1.name("CPK");
+    series1.yScale(scale)
+
+    // adjusting labels
+    var yTicks = series1.yScale().ticks();
+    yTicks.interval(0.015);
+
+    chart.tooltip().displayMode('union');
+
+    chart.interactivity().hoverMode('by-x');
+
+    // configure the visual settings of the first series
+    series1.normal().stroke("#0097fc", 4);
+    series1.hovered().stroke("#0097fc", 2);
+    series1.selected().stroke("#0097fc", 6);
+
+    // create the second series, set the data and name
+    var series2 = chart.area(seriesData_2);
+    series2.name("Vida");
+
+    // configure the visual settings of the second series
+    series2.normal().fill("#A349A4", 0.5);
+    series2.hovered().fill("#A349A4", 0.1);
+    series2.selected().fill("#A349A4", 0.3);
+    series2.normal().stroke("#A349A4", 4);
+    series2.hovered().stroke("#A349A4", 2);
+    series2.selected().stroke("#A349A4", 6);
+
+    // set the chart title
+    // chart.title("Tendencia CPK vida - vida");
+    var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    // set the container id
+    chart.container("tc-vida");
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    // initiate drawing the chart
+    chart.draw();
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+    });
+</script>

@@ -1,0 +1,106 @@
+<div class="filter__container">
+  <form action="" class="filter__content">
+    <button type="button" class="btn btn-danger" id="close-modal">
+      <span class="icon-cross"></span>
+    </button>
+
+    <h2>Filtros</h2>
+    
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="text"
+        placeholder="producto"
+        name="producto"
+        list="producto"
+        autocomplete="off"
+        value = ""
+      />
+      <label for="producto" class="form__label">
+        Producto
+      </label>
+      <div class="alert__error">
+        El valor no se encuentra en la lista de llantas, por favor seleccione opción una valida.
+      </div>
+      <div class="alert__warn">
+        El campo no puede estar vacio 
+      </div>
+      <datalist id="producto">
+        <option value="Option 1"></option>
+      </datalist>
+    </div>
+
+    <h3>Profundidad</h3>
+
+    <div class="form__wrapper">
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="number"
+          placeholder="Min"
+          name=""
+          autocomplete="off"
+          value = ""
+          min="1"
+          max="9"
+        />
+        <label for="" class="form__label">
+          Min
+        </label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="number"
+          placeholder="Max"
+          name=""
+          autocomplete="off"
+          value = ""
+          min="2"
+          max="10"
+        />
+        <label for="" class="form__label">
+          Max
+        </label>
+      </div>
+    </div>
+
+    <h3>Fecha</h3>
+
+    <div class="form__wrapper">
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="date"
+          placeholder="date-min"
+          name=""
+          autocomplete="off"
+          value = "2022-01-01"
+        />
+        <label for="" class="form__label">
+          Min
+        </label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="date"
+          placeholder="date-max"
+          name=""
+          autocomplete="off"
+          value = "2022-01-05"
+        />
+        <label for="" class="form__label">
+          Max
+        </label>
+      </div>
+    </div>
+
+    <nav class="flex-row">
+      <button class="btn btn-success"><span class="icon-checkmark"></span></button>
+    </nav>
+
+  </form>
+</div>

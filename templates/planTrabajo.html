@@ -1,0 +1,485 @@
+<html>
+  <head>
+    {% load static %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/planTrabajo.css' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="all-cont">
+      <div class="top-nav">
+        <div class="title-icon">
+          <h1 class="title">Plan de Trabajo</h1>
+          <button class="btn btn-wh">
+            <span class="icon-file-text-o"></span>
+          </button>
+        </div>
+        <div class="search-control">
+          <input
+            type="search"
+            name="item"
+            id="item"
+            class="form-control"
+            placeholder="Search..."
+          />
+          <button type="submit" class="btn btn-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-general">
+        <table border="1" class="table1">
+          <thead>
+            <tr>
+              <th colspan="8" class="general">General Info</th>
+              <th colspan="3" class="service">Service Needs</th>
+              <th colspan="3" class="change">Change Tire</th>
+              <th colspan="3" class="dualizatión">Dualizatión</th>
+              <th colspan="2" class="alineacion">Alineacion y balanceo</th>
+            </tr>
+            <tr>
+              <th class="general">Vehicle Serial</th>
+              <th class="general">Tire Size</th>
+              <th class="general">Vehicle Status</th>
+              <th class="general">Fleet</th>
+              <th class="general">Location</th>
+              <th class="general">Last Inspector</th>
+              <th class="general">Last Inspection Date</th>
+              <th class="general">Days Since Inspection</th>
+              <th class="service">Inflate Tires</th>
+              <th class="service">Rotate Tires</th>
+              <th class="service">Repair Tires</th>
+              <th class="change">Change Tire steer</th>
+              <th class="change">Change Tire drive, c</th>
+              <th class="change">Change Tire trailer, lift, other</th>
+              <th class="dualizatión">Dual Mi Smatch Tire Needs</th>
+              <th class="dualizatión">Tires That Can Fix Dualization</th>
+              <th class="dualizatión">Dualization Suggestion</th>
+              <th class="alineacion">Alineacion y balanceo</th>
+              <th class="alineacion">Balanceo</th>
+            </tr> 
+           </thead>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+            <tr>
+              <td>T-01</td>
+              <td>11R24.5</td>
+              <td>RED/YELLOW</td>
+              <td>DEMO</td>
+              <td>DEMO</td>
+              <td>R.FLORES</td>
+              <td>01/11/2021</td>
+              <td>100</td>
+              <td>198297939</td>
+              <td>1928973368382</td>
+              <td>9899894972</td>
+              <td>9279379292937393</td>
+              <td>8273628268382</td>
+              <td>1625241616252</td>
+              <td>7273672726372</td>
+              <td>82828117162</td>
+              <td>1162216271</td>
+              <td>1992892981</td>
+              <td>101001010122</td>
+            </tr>
+
+
+                       
+
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

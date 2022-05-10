@@ -1,0 +1,323 @@
+.good {
+  background-color: var(--main-blue);
+}
+
+.yellow {
+  background-color: var(--yellow-color);
+}
+
+.bad {
+  background-color: var(--red-color);
+}
+
+.purple {
+  background-color: var(--purple-color);
+}
+
+.head-cont {
+  flex-direction: column;
+}
+
+.icon-cross {
+  color: red;
+}
+
+.icon-checkmark {
+  color: green;
+}
+
+.main-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.config__tables,
+.circle__chart {
+  height: 100%;
+  width: 100%;
+}
+
+.col-2 {
+  height: 100%;
+  width: 95%;
+  margin: 0 auto;
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.config__tables {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.circle__chart {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cont__circle {
+  display: grid;
+  margin: 1rem;
+}
+
+.card {
+  background: #202020;
+  border-radius: 0.25rem;
+}
+
+.card__circle {
+  background-color: var(--main-background);
+  margin: 1rem;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  border-radius: 0.25rem;
+}
+
+.card__config {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+}
+
+.card__tire {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pos {
+  text-align: center;
+}
+
+.config__header {
+  background-color: var(--main-blue);
+  border-bottom: thin solid #00f0ff;
+  text-align: center;
+  padding: 0.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.detail__title {
+  font-size: 2rem;
+}
+
+.config__buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.config__data .relative {
+  overflow: auto;
+}
+
+.relative {
+  position: relative;
+}
+
+.btn-download {
+  background-color: var(--border-button);
+}
+
+.pop-out {
+  background-color: #111;
+  position: absolute;
+  font-size: 1rem;
+  width: max-content;
+  padding: 0.25rem;
+  top: 4px;
+  transition: all 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn:hover .pop-out {
+  opacity: 1;
+  transform: translateY(45px);
+  visibility: visible;
+}
+
+.circle__chart {
+  display: none;
+  gap: 0.5rem;
+}
+
+.circle__chart.on-view {
+  display: grid;
+}
+
+.dashboards__wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.circle1 {
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 151, 240, 1) 0%,
+    rgba(18, 188, 200, 1) 100%
+  );
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 1rem rgb(255 255 255 / 25%);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.config__data {
+  padding: 1rem;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-rows: auto 1fr;
+}
+
+.config__cont-table {
+  display: none;
+  width: 100%;
+}
+
+.absolute {
+  overflow: auto;
+}
+
+.config__cont-table.on-table {
+  display: table;
+}
+
+.config__table thead {
+  background-color: #213944;
+}
+
+thead {
+  border-bottom: thin solid var(--border-alt-button);
+}
+
+.config__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #213944;
+}
+
+.tire__config {
+  width: fit-content;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: auto;
+}
+
+.tire__top,
+.tire__medium,
+.tire__bottom {
+  font-size: 0.75rem;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  padding: 0.25rem;
+  text-align: center;
+  width: auto;
+}
+
+.tire__top {
+  border-radius: 0.25rem 0.25rem 0 0;
+  top: -1px;
+}
+
+.tire__medium {
+  border-radius: 50%;
+  bottom: 35%;
+  margin: auto;
+  padding: 0.75rem;
+  width: fit-content;
+}
+
+.tire__bottom {
+  border-radius: 0 0 0.25rem 0.25rem;
+  bottom: 0;
+}
+
+.tire__title {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  transition: all 0.4s ease-in;
+  left: 0;
+  right: 0;
+}
+
+.tire__data {
+  font-size: 1.5rem;
+  color: #fff;
+  text-shadow: 2px 2px #000;
+}
+
+.tire__config > .icon-tire2 {
+  font-size: 11rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .circle1 {
+    height: 40px;
+    width:  40px;
+    padding: 1rem;
+  }
+
+  .head-cont {
+    flex-direction: row;
+  }
+
+  .tire__config > .icon-tire2 {
+    font-size: 21vmin;
+  }
+
+  .col-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .config__tables {
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .cont__circle {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .circle__chart {
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .absolute {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .circle1 {
+    height: 100px;
+    width: 100px;
+    padding: 2rem;
+  }
+}

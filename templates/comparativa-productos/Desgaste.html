@@ -1,0 +1,150 @@
+<div id="desgaste" class="cp-graph"></div>
+
+<script>
+    // Graph bubble-chart
+  anychart.onDocumentReady(function () {
+    // The data used in this sample can be obtained from the CDN
+    // https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json
+    anychart.data.loadJsonFile('https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json', function (data) {
+        data = [
+        {% for pro, valores in comparativa_de_productos.items %}
+              [{{forloop.counter}}, {{valores.2}}, {{valores.0}}, "", {{valores.4}}],
+        {% endfor %}
+            ];
+        console.log("data: ", data)
+        var best_sportsmen_training_data = anychart.data.set(data);
+
+        var map_training_data = best_sportsmen_training_data.mapAs({
+            'x': 1, //CPK
+            'value': 2, //Km
+            'size': 4, //Cantidad
+            'training': 0, //sportsmens
+            'data': 3
+        });
+
+        {% for pro, valores in comparativa_de_productos.items %}
+          var sportsmen{{forloop.counter}} = map_training_data.filter('training', training_filter_constructor({{forloop.counter}}));
+        {% endfor %}
+
+        // create scatter chart
+        var chart = anychart.scatter();
+      
+        // adjusting labels
+        var yTicks = chart.yScale().ticks();
+        yTicks.interval(100000);
+        var yLabels = chart.yAxis().labels();
+        yLabels.format("{%value}{scale: (1000)(1000)(1000)|(K)(M)(B)}");
+
+        // set function to format y axis labels
+        var xLabels = chart.xAxis(0).labels();
+        xLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+        // turn on chart animation
+        chart.animation(true);
+
+        // set chart title text settings
+        chart.title()
+                .enabled(true)
+                .useHtml(true)
+                .padding([0, 0, 10, 0])
+                .text(''
+                );
+
+     
+        // grid settings
+        chart.yGrid(false)
+                .xGrid(false)
+                .xMinorGrid(false)
+                .yMinorGrid(false);
+
+        // bubble size settings
+        chart.minBubbleSize(30)
+             .maxBubbleSize(45);
+
+        // set chart axes settings
+        chart.xAxis()
+                .title('')
+                .minorTicks(false);
+        chart.yAxis()
+                .title('')
+                .minorTicks(false);
+
+        //set chart legend settings
+        chart.legend()
+                .enabled(true)
+                .padding({bottom: 10});
+      
+        // create first series with mapped data
+        {% for pro, valores in comparativa_de_productos.items %}
+        
+        var {{valores.6|lower}} = chart.bubble(sportsmen{{forloop.counter}}).name('{{valores.6}}');
+        // configure the visual settings of the first series
+        {{valores.6|lower}}.selected().fill("#5089b7", 0.5);
+        {{valores.6|lower}}.normal().stroke("2 white");
+        {{valores.6|lower}}.hovered().stroke("3 #5089b7");
+        {{valores.6|lower}}.selected().stroke("4 #5089b7");
+        // labels
+        {{valores.6|lower}}.labels(true);
+        {{valores.6|lower}}.labels().format("{{valores.6}}");
+        // set the color for the text of the labels
+        {{valores.6|lower}}.labels().fontColor('white');
+        {{valores.6|lower}}.hovered().labels().fontColor("white");
+        {{valores.6|lower}}.selected().labels().fontColor("white");
+        {{valores.6|lower}}.labels().fontSize(10);
+        {% endfor %}
+
+
+        chart.tooltip()
+                .useHtml(true)
+                .fontColor('#fff')
+                .positionMode("point")
+                .format("KM: {%value}{groupsSeparator:\\,, decimalsCount:3}<br>CPK: ${%x}{groupsSeparator:\\,, decimalsCount:3}<br>Cantidad: {%size}{groupsSeparator:\\,, decimalsCount:3}%");
+              
+  
+      
+        // create scale for line series and extraYAxis
+        // it force line series to not stuck values with over series
+        var scale = anychart.scales.linear();
+
+        // adding red line to emphasize zero of extra axis
+        var lineMarker = chart.lineMarker();
+        lineMarker.layout("vertical");
+        lineMarker.scale(scale);
+        lineMarker.value(0.6000);
+        lineMarker.stroke({
+          // set stroke thickness
+          thickness: 3,
+          // set stroke color
+          color: "#026cf5",
+          // set dashes and gaps
+          dash: "3"
+        });
+
+        // set container id for the chart
+        chart.container('desgaste');
+      
+        //Set Background
+        var background = chart.background();
+        background.stroke('0 #000');
+        background.corners();
+        background.enabled(false);
+
+        // initiates chart drawing
+        chart.draw();
+      
+        // chart credits false
+        var credits = chart.credits();
+        credits.enabled(false);
+    });
+});
+/**
+ * Helper function to bind data field to the local var.
+ * @param val
+ * @return {Function}
+ */
+function training_filter_constructor(val) {
+    return function (fieldVal) {
+        return fieldVal == val;
+    }
+}
+</script>

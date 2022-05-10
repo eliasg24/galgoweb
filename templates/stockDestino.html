@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{%load static%}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/tallerDestino.css' %}"
+/>
+<meta charset="utf-8" />
+<title>Stock destino</title>
+
+{% endblock %}
+
+{% block content %}
+<div class="all-cont">
+  <form class="taller-form">
+    <legend>
+      <h2>STOCK DESTINO</h2>
+    </legend>
+    <hr />
+    <label for="" class="form-label">
+      FECHA
+    </label>
+    <span class="fecha">21-02-2022</span>
+    <label for="" class="form-label">
+      TALLER DE ORIGEN
+    </label>
+     <span class="almohadilla">#</span>
+    <label for="" class="form-label">
+      TALLER DE DESTINO
+    </label>
+     <span class="almohadilla">#</span>
+    <label for="" class="form-label">
+      USUARIO
+    </label>
+    <span class="almohadilla">USER</span>
+    <h3>LISTA DE # ECONÓMICOS</h3>
+      <li class="list">#123456789</li>
+      <li class="list">#123456789</li>
+      <li class="list">#123456789</li>
+    <nav class="nav-form">
+      <button class="btn btn-success">
+        <span class="icon-checkmark"></span>
+      </button>
+      <button class="btn btn-danger">
+        <span class="icon-cross"></span>
+      </button>
+    </nav>
+  </form>
+</div>
+{% endblock %}

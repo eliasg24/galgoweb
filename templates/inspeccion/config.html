@@ -1,0 +1,160 @@
+<div class="config__container">
+  <header class="config__header">
+    <h1>VEHÍCULO {{vehiculo_actual}}</h1>
+  </header>
+  <div class="relative config__wrapper">
+    <div class="absolute">
+
+      {% for eje in ejes %}
+
+            {% if eje|length == 2 %}
+
+              <div class="par-llantas ejes__{{cant_ejes|safe}}">
+                <div class="tire" data-tire-id="{{eje.0.0.id}}">
+                  <div class="tire__top">
+                    <span 
+                      class="tire__data" 
+                      data-tag-id="{{ eje.0.0.id }}" 
+                    >
+                      -
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.0.3}}">
+                    <span class="tire__data">
+                      {{eje.0.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2"></span>
+                  
+                  <div class="tire__bottom">
+                      <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}"> - </span>
+                  </div>
+                </div>
+        
+                <div class="axle">
+                  <span class="axle-white"></span>
+                </div>
+        
+                <div class="tire" data-tire-id="{{eje.1.0.id}}">
+                  <div class="tire__top">
+                    <span class="tire__data" data-tag-id="{{eje.1.0.id}}">
+                      -
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.1.3}}">
+                    <span class="tire__data">
+                      {{eje.1.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2"></span>
+                  
+                  <div class="tire__bottom">
+                      <span class="tire__data" data-prof-tag="profundidad-{{ eje.1.0.id }}"> - </span>
+                  </div>
+                </div>
+              </div>
+
+            {% else %}
+
+              <div class="par-doble-llanta ejes__{{cant_ejes|safe}}">
+                <div class="double-tire" data-mm-dif="{{mm_dif}}">
+                  <div class="tire" data-tire-id="{{eje.0.0.id}}">
+                    <div class="tire__top">
+                      <span 
+                        class="tire__data" 
+                        data-tag-id="{{eje.0.0.id}}"
+                      >
+                        -
+                      </span>
+                    </div>
+
+                    <div class="tire__medium {{eje.0.3}}">
+                      <span class="tire__data">
+                        {{eje.0.0.posicion}}
+                      </span>
+                    </div>
+                    
+                    <span class="icon-tire2"></span>
+                    
+                    <div class="tire__bottom">
+                        <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}"> - </span>
+                    </div>
+                  </div>
+                  <div class="tire" data-tire-id="{{eje.1.0.id}}">
+                    <div class="tire__top">
+                      <span class="tire__data" data-tag-id="{{ eje.1.0.id }}">
+                        -
+                      </span>
+                    </div>
+
+                    <div class="tire__medium {{eje.1.3}}">
+                      <span class="tire__data">
+                        {{eje.1.0.posicion}}
+                      </span>
+                    </div>
+                    
+                    <span class="icon-tire2"></span>
+                    
+                    <div class="tire__bottom">
+                        <span class="tire__data" data-prof-tag="profundidad-{{ eje.1.0.id }}"> - </span>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="axle"></div>
+        
+                <div class="double-tire" data-mm-dif="{{mm_dif}}">
+                  <div class="tire" data-tire-id="{{eje.2.0.id}}">
+                    <div class="tire__top">
+                      <span class="tire__data" data-tag-id="{{ eje.2.0.id }}">
+                        -
+                      </span>
+                    </div>
+
+                    <div class="tire__medium {{eje.2.3}}">
+                      <span class="tire__data">
+                        {{eje.2.0.posicion}}
+                      </span>
+                    </div>
+                    
+                    <span class="icon-tire2"></span>
+                    
+                    <div class="tire__bottom">
+                        <span class="tire__data" data-prof-tag="profundidad-{{ eje.2.0.id }}"> - </span>
+                    </div>
+                  </div>
+                  <div class="tire" data-tire-id="{{eje.3.0.id}}">
+                    <div class="tire__top">
+                      <span class="tire__data" data-tag-id="{{ eje.3.0.id }}">
+                        -
+                      </span>
+                    </div>
+
+                    <div class="tire__medium {{eje.3.3}}">
+                      <span class="tire__data">
+                        {{eje.3.0.posicion}}
+                      </span>
+                    </div>
+                    
+                    <span class="icon-tire2"></span>
+                    
+                    <div class="tire__bottom">
+                        <span class="tire__data" data-prof-tag="profundidad-{{ eje.3.0.id }}">
+                          -
+                        </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            {% endif %}
+
+          {% endfor %}
+
+    </div>
+  </div>
+</div>

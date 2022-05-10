@@ -1,0 +1,1325 @@
+{% extends 'base.html' %} 
+
+{% block head %} 
+{% load static %}
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/dashboardOperativo.css' %}"
+  />
+  <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+  <title>DASHBOARD OPERATIVO</title>
+  {% endblock head %} 
+{% block content %}
+  <main class="main-cont animate__animated animate__fadeIn">
+    <header class="head-cont">
+      <h2 class="title__operativo">DASHBOARD OPERATIVO</h2>
+
+      <form action="">
+        <nav class="flex-row">
+
+          <div class="dropdown">
+            <button class="drop-btn" id="d-clase" type="button">
+              Clase
+              <span class="indicator">
+                <i class="bx bxs-right-arrow"></i>
+              </span>
+            </button>
+  
+            <ul class="drop-menu" id="menu-clase">
+              <li>
+                <div class="drop-search">
+                  <input type="search" id="search-clase" class="drop-input" autocomplete="off" />
+                  <i class="bx bx-search"></i>
+                </div>
+              </li>
+              <li>
+                <label for="all-clase" class="input-check select-all">
+                  Seleccionar todas
+                  <input type="checkbox" name="clase2" value="all" id="all-clase" />
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <button class="drop-btn" id="d-ubicacion" type="button">
+              Sucursal
+              <span class="indicator">
+                <i class="bx bxs-right-arrow"></i>
+              </span>
+            </button>
+            
+            <ul class="drop-menu" id="menu-ubicacion">
+              <li>
+                <div class="drop-search">
+                  <input type="search" id="search-ubicacion" class="drop-input" autocomplete="off" />
+                  <i class="bx bx-search"></i>
+                </div>
+              </li>
+              <li>
+                <label for="all-ubicacion" class="input-check select-all">
+                  Seleccionar todas
+                  <input type="checkbox" name="ubicacion" value="all" id="all-ubicacion"/>
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <button class="drop-btn" id="d-app" type="button">
+              Aplicacion
+              <span class="indicator">
+                <i class="bx bxs-right-arrow"></i>
+              </span>
+            </button>
+  
+            <ul class="drop-menu" id="menu-app">
+              <li>
+                <div class="drop-search">
+                  <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+                  <i class="bx bx-search"></i>
+                </div>
+              </li>
+              <li>
+                <label for="all-app" class="input-check select-all">
+                  Seleccionar todas
+                  <input type="checkbox" name="aplicacion2" value="all" id="all-app"/>
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <a href="{% url 'dashboards:dashboardOperativo' %}" class="btn btn-trash">
+            <span class="icon-trash2"></span>
+          </a>
+        </nav>
+      </form>
+    </header>
+    <div class="horizontal">
+      <!-- <a href=""> -->
+        <div class="card active" id="inspeccion">
+          <h2 class="a__title">INSPECCIÓN</h2>
+          <h2 class="a__title">20%</h2>
+        </div>
+      <!-- </a> -->
+      <!-- <a href=""> -->
+        <div class="card" id="vida">
+          <h2 class="a__title">VIDA</h2>
+          <h2 class="a__title">20%</h2>
+        </div>
+      <!-- </a> -->
+      <!-- <a href=""> -->
+        <div class="card" id="desecho">
+          <h2 class="a__title">DESECHO</h2>
+          <h2 class="a__title">20%</h2>
+          <p>$1,000,000.00</p>
+        </div>
+      <!-- </a> -->
+      <!-- <a href=""> -->
+        <div class="card" id="cpk">
+          <h2 class="a__title">CPK</h2>
+          <h2 class="a__title">$0.025</h2>
+        </div>
+      <!-- </a> -->
+    </div>
+    <div class="view on" data-view="inspeccion">
+      <div class="cont-horizontal">
+        <div class="cont__charts">
+          <div class="column" id="column-chart"></div>
+          <div class="column" id="line-chart"></div>
+        </div>
+        <div class="column"></div>
+      </div>
+    </div>
+    <div class="view" data-view="vida">
+      <div class="grid-4">
+        <div class="column">
+          <section class="chart-container">
+            <div class="chart" id="vehiculos__problemas"></div>
+          </section>
+        </div>
+        <div class="column">
+          <section class="chart-container">
+            <div class="chart" id="ten__vehiculos__problemas"></div>
+          </section>
+        </div>
+        <div class="column">
+          <section class="chart-container">
+            <div class="chart" id="pie-chart-vida"></div>
+          </section>
+        </div>
+        <div class="column"></div>
+      </div>
+    </div>
+    <div class="view" data-view="desecho">
+      <div class="grid-4">
+        <div class="column" id="line-column-chart"></div>
+        <div class="column row">
+          <section class="chart-container">
+            <div class="chart" id="pie-chart"></div>
+          </section>
+          <section class="chart-container">
+            <div class="chart" id="column-scrap-chart"></div>
+          </section>
+        </div>
+        <div class="column" id="line-column-chart-tendencia"></div>
+        <div class="column"></div>
+      </div>
+    </div>
+    <div class="view" data-view="cpk">
+      <div class="grid-4">
+        <div class="column" id="bubble-chart"></div>
+        <div class="column"></div>
+        <div class="column" id="line-area-chart"></div>
+        <div class="column"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="{% static 'js/operativo/index.js' %}"></script>
+  <!-- CHARTS -->
+  <script>
+    //licencia de anyChart
+    anychart.licenseKey("aeto.com.mx-16056097-34281685");
+
+        // LINE COLUMN CHART TENDENCIA - DESECHO
+      anychart.onDocumentReady(function () {
+      
+      // set the default types of legend icons
+      anychart.theme({
+      chart: {
+      defaultSeriesSettings: {
+      column: {legendItem: {iconType: "column"}},
+      line: {legendItem: {iconType: "line"}}
+
+      }
+      }
+      });
+      // create data set on our data
+      var dataSet = anychart.data.set([
+        [1, 40, 10432,],
+        [2, 20, 9432],
+        [3, 60, 543],
+        [4, 40, 8432,],
+        [5, 20, 10432],
+        [6, 60, 5043],
+        [7, 40, 11432,],
+        [8, 20, 9432],
+        [9, 60, 5043],
+        [10, 60, 2543]
+      ]);
+
+      // map data for the first series, take x from the zero column and value from the first column of data set
+      var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+
+      // map data for the second series, take x from the zero column and value from the second column of data set
+      var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
+
+      // create column chart
+      var chart = anychart.column();
+
+      // turn on chart animation
+      chart.animation(true);
+
+      // set chart title text settings
+      chart.title("TENDENCIA");
+      var title = chart.title();
+      title.fontColor('#fff');
+      title.fontSize(18);
+      title.fontWeight(600);
+
+      // force chart scale to stuck series values
+      var yscale = chart.yScale()
+      yscale.stackMode('value');
+      yscale.minimum(0).maximum(12500).ticks({ interval: 2500 });
+      
+      // create extra axis on the left side of chart
+      // and set scale for it
+      var extraYAxis0 = chart.yAxis();
+      extraYAxis0.orientation('right').scale(yscale);
+      extraYAxis0.labels().padding(0, 0, 0, 5);
+      
+      // setup axis to append '%' symbol to label values
+      extraYAxis0.labels().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+      // create scale for line series and extraYAxis
+      // it force line series to not stuck with over series
+      var scale = anychart.scales.linear();
+      scale.minimum(0).maximum(100).ticks({ interval: 20 });
+
+      // create extra axis on the right side of chart
+      // and set scale for it
+      var extraYAxis1 = chart.yAxis(1);
+      extraYAxis1.orientation('left').scale(scale);
+
+      // setup axis to append '%' symbol to label values
+      extraYAxis1.labels().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+      // create second series with mapped data
+      var columnSeries = chart.column(secondSeriesData);
+      columnSeries.yScale(yscale).markers(false);
+      columnSeries.name("$");
+      
+      // configure the visual settings of the second series
+      columnSeries.normal().fill("#0071bc");
+      columnSeries.hovered().fill("#0071bc", 0.1);
+      columnSeries.selected().fill("#0071bc", 0.5);
+      columnSeries.normal().stroke("#0071bc", 2);
+      columnSeries.hovered().stroke("#0071bc", 4);
+      columnSeries.selected().stroke("#0071bc", 6);
+        
+      //tooltip
+      columnSeries.tooltip().format("{%seriesName}{%value}{groupsSeparator:\\,, decimalsCount:3}");
+      
+      //show all labels in the center of each column chart section
+      var columnLabels = columnSeries.labels()
+      columnLabels.enabled(false);
+      columnLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+      columnLabels.position("top");
+      columnLabels.fontColor("white");
+      columnLabels.fontWeight("bold");
+      
+      // create line series and set scale for it
+      var lineSeries = chart.line(firstSeriesData);
+      lineSeries.yScale(scale).markers(false);
+      lineSeries.name("%");
+
+      // configure the visual settings of the second series
+      lineSeries.normal().stroke("#13bcc9", 6);
+      lineSeries.hovered().stroke("#13bcc9", 4);
+      lineSeries.selected().stroke("#13bcc9", 8);
+
+      // enable and configure markers on the first series
+      lineSeries.markers(true);
+      lineSeries.markers().type("circle");
+      lineSeries.markers().fill("#13bcc9");
+      lineSeries.markers().size(5);   
+      
+      //tooltip
+      lineSeries.tooltip().format("{%value}{groupsSeparator:\\,, decimalsCount:3}%");
+      
+      // enable the legend
+      chart.legend(true);
+
+      // set the size of legend icons
+      chart.legend().iconSize(15);
+      
+      // configure the font of legend items
+      chart.legend().fontColor("white");
+      chart.legend().fontSize(10);
+      chart.legend().fontWeight(800);
+      
+      // enable major grids
+      chart.xGrid().enabled(false);
+      chart.yGrid().enabled(true);
+      // enable minor grids
+      chart.xMinorGrid().enabled(false);
+      chart.yMinorGrid().enabled(false);
+
+      //Set Background
+      var background = chart.background();
+      background.stroke('#202020');
+      background.corners();
+      background.enabled(false);
+
+      // adjust y axis
+      chart.yAxis().stroke("#DCDCDC");
+      chart.yAxis().ticks(false);
+      chart.yAxis().labels().fontColor("#DCDCDC");
+
+      // adjust y axis
+      chart.yAxis(1).stroke("#DCDCDC");
+      chart.yAxis(1).ticks(false);
+      chart.yAxis(1).labels().fontColor("#DCDCDC");
+
+      // adjust x axis
+      chart.xAxis().stroke("#DCDCDC");
+      chart.xAxis().labels().fontColor("#DCDCDC");
+
+      // set container id for the chart
+      chart.container('line-column-chart-tendencia');
+
+      // initiate chart drawing
+      chart.draw();
+      
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+    });
+
+
+
+    // LINE COLUMN CHART - DESECHOS
+    anychart.onDocumentReady(function () {
+  
+    // set the default types of legend icons
+    anychart.theme({
+    chart: {
+    defaultSeriesSettings: {
+    column: {legendItem: {iconType: "column"}},
+    line: {legendItem: {iconType: "line"}}
+
+    }
+    }
+    });
+    // create data set on our data
+    var dataSet = anychart.data.set([
+      ['DIRECCIÓN', 4, 12432,],
+      ['ARRASTRE', 2, 12432],
+      ['TRACCIÓN', 6, 543]
+    ]);
+
+    // map data for the first series, take x from the zero column and value from the first column of data set
+    var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+
+    // map data for the second series, take x from the zero column and value from the second column of data set
+    var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
+
+    // create column chart
+    var chart = anychart.column();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title(
+      ''
+    );
+
+    // force chart scale to stuck series values
+    var yscale = chart.yScale()
+    yscale.stackMode('value');
+    yscale.minimum(0).maximum(15000).ticks({ interval: 2500 });
+    
+    // create extra axis on the left side of chart
+    // and set scale for it
+    var extraYAxis0 = chart.yAxis();
+    
+    // setup axis to append '%' symbol to label values
+    extraYAxis0.labels().format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // create scale for line series and extraYAxis
+    // it force line series to not stuck with over series
+    var scale = anychart.scales.linear();
+    scale.minimum(0).maximum(12).ticks({ interval: 2 });
+
+    // create extra axis on the right side of chart
+    // and set scale for it
+    var extraYAxis1 = chart.yAxis(1);
+    extraYAxis1.orientation('right').scale(scale);
+    extraYAxis1.labels().padding(0, 0, 0, 5);
+
+    // setup axis to append '%' symbol to label values
+    extraYAxis1.labels().format("{%value}{groupsSeparator:\\,, decimalsCount:3}%");
+
+    // create second series with mapped data
+    var columnSeries = chart.column(secondSeriesData);
+    columnSeries.yScale(yscale).markers(false);
+    columnSeries.name("$");
+    
+    // configure the visual settings of the second series
+    columnSeries.normal().fill("#0071bc");
+    columnSeries.hovered().fill("#0071bc", 0.1);
+    columnSeries.selected().fill("#0071bc", 0.5);
+    columnSeries.normal().stroke("#0071bc", 2);
+    columnSeries.hovered().stroke("#0071bc", 4);
+    columnSeries.selected().stroke("#0071bc", 6);
+      
+    //tooltip
+    columnSeries.tooltip().format("{%seriesName}{%value}{groupsSeparator:\\,, decimalsCount:3}");
+    
+    //show all labels in the center of each column chart section
+    var columnLabels = columnSeries.labels()
+    columnLabels.enabled(true);
+    columnLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+    columnLabels.position("top");
+    columnLabels.fontColor("white");
+    columnLabels.fontWeight("bold");
+    
+    // create line series and set scale for it
+    var lineSeries = chart.line(firstSeriesData);
+    lineSeries.yScale(scale).markers(false);
+    lineSeries.name("%");
+
+    // configure the visual settings of the second series
+    lineSeries.normal().stroke("#13bcc9", 6);
+    lineSeries.hovered().stroke("#13bcc9", 4);
+    lineSeries.selected().stroke("#13bcc9", 8);
+    
+    //tooltip
+    lineSeries.tooltip().format("{%value}{groupsSeparator:\\,, decimalsCount:3}%");
+    
+    // enable the legend
+    chart.legend(true);
+
+    // set the size of legend icons
+    chart.legend().iconSize(15);
+    
+    // configure the font of legend items
+    chart.legend().fontColor("white");
+    chart.legend().fontSize(10);
+    chart.legend().fontWeight(800);
+    
+    // enable major grids
+    chart.xGrid().enabled(false);
+    chart.yGrid().enabled(true);
+    // enable minor grids
+    chart.xMinorGrid().enabled(false);
+    chart.yMinorGrid().enabled(false);
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('#202020');
+    background.corners();
+    background.enabled(false);
+
+    // adjust y axis
+    chart.yAxis().stroke("#DCDCDC");
+    chart.yAxis().ticks(false);
+    chart.yAxis().labels().fontColor("#DCDCDC");
+
+    // adjust y axis
+    chart.yAxis(1).stroke("#DCDCDC");
+    chart.yAxis(1).ticks(false);
+    chart.yAxis(1).labels().fontColor("#DCDCDC");
+
+    // adjust x axis
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
+
+    // set container id for the chart
+    chart.container('line-column-chart');
+
+    // initiate chart drawing
+    chart.draw();
+    
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+  });
+
+
+    // COLUMN CHART - DESECHO
+    anychart.onDocumentReady(function () {
+
+      // create data
+      var data = [
+        ["NUEVA", 10000],
+        ["1R", 12000],
+        ["2R", 13000],
+        ["3R", 10000],
+        ["4R", 9000]
+      ];
+
+      // create a chart
+      var chart = anychart.column();
+
+      // create a column series and set the data
+      var series = chart.column(data);
+
+      // set the chart title
+      chart.title("MM contra vida");
+
+      // set the titles of the axes
+      chart.xAxis().title("VIDA");
+      chart.yAxis().title("MM");
+
+      //Set Background
+      let background = chart.background();
+      background.stroke('#202020');
+      background.corners();
+      background.enabled(false);
+
+      // set the container id
+      chart.container("column-scrap-chart");
+
+      // initiate drawing the chart
+      chart.draw();
+
+      let credits = chart.credits();
+      credits.enabled(false);
+    });
+
+    // PIE CHART - DESECHO
+    anychart.onDocumentReady(function () {
+      // create data
+      const data = [
+        {x: "Impacto", value: 1000},
+        {x: "Robo", value: 2000},
+        {x: "Penetración", value: 4000},
+      ];
+
+      // create a chart and set the data
+      let chart = anychart.pie(data);
+
+      // set the chart title
+      // chart.title("Pie Chart: Basic Sample");
+
+      //Set Background
+      let background = chart.background();
+      background.stroke('#202020');
+      background.corners();
+      background.enabled(false);
+
+      // set legend position and items layout
+      chart.legend()
+            .position('right')
+            .itemsLayout('vertical')
+            .align('center');
+
+      // set the container id
+      chart.container("pie-chart");
+
+      // initiate drawing the chart
+      chart.draw();
+
+      let credits = chart.credits();
+      credits.enabled(false);
+    });
+
+    //COLUMN CHART
+    anychart.onDocumentReady(function () {
+
+    // create data
+    var data = [
+      {x: "TRACTOR", value: 25,
+      normal:   {fill: "#0097fc", stroke: "#0097fc"},
+      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      },
+      {x: "REMOLQUE", value: 40,
+      normal:   {fill: "#0097fc", stroke: "#0097fc"},
+      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      },
+      {x: "DOLLY", value: 68,
+      normal:   {fill: "#0097fc", stroke: "#0097fc"},
+      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      }
+    ];
+
+    // create a chart
+    var chart = anychart.column();
+
+    // create a column series and set the data
+    var series = chart.column(data);
+  
+    // set ticks interval
+    chart.yScale().ticks().interval(20);
+    chart.yScale().maximum(80);
+  
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+  
+    chart.tooltip().format("CANTIDAD: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // set the chart title
+    chart.title("CANTIDAD DE VEHÍCULOS VENCIDOS");
+    var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    // set y axis title
+    chart.yAxis().title('CANTIDAD');
+    var titley = chart.yAxis().title();
+    titley.fontColor('#fff');
+    titley.fontSize(12);
+    titley.fontWeight(500);
+  
+    // set y axis title
+    chart.xAxis().title('CLASE');
+    var titlex = chart.xAxis().title();
+    titlex.fontColor('#fff');
+    titlex.fontSize(12);
+    titlex.fontWeight(800);
+  
+    // enable major grids
+    chart.xGrid().enabled(false);
+    chart.yGrid().enabled(true);
+    // enable minor grids
+    chart.xMinorGrid().enabled(false);
+    chart.yMinorGrid().enabled(false);
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('#202020');
+    background.corners();
+    background.enabled(false);
+
+    // adjust y axis
+    chart.yAxis().stroke("#DCDCDC");
+    chart.yAxis().ticks(false);
+    chart.yAxis().labels().fontColor("#DCDCDC");
+
+    // adjust x axis
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
+
+    // set the container id
+    chart.container("column-chart");
+
+    // initiate drawing the chart
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+    });
+
+    //LINE CHART
+    anychart.onDocumentReady(function () {
+        // create line chart
+        var chart = anychart.line();
+
+        // turn on chart animation
+        chart.animation(true);
+
+        // turn on the crosshair
+        chart.crosshair(false);
+
+        // set chart title text settings
+        var title = chart.title();
+        chart.title('CANTIDAD DE VEHÍCULOS VENCIDOS');
+        title.fontColor('#fff');
+        title.fontSize(18);
+        title.fontWeight(600);
+
+        // set y axis title
+        chart.yAxis().title('PORCENTAJE');
+        var titley = chart.yAxis().title();
+        titley.fontColor('#fff');
+        titley.fontSize(12);
+        titley.fontWeight(500);
+      
+        // set y axis title
+        chart.xAxis().title('MES');
+        var titlex = chart.xAxis().title();
+        titlex.fontColor('#fff');
+        titlex.fontSize(12);
+        titlex.fontWeight(800);
+      
+        // set function to format y axis labels
+        var yLabels = chart.yAxis(0).labels();
+        yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+      
+        chart.tooltip().format("PORCENTAJE: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+      
+        // enable major grids
+        chart.xGrid().enabled(true);
+        chart.yGrid().enabled(true);
+        // enable minor grids
+        chart.xMinorGrid().enabled(false);
+        chart.yMinorGrid().enabled(false);
+
+        // create logarithmic scale
+        var logScale = anychart.scales.log();
+        logScale.minimum(0.00)
+                .maximum(1.00);
+      
+        // set ticks interval
+      chart.xScale().ticks().interval(1);
+
+        // create data set on our data,also we can pud data directly to series
+        var dataSet = anychart.data.set([
+            [0, '0.02'],
+            [1, '0.01'],
+            [2, '0.50'],
+            [3, '0.20'],
+            [4, '0.40'],
+            [5, '0.20'],
+            [6, '0.10'],
+            [7, '0.05'],
+            [8, '0.06'],
+            [9, '0.80'],
+            [10, '0.90'],
+            [11, '0.30'],
+            [12, '0.40']
+        ]);
+
+        // map data for the first series,take value from first column of data set
+        var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+
+        // temp variable to store series instance
+        var series;
+
+        // setup first series
+        series = chart.line(seriesData_1);
+        series.name('Review about the product');
+        // enable series data labels
+        series.labels()
+                .enabled(false)
+                .anchor('left-bottom')
+                .padding(5);
+        // enable series markers
+        series.markers(true);
+
+        // turn the legend on
+        chart.legend()
+                .enabled(false)
+                .fontSize(13)
+                .padding([0, 0, 20, 0]);
+      
+        chart.xScale().mode('continuous');
+
+        //Set Background
+        var background = chart.background();
+        background.stroke('#202020');
+        background.corners();
+        background.enabled(false);
+
+        // adjust y axis
+        chart.yAxis().stroke("#DCDCDC");
+        chart.yAxis().ticks(false);
+        chart.yAxis().labels().fontColor("#DCDCDC");
+
+        // adjust x axis
+        chart.xAxis().stroke("#DCDCDC");
+        chart.xAxis().labels().fontColor("#DCDCDC");
+
+        // set container for the chart and define padding
+        chart.container('line-chart');
+
+        // initiate chart drawing
+        chart.draw();
+
+        // chart credits false
+        var credits = chart.credits();
+        credits.enabled(false);
+    });
+
+    // VIDA
+    // Vehiculos con problemas
+    anychart.onDocumentReady(function () {
+
+      // create a data set
+      var data = anychart.data.set([
+        ["Tractor", 10000, 12500],
+        ["Remolque", 12000, 15000],
+        ["Dolly", 13000, 0]
+      ]);
+
+      // map the data
+      var seriesData_1 = data.mapAs({x: 0, value: 1});
+      var seriesData_2 = data.mapAs({x: 0, value: 2});
+
+      // create a chart
+      var chart = anychart.column();
+
+      // create the first series, set the data and name
+      var series1 = chart.column(seriesData_1);
+      series1.name("Cantidad");
+
+      // create the second series, set the data and name
+      var series2 = chart.column(seriesData_2);
+      series2.name("Cantidad");
+
+      // set the padding between columns
+      chart.barsPadding(0.5);
+
+      // set the padding between column groups
+      chart.barGroupsPadding(1);
+
+      // set the chart title
+      chart.title("VEHÍCULOS CON PROBLEMAS");
+
+      // set the titles of the axes
+      chart.xAxis().title("CLASE");
+
+      //  set background
+      var background = chart.background();
+      background.enabled(false);
+
+      // config title
+      var title = chart.title();
+      title.fontColor('#fff');
+      title.fontWeight(600);
+      title.fontSize(18);
+
+      // config xTitle
+      var titlex = chart.xAxis().title();
+      titlex.fontColor('#fff');
+      titlex.fontSize(12);
+      titlex.fontWeight(800);
+
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+
+      // set the container id
+      chart.container("vehiculos__problemas");
+
+      // initiate drawing the chart
+      chart.draw();
+    });
+
+    // Tendencia de vehiculos con problemas
+    anychart.onDocumentReady(function () {
+
+      // create a data set
+      var data = anychart.data.set([
+        [1, 10000],
+        [2, 12000],
+        [3, 13000]
+      ]);
+
+      // map the data
+      var seriesData_1 = data.mapAs({x: 0, value: 1});
+
+      // create a chart
+      var chart = anychart.line();
+
+      // create the first series, set the data and name
+      var series1 = chart.line(seriesData_1);
+      series1.name("Cantidad");
+
+      // set the chart title
+      chart.title("VEHÍCULOS CON PROBLEMAS");
+
+      // set the titles of the axes
+      chart.xAxis().title("MES");
+
+      // set the titles of the axes
+      chart.yAxis().title("CANTIDAD");
+
+      //  set background
+      var background = chart.background();
+      background.enabled(false);
+
+      // config title
+      var title = chart.title();
+      title.fontColor('#fff');
+      title.fontWeight(600);
+      title.fontSize(18);
+
+      // config xTitle
+      var titlex = chart.xAxis().title();
+      titlex.fontColor('#fff');
+      titlex.fontSize(12);
+      titlex.fontWeight(800);
+
+      // config yTitle
+      var titley = chart.yAxis().title();
+      titley.fontColor('#fff');
+      titley.fontSize(12);
+      titley.fontWeight(500);
+
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+
+      // set the container id
+      chart.container("ten__vehiculos__problemas");
+
+      // initiate drawing the chart
+      chart.draw();
+    });
+
+    // PIE CHART - VIDA
+    anychart.onDocumentReady(function () {
+      // create data
+      const data = [
+        {x: "Dirección", value: 1000},
+        {x: "Treacción", value: 2000},
+        {x: "Arrastre", value: 4000},
+      ];
+
+      // create a chart and set the data
+      let chart = anychart.pie(data);
+
+      // set the chart title
+      // chart.title("Pie Chart: Basic Sample");
+
+      //Set Background
+      let background = chart.background();
+      background.enabled(false);
+
+      // set legend position and items layout
+      chart.legend()
+            .position('right')
+            .itemsLayout('vertical')
+            .align('center');
+
+      // set the container id
+      chart.container("pie-chart-vida");
+
+      // initiate drawing the chart
+      chart.draw();
+
+      let credits = chart.credits();
+      credits.enabled(false);
+    });
+
+//BUBBLE CHART - CPK
+    anychart.onDocumentReady(function () {
+    // The data used in this sample can be obtained from the CDN
+    // https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json
+    anychart.data.loadJsonFile('https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json', function (data) {
+        data = [
+[1, 0.034, 600, "", 10],
+[2, 0.029, 400, "", 10],
+[3, 0.026, 200, "", 10],
+[4, 0.029, 100, "", 10]
+
+        ];
+        console.log("data: ", data)
+        var best_sportsmen_training_data = anychart.data.set(data);
+
+        var map_training_data = best_sportsmen_training_data.mapAs({
+            'x': 1,
+            'value': 2,
+            'size': 4,
+            'training': 0,
+            'data': 3
+        });
+
+        var sportsmen1 = map_training_data.filter('training', training_filter_constructor(1));
+        var sportsmen2 = map_training_data.filter('training', training_filter_constructor(2));
+        var sportsmen3 = map_training_data.filter('training', training_filter_constructor(3));
+        var sportsmen4 = map_training_data.filter('training', training_filter_constructor(4));
+
+        // create scatter chart
+        var chart = anychart.scatter();
+
+        // turn on chart animation
+        chart.animation(true);
+
+        // set chart title text settings
+      chart.title("COMPARATIVA DE PRODUCTOS");
+        var title = chart.title();
+        title.fontColor('#fff');
+        title.fontSize(18);
+        title.fontWeight(600);
+      
+        // force chart scale to stuck series values
+        var yscale = chart.yScale()
+        yscale.stackMode('value');
+        yscale.minimum(0).maximum(800).ticks({ interval: 200 });
+     
+        // force chart scale to stuck series values
+        var xscale = chart.xScale()
+        xscale.stackMode('x');
+        xscale.minimum(0.024).maximum(0.036).ticks({ interval: 0.002 });
+      
+        var yLabels = chart.yAxis().labels();
+        yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+        // set function to format y axis labels
+        var xLabels = chart.xAxis().labels();
+        xLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+   
+        // grid settings
+        chart.yGrid(true)
+          .xGrid(true)
+          .xMinorGrid(false)
+          .yMinorGrid(false);
+
+        // bubble size settings
+        chart.minBubbleSize(1)
+                .maxBubbleSize(30);
+
+        // set chart axes settings
+        chart.xAxis().title('EJE')
+        var titlex = chart.xAxis().title();
+        titlex.fontColor('#fff');
+        titlex.fontSize(12);
+        titlex.fontWeight(800);
+      
+        chart.yAxis().title('')
+
+        //set chart legend settings
+        chart.legend()
+                .enabled(false)
+                .padding({bottom: 10});
+
+        // create the first series and set the data
+        var sportsmen1 = chart.bubble(sportsmen1);
+        sportsmen1.name('P1')
+        
+        // configure the visual settings of the first series
+        sportsmen1.normal().fill("#1d939d");
+        sportsmen1.hovered().fill("#1d939d", 0.1);
+        sportsmen1.selected().fill("#1d939d", 0.5);
+        sportsmen1.normal().stroke("#1d939d", 1);
+        sportsmen1.hovered().stroke("#1d939d", 2);
+        sportsmen1.selected().stroke("#1d939d", 4);
+      
+          // create the first series and set the data
+        var sportsmen2 = chart.bubble(sportsmen2)
+        sportsmen2.name('P2')
+        
+        // configure the visual settings of the first series
+        sportsmen2.normal().fill("#1d939d");
+        sportsmen2.hovered().fill("#1d939d", 0.1);
+        sportsmen2.selected().fill("#1d939d", 0.5);
+        sportsmen2.normal().stroke("#1d939d", 1);
+        sportsmen2.hovered().stroke("#1d939d", 2);
+        sportsmen2.selected().stroke("#1d939d", 4);
+      
+        // create the first series and set the data
+        var sportsmen3 = chart.bubble(sportsmen3);
+        sportsmen3.name('P3')
+        
+        // configure the visual settings of the first series
+        sportsmen3.normal().fill("#1d939d");
+        sportsmen3.hovered().fill("#1d939d", 0.1);
+        sportsmen3.selected().fill("#1d939d", 0.5);
+        sportsmen3.normal().stroke("#1d939d", 1);
+        sportsmen3.hovered().stroke("#1d939d", 2);
+        sportsmen3.selected().stroke("#1d939d", 4);
+      
+          // create the first series and set the data
+        var sportsmen4 = chart.bubble(sportsmen4);
+        sportsmen4.name('P4')
+        
+        // configure the visual settings of the first series
+        sportsmen4.normal().fill("#1d939d");
+        sportsmen4.hovered().fill("#1d939d", 0.1);
+        sportsmen4.selected().fill("#1d939d", 0.5);
+        sportsmen4.normal().stroke("#1d939d", 1);
+        sportsmen4.hovered().stroke("#1d939d", 2);
+        sportsmen4.selected().stroke("#1d939d", 4);
+      
+        // labels
+        chart.labels(true);
+        chart.labels().format('{%seriesName}');
+      
+        // set the color for the text of the labels
+        chart.labels().fontColor('white');
+        chart.hovered().labels().fontColor("white");
+        chart.selected().labels().fontColor("white");
+        chart.labels().fontSize(15);
+        chart.labels().fontWeight(600);
+    
+        chart.tooltip()
+                .useHtml(true)
+                .fontColor('#fff')
+                .positionMode("point")
+                .format("KM: {%value}{groupsSeparator:\\,, decimalsCount:3}<br>EJE: ${%x}{groupsSeparator:\\,, decimalsCount:3}<br>Cantidad: {%size}{groupsSeparator:\\,, decimalsCount:3}");
+      
+        //Set Background
+        var background = chart.background();
+        background.stroke('#202020');
+        background.corners();
+        background.enabled(false);
+
+        // adjust y axis
+        chart.yAxis().stroke("#DCDCDC");
+        chart.yAxis().ticks(false);
+        chart.yAxis().labels().fontColor("#DCDCDC");
+
+        // adjust x axis
+        chart.xAxis().stroke("#DCDCDC");
+        chart.xAxis().labels().fontColor("#DCDCDC");
+
+        // set container id for the chart
+        chart.container('bubble-chart');
+
+        // initiates chart drawing
+        chart.draw();
+
+        // chart credits false
+        var credits = chart.credits();
+        credits.enabled(false);
+    });
+});
+/**
+ * Helper function to bind data field to the local var.
+ * @param val
+ * @return {Function}
+ */
+function training_filter_constructor(val) {
+    return function (fieldVal) {
+        return fieldVal == val;
+    }
+}
+
+
+
+// LINE AREA CHART - CPK
+      anychart.onDocumentReady(function () {
+      
+      // set the default types of legend icons
+      anychart.theme({
+      chart: {
+      defaultSeriesSettings: {
+      column: {legendItem: {iconType: "area"}},
+      line: {legendItem: {iconType: "line"}}
+
+      }
+      }
+      });
+      // create data set on our data
+      var dataSet = anychart.data.set([
+        ['E', 0.040, 2.3],
+        ['F', 0.020, 1.8],
+        ['M', 0.060, 1.1],
+        ['A', 0.040, 2.0],
+        ['M', 0.020, 2.2],
+        ['J', 0.060, 1.2],
+        ['J', 0.040, 1.4],
+        ['A', 0.020, 2.2],
+        ['S', 0.010, 2.0],
+        ['O', 0.020, 2.5],
+        ['N', 0.030, 1.4],
+        ['D', 0.040, 2.3]
+      ]);
+
+      // map data for the first series, take x from the zero column and value from the first column of data set
+      var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+
+      // map data for the second series, take x from the zero column and value from the second column of data set
+      var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
+
+      // create column chart
+      var chart = anychart.column();
+
+      // turn on chart animation
+      chart.animation(true);
+
+      // set chart title text settings
+      chart.title("TENDENCIA DE CPK Y VIDA");
+      var title = chart.title();
+      title.fontColor('#fff');
+      title.fontSize(18);
+      title.fontWeight(600);
+
+      // set chart axes settings
+      chart.xAxis().title('FECHA')
+      var titlex = chart.xAxis().title();
+      titlex.fontColor('#fff');
+      titlex.fontSize(12);
+      titlex.fontWeight(800);
+
+      // force chart scale to stuck series values
+      var yscale = chart.yScale()
+      yscale.stackMode('value');
+      yscale.minimum(0).maximum(3.0).ticks({ interval: 0.5 });
+      
+      // create extra axis on the left side of chart
+      // and set scale for it
+      var extraYAxis0 = chart.yAxis();
+      
+      // setup axis to append '%' symbol to label values
+      extraYAxis0.labels().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+      // create scale for line series and extraYAxis
+      // it force line series to not stuck with over series
+      var scale = anychart.scales.linear();
+      scale.minimum(0).maximum(0.050).ticks({ interval: 0.010 });
+
+      // create extra axis on the right side of chart
+      // and set scale for it
+      var extraYAxis1 = chart.yAxis(1);
+      extraYAxis1.orientation('right').scale(scale);
+      extraYAxis1.labels().padding(0, 0, 0, 5);
+
+      // setup axis to append '%' symbol to label values
+      extraYAxis1.labels().format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+      // create second series with mapped data
+      var areaSeries = chart.area(secondSeriesData);
+      areaSeries.yScale(yscale).markers(false);
+      areaSeries.name("VIDA");
+      
+      // configure the visual settings of the second series
+      areaSeries.normal().fill("#0071bc", 0.6);
+      areaSeries.hovered().fill("#0071bc", 0.1);
+      areaSeries.selected().fill("#0071bc", 0.5);
+      areaSeries.normal().stroke("#0071bc", 2);
+      areaSeries.hovered().stroke("#0071bc", 4);
+      areaSeries.selected().stroke("#0071bc", 6);
+        
+      //tooltip
+      areaSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+      
+      //show all labels in the center of each column chart section
+      var areaLabels = areaSeries.labels()
+      areaLabels.enabled(false);
+      areaLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+      areaLabels.position("top");
+      areaLabels.fontColor("white");
+      areaLabels.fontWeight("bold");
+      
+      // create line series and set scale for it
+      var lineSeries = chart.line(firstSeriesData);
+      lineSeries.yScale(scale).markers(false);
+      lineSeries.name("CPK");
+
+      // configure the visual settings of the second series
+      lineSeries.normal().stroke("#13bcc9", 6);
+      lineSeries.hovered().stroke("#13bcc9", 4);
+      lineSeries.selected().stroke("#13bcc9", 8);
+
+      // enable and configure markers on the first series
+      lineSeries.markers(true);
+      lineSeries.markers().type("circle");
+      lineSeries.markers().fill("#13bcc9");
+      lineSeries.markers().size(5);   
+      
+      //tooltip
+      lineSeries.tooltip().format("{%seriesName}: ${%value}{groupsSeparator:\\,, decimalsCount:3}");
+      
+      // enable the legend
+      chart.legend(true);
+
+      // set the size of legend icons
+      chart.legend().iconSize(15);
+      
+      // configure the font of legend items
+      chart.legend().fontColor("white");
+      chart.legend().fontSize(10);
+      chart.legend().fontWeight(800);
+      
+      // enable major grids
+      chart.xGrid().enabled(false);
+      chart.yGrid().enabled(true);
+      // enable minor grids
+      chart.xMinorGrid().enabled(false);
+      chart.yMinorGrid().enabled(false);
+
+      //Set Background
+      var background = chart.background();
+      background.stroke('#202020');
+      background.corners();
+      background.enabled(false);
+
+      // adjust y axis
+      chart.yAxis().stroke("#DCDCDC");
+      chart.yAxis().ticks(false);
+      chart.yAxis().labels().fontColor("#DCDCDC");
+
+      // adjust y axis
+      chart.yAxis(1).stroke("#DCDCDC");
+      chart.yAxis(1).ticks(false);
+      chart.yAxis(1).labels().fontColor("#DCDCDC");
+
+      // adjust x axis
+      chart.xAxis().stroke("#DCDCDC");
+      chart.xAxis().labels().fontColor("#DCDCDC");
+
+      // set container id for the chart
+      chart.container('line-area-chart');
+
+      // initiate chart drawing
+      chart.draw();
+
+       // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+    });
+
+
+
+
+  </script>
+{% endblock content %}

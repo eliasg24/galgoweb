@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/diagrama.css' %}">
+    <link rel="stylesheet" href="{% static 'css/detail2.css' %}">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/tireDiagrama.css' %}"
+    />
+    <title>Edición Manual</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-cont">
+  <header class="head-cont">
+    <div class="logo"><img src="{% static 'images/aeto.svg' %}" alt="logo aeto"></div>
+
+    <h1>
+      Edición Manual
+    </h1>
+  </header>
+
+  <main class="main__container">
+
+    <div class="tire__container">
+      <div class="tire">
+        <div class="tire__top good">
+          <span class="tire__data">
+            0
+          </span>
+        </div>
+
+        <div class="tire__medium good">
+          <span class="tire__data">
+              1LO
+          </span>
+        </div>
+        
+        <span class="icon-tire2"></span>
+        
+        <div class="tire__bottom good">
+            <span class="tire__data">
+              0
+            </span>
+        </div>
+      </div>
+    </div>
+
+    <form action="" method="" class="forms__container">
+      <div class="form__container">
+        <div class="form__wrapper" id="tire-form">
+
+          <!-- Start input -->
+          <div class="form__group field">
+            <input
+              class="form__field"
+              type="number"
+              placeholder="economico"
+              name="economico"
+              autocomplete="off"
+              required
+            />
+            <label for="economico" class="form__label">
+              Número económico
+            </label>
+          </div>
+          <!-- End input -->
+
+          <!-- Start input -->
+          <div class="form__group field">
+            <input
+              class="form__field"
+              type="text"
+              placeholder="producto"
+              name="producto"
+              autocomplete="off"
+              required
+            />
+            <label for="producto" class="form__label">
+              Producto
+            </label>
+          </div>
+          <!-- End input -->
+
+          <!-- Start input -->
+          <div class="form__group field">
+            <input
+              class="form__field"
+              type="text"
+              placeholder="vida"
+              name="vida"
+              autocomplete="off"
+              required
+            />
+            <label for="vida" class="form__label">
+              Vida
+            </label>
+          </div>
+          <!-- End input -->
+
+          <!-- Start input -->
+          <div class="form__group field">
+            <input
+              class="form__field"
+              type="text"
+              placeholder="montado"
+              name="montado"
+              autocomplete="off"
+              required
+            />
+            <label for="montado" class="form__label">
+              KM de montado
+            </label>
+          </div>
+          <!-- End input -->
+
+          <h3>Profundidades</h3>
+
+           <!-- Start input -->
+           <div 
+            class="form__prof" 
+            data-punto-retiro="{{ ej.6.punto_retiro }}" 
+            data-profundidad-id="{{ ej.0.id }}"
+            >
+            <div class="form__group field">
+              <input
+              class="form__field"
+              type="number"
+              max = {{ej.0.producto.profundidad_inicial}}
+              step="any"
+              placeholder="Profundidad izquierda"
+              name="profundidad_izquierda"
+              autocomplete="off"
+              value="{{ej.0.profundidad_izquierda}}"
+              />
+              <label for="profundidad" class="form__label">
+                Izquierda
+              </label>
+            </div>
+            
+            <div class="form__group field">
+              <input
+              class="form__field"
+              type="number"
+              max = {{ej.0.producto.profundidad_inicial}}
+              step="any"
+              placeholder="Profundidad central"
+              name="profundidad_central"
+              autocomplete="off"
+              value="{{ej.0.profundidad_central}}"
+              />
+              <label for="profundidad" class="form__label">
+                Central
+              </label>
+            </div>
+
+            <div class="form__group field">
+              <input
+                class="form__field"
+                type="number"
+                max = {{ej.0.producto.profundidad_inicial}}
+                step="any"
+                placeholder="derecha"
+                name="profundidad_derecha"
+                autocomplete="off"
+                value="{{ej.0.profundidad_derecha}}"
+                />
+                <label for="profundidad" class="form__label">
+                  Derecha
+                </label>
+              </div>
+
+          </div>
+        
+        <!-- End input -->
+
+        <!-- Start input -->
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="number"
+            step="any"
+            min="0"
+            placeholder="profundidad"
+            name="presion"
+            autocomplete="off"
+            value="{{ej.0.presion_actual}}"
+            data-input-id="{{ ej.0.id }}"
+            data-presion-min="{{ ej.6.presion_minima}}" 
+            data-presion-max="{{ ej.6.presion_maxima}}" 
+          />
+          <label for="profundidad" class="form__label">
+            Presión
+          </label>
+        </div>
+
+          <div class="drop-form">
+            <input type="search" class="drop-input" placeholder="Observación de vehículo" id="vehiculo-search">
+            <ul class="drop-options" id="vehiculo-observaciones">
+              {% for observacion in observaciones_vehiculo %}
+                <li class="search-item">
+                  <label for="{{observacion.observacion}}" class="input-check">
+                    <i class="{{observacion.icono}}"></i>
+                    {{observacion.observacion}}
+                    <input 
+                      type="checkbox" 
+                      name="observation-vehiculo" 
+                      value="{{observacion.observacion}}" 
+                      id="{{observacion.observacion}}" 
+                      data-vehiculo-item="{{observacion.observacion}}"
+                    />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <details>
+            <summary class="drop__btn">Observaciones manuales</summary>
+
+            <ul class="drop__content">
+
+              <!-- <li>
+                <input type="search" class="drop-input" placeholder="Buscar...">
+              </li> -->
+
+              <!-- FOR DJANGO -->
+              {% for observacion in observaciones_manuales %}
+                <li class="search-item">
+                  <label for="{{observacion.observacion}}-{{ ej.0.id }}" class="input-check">
+                    <i class="{{observacion.icono}}"></i>
+                    {{observacion.observacion}}
+                    <input 
+                      type="checkbox" 
+                      name="manual-observation-{{ ej.0.id }}" 
+                      value="{{observacion.observacion}}" 
+                      id="{{observacion.observacion}}-{{ ej.0.id }}" 
+                      data-check-id="{{ ej.0.id }}" 
+                    />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              {% endfor %}
+              <!-- ENDFOR -->
+
+            </ul>
+          </details>
+
+          <h3 class="text-center">
+            Observaciones
+          </h3>
+
+          <div class="observations__container">
+            {% for observacion in observaciones_vehiculo %}
+              <div data-icon-type="{{observacion.observacion}}">
+                <i class="{{observacion.icono}}"></i>
+                {{observacion.observacion}}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-info" type="submit" role="button">Guardar</button>
+    </form>
+
+  </main>
+</div>
+
+<script src="{% static 'js/manual-tire/index.js' %}" type="module"></script>
+    
+{% endblock %}

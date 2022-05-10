@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/almacen.css' %}" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AETO WEB</title>
+{% endblock head %}
+
+{% block content %}
+
+<div class="all-cont">
+  <header class="head-cont">
+    <h1>Almacenes</h1>
+
+    <form action="">
+      <div class="drop-search">
+        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
+        <i class="bx bx-search"></i>
+      </div>
+    </form>
+  </header>
+
+  <div class="container">
+    <a class="a-card" href="{% url 'dashboards:nueva' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-new_releases"></span>
+            <span class="card_title_icon icon-tire"></span>
+            Nueva
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:antesRenovar' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-reply2"></span>
+            Antes de renovar
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-spin1"></span>
+            ANTES DE DESECHAR
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:renovada' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-loop"></span>
+            RENOVADA
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span
+              class="card_title_icon icon-published_with_changes"
+            ></span>
+            CON RENOVADOR
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:desechoFinal' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-flag"></span>
+            DESECHO FINAL
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:servicio' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-tools1"></span>
+            SERVICIO
+          </h2>
+        </div>
+        <h2 class="card_number">0</h2>
+      </div>
+    </a>
+    <a class="a-card" href="{% url 'dashboards:rodante' %}">
+      <div class="card">
+        <div class="card_title">
+          <h2>
+            <span class="card_title_icon icon-tire"></span>
+            RODANTE
+          </h2>
+        </div>
+        <h2 class="card_number">26</h2>
+      </div>
+    </a>
+  </div>
+
+  <div class="operaciones">
+    <div class="operacion">
+      <h2 class="op__title">Operaciones</h2>
+      <figure class="op">
+        <span class="icon-clipboard4"></span>
+        <figcaption class="op_title">Orden de llanta nueva</figcaption>
+      </figure>
+
+      <figure class="op">
+        <span class="icon-history2"></span>
+        <figcaption class="op_title">Historial de transacciones</figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+{% endblock content %}

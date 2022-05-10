@@ -1,0 +1,125 @@
+html {
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 16px;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #363636;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0.25rem 0;
+}
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+hr {
+  width: 100%;
+  margin: 0;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  padding: 0.75rem;
+  transition: all 0.4s ease;
+}
+
+.btn:hover {
+  opacity: 0.75;
+}
+
+.btn.disabled {
+  background-color: gainsboro;
+  color: gray;
+  cursor: not-allowed;
+}
+
+.btn-success,
+.btn-danger {
+  font-size: 2vw;
+  border-radius: 10%;
+}
+
+.btn-success {
+  background-color: seagreen;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: red;
+  color: #fff;
+}
+
+.all-cont {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+}
+
+.taller-form {
+  background-color: #171717;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+  min-width: 700px;
+  padding: 1rem;
+}
+
+.form-label {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-form {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  justify-content: end;
+}
+
+.fecha{
+  background: #383838;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #DCDCDC;
+  width: 50%;
+}
+
+.almohadilla{
+  font-size: 1.5rem;
+  color: #DCDCDC;
+  width: 50%;
+}
+
+.list{
+  list-style: disc;
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  color: #DCDCDC
+}

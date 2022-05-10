@@ -1,0 +1,177 @@
+<div class="form-group">
+  
+  <div class="absolute">
+    <button value='companiaform' type="submit" class="btn btn-success">
+      <span class="icon-floppy1"></span>
+    </button>
+  </div>
+
+  <h3>Días de inflado</h3>
+
+  <div class="form__group field">
+      <input
+          class="form__field"
+          type="number"
+          placeholder="periodo 1 (en días)..."
+          name="periodo1_inflado"
+          autocomplete="off"
+          value="{{user.perfil.compania.periodo1_inflado}}"
+          required
+      />
+      <label for="name" class="form__label">
+          Periodo 1 (en días)
+      </label>
+  </div>
+  
+  <!-- <p>Periodo 2: {{user.perfil.compania.periodo2}} días</p> -->
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="periodo 2 (en días)..."
+        name="periodo2_inflado"
+        autocomplete="off"
+        value="{{user.perfil.compania.periodo2_inflado}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Periodo 2 (en días)
+    </label>
+  </div>
+
+</div>
+
+<div class="form-group">
+  <h3>Parametro de presión</h3>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="text"
+        placeholder="objetivo"
+        name="objetivo"
+        autocomplete="off"
+        value="{{user.perfil.compania.objetivo}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Objetivo
+    </label>
+  </div>
+</div>
+
+<div class="form-group">
+  <h3>Días de vistos</h3>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="periodo-1-visto"
+        name="periodo1_inspeccion"
+        autocomplete="off"
+        value="{{user.perfil.compania.periodo1_inspeccion}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Periodo 1
+    </label>
+  </div>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="periodo-2-visto"
+        name="periodo2_inspeccion"
+        autocomplete="off"
+        value="{{user.perfil.compania.periodo2_inspeccion}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Periodo 2
+    </label>
+  </div>
+
+</div>
+
+<div class="form-group">
+  <h3>Puntos de retiro</h3>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="direccion"
+        name="punto_retiro_eje_direccion"
+        autocomplete="off"
+        value="{{user.perfil.compania.punto_retiro_eje_direccion}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Dirección
+    </label>
+  </div>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="traccion"
+        name="punto_retiro_eje_traccion"
+        autocomplete="off"
+        value="{{user.perfil.compania.punto_retiro_eje_traccion}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Tracción
+    </label>
+  </div>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="arrastre"
+        name="punto_retiro_eje_arrastre"
+        autocomplete="off"
+        value="{{user.perfil.compania.punto_retiro_eje_arrastre}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Arrastre
+    </label>
+  </div>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="desgaste"
+        name="mm_de_desgaste_irregular"
+        autocomplete="off"
+        value="{{user.perfil.compania.mm_de_desgaste_irregular}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Desgaste Irregular
+    </label>
+  </div>
+
+  <div class="form__group field">
+    <input
+        class="form__field"
+        type="number"
+        placeholder="dualizado"
+        name="mm_de_diferencia_entre_duales"
+        autocomplete="off"
+        value="{{user.perfil.compania.mm_de_diferencia_entre_duales}}"
+        required
+    />
+    <label for="name" class="form__label">
+        Dualizado
+    </label>
+  </div>
+
+</div>

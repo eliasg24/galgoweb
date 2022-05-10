@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	{%load static%}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/catalogos.css' %}">
+	<meta charset="utf-8">
+	<title>Catologo de desechos</title>
+{% endblock %}
+
+{% block content %}
+<div class="all-cont animate__animated animate__fadeIn">
+
+	<header class="header">
+		<div class="logo">
+			<img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
+		</div>
+		<h1 class="main-title">CATÁLOGO DE DESECHOS</h1>
+	</header>
+
+	<main class="main-cont">
+		<div class="cont-left">
+				<header class="section-head">
+					<h2 class="section-title">Agregar dictamen</h2>
+				</header>
+
+				{% include 'catalogos-forms/dictamen-form.html' %}
+
+		</div>
+		<div class="cont-right">
+			<header class="section-head">
+				<h2 class="section-title">Desechos</h2>
+			</header>
+			<div class="table-cont">
+				
+				<table class="main-table">
+					<thead>
+						<tr>
+							<th>Acciones</th>
+							<th>Llanta</th>
+							<th>Zona de llanta</th>
+							<th>Condición</th>
+							<th>Razón</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for desecho in desechos %}
+						<tr id="{{desecho.id}}">
+							<td class="flex-row">
+							<a href="{% url 'dashboards:catalogoDesechosEdit' desecho.id %}" class="btn btn-download">
+								<span class="icon-pencil"></span>
+							</a>
+							<form action="{% url "dashboards:catalogoDesechosDelete" %}" method="POST">
+								{% csrf_token %}
+								<input type="hidden" name="id" value="{{desecho.id}}">
+								<button class="btn btn-danger">
+								  <span class="icon-trash"></span>
+								</button>
+							</form>
+							</td>
+							<td>{{desecho.llanta}}</td>
+							<td>{{desecho.zona_de_llanta}}</td>
+							<td>{{desecho.condicion}}</td>
+							<td>{{desecho.razon}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+	</main>
+</div>
+
+<script>
+		/* DropDown */
+
+		const dropdown = (button = '', container = '') => {
+			/*  */
+			const btn = document.querySelector(button);
+			const dropdown = document.querySelector(container);
+			/* Dropdown event handler */
+			document.addEventListener('click', (e) => {
+				if (e.target === btn) {
+					document.getElementById(
+						'drop'
+					).outerHTML = `<span id="drop">&blacktriangledown;</span>`; // Coloca la flecha hacía abajo, indicando que el menú esta abierto
+
+					dropdown.classList.toggle('active'); // Activa y desactiva la clase active cada vez que se hace click en el botón del dropdown
+
+					/* Si el dropdown esta activo, y se vuelve hacer click, se volvera a poner el triangulo hacía la derecha */
+					if (!dropdown.classList.contains('active'))
+						document.getElementById(
+							'drop'
+						).outerHTML = `<span id="drop">&blacktriangleright;</span>`;
+				}
+			});
+		};
+
+		dropdown('.drop-btn', '.dropdown-content');
+
+		/* End Dropdown */
+	</script>
+
+{% endblock %}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/pulpov2.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <title>FASE PULPO</title>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+<script src="{% static 'js/gauge.js' %}"></script>
+<div class="header">
+  <h1><img src="{% static 'images/Grupo 66.png' %}" alt=""></h1>
+  <nav class="menu">
+            <ul>
+                <li class="menu_li--left"><img src="{% static 'images/Grupo 66.png' %}" alt=""></li>
+                
+                <form id="form_fecha" action="{% url 'dashboards:buscar' %}" method="GET">
+                    <li class="menu_li--right">
+                        <div class="multiselect2">
+                            <div class="selectBox2" onclick="showCheckboxes2()">
+                                <select name="OS">
+                                    <option value="1">Ubicación</option> 
+                                </select>
+                                <div class="overSelect2"></div>
+                            </div>
+                            <div id="checkboxes2" style="background-color: #171717;">
+                                <label for="one"><input type="checkbox"><p>Monterrey</p></label>
+                                <label for="two"><input type="checkbox"><p>Torreón</p></label>
+                                <label for="three"><input type="checkbox"><p>Jalisco</p></label>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="menu_li--right">
+                        <!-- <form> -->
+                            <div class="multiselect">
+                                <div class="selectBox" onclick="showCheckboxes()">
+                                    <select name="OS">
+                                        <option value="1">Clase</option> 
+                                    </select>
+                                    <div class="overSelect"></div>
+                                </div>
+                                <div id="checkboxes" style="background-color: #171717;">
+                                    <label for="one"><input type="checkbox"><p>Hola111</p></label>
+                                    <label for="two"><input type="checkbox"><p>Hola2</p></label>
+                                    <label for="three"><input type="checkbox"><p>Hola3</p></label>
+                                </div>
+                            </div>
+
+                            {% if fecha %}
+                                <li class="menu_li--right"><input class="li_input--date" {% if fecha2 %}value="{{fecha2}}"{% endif %} type="date" name="fecha2"></li>
+                            {% endif %}
+                            <li class="menu_li--right"><input class="li_input--date" {% if fecha %}value="{{fecha}}"{% endif %} type="date" name="fecha1"></li>
+                            <div class="menu_button">
+                                <button class="menu_li--right" type="submit">Buscar</button>
+                            </div>
+                        <!-- </form> -->
+                    </li>
+                </form>
+            </ul>
+        </nav>
+</div>
+
+<div class="topnav">
+  <div class="container-menu2">
+    <div class="content">
+      <img class="pulpo" src="{% static 'images/Trazado 9.png' %}" alt="">
+        <nav>
+            <a href="{% url 'dashboards:pulpo' %}" class="square"><img src="{% static 'images/dashboard.png' %}" alt=""></a>
+            <a href="{% url 'dashboards:search' %}" class="bus"><img src="{% static 'images/truck.png' %}" alt=""></a>
+            <a href="{% url 'dashboards:config' %}" class="config"><img src="{% static 'images/settings.png' %}" alt=""></a>
+        </nav>
+        <a href="{% url 'dashboards:logout' %}" class="logout_btn"><img src="{% static 'images/enter.png' %}" alt=""></a>                  
+    </div>                
+  </div>
+</div>
+
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Dec 7, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Sep 2, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>About Me</h2>
+      <div class="fakeimg" style="height:100px;">Image</div>
+      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+    </div>
+    <div class="card">
+      <h3>Follow Me</h3>
+      <p>Some text..</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+
+</body>
+</html> {% endcomment %}

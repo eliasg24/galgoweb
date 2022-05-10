@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/detail2.css' %}">
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/configVehiculo.css' %}"
+/>
+<title>Smart View</title>
+{% endblock %}
+
+{% block content %} 
+<div class="main-cont">
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+    <h1>Smart View</h1>
+  </header>
+  <div class="main-content">
+
+    <div class="config__llantas">
+      
+      <div class="absolute">
+
+        {% for eje in ejes %}
+          
+          {% if eje|length == 2 %}
+            
+            <div class="par-llantas ejes__{{cant_ejes|safe}}">
+              <div class="tire">
+                <div class="tire__top {{eje.0.2}}">
+                  <span class="tire__data">
+                    {{eje.0.0.presion_de_salida}}
+                  </span>
+                </div>
+
+                <div class="tire__medium {{eje.0.2}}">
+                  <span class="tire__data">
+                    {{eje.0.0.posicion}}
+                  </span>
+                </div>
+                
+                <span class="icon-tire2"></span>
+                
+                <div class="tire__bottom {{eje.0.1}}">
+                    <span class="tire__data">
+                      
+                      {% if eje.0.0.ultima_inspeccion == None %}
+                        N/A
+                      {% else %}
+                        {{eje.0.0.ultima_inspeccion.min_profundidad}}
+                      {% endif %}
+                    
+                    </span>
+                </div>
+              </div>
+      
+              <div class="axle">
+                <span class="axle-white"></span>
+              </div>
+      
+              <div class="tire">
+                <div class="tire__top {{eje.1.2}}">
+                  <span class="tire__data">
+                    {{eje.1.0.presion_de_salida}}
+                  </span>
+                </div>
+
+                <div class="tire__medium {{eje.1.2}}">
+                  <span class="tire__data">
+                    {{eje.0.0.posicion}}
+                  </span>
+                </div>
+                
+                <span class="icon-tire2"></span>
+                
+                <div class="tire__bottom {{eje.1.1}}">
+                    <span class="tire__data">
+                      
+                      {% if eje.1.0.ultima_inspeccion == None %}
+                        N/A
+                      {% else %}
+                        {{eje.1.0.ultima_inspeccion.min_profundidad}}
+                      {% endif %}
+                    
+                    </span>
+                </div>
+              </div>
+            </div>
+
+          {% else %}
+            
+            <div class="par-doble-llanta ejes__{{cant_ejes|safe}}">
+              <div class="double-tire">
+                <div class="tire">
+                  <div class="tire__top {{eje.0.2}}">
+                    <span class="tire__data">
+                      {{eje.0.0.presion_de_salida}}
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.0.2}}">
+                    <span class="tire__data">
+                      {{eje.0.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2"></span>
+                  
+                  <div class="tire__bottom {{eje.0.1}}">
+                      <span class="tire__data">
+                        
+                      {% if eje.0.0.ultima_inspeccion == None %}
+                        N/A
+                      {% else %}
+                        {{eje.0.0.ultima_inspeccion.min_profundidad}}
+                      {% endif %}
+                  
+                      </span>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire__top {{eje.1.2}}">
+                    <span class="tire__data">
+                      {{eje.1.0.presion_de_salida}}
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.1.2}}">
+                    <span class="tire__data">
+                      {{eje.1.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2"></span>
+                  
+                  <div class="tire__bottom {{eje.1.1}}">
+                      <span class="tire__data">
+                        
+                      {% if eje.1.0.ultima_inspeccion == None %}
+                        N/A
+                      {% else %}
+                        {{eje.1.0.ultima_inspeccion.min_profundidad}}
+                      {% endif %}
+                  
+                      </span>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="axle"></div>
+      
+              <div class="double-tire">
+                <div class="tire">
+                  <div class="tire__top {{eje.2.2}}">
+                    <span class="tire__data">
+                      {{eje.2.0.presion_de_salida}}
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.2.2}}">
+                    <span class="tire__data">
+                      {{eje.2.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2">
+                    <span class="axle-white"></span>
+                  </span>
+                  
+                  <div class="tire__bottom {{eje.2.1}}">
+                      <span class="tire__data">
+
+                        {% if eje.2.0.ultima_inspeccion == None %}
+                          N/A
+                        {% else %}
+                          {{eje.2.0.ultima_inspeccion.min_profundidad}}
+                        {% endif %}
+                        
+                      </span>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire__top {{eje.3.2}}">
+                    <span class="tire__data">
+                      {{eje.3.0.presion_de_salida}}
+                    </span>
+                  </div>
+
+                  <div class="tire__medium {{eje.3.2}}">
+                    <span class="tire__data">
+                      {{eje.3.0.posicion}}
+                    </span>
+                  </div>
+                  
+                  <span class="icon-tire2"></span>
+                  
+                  <div class="tire__bottom {{eje.3.1}}">
+                      <span class="tire__data">
+
+                        {% if eje.3.0.ultima_inspeccion == None %}
+                          N/A
+                        {% else %}
+                          {{eje.3.0.ultima_inspeccion.min_profundidad}}
+                        {% endif %}
+
+                      </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+    
+  </main>
+</div>
+
+<script>
+  const Llanta = () => {
+    //Creando un web component
+    const llantas = document.querySelectorAll('#llanta');
+
+    llantas.forEach((llanta) => {
+      llanta.innerHTML = `
+            <span class="icon-tire2"></span>
+            `;
+    });
+  };
+  Llanta();
+</script>
+{% endblock %}

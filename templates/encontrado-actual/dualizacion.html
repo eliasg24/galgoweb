@@ -1,0 +1,120 @@
+<div id="ea-dual" class="cont-dona ea-graph">
+	<div id="dual1"></div>
+	<div id="dual2"></div>
+</div>
+
+<script>
+  	anychart.onDocumentReady(function () {
+
+  		// create a pie chart and set the data
+      	var chart = anychart.pie();
+
+      	{% if parametro_encontrado_existente %}
+      		// create data
+	      	var data = [];
+
+      		// create a pie chart and set the data
+      		chart = anychart.pie(data);
+          	// turn on chart animation
+          	chart.animation(true);
+          	/* set the inner radius
+          	(to turn the pie chart into a doughnut chart)*/
+          	chart.innerRadius("75%");
+
+          	// set the position of labels
+          	var labels = chart.labels();
+          	labels.position("inside");
+
+          	// configure the labels: font, overlap, offset
+          	labels.fontColor("#fff");
+          	chart.overlapMode(true);
+          	chart.insideLabelsOffset("-300%");
+
+    	{% endif %}
+
+      	// disable the legend
+      	chart.legend(true);
+
+      	// set the chart title
+      	chart.title("Encontrado");
+      	var title = chart.title();
+      	title.fontWeight(600);
+      	title.fontColor('#fff');
+      	title.fontSize(18);
+
+       	//Set Background
+      	var background = chart.background();
+      	background.enabled(false);
+
+      	//no DataLabels
+      	noDataLabel = chart.noData().label();
+      	noDataLabel.enabled(true);
+      	noDataLabel.text("No hay datos").fontColor("#fff");
+
+      	// set the container id
+      	chart.container("dual1");
+
+      	// initiate drawing the chart
+      	chart.draw();
+       	// chart credits false
+      	var credits = chart.credits();
+      	credits.enabled(false);
+  	});
+  	anychart.onDocumentReady(function () {
+
+      	// create a pie chart and set the data
+      	var chart = anychart.pie();
+
+  		{% if parametro_actual_existente %}
+      		// create data
+          	var data = [];
+
+          	// create a pie chart and set the data
+          	chart = anychart.pie(data);
+
+          	// turn on chart animation
+          	chart.animation(true);
+          	/* set the inner radius
+          	(to turn the pie chart into a doughnut chart)*/
+          	chart.innerRadius("75%");
+
+          	// set the position of labels
+          	var labels = chart.labels();
+          	labels.position("inside");
+
+          	// configure the labels: font, overlap, offset
+          	labels.fontColor("#fff");
+          	chart.overlapMode(true);
+          	chart.insideLabelsOffset("-300%");
+
+      	{% endif %}
+
+      	// disable the legend
+      	chart.legend(true);
+
+      	//Set Background
+      	var background = chart.background();
+     	 background.enabled(false);
+
+      	// set the chart title
+     	 chart.title("Actual");
+      	var title = chart.title();
+      	title.fontWeight(600);
+      	title.fontColor('#fff');
+      	title.fontSize(18);
+
+      	//no DataLabels
+      	noDataLabel = chart.noData().label();
+      	noDataLabel.enabled(true);
+      	noDataLabel.text("No hay datos").fontColor("#fff");
+
+      	// set the container id
+      	chart.container("dual2");
+
+      	// initiate drawing the chart
+      	chart.draw();
+       	// chart credits false
+      	var credits = chart.credits();
+      	credits.enabled(false);
+  	});
+</script>

@@ -1,0 +1,172 @@
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="nombre"
+    name="username"
+    autocomplete="off"
+    required
+  />
+  <label for="nombre" class="form__label">
+    Nombre
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="password"
+    placeholder="password"
+    name="password"
+    autocomplete="off"
+    required
+  />
+  <label for="password" class="form__label">
+    Contraseña
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="password"
+    placeholder="password2"
+    name="repeat_password"
+    autocomplete="off"
+    required
+  />
+  <label for="password2" class="form__label">
+    Confirmar contraseña
+  </label>
+</div>
+<!-- End input -->
+
+<div class="dropdown">
+  <button class="drop-btn" id="company" type="button">
+    Compañia
+    <span class="indicator">
+      <i class="bx bxs-right-arrow"></i>
+    </span>
+  </button>
+
+  <ul class="drop-menu" id="menu-company">
+    <li>
+      <div class="drop-search">
+        <input type="search" id="search-company" class="drop-input" autocomplete="off" />
+        <i class="bx bx-search"></i>
+      </div>
+    </li>
+    <li>
+      <label for="all-company" class="input-check select-all">
+        Seleccionar todas
+        <input type="checkbox" id="all-company" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% for compania in companias %}
+    <li class="search-item">
+      <label for="{{compania}}" class="input-check">
+        {{compania}}
+        <input type="checkbox" name="compania" value="{{compania}}" id="{{compania}}" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="dropdown">
+  <button class="drop-btn" id="sucursal" type="button">
+    Sucursal
+    <span class="indicator">
+      <i class="bx bxs-right-arrow"></i>
+    </span>
+  </button>
+
+  <ul class="drop-menu" id="menu-sucursal">
+    <li>
+      <div class="drop-search">
+        <input type="search" id="search-sucursal" class="drop-input" autocomplete="off" />
+        <i class="bx bx-search"></i>
+      </div>
+    </li>
+    <li>
+      <label for="all-sucursal" class="input-check select-all">
+        Seleccionar todas
+        <input type="checkbox" id="all-sucursal" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% for sucursal in sucursales %}
+    <li class="search-item">
+      <!-- ! Genera un error -->
+      <label for="{{sucursal}}" class="input-check">
+        {{sucursal}}
+        <input type="checkbox" name="ubicacion" value="{{sucursal}}" id="{{sucursal}}" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="dropdown">
+  <button class="drop-btn" id="app" type="button">
+    Aplicación
+    <span class="indicator">
+      <i class="bx bxs-right-arrow"></i>
+    </span>
+  </button>
+
+  <ul class="drop-menu" id="menu-app">
+    <li>
+      <div class="drop-search">
+        <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+        <i class="bx bx-search"></i>
+      </div>
+    </li>
+    <li>
+      <label for="all-app" class="input-check select-all">
+        Seleccionar todas
+        <input type="checkbox" id="all-app" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% for aplicacion in aplicaciones %}
+    <li class="search-item">
+      <label for="{{aplicacion}}" class="input-check">
+        {{aplicacion}}
+        <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% endfor %}
+    </ul>
+</div> 
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="rol"
+    name="groups"
+    autocomplete="off"
+    list="rol"
+    required
+  />
+  <label for="rol" class="form__label">
+    Rol
+  </label>
+  <datalist id="rol">
+    <option value="Aeto Manager"></option>
+    <option value="Galgo Manager"></option>
+    <option value="Company Manager"></option>
+    <option value="Fleet Manager"></option>
+  </datalist>
+</div>
+<!-- End input -->

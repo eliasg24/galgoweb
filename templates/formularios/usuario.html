@@ -1,0 +1,118 @@
+{% extends '../base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<title>Formulario de usuario</title>
+{% endblock %}
+
+{% block content %}
+
+<main class="main-cont">
+
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+
+    <h1>Formulario de usuario</h1>
+  </header>
+
+  <section class="form-container">
+    <form action="{% url 'dashboards:usuarioFormulario' %}" class="form-content" method="POST">
+      {% csrf_token %}
+      <fieldset class="flex-row space-between">
+        <h2 class="form-title">Nuevo usuario</h2>
+
+        <nav class="flex-row">
+          <button class="btn btn-success disabled" type="submit">
+            <span class="icon-checkmark"></span>
+          </button>
+          <button class="btn btn-danger" type="reset">
+            <span class="icon-cross"></span>
+          </button>
+        </nav>
+      </fieldset>
+      <article class="form-content__flex">
+        {% include './forms/form-usuario.html' %}
+      </article>
+    </form>
+  </section>
+
+</main>
+
+<script src="{% static 'js/inputChange.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    validPassword();
+  });
+
+  const validPassword = () => {
+    const password = document.querySelector('input[name="password"]');
+    const password2 = document.querySelector('input[name="repeat_password"]');
+    
+    password2.addEventListener('keyup', (e) => {
+      if (password.value !== password2.value) {
+        password2.classList.add('invalid');
+      } 
+      if (password.value === password2.value) {
+        password2.classList.remove('invalid');
+      } 
+    });
+  };
+
+  const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+    const selector = document.querySelector(`#${container} #${selectAll}`);
+    const checkboxs = document.querySelectorAll(
+      `#${container} input[type="checkbox"]`
+    );
+
+    selector.addEventListener('change', (e) => {
+      selector.checked
+        ? checkboxs.forEach((check) => (check.checked = true))
+        : checkboxs.forEach((check) => (check.checked = false));
+    });
+
+    checkboxs.forEach((item) => {
+      item.addEventListener('change', (e) => {
+        let notAll = false;
+
+        checkboxs.forEach((item) => {
+          if (!item.checked) notAll = true;
+          if (notAll) selector.checked = false;
+        });
+      });
+    });
+  };
+
+  const dropdown = (button = '', menu = '') => {
+    const dropBtn = document.getElementById(button);
+    const dropMenu = document.getElementById(menu);
+
+    dropBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropMenu.classList.toggle('active');
+      if (dropMenu.classList.contains('active')) {
+        dropBtn.querySelector('.indicator').classList.add('active');
+      } else {
+        dropBtn.querySelector('.indicator').classList.remove('active');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.matches('.dropdown *')) {
+          dropMenu.classList.remove('active');
+          dropBtn.querySelector('.indicator').classList.remove('active');
+        }
+      });
+  };
+
+  handleSelectAll({ container: 'menu-company', selectAll: 'all-company' });
+  handleSelectAll({ container: 'menu-sucursal', selectAll: 'all-sucursal' });
+  handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+  dropdown('company', 'menu-company');
+  dropdown('sucursal', 'menu-sucursal');
+  dropdown('app', 'menu-app');
+</script>
+
+{% endblock %}

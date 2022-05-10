@@ -1,0 +1,164 @@
+<html>
+<head>
+	{%load static%}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/parametrosExtracto.css' %}">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'js/daterangepicker.css' %}"/>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+	{% include 'nav.html' %}
+	<div class="container">
+		<div class="horizontal">
+			<div class="top-nav">
+                <a class="arrow-a" href="{% url 'dashboards:extracto' %}"><span class="icon-arrow-left2"></span></a>
+				<h2 class="informe-name">Nombre del Informe</h2>
+			</div>
+			<div class="cont-horizontal">
+				<div class="parametrosReporte">
+                    <div class="parametros">
+                        <div class="parametro-title">
+                            <h2>Parametros del reporte</h2>
+                        </div>
+                        <div class="argumentos-reporte">
+                            <form>
+                                <h2 class="p-title">Fecha</h2>
+                                 <li class="head-item"><input class="btn-head-item" type="text" name="fecha1" {% if fecha %}value="{{fecha}}"{% else %}value="Seleccionar Fecha"{% endif %} /></li>
+                                <!-- Seleccionador de fecha -->
+                                <!-- <div class="multiselect">
+                                    <div class="selectBox" onclick="showCheckboxes()">
+                                        <select name="OS">
+                                            <option value="1">Fecha</option> 
+                                        </select>
+                                        <div class="overSelect"></div>
+                                    </div>
+                                    <div id="checkboxes" style="background-color: #171717;">
+                                        {% for clase in clases_mas_frecuentes_infladas %}
+                                            <label><input type="checkbox" name="clase" value={{clase}}><p>{{clase}}</p></label>
+                                        {% endfor %}
+                                    </div>
+                                </div> -->
+                                
+                                <h2 class="p-title">Compañía</h2>
+                                <div class="multiselect2">
+                                    <div class="selectBox2" onclick="showCheckboxes2()">
+                                        <select name="OS">
+                                            <option value="1">Compañía</option> 
+                                        </select>
+                                        <div class="overSelect2"></div>
+                                    </div>
+                                    <div id="checkboxes2" style="background-color: #171717;">
+                                        {% for clase in clases_mas_frecuentes_infladas %}
+                                            <label><input type="checkbox" name="clase" value={{clase}}><p>{{clase}}</p></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <h2 class="p-title">Ubicación</h2>
+                                <div class="multiselect3">
+                                    <div class="selectBox3" onclick="showCheckboxes3()">
+                                        <select name="OS">
+                                            <option value="1">Ubicación</option> 
+                                        </select>
+                                        <div class="overSelect3"></div>
+                                    </div>
+                                    <div id="checkboxes3" style="background-color: #171717;">
+                                        {% for clase in clases_mas_frecuentes_infladas %}
+                                            <label><input type="checkbox" name="clase" value={{clase}}><p>{{clase}}</p></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <h2 class="p-title">Flota</h2>
+                                <div class="multiselect4">
+                                    <div class="selectBox4" onclick="showCheckboxes4()">
+                                        <select name="OS">
+                                            <option value="1">Flota</option> 
+                                        </select>
+                                        <div class="overSelect4"></div>
+                                    </div>
+                                    <div id="checkboxes4" style="background-color: #171717;">
+                                        {% for clase in clases_mas_frecuentes_infladas %}
+                                            <label><input type="checkbox" name="clase" value={{clase}}><p>{{clase}}</p></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                           <div class="button-a">
+                            <a href="https://drive.google.com/uc?id=1GD0kC__oUYfTNarsSBweN3JdBxOCb1kg&export=download"><button class="reporte-descarga">Descargar</button></a>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+    <script>
+          var expanded = false;
+    function showCheckboxes(){
+        var checkboxes = document.getElementById("checkboxes");
+        if (!expanded) {
+            checkboxes.style.display = "block"; 
+            checkboxes.style.position = "fixed";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+
+    function showCheckboxes2(){
+        var checkboxes = document.getElementById("checkboxes2");
+        if (!expanded) {
+            checkboxes.style.display = "block";
+            checkboxes.style.position = "fixed";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+
+    function showCheckboxes3(){
+        var checkboxes = document.getElementById("checkboxes3");
+        if (!expanded) {
+            checkboxes.style.display = "block";
+            checkboxes.style.position = "fixed";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+
+    function showCheckboxes4(){
+        var checkboxes = document.getElementById("checkboxes4");
+        if (!expanded) {
+            checkboxes.style.display = "block";
+            checkboxes.style.position = "fixed";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+    /*rango de fechas*/
+    $(function() {
+        $('input[name="fecha1"]').daterangepicker({
+            opens: 'left',
+            autoUpdateInput: false,
+            "autoApply": true
+        },
+        function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+        $('input[name="fecha1"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<div id="cc-eje" class="cc-graph"></div>
+
+<script>
+  anychart.onDocumentReady(function () {
+
+      var chart = anychart.cartesian();
+      // create a data set
+
+   // adjusting labels
+  var yTicks = chart.yScale().ticks();
+  var yLabels = chart.yAxis(1).labels();
+  yLabels.format("{%value}{scale: (1000)(1000)(1000)|(K)(M)(B)}");
+
+  // set the chart title
+//   chart.title("Comparativa contra");
+  var title = chart.title();
+  title.align('left');
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  // setting yAxis settings
+  chart.yAxis(0).title("");
+  chart.yAxis(1).title("");
+
+  // setting Grid settings
+  chart.xGrid(false);
+  chart.yGrid(false);
+
+  // adding extra Y scale
+  var extraYScale = anychart.scales.linear();
+  extraYScale.ticks().interval(1000);
+
+  // set function to format y axis labels
+  var yLabels = chart.yAxis(0).labels();
+  yLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+  // adding and adjust extra Y axis
+  chart.xAxis().orientation("left");
+
+  // adding and adjust extra Y axis
+  var extraYAxis0 = chart.yAxis(0);
+  extraYAxis0.orientation("bottom");
+
+  // adding and adjust extra Y axis
+  var extraYAxis = chart.yAxis(1);
+  extraYAxis.orientation("top");
+  extraYAxis.scale(extraYScale);
+
+  // setting first series of data
+  var firstSeries = [
+          {% for eje, valores in comparativa_de_ejes.items %}
+              ['{{eje}}', {{valores.2}}],
+          {% endfor %}
+  ];
+
+  // setting second series of data
+  var secondSeries = [
+          {% for eje, valores in comparativa_de_ejes.items %}
+              ['{{eje}}', {{valores.0}}],
+          {% endfor %}
+  ];
+
+  // setting and adjusting data visualisation
+  var DosSeries = chart.bar(firstSeries);
+  DosSeries.name("CPK");
+
+  // configure the visual settings of the second series
+  DosSeries.normal().fill("#12bcc8");
+  DosSeries.hovered().fill("#12bcc8", 0.1);
+  DosSeries.selected().fill("#12bcc8", 0.5);
+  DosSeries.normal().stroke("#12bcc8");
+  DosSeries.hovered().stroke("#12bcc8", 2);
+  DosSeries.selected().stroke("#12bcc8", 4);
+
+
+  var UnoSeries = chart.bar(secondSeries);
+  UnoSeries.yScale(extraYScale);
+  UnoSeries.name("KM");
+
+  // configure the visual settings of the second series
+  UnoSeries.normal().fill("#0097fc");
+  UnoSeries.hovered().fill("#0097fc", 0.1);
+  UnoSeries.selected().fill("#0097fc", 0.5);
+  UnoSeries.normal().stroke("#0097fc");
+  UnoSeries.hovered().stroke("#0097fc", 2);
+  UnoSeries.selected().stroke("#0097fc", 4);
+
+  //tooltip
+  UnoSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+  DosSeries.tooltip().format("{%seriesName}: ${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+  // set scale minimum
+  chart.yScale().minimum(0);
+
+  chart.container("cc-eje");
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+
+  //turn on chart animation
+  chart.animation(true);
+
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  });
+</script>

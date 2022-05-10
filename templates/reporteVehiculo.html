@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    rel="shortcut icon"
+    href="{% static 'images/logo-border.png' %}"
+    type="image/x-icon"
+  />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/icomoon/style.css' %}"
+  />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/reporteVehiculo.css' %}">
+  <title>Reporte {{pulpo}} vehículo {{bitacora}}</title>
+</head>
+<body id="report">
+  <header class="report__head">
+    <div class="flex-row space-between">
+      <h1 class="report__title">Reporte {{pulpo}}: vehículo {{bitacora}}</h1>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" alt="logo aeto reporte">
+      </div>
+    </div>
+
+    <nav class="report__details">
+      <div class="report__card">
+        <div class="report__card-title">Fecha</div>
+        <div class="report__card-body">{{hoy}}</div>
+      </div>
+
+      <div class="report__card">
+        <div class="report__card-title">Numero economico</div>
+        <div class="report__card-body">{{bitacora}}</div>
+      </div>
+
+      <div class="report__card">
+        <div class="report__card-title">Tiempo de inflado</div>
+        <div class="report__card-body">{{bitacora.tiempo_de_inflado}}</div>
+      </div>
+
+      <div class="report__card">
+        <div class="report__card-title">Usuario</div>
+        <div class="report__card-body">{{user}}</div>
+      </div>
+    </nav>
+  </header>
+  <main class="main__container">
+    <section class="content__wrapper">
+      <h2>Entrada</h2>
+      <div class="config__container">
+        {% for eje in ejes %}
+            {% if eje|length == 2 %}           
+              <!--Eje 2 llantas-->
+              <div class="tire__container">
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.0.3}}">{{eje.0.0.posicion}}</div>
+                  <div class="tire__tag up {{eje.0.3}}">
+                    {{eje.0.1}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag down {{eje.0.3}}">
+                    <span class="{{eje.0.4}}"></span>
+                  </div>
+                </div>
+
+                <div class="shaft"></div>
+
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.1.3}}">{{eje.1.0.posicion}}</div>
+                  <div class="tire__tag up {{eje.1.3}}">
+                    {{eje.1.1}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag down {{eje.1.3}}">
+                    <span class="{{eje.1.4}}"></span>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <!--Eje 4 llantas-->
+              <div class="tire__container">
+                <div class="double-tire">
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.0.3}}">{{eje.0.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.0.3}}">
+                      {{eje.0.1}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.0.3}}">
+                      <span class="{{eje.0.4}}"></span>
+                    </div>
+                  </div>
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.1.3}}">{{eje.1.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.1.3}}">
+                      {{eje.1.1}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.1.3}}">
+                      <span class="{{eje.1.4}}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="shaft"></div>
+
+                <div class="double-tire">
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.2.3}}">{{eje.2.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.2.3}}">
+                      {{eje.2.1}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.2.3}}">
+                      <span class="{{eje.2.4}}"></span>
+                    </div>
+                  </div>
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.3.3}}">{{eje.3.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.3.3}}">
+                      {{eje.3.1}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.3.3}}">
+                      <span class="{{eje.3.4}}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+        {% endfor %}
+
+      </div>
+    </section>
+    <section class="content__wrapper center">
+      <span class="icon-arrow-right2"></span>
+    </section>
+    <section class="content__wrapper">
+      <h2>Salida</h2>
+      <div class="config__container">
+        {% for eje in ejes %}
+          {% if eje|length == 2 %}
+            <!--Eje 2 llantas-->
+            <div class="tire__container">
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.0.5}}">{{eje.0.0.posicion}}</div>
+                  <div class="tire__tag up {{eje.0.5}}">
+                    {{eje.0.2}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag down {{eje.0.5}}">
+                    <span class="{{eje.0.6}}"></span>
+                  </div>
+                </div>
+
+                <div class="shaft"></div>
+
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.1.5}}">{{eje.1.0.posicion}}</div>
+                  <div class="tire__tag up {{eje.1.5}}">
+                    {{eje.1.2}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag down {{eje.1.5}}">
+                    <span class="{{eje.1.6}}"></span>
+                  </div>
+                </div>
+            </div>
+          {% else %}
+            <!--Eje 4 llantas-->
+            <div class="tire__container">
+                <div class="double-tire">
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.0.5}}">{{eje.0.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.0.5}}">
+                      {{eje.0.2}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.0.5}}">
+                      <span class="{{eje.0.6}}"></span>
+                    </div>
+                  </div>
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.1.5}}">{{eje.1.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.1.5}}">
+                      {{eje.1.2}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.1.5}}">
+                      <span class="{{eje.1.6}}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="shaft"></div>
+
+                <div class="double-tire">
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.2.5}}">{{eje.2.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.2.5}}">
+                      {{eje.2.2}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.2.5}}">
+                      <span class="{{eje.2.6}}"></span>
+                    </div>
+                  </div>
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.3.5}}">{{eje.3.0.posicion}}</div>
+                    <div class="tire__tag up {{eje.3.5}}">
+                      {{eje.3.2}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag down {{eje.3.5}}">
+                      <span class="{{eje.3.6}}"></span>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script>
+
+  (() => {
+    const $elementoParaConvertir = document.getElementById('report'); // <-- Aquí puedes elegir cualquier elemento del DOM
+    html2pdf()
+      .set({
+        margin: .5,
+        filename: 'reporte_vehiculo_{{bitacora}}.pdf',
+        image: {
+          type: 'jpeg',
+          quality: 0.98,
+        },
+        html2canvas: {
+          scale: 3, // A mayor escala, mejores gráficos, pero más peso
+          letterRendering: true,
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'letter',
+          orientation: 'portrait', // landscape o portrait
+        },
+      })
+      .from($elementoParaConvertir)
+      .save()
+      .catch((err) => console.log(err));
+  })()
+
+  </script>
+</body>
+</html>

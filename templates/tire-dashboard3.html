@@ -1,0 +1,2253 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/tire-dashboard3.css' %}"
+/>
+<script
+  type="text/javascript"
+  src="{% static 'js/jquery-3.6.0.min.js' %}"
+></script>
+<script
+  type="text/javascript"
+  src="{% static 'js/jquery.sparkline.js' %}"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bullet.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-heatmap.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-circular-gauge.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<meta charset="utf-8" />
+<title>TIRE EYE</title>
+{% endblock head %} {% block content %}
+
+<div class="all-cont animate__animated animate__fadeIn">
+  <header class="head-menu">
+    <div class="menu-li__left">
+      <img src="{% static 'images/aeto.svg' %}" alt="" />
+    </div>
+      
+      <form class="form-head" method="GET">
+        <nav class="btn-group">
+          <a class="btn btn-wh" href="{% url 'dashboards:download1' %}">
+            <span class="icon-file-text-o"></span>
+          </a>
+        
+        <a href="{% url 'dashboards:tireDB3' %}" class="btn btn-trash" id="reset">
+          <span class="icon-trash2"></span>
+          <span class="icont-trash2 blur"></span>
+        </a>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="flota">
+            Sucursal
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-flota">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-flota" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-flota" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="flota2" value="all" id="all-flota" {% if flota2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for flota in flotas %}
+            <li class="search-item">
+              <label for="{{flota}}" class="input-check">
+                {{flota}}
+                <input type="checkbox" name="flota" value="{{flota}}" id="{{flota}}" {% for f in flota1 %}{% if f|slugify == flota|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="eje">
+            Eje
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-eje">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-eje" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-eje" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="eje2" value="all" id="all-eje" {% if eje2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for eje in ejes %}
+            <li class="search-item">
+              <label for="{{eje.nombre_de_eje}}" class="input-check">
+                {{eje.nombre_de_eje}}
+                <input 
+                type="checkbox" 
+                name="eje" 
+                value="{{eje.nombre_de_eje}}" 
+                id="{{eje.nombre_de_eje}}" 
+                {% for e in eje1 %}{% if e|slugify == eje.nombre_de_eje|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="vehiculo">
+            ID vehiculo
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-vehiculo">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-vehiculo" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-vehiculo" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="vehiculo2" value="all" id="all-app" {% if vehiculo2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for vehiculo in vehiculos %}
+            <li class="search-item">
+              <label for="{{vehiculo}}" class="input-check">
+                {{vehiculo}}
+                <input type="checkbox" name="vehiculo" value="{{vehiculo}}" id="{{vehiculo}}" {% for v in vehiculo1 %}{% if v|slugify == vehiculo|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="app">
+            Aplicación
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-app">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-app" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="aplicacion2" value="all" id="all-app" {% if aplicacion2|slugify == "all" %}checked{% endif %} />
+                <input type="checkbox" id="all-app" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for aplicacion in aplicaciones %}
+            <li class="search-item">
+              <label for="{{aplicacion}}" class="input-check">
+                {{aplicacion}}
+                <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" {% for a in aplicacion1 %}{% if a|slugify == aplicacion|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="pos">
+            Posición
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-pos">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-pos" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-pos" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="posicion2" value="all" id="all-pos" {% if posicion2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for posicion in posiciones %}
+            <li class="search-item">
+              <label for="{{posicion.posicion}}" class="input-check">
+                {{posicion.posicion}}
+                <input type="checkbox" name="posicion" value="{{posicion.posicion}}" id="{{posicion.posicion}}" {% for p in posicion1 %}{% if p|slugify == posicion.posicion|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+              {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="clase">
+            Clase
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-clase">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-clase" class="drop-input" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-clase" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="clase2" value="all" id="all-pos" {% if clase2|slugify == "all" %}checked{% endif %} />
+                <input type="checkbox" id="all-clase" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for clase in clases %}
+            <li class="search-item">
+              <label for="{{clase.clase}}" class="input-check">
+                {{clase.clase|lower|capfirst}}
+                <input type="checkbox" name="clase" value="{{clase.clase}}" id="{{clase.clase}}" {% for c in clase1 %}{% if c|slugify == clase.clase|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn max" id="producto">
+            Producto
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-producto">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-producto" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-producto" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="producto2" value="all" id="all-producto" {% if producto2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for producto in productos %}
+            <li class="search-item">
+              <label for="{{producto}}" class="input-check">
+                {{producto}}
+                <input type="checkbox" name="producto" value="{{producto}}" id="{{producto}}" {% for p in producto1 %}{% if p|slugify == producto|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        </nav>
+      </form>
+    </header>
+
+  <nav class="nav-dashboard">
+    <div class="horizontal">
+      <div class="score-card">
+        <div class="bullet-cont">
+          <div id="score-gauge1" class="score-gauge1"></div>
+        </div>
+        <div class="title-icon">
+          <div class="icons-score">
+            <h2 class="bullet-cont">
+              Llantas analizadas
+            </h2>
+            <h3 class="h1-score">{{llantas_limpias}}</h3>
+              <div class="popout-text">
+                <p>Llantas analizados</p>
+              </div>
+            </span>
+          </div>
+        </div>
+        <aside class="about-btn">
+          <span class="icon-question-circle-o"></span>
+          <div class="popout-text">
+            <p class="italic">
+              Cantidad y porcentaje de llantas analizadas despues del método de limpieza. 
+            </p>
+            <p>
+              <strong>Objetivo</strong>: ver el % lo mas alto posible. 
+            </p>
+          </div>
+        </aside>
+      </div>
+      <div class="card">
+        <div class="bullet-cont">
+          <span class="icon-road1"></span>
+          <h1>KM proyectado</h1>
+          <div id="score-gauge2"></div>
+        </div>
+        <div class="title-icon">
+          <div class="icons-score">
+            <h2 class="h1-score">{{km_proyectado}}</h2>
+          </div>
+        </div>
+
+        <aside class="about-btn">
+          <span class="icon-question-circle-o"></span>
+          <div class="popout-text">
+            <p class="italic">
+              Kilometraje proyectado de la llanta promedio 
+            </p>
+          </div>
+        </aside>
+      </div>
+      <div class="card">
+        <div class="bullet-cont">
+          <span class="icon-ruler3"></span>
+          <div id="score-gauge3"></div>
+          <h1>KM por mm</h1>
+        </div>
+        <div class="title-icon">
+          <div class="icons-score">
+            <h2 class="h1-score">{{km_x_mm}}</h2>
+          </div>
+        </div>
+        <aside class="about-btn">
+          <span class="icon-question-circle-o"></span>
+          <div class="popout-text">
+            <p class="italic">
+              Kilometros por milimetro que da la llanta promedio
+            </p>
+          </div>
+        </aside>
+      </div>
+      <div class="card">
+        <div class="bullet-cont">
+          <div id="score-gauge4"></div>
+          <span class="icon-dollar-sign"></span>
+          <h1>Costos por KM</h1>
+        </div>
+        <div class="title-icon">
+          <div class="icons-score">
+            <h2 class="h1-score" id="currency">{{cpk}}</h2>
+          </div>
+        </div>
+
+        <aside class="about-btn">
+          <span class="icon-question-circle-o"></span>
+          <div class="popout-text">
+            <p class="italic">
+              Costo por kilometro con base del Km Proyectado de la llanta promedio
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cont-horizontal">
+    <div class="cont-left">
+      
+      <nav class="option-nav">
+        <button class="btn btn-aeto-crunch active" id="view1">
+          Comparativa de productos
+        </button>
+        <button class="btn btn-aeto-crunch" id="view2">
+          CPK por vehículo
+        </button>
+        <button class="btn btn-aeto-crunch" id="view3">
+          Comparativa contra
+        </button>
+        <button class="btn btn-aeto-crunch" id="view4">
+          Tendencia de CPK
+        </button>
+      </nav>
+
+      <article class="view">
+        <div class="bubble-chart on-view" id="p1">
+          <div class="buttons">
+            <nav class="nav cp-nav">
+              <h2>
+                Comparativa de productos
+              </h2>
+              <button class="btn btn-aeto-crunch alt active cantidad">Cantidad</button>
+              <button class="btn btn-aeto-crunch alt desgaste">% Desgaste</button>
+              <button class="btn btn-aeto-crunch alt analisis">% Análisis</button>
+            </nav>
+  
+            <nav class="flex-nav">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">
+                    Compara CPK, Rendimiento en Kilometraje con el tamaño de burbuja variable dependiendo del parametro escogido.
+                  </p>
+                  <p>
+                    <strong>OBJETIVO</strong>: Que la burbuja sea lo mas grande y posicionada sobre la esquina superior izquierda posible.
+                  </p>
+                </div>
+              </button>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarB1"
+                onclick="closeFullscreenP1();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarB1"
+                onclick="openFullscreenP1();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </nav>
+          </div>
+          <div class="container-fluid">
+            <div id="cantidad" class="cp-graph active"></div>
+            {% include 'comparativa-productos/Desgaste.html' %} 
+            {% include 'comparativa-productos/Analisis.html' %}
+          </div>
+        </div>
+        <div class="column-chart" id="p2">
+          <div class="buttons">
+            <h2>CPK por vehículo</h2>
+           <nav>
+            <button class="icono-pantallaC">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">Costo por kilometro con base del Km Proyectado de la llanta promedio</p>
+              </div>
+              </button>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="ocultarC1"
+              onclick="closeFullscreenP2();"
+            >
+              <span class="icon-fullscreen_exit"></span>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="mostrarC1"
+              onclick="openFullscreenP2();"
+            >
+              <span class="icon-fullscreen"></span>
+            </button>
+           </nav>
+          </div>
+          <div class="container-fluid">
+            <div id="column-chart"></div>
+          </div>
+        </div>
+        <div class="bar-chart" id="p3">
+          <div class="buttons">
+            <nav class="nav nav-cc">
+              <h2>Comparativa contra</h2>
+              <button class="btn btn-aeto-crunch alt active cc-bar">Sucursal</button>
+              <button class="btn btn-aeto-crunch alt cc-app">Aplicación</button>
+              <button class="btn btn-aeto-crunch alt cc-eje">Eje</button>
+              <button class="btn btn-aeto-crunch alt cc-pos">Posición</button>
+            </nav>
+  
+            <nav class="flex-nav">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">
+                    Barra con rendimiento de kilometraje y costo por kilometro acomodado de menor a mayo costo por kilometro. 
+                  </p>
+                  <p>
+                    <strong>Objetivo</strong>: La barra de kilometraje lo mas larga posible y la de costo por kilometro lo mas corta posible.
+                  </p>
+                </div>
+              </button>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarB2"
+                onclick="closeFullscreenP3();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarB2"
+                onclick="openFullscreenP3();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </nav>
+          </div>
+          <div class="container-fluid">
+            <div id="cc-bar" class="cc-graph active"></div>
+            {% include 'comparativa-contra/aplicacion.html' %} 
+            {% include 'comparativa-contra/eje.html' %} 
+            {% include 'comparativa-contra/posicion.html' %}
+          </div>
+        </div>
+        <div class="areaLine-chart" id="p4">
+          <div class="buttons">
+            <nav class="nav nav-cpk">
+              <h2>
+                Tendencia de CPK
+              </h2>
+              <button class="btn btn-aeto-crunch alt active area-line-chart">Cantidad</button>
+              <button class="btn btn-aeto-crunch alt tc-vida">Vida</button>
+              <button class="btn btn-aeto-crunch alt tc-calificacion">Calificacion</button>
+            </nav>
+            <nav class="flex-nav">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">
+                    Grafica que compara el costo por kilometro a traves de los mes contra diferentes parametros seleccionables mostrando que tan buen resultado tuvo la flota cada mes. 
+                  </p>
+                  <p>
+                    <strong>Objetivo</strong>: La linea azul lo mas baja posible. El area morada lo mas alta posible. 
+                  </p>
+                </div>
+              </button>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarA1"
+                onclick="closeFullscreenP4();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarA1"
+                onclick="openFullscreenP4();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </nav>
+          </div>
+          <div class="container-fluid">
+            <div id="area-line-chart" class="tc-graph active"></div>
+            {% include 'tendencia-cpk/Calificacion.html' %} 
+            {% include 'tendencia-cpk/Vida.html' %}
+          </div>
+        </div> 
+      </article>
+
+    </div>
+
+    <div class="cont-right" id="dd-cont">
+      <div class="box-chart active">
+        <div class="buttons">
+          <nav class="dd-km-nav">
+            <button class="btn btn-aeto-crunch active box-chart">Sucursal</button>
+            <button class="btn btn-aeto-crunch dd-km-app">Aplicación</button>
+            <button class="btn btn-aeto-crunch dd-km-pro">Producto</button>
+          </nav>
+
+          <nav class="flex-nav">
+            <button class="icono-pantallaC">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Grafica distribuyendo los datos por el parametro seleccionado donde la linea de la izquierda es el dato minimo sobre las llantas analizadas, la caja es el 50% de los datos y la linea de la derecha es el dato mayor. Los puntos son datos fuera de parametro.
+                </p>
+                <p>
+                  <strong>OBJETIVO</strong>: la caja y lineas lo mas juntas posible y que su linea mediana este lo mas a la derecha posible para kilometraje y lo mas izquierda para cpk
+                </p>
+              </div>
+              </button>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="dd-fullscreen"
+            >
+              <span class="icon-fullscreen"></span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="container-fluid">
+          <div class="box-chart dd-km-graph active" id="box-chart"></div>
+          {% include 'distribucion-datos/km/app.html' %} 
+          {% include 'distribucion-datos/km/producto.html' %}
+        </div>
+      </div>
+
+      <div class="cont-cards">
+        <div class="buttons">
+          <nav class="dd-cpk-nav">
+            <button class="btn btn-aeto-crunch active dd-cpk-flota">Sucursal</button>
+            <button class="btn btn-aeto-crunch dd-cpk-app">Aplicación</button>
+            <button class="btn btn-aeto-crunch dd-cpk-pro">Producto</button>
+          </nav>
+
+          <nav class="flex-nav">
+            <button class="icono-pantallaC">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Grafica distribuyendo los datos por el parametro seleccionado donde la linea de la izquierda es el dato minimo sobre las llantas analizadas, la caja es el 50% de los datos y la linea de la derecha es el dato mayor. Los puntos son datos fuera de parametro.
+                </p>
+                <p>
+                  <strong>OBJETIVO</strong>: la caja y lineas lo mas juntas posible y que su linea mediana este lo mas a la derecha posible para kilometraje y lo mas izquierda para cpk
+                </p>
+              </div>
+              </button>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="cpk-fullscreen"
+              onclick="openFullscreenP5();"
+            >
+              <span class="icon-fullscreen"></span>
+            </button>
+          </nav>
+        </div>
+
+        {% include 'distribucion-datos/cpk/flota.html' %} 
+        {% include 'distribucion-datos/cpk/app.html' %} 
+        {% include 'distribucion-datos/cpk/producto.html' %}
+      </div>
+
+      {% comment %}
+      <div class="cont-cards">
+        <div class="card_indicator">
+          <h2 class="title-card">Sospechos</h2>
+          <h2 class="indicador">4,000</h2>
+        </div>
+        <div class="card_indicator">
+          <h2 class="title-card">Sin Km pro</h2>
+          <h2 class="indicador">4,000</h2>
+        </div>
+        <div class="card_indicator">
+          <h2 class="title-card">Sin Precios</h2>
+          <h2 class="indicador">4,000</h2>
+        </div>
+        <div class="card_indicator">
+          <h2 class="title-card">Sin mm</h2>
+          <h2 class="indicador">4,000</h2>
+        </div>
+      </div>
+      {% endcomment %}
+
+      <nav class="btn-group1" id="nav-dash">
+        <button class="btn btn-aeto-crunch active" id="km">
+         KM
+        </button>
+        <button class="btn btn-aeto-crunch" id="cpk">
+          CPK
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+<script src="{% static './js/filter.js' %}"></script>
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', () => {
+      changeView('.box-chart', '.cont-cards');
+      changeGraph('.cc-graph', 'cc-bar', 'cc-app', 'cc-eje', 'cc-pos');
+      changeGraph('.dd-km-graph', 'box-chart', 'dd-km-app', 'dd-km-pro');
+      changeGraph('.dd-cpk-graph', 'dd-cpk-flota', 'dd-cpk-app', 'dd-cpk-pro');
+      changeGraph('.tc-graph', 'area-line-chart', 'tc-vida', 'tc-calificacion');
+      changeGraph('.cp-graph', 'cantidad', 'analisis', 'desgaste');
+      dropdown('flota', 'menu-flota');
+      dropdown('eje', 'menu-eje');
+      dropdown('vehiculo', 'menu-vehiculo');
+      dropdown('app', 'menu-app');
+      dropdown('pos', 'menu-pos');
+      dropdown('clase', 'menu-clase');
+      dropdown('producto', 'menu-producto');
+      dropdownGauges('.products-btn', '.products-content');
+      dropdownGauges('.contra-btn', '.contra-content');
+      dropdownGauges('.data-btn', '.data-content');
+      dropdownGauges('.buttons-btn', '.buttons-content');
+      dropdownGauges('.area-btn', '.area-content');
+      dropdownGauges('.cpk-btn', '.cpk-content');
+      handleView('view1', 'p1');
+      handleView('view2', 'p2');
+      handleView('view3', 'p3');
+      handleView('view4', 'p4');
+      handleButtons('.option-nav');
+      handleButtons('.dd-km-nav');
+      handleButtons('.dd-cpk-nav');
+      handleButtons('.cp-nav');
+      handleButtons('#nav-dash');
+      handleButtons('.nav-cc');
+      handleButtons('.nav-cpk');
+      handleCheckbox();
+      handleSelectAll({ container: 'menu-flota', selectAll: 'all-flota' });
+      handleSelectAll({ container: 'menu-clase', selectAll: 'all-clase' });
+      handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+      handleSelectAll({ container: 'menu-eje', selectAll: 'all-eje' });
+      handleSelectAll({ container: 'menu-pos', selectAll: 'all-pos' });
+      handleSelectAll({ container: 'menu-producto', selectAll: 'all-producto' });
+      handleSelectAll({ container: 'menu-vehiculo', selectAll: 'all-vehiculo' });
+      handleFullscreen('dd-fullscreen', 'dd-cont');
+      handleFullscreen('cpk-fullscreen', 'dd-cont');
+    });
+
+    const handleFullscreen = (button = '', element = '') => {
+      const btn = document.getElementById(button);
+      const el = document.getElementById(element);
+
+      btn.addEventListener('click', (e) => {
+        if (!document.fullscreenElement) {
+          el.requestFullscreen();
+          btn.innerHTML = `
+            <span class="icon-fullscreen_exit"></span>
+          `;
+          console.clear();
+        } else {
+          document.exitFullscreen();
+          btn.innerHTML = `
+            <span class="icon-fullscreen"></span>
+          `;
+        }
+      })
+    }
+
+    const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+      const selector = document.querySelector(`#${container} #${selectAll}`);
+      const checkboxs = document.querySelectorAll(
+        `#${container} input[type="checkbox"]`
+      );
+
+      selector.addEventListener('change', (e) => {
+        selector.checked
+          ? checkboxs.forEach((check) => (check.checked = true))
+          : checkboxs.forEach((check) => (check.checked = false));
+      });
+
+      checkboxs.forEach((item) => {
+        item.addEventListener('change', (e) => {
+          let notAll = false;
+
+          checkboxs.forEach((item) => {
+            if (!item.checked) notAll = true;
+            if (notAll) selector.checked = false;
+          });
+        });
+      });
+    };
+
+    const handleCheckbox = () => {
+      const inputs = document.querySelectorAll('.input-check');
+      const form = document.querySelector('.form-head');
+
+      inputs.forEach(input => {
+        input.addEventListener('change', (e) => form.submit());
+      })
+    };
+
+    const dropdown = (button = '', menu = '') => {
+      const dropBtn = document.getElementById(button);
+      const dropMenu = document.getElementById(menu);
+
+      dropBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropMenu.classList.toggle('active');
+        if (dropMenu.classList.contains('active')) {
+          dropBtn.querySelector('.indicator').classList.add('active');
+        } else {
+          dropBtn.querySelector('.indicator').classList.remove('active');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+          if (!e.target.matches('.dropdown *')) {
+            dropMenu.classList.remove('active');
+            dropBtn.querySelector('.indicator').classList.remove('active');
+          }
+        });
+    };
+
+    const changeGraph = (graphs = '', flota = '', app = '', eje = '', pos = '') => {
+        document.addEventListener('click', (e) => {
+          if (app) {
+            if (e.target.matches(`.${app}`)) {
+              document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+              document.getElementById(app).classList.add('active');
+            }
+          }
+
+          if (flota) {
+            if (e.target.matches(`.${flota}`)) {
+              document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+              document.getElementById(flota).classList.add('active');
+            }
+          }
+
+          if (eje) {
+            if (e.target.matches(`.${eje}`)) {
+              document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+              document.getElementById(eje).classList.add('active');
+            }
+          }
+
+          if (pos) {
+            if (e.target.matches(`.${pos}`)) {
+              document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+              document.getElementById(pos).classList.add('active');
+            }
+          }
+        });
+
+    };
+
+    const changeView = (view = '', viewChange = '') => {
+        const screenOne = document.querySelector(view);
+        const screenTwo = document.querySelector(viewChange);
+        const kmBtn = document.getElementById('km');
+        const cpkBtn = document.getElementById('cpk');
+
+        kmBtn.addEventListener('click', (e) => {
+          screenOne.classList.add('active');
+          screenTwo.classList.remove('active');
+          if (kmBtn.classList.contains('active')) {
+              return;
+          } else {
+              kmBtn.classList.add('active');
+              cpkBtn.classList.remove('active');
+          }
+        })
+
+        cpkBtn.addEventListener('click', (e) => {
+          screenOne.classList.remove('active');
+          screenTwo.classList.add('active');
+          if (cpkBtn.classList.contains('active')) {
+              return;
+          } else {
+              kmBtn.classList.remove('active');
+              cpkBtn.classList.add('active');
+          }
+
+        });
+
+    };
+
+    /* Convertido moneda */
+
+    const currencyTransform = (id = '') => {
+        const formatter = new Intl.NumberFormat('en-Us', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 3
+        })
+
+        const text = document.getElementById(id)
+
+        text.textContent = formatter.format(text.textContent)
+    };
+
+    currencyTransform('currency');
+
+    /* Convertir numeros con coma decimal */
+
+    const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('.h1-score');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+
+    decimalConverter();
+
+    /* DropDown */
+
+    const dropdownGauges = (button = "", container = "") => {
+          /*  */
+          const btn = document.querySelector(button);
+          const dropdown = document.querySelector(container);
+          /* Dropdown event handler */
+          document.addEventListener("click", (e) => {
+            if ( e.target === btn ) {
+
+              dropdown.classList.toggle('active'); // Activa y desactiva la clase active cada vez que se hace click en el botón del dropdown
+
+                        btn.classList.toggle('active');
+
+            }
+
+          });
+
+        };
+
+    /* End Dropdown */
+
+    const handleView = (button = '', view = '') => {
+      const btn = document.getElementById(button);
+      const image = document.getElementById(view);
+
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
+
+        image.classList.add('on-view');
+      });
+
+    };
+
+    const handleButtons = (container = '') => {
+      const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
+
+      buttons.forEach( button => {
+        button.addEventListener('click', ({ target }) => {
+          buttons.forEach(item => item.classList.remove('active'));
+
+          target.classList.add('active');
+        });
+      } );
+    };
+
+        //licencia de anyChart
+        anychart.licenseKey("aeto.com.mx-16056097-34281685");
+
+        //funciones mostrar y ocultar clases
+        var elem1 = document.getElementById('p1');
+        function openFullscreenP1() {
+            if (elem1.requestFullscreen) {
+                elem1.requestFullscreen();
+                document.getElementById('mostrarB1').style.display = "none";
+                document.getElementById('ocultarB1').style.display = "block";
+            } else if (elem1.webkitRequestFullscreen) { /* Safari */
+                elem1.webkitRequestFullscreen();
+            } else if (elem1.msRequestFullscreen) { /* IE11 */
+                elem1.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP1() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarB1').style.display = "block";
+                document.getElementById('ocultarB1').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        //funciones mostrar y ocultar clases
+        var elem2 = document.getElementById('p2');
+        function openFullscreenP2() {
+            if (elem2.requestFullscreen) {
+                elem2.requestFullscreen();
+                document.getElementById('mostrarC1').style.display = "none";
+                document.getElementById('ocultarC1').style.display = "block";
+            } else if (elem2.webkitRequestFullscreen) { /* Safari */
+                elem2.webkitRequestFullscreen();
+            } else if (elem2.msRequestFullscreen) { /* IE11 */
+                elem2.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP2() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarC1').style.display = "block";
+                document.getElementById('ocultarC1').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        //funciones mostrar y ocultar clases
+        var elem3 = document.getElementById('p3');
+        function openFullscreenP3() {
+            if (elem3.requestFullscreen) {
+                elem3.requestFullscreen();
+                document.getElementById('mostrarB2').style.display = "none";
+                document.getElementById('ocultarB2').style.display = "block";
+            } else if (elem3.webkitRequestFullscreen) { /* Safari */
+                elem3.webkitRequestFullscreen();
+            } else if (elem3.msRequestFullscreen) { /* IE11 */
+                elem3.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP3() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarB2').style.display = "block";
+                document.getElementById('ocultarB2').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        //funciones mostrar y ocultar clases
+        var elem4 = document.getElementById('p4');
+        function openFullscreenP4() {
+            if (elem4.requestFullscreen) {
+                elem4.requestFullscreen();
+                document.getElementById('mostrarA1').style.display = "none";
+                document.getElementById('ocultarA1').style.display = "block";
+            } else if (elem4.webkitRequestFullscreen) { /* Safari */
+                elem4.webkitRequestFullscreen();
+            } else if (elem4.msRequestFullscreen) { /* IE11 */
+                elem4.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP4() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarA1').style.display = "block";
+                document.getElementById('ocultarA1').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        //funciones mostrar y ocultar clases
+        var elem5 = document.getElementById('p5');
+        function openFullscreenP5() {
+            if (elem5.requestFullscreen) {
+                elem5.requestFullscreen();
+                document.getElementById('mostrarB3').style.display = "none";
+                document.getElementById('ocultarB3').style.display = "block";
+            } else if (elem5.webkitRequestFullscreen) { /* Safari */
+                elem5.webkitRequestFullscreen();
+            } else if (elem5.msRequestFullscreen) { /* IE11 */
+                elem5.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP5() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarB3').style.display = "block";
+                document.getElementById('ocultarB3').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        //funciones mostrar y ocultar clases
+        var elem6 = document.getElementById('p6');
+        function openFullscreenP6() {
+            if (elem6.requestFullscreen) {
+                elem6.requestFullscreen();
+                document.getElementById('mostrarD3').style.display = "none";
+                document.getElementById('ocultarD3').style.display = "block";
+            } else if (elem6.webkitRequestFullscreen) { /* Safari */
+                elem6.webkitRequestFullscreen();
+            } else if (elem6.msRequestFullscreen) { /* IE11 */
+                elem6.msRequestFullscreen();
+            }
+        }
+        function closeFullscreenP6() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('mostrarD3').style.display = "block";
+                document.getElementById('ocultarD3').style.display = "none";
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+  // Graph bubble-chart
+  anychart.onDocumentReady(function () {
+    // The data used in this sample can be obtained from the CDN
+    // https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json
+    anychart.data.loadJsonFile('https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json', function (data) {
+        data = [
+        {% for pro, valores in comparativa_de_productos.items %}
+              [{{forloop.counter}}, {{valores.2}}, {{valores.0}}, "", {{valores.3}}],
+        {% endfor %}
+            ];
+        console.log("data: ", data)
+        var best_sportsmen_training_data = anychart.data.set(data);
+
+        var map_training_data = best_sportsmen_training_data.mapAs({
+            'x': 1, //CPK
+            'value': 2, //Km
+            'size': 4, //Cantidad
+            'training': 0, //sportsmens
+            'data': 3
+        });
+
+        {% for pro, valores in comparativa_de_productos.items %}
+          var sportsmen{{forloop.counter}} = map_training_data.filter('training', training_filter_constructor({{forloop.counter}}));
+        {% endfor %}
+
+        // create scatter chart
+        var chart = anychart.scatter();
+      
+        // adjusting labels
+        var yTicks = chart.yScale().ticks();
+        yTicks.interval(100000);
+        var yLabels = chart.yAxis().labels();
+        yLabels.format("{%value}{scale: (1000)(1000)(1000)|(K)(M)(B)}");
+
+        // set function to format y axis labels
+        var xLabels = chart.xAxis(0).labels();
+        xLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+        // turn on chart animation
+        chart.animation(true);
+
+        // set chart title text settings
+        chart.title()
+                .enabled(true)
+                .useHtml(true)
+                .padding([0, 0, 10, 0])
+                .text(''
+                );
+     
+        // grid settings
+        chart.yGrid(false)
+                .xGrid(false)
+                .xMinorGrid(false)
+                .yMinorGrid(false);
+
+        // bubble size settings
+        chart.minBubbleSize(30)
+             .maxBubbleSize(45);
+
+        // set chart axes settings
+        chart.xAxis()
+                .title('')
+                .minorTicks(false);
+        chart.yAxis()
+                .title('')
+                .minorTicks(false);
+
+        //set chart legend settings
+        chart.legend()
+                .enabled(true)
+                .padding({bottom: 10});
+      
+        // create first series with mapped data
+        {% for pro, valores in comparativa_de_productos.items %}
+        
+        var {{valores.6|lower}} = chart.bubble(sportsmen{{forloop.counter}}).name('{{valores.6}}');
+        // configure the visual settings of the first series
+        {{valores.6|lower}}.selected().fill("#5089b7", 0.5);
+        {{valores.6|lower}}.normal().stroke("2 white");
+        {{valores.6|lower}}.hovered().stroke("3 #5089b7");
+        {{valores.6|lower}}.selected().stroke("4 #5089b7");
+        // labels
+        {{valores.6|lower}}.labels(true);
+        {{valores.6|lower}}.labels().format("{{valores.6}}");
+        // set the color for the text of the labels
+        {{valores.6|lower}}.labels().fontColor('white');
+        {{valores.6|lower}}.hovered().labels().fontColor("white");
+        {{valores.6|lower}}.selected().labels().fontColor("white");
+        {{valores.6|lower}}.labels().fontSize(10);
+        {% endfor %}
+
+        chart.tooltip()
+                .useHtml(true)
+                .fontColor('#fff')
+                .positionMode("point")
+                .format("KM: {%value}{groupsSeparator:\\,, decimalsCount:3}<br>CPK: ${%x}{groupsSeparator:\\,, decimalsCount:3}<br>Cantidad: {%size}{groupsSeparator:\\,, decimalsCount:3}");
+
+        // create scale for line series and extraYAxis
+        // it force line series to not stuck values with over series
+        var scale = anychart.scales.linear();
+
+        // adding red line to emphasize zero of extra axis
+        var lineMarker = chart.lineMarker();
+        lineMarker.layout("vertical");
+        lineMarker.scale(scale);
+        lineMarker.value(0.6000);
+        lineMarker.stroke({
+          // set stroke thickness
+          thickness: 3,
+          // set stroke color
+          color: "#026cf5",
+          // set dashes and gaps
+          dash: "3"
+        });
+
+        // set container id for the chart
+        chart.container('cantidad');
+      
+        //Set Background
+        var background = chart.background();
+        background.stroke('0 #000');
+        background.corners();
+        background.enabled(false);
+
+        // initiates chart drawing
+        chart.draw();
+      
+        // chart credits false
+        var credits = chart.credits();
+        credits.enabled(false);
+    });
+});
+/**
+ * Helper function to bind data field to the local var.
+ * @param val
+ * @return {Function}
+ */
+function training_filter_constructor(val) {
+    return function (fieldVal) {
+        return fieldVal == val;
+    }
+}
+  
+    // // heatMap
+    // anychart.onDocumentReady(function () {
+
+    //   // create data
+    //   var data = [
+    //     {x: "100", y: "A", heat: 15,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "200", y: "A", heat: 17,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "300", y: "A", heat: 21,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "400", y: "A", heat: 23,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "500", y: "A", heat: 28,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "100", y: "B", heat: 34,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "200", y: "B", heat: 33,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "300", y: "B", heat: 32,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "400", y: "B", heat: 30,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "500", y: "B", heat: 25,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "100", y: "C", heat: 43,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "200", y: "C", heat: 42,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "300", y: "C", heat: 40,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "400", y: "C", heat: 38,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "500", y: "C", heat: 35,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "100", y: "D", heat: 8,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "200", y: "D", heat: 12,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "300", y: "D", heat: 18,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "400", y: "D", heat: 22,
+    //     normal:   {fill: "#166991", stroke: "#166991"},
+    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
+    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+    //     },
+    //     {x: "500", y: "D", heat: 29,
+    //     normal:   {fill: "#166991", stroke: "#166991"},
+    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
+    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+    //     },
+    //     {x: "100", y: "F", heat: 11,
+    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
+    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
+    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+    //     },
+    //     {x: "200", y: "F", heat: 13,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "300", y: "F", heat: 14,
+    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
+    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+    //     },
+    //     {x: "400", y: "F", heat: 15,
+    //     normal:   {fill: "#166991", stroke: "#166991"},
+    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
+    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+    //     },
+    //     {x: "500", y: "F", heat: 19,
+    //     normal:   {fill: "#A349A4", stroke: "#A349A4"},
+    //     hovered:  {fill: "#A349A4 0.3", stroke: "2 #A349A4"},
+    //     selected: {fill: "#A349A4 0.5",stroke: "4 #A349A4"}
+    //     }
+    //   ];
+
+    //   // create a chart and set the data
+    //   var chart = anychart.heatMap(data);
+
+    //   // configure chart grids
+    //   chart.xGrid(true);
+    //   chart.xGrid().stroke('black', 5);
+    //   chart.yGrid(true);
+    //   chart.yGrid().stroke('black', 5);
+
+
+    //   // set the chart title
+    //   chart.title("Costo por kilómetro de vehículo");
+    //   var title = chart.title();
+    //   title.fontColor('#fff');
+    //   title.fontSize(18);
+    //   title.fontWeight(600);
+
+    //   // set the container id
+    //   chart.container("column-chart");
+
+    //   //Set Background
+    //     var background = chart.background();
+    //     background.stroke('0 #000');
+    //     background.corners();
+    //     background.enabled(false);
+
+    //   //turn on chart animation
+    //   chart.animation(true);
+
+    //   // initiate drawing the chart
+    //   chart.draw();
+    //   // chart credits false
+    //   var credits = chart.credits();
+    //   credits.enabled(false);
+    // });
+
+    // Histogram
+    anychart.onDocumentReady(function () {
+        // create data set on our
+        var dataSet = anychart.data.set([
+            ['{{cpk_vehiculos.0}}-{{cpk_vehiculos.1}}', {{cpk_vehiculos_cantidad.0}}],
+            ['{{cpk_vehiculos.1}}-{{cpk_vehiculos.2}}', {{cpk_vehiculos_cantidad.1}}],
+            ['{{cpk_vehiculos.2}}-{{cpk_vehiculos.3}}', {{cpk_vehiculos_cantidad.2}}],
+            ['{{cpk_vehiculos.3}}-{{cpk_vehiculos.4}}', {{cpk_vehiculos_cantidad.3}}],
+            ['{{cpk_vehiculos.4}}-{{cpk_vehiculos.5}}', {{cpk_vehiculos_cantidad.4}}],
+            ['{{cpk_vehiculos.5}}-{{cpk_vehiculos.6}}', {{cpk_vehiculos_cantidad.5}}],
+            ['{{cpk_vehiculos.6}}-{{cpk_vehiculos.7}}', {{cpk_vehiculos_cantidad.6}}],
+            ['{{cpk_vehiculos.7}}-{{cpk_vehiculos.8}}', {{cpk_vehiculos_cantidad.7}}]
+        ]);
+
+        // map data for the first series, take x from the zero column and value from the first column of data set SPLINE
+        // var seriesData1 = dataSet.mapAs({'x': 0, 'value': 1});
+
+        // map data for the second series, take x from the zero column and value from the second column of data set COLUMN
+        var seriesData2 = dataSet.mapAs({'x': 0, 'value': 1});
+
+        // create column chart
+        var chart = anychart.column();
+
+        // turn on chart animation
+        chart.animation(true);
+
+        // set the padding between column groups
+        chart.barGroupsPadding(0);
+
+        // set the titles of the axes
+        chart.yScale().ticks().interval({{cpk_vehiculos_cantidad_maxima}});
+
+        // set the chart title
+        // chart.title("Costo por kilómetro de vehículo");
+        var title = chart.title();
+        title.fontColor('#fff');
+        title.fontSize(18);
+        title.fontWeight(600);
+
+        // create scale for line series and extraYAxis
+        // it force line series to not stuck values with over series
+        var scale = anychart.scales.linear();
+
+        // create line series and set scale for it
+        // var lineSeries = chart.spline(seriesData1);
+        // lineSeries.name('spline')
+
+        // configure the visual settings of the first series
+        // lineSeries.normal().stroke("#A349A4", 4);
+        // lineSeries.hovered().stroke("#A349A4", 2);
+        // lineSeries.selected().stroke("#A349A4", 6);
+
+        // create second series with mapped data
+        var columnSeries = chart.column(seriesData2);
+        columnSeries.name('Cantidad');
+
+        // configure the visual settings of the second series
+        columnSeries.normal().fill("#166991");
+        columnSeries.hovered().fill("#166991", 0.1);
+        columnSeries.selected().fill("#166991", 0.5);
+        columnSeries.normal().stroke("#166991");
+        columnSeries.hovered().stroke("#166991", 2);
+        columnSeries.selected().stroke("#166991", 4);
+
+        // adding red line to emphasize zero of extra axis
+        var lineMarker = chart.lineMarker();
+        lineMarker.layout("vertical");
+        lineMarker.scale(scale);
+        lineMarker.value(0.6000);
+        lineMarker.stroke({
+        // set stroke thickness
+        thickness: 3,
+        // set stroke color
+        color: "#026cf5",
+        // set dashes and gaps
+        dash: "3"
+      });
+
+        // set container id for the chart
+        chart.container("column-chart");
+
+          //Set Background
+        var background = chart.background();
+        background.stroke('0 #000');
+        background.corners();
+        background.enabled(false);
+
+        //turn on chart animation
+        chart.animation(true);
+
+        // initiate chart drawing
+        chart.draw();
+
+        // chart credits false
+        var credits = chart.credits();
+        credits.enabled(false);
+    });
+
+    // Graph bar chart
+    anychart.onDocumentReady(function () {
+
+        var chart = anychart.cartesian();
+        // create a data set
+        var data = anychart.data.set([
+
+            {% for flota, valores in comparativa_de_flotas.items %}
+          ['{{flota}}', {{valores.0}}, {{valores.2}}],
+          {% endfor %}
+          ]);
+
+     // adjusting labels
+    var yTicks = chart.yScale().ticks();
+    var yLabels = chart.yAxis(1).labels();
+    yLabels.format("{%value}{scale: (1000)(1000)(1000)|(K)(M)(B)}");
+
+    // set the chart title
+    // chart.title("Comparativa contra");
+    var title = chart.title();
+    title.align('center');
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    // setting yAxis settings
+    chart.yAxis(0).title("");
+    chart.yAxis(1).title("");
+
+    // setting Grid settings
+    chart.xGrid(false);
+    chart.yGrid(false);
+
+    // adding extra Y scale
+    var extraYScale = anychart.scales.linear();
+    extraYScale.ticks().interval(100000);
+
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // adding and adjust extra Y axis
+    chart.xAxis().orientation("left");
+
+    // adding and adjust extra Y axis
+    var extraYAxis0 = chart.yAxis(0);
+    extraYAxis0.orientation("bottom");
+
+    // adding and adjust extra Y axis
+    var extraYAxis = chart.yAxis(1);
+    extraYAxis.orientation("top");
+    extraYAxis.scale(extraYScale);
+
+    // setting first series of data
+    var firstSeries = [
+            {% for flota, valores in comparativa_de_flotas.items %}
+                ['{{flota}}', {{valores.2}}],
+            {% endfor %}
+    ];
+
+    // setting second series of data
+    var secondSeries = [
+            {% for flota, valores in comparativa_de_flotas.items %}
+                ['{{flota}}', {{valores.0}}],
+            {% endfor %}
+    ];
+
+    // setting and adjusting data visualisation
+    var DosSeries = chart.bar(firstSeries);
+    DosSeries.name("CPK");
+
+    // configure the visual settings of the second series
+    DosSeries.normal().fill("#12bcc8");
+    DosSeries.hovered().fill("#12bcc8", 0.1);
+    DosSeries.selected().fill("#12bcc8", 0.5);
+    DosSeries.normal().stroke("#12bcc8");
+    DosSeries.hovered().stroke("#12bcc8", 2);
+    DosSeries.selected().stroke("#12bcc8", 4);
+
+
+    var UnoSeries = chart.bar(secondSeries);
+    UnoSeries.yScale(extraYScale);
+    UnoSeries.name("KM");
+
+    // configure the visual settings of the second series
+    UnoSeries.normal().fill("#0097fc");
+    UnoSeries.hovered().fill("#0097fc", 0.1);
+    UnoSeries.selected().fill("#0097fc", 0.5);
+    UnoSeries.normal().stroke("#0097fc");
+    UnoSeries.hovered().stroke("#0097fc", 2);
+    UnoSeries.selected().stroke("#0097fc", 4);
+
+    //tooltip
+    UnoSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+    DosSeries.tooltip().format("{%seriesName}: ${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    chart.container("cc-bar");
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+
+    });
+
+    // Graph AreaLine-chart
+    anychart.onDocumentReady(function () {
+
+    // create a data set
+    var data = anychart.data.set([
+
+    ["{{mes_8}}", 0, 0],
+    ["{{mes_7}}", 0, 0],
+    ["{{mes_6}}", 0, 0],
+    ["{{mes_5}}", 0, 0],
+    ["{{mes_4}}", 0, 0],
+    ["{{mes_3}}", {% if tendencia_cpk_mes3 %} {{tendencia_cpk_mes3.cpk}}, {{tendencia_cpk_mes3.cantidad}} {% else %} 0, 0 {% endif %}],
+    ["{{mes_2}}", {% if tendencia_cpk_mes2 %} {{tendencia_cpk_mes2.cpk}}, {{tendencia_cpk_mes2.cantidad}} {% else %} 0, 0 {% endif %}],
+    ["{{mes_1}}", {% if cpk %}{{cpk}}{% else %}0{% endif %}, {% if llantas_limpias %}{{llantas_limpias}}{% else %}0{% endif %}]
+    ]);
+
+    // map the data
+    var seriesData_1 = data.mapAs({x: 0, value: 1});
+    var seriesData_2 = data.mapAs({x: 0, value: 2});
+
+    // create a chart
+    var chart = anychart.area();
+
+    // create scale for line series and extraYAxis
+    // it force line series to not stuck values with over series
+    var scale = anychart.scales.linear();
+
+    // adjusting y axis title and setting additional axis
+    chart.yAxis(1).scale(scale);
+    chart.yAxis(1).orientation("right");
+    chart.yAxis(1).labels().format("${%value}");
+
+    // create the first series, set the data and name
+    var series1 = chart.line(seriesData_1);
+    series1.name("CPK");
+    series1.yScale(scale)
+
+    // adjusting labels
+    var yTicks = series1.yScale().ticks();
+    yTicks.interval(0.015);
+
+    chart.tooltip().displayMode('union');
+
+    chart.interactivity().hoverMode('by-x');
+
+    // configure the visual settings of the first series
+    series1.normal().stroke("#0097fc", 4);
+    series1.hovered().stroke("#0097fc", 2);
+    series1.selected().stroke("#0097fc", 6);
+
+    // create the second series, set the data and name
+    var series2 = chart.area(seriesData_2);
+    series2.name("Cantidad");
+
+    // configure the visual settings of the second series
+    series2.normal().fill("#A349A4", 0.5);
+    series2.hovered().fill("#A349A4", 0.1);
+    series2.selected().fill("#A349A4", 0.3);
+    series2.normal().stroke("#A349A4", 4);
+    series2.hovered().stroke("#A349A4", 2);
+    series2.selected().stroke("#A349A4", 6);
+
+    // set the chart title
+    // chart.title("Tendencia CPK vida");
+    var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    // set the container id
+    chart.container("area-line-chart");
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    // initiate drawing the chart
+    chart.draw();
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+    });
+
+    // Graph box-chart
+
+    anychart.onDocumentReady(function () {
+
+    //create data set on our data
+    var data = [
+    {% for flota, valores in km_flotas.items %}
+    {x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
+    normal:   {fill: "#12bcc8", stroke: "#12bcc8", medianStroke: "4 #000", whiskerWidth: 30},
+    hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8",medianStroke: "2 #12bcc8", whiskerWidth: 10},
+    selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8", medianStroke: "4 #12bcc8", whiskerWidth: 20}
+    },
+    {% endfor %}
+    ];
+
+    //create area chart
+    var chart = anychart.box(data);
+    chart.isVertical(true)
+    chart.yScale().ticks().interval();
+
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    //tooltip
+    chart.tooltip().format("{%low}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // set the chart title
+    chart.title("Distribución de Datos");
+    var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    //set container id for the chart
+    chart.container('box-chart');
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //initiate chart drawing
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+
+    });
+
+    // score gauge1
+    anychart.onDocumentReady(function () {
+      var axisMaximum1 = 100;
+      var data1 = [
+        {% if porcentaje_limpio %}
+            {% if porcentaje_limpio == "Nada" %}
+                0
+            {% else %}
+                {{porcentaje_limpio}}
+            {% endif %}
+        {% else %}
+            0
+        {% endif %}
+      ];
+      var dataSet1 = anychart.data.set(data1);
+
+      var circularGauge1 = anychart.gauges.circular();
+      circularGauge1.data(dataSet1);
+      circularGauge1.fill(false)
+        .stroke(null)
+        .padding(0)
+        .startAngle(235)
+        .sweepAngle(250);
+
+    circularGauge1.needle()
+                .stroke('2 #545f69')
+                .startRadius('2%')
+                .endRadius('100%')
+                .startWidth('0.1%')
+                .endWidth('0.1%')
+                .middleWidth('0.9%');
+
+      var circularAxis = circularGauge1.axis().radius(70).width(50).fill('#969696');
+      circularAxis.scale()
+        .minimum(0)
+        .maximum(axisMaximum1);
+      circularAxis.labels().enabled(false);
+      circularAxis.ticks().enabled(false);
+      circularAxis.minorTicks().enabled(false);
+
+      circularGauge1.bar(0).dataIndex(0)
+        .radius(70)
+        .width(50)
+        .fill('#026cf5')
+        .stroke(null)
+        .zIndex(50);
+
+      circularGauge1.bounds('0%','0%', '100%', '100%');
+
+      //enable gauge animation
+      animateGauge(circularGauge1, 1000);
+
+
+
+        circularGauge1.cap()
+                .radius('10%')
+                .enabled(true)
+                .fill('#545f69');
+
+        // Gauge percentage
+        circularGauge1.label(0)
+        .text('<span style="">' + data1[0] + '%</span>')
+        .useHtml(true)
+        .fontSize(17)
+        .fontColor('#026cf5')
+        .hAlign('center')
+        .width("50%")
+        .height("80%")
+        .anchor('center')
+        .offsetY("-100%")
+        .offsetX("50%")
+        .zIndex(10);
+
+      circularGauge1.container('score-gauge1').draw();
+
+      /**
+     * Enables gauge animation.
+     *
+     * @param {anychart.circularGaugeModule.Chart} gauge chart instance.
+     * @param {number} animation duration
+     */
+      function animateGauge(chart, duration) {
+        var originalValue = chart.data().get(0, 'value');
+        // set 0 as initial data value
+        chart.data().set(0, 'value', 0);
+
+        // launch the animation when the chart is rendered
+        chart.listenOnce('chartDraw', function() {
+
+          // provide animation timing
+          var start = performance.now();
+          requestAnimationFrame(function animationStep(time) {
+            var timePassed = time - start;
+            var timeFraction = timePassed / duration;
+            if (timePassed > duration) {
+              timePassed = duration;
+              timeFraction = 1
+            }
+            //Set Background
+            var background = chart.background();
+            background.stroke('0 #000');
+            background.corners();
+            background.enabled(false);
+            // chart credits false
+            var credits = chart.credits();
+            credits.enabled(false);
+
+
+            //redraw by increasing the value from zero to the required one
+            chart.data().set(0, 'value', originalValue * timeFraction);
+
+            if (timePassed < duration) {
+              requestAnimationFrame(animationStep);
+            }
+          });
+        });
+      }
+    });
+
+    // score-gauge2
+    anychart.onDocumentReady(function () {
+
+        var axisMaximum2 = 100;
+        var data2 = [
+        {% if porcentaje_entrada_correcta %}
+            {% if porcentaje_entrada_correcta == "Nada" %}
+                0
+            {% else %}
+                {{porcentaje_entrada_correcta}}
+            {% endif %}
+        {% else %}
+            70
+        {% endif %}
+        ];
+        var dataSet2 = anychart.data.set(data2);
+
+      var circularGauge2 = anychart.gauges.circular();
+      circularGauge2.data(dataSet2);
+      circularGauge2.fill(false)
+        .stroke(null)
+        .padding(0)
+        .startAngle(235)
+        .sweepAngle(250);
+
+    circularGauge2.needle()
+                .stroke('2 #545f69')
+                .startRadius('2%')
+                .endRadius('100%')
+                .startWidth('0.1%')
+                .endWidth('0.1%')
+                .middleWidth('0.9%');
+
+      var circularAxis = circularGauge2.axis().radius(70).width(50).fill('#969696');
+      circularAxis.scale()
+        .minimum(0)
+        .maximum(axisMaximum2);
+      circularAxis.labels().enabled(false);
+      circularAxis.ticks().enabled(false);
+      circularAxis.minorTicks().enabled(false);
+
+      circularGauge2.bar(0).dataIndex(0)
+        .radius(70)
+        .width(50)
+        .fill('#026cf5')
+        .stroke(null)
+        .zIndex(50);
+
+      circularGauge2.bounds('0%','0%', '100%', '100%');
+
+      //enable gauge animation
+      animateGauge(circularGauge2, 1000);
+
+
+
+        circularGauge2.cap()
+                .radius('10%')
+                .enabled(true)
+                .fill('#545f69');
+
+        //Gauge percentage
+        circularGauge2.label(0)
+        .text('<span style="">' + data2[0] + '%</span>')
+        .useHtml(true)
+        .fontSize(17)
+        .fontColor('#026cf5')
+        .hAlign('center')
+        .width("50%")
+        .height("80%")
+        .anchor('center')
+        .offsetY("-100%")
+        .offsetX("50%")
+        .zIndex(10);
+
+      circularGauge2.container('score-gauge2').draw();
+
+      /**
+     * Enables gauge animation.
+     *
+     * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+     * @param {number} animation duration
+     */
+      function animateGauge(chart, duration) {
+        var originalValue = chart.data().get(0, 'value');
+        // set 0 as initial data value
+        chart.data().set(0, 'value', 0);
+
+        // launch the animation when the chart is rendered
+        chart.listenOnce('chartDraw', function() {
+
+          // provide animation timing
+          var start = performance.now();
+          requestAnimationFrame(function animationStep(time) {
+            var timePassed = time - start;
+            var timeFraction = timePassed / duration;
+            if (timePassed > duration) {
+              timePassed = duration;
+              timeFraction = 1;
+            }
+            //Set Background
+            var background = chart.background();
+            background.stroke('0 #000');
+            background.corners();
+            background.enabled(false);
+            // chart credits false
+            var credits = chart.credits();
+            credits.enabled(false);
+
+
+            //redraw by increasing the value from zero to the required one
+            chart.data().set(0, 'value', originalValue * timeFraction);
+
+            if (timePassed < duration) {
+              requestAnimationFrame(animationStep);
+            }
+          });
+        });
+      }
+    });
+
+    // score-gauge3
+    anychart.onDocumentReady(function () {
+
+        var axisMaximum3 = 100;
+        var data3 = [
+        {% if porcentaje_entrada_correcta %}
+            {% if porcentaje_entrada_correcta == "Nada" %}
+                0
+            {% else %}
+                {{porcentaje_entrada_correcta}}
+            {% endif %}
+        {% else %}
+            45
+        {% endif %}
+        ];
+        var dataSet3 = anychart.data.set(data3);
+
+      var circularGauge3 = anychart.gauges.circular();
+      circularGauge3.data(dataSet3);
+      circularGauge3.fill(false)
+        .stroke(null)
+        .padding(0)
+        .startAngle(235)
+        .sweepAngle(250);
+
+    circularGauge3.needle()
+                .stroke('2 #545f69')
+                .startRadius('2%')
+                .endRadius('100%')
+                .startWidth('0.1%')
+                .endWidth('0.1%')
+                .middleWidth('0.9%');
+
+      var circularAxis = circularGauge3.axis().radius(70).width(50).fill('#969696');
+      circularAxis.scale()
+        .minimum(0)
+        .maximum(axisMaximum3);
+      circularAxis.labels().enabled(false);
+      circularAxis.ticks().enabled(false);
+      circularAxis.minorTicks().enabled(false);
+
+      circularGauge3.bar(0).dataIndex(0)
+        .radius(70)
+        .width(50)
+        .fill('#026cf5')
+        .stroke(null)
+        .zIndex(50);
+
+      circularGauge3.bounds('0%','0%', '100%', '100%');
+
+      //enable gauge animation
+      animateGauge(circularGauge3, 1000);
+
+
+
+        circularGauge3.cap()
+                .radius('10%')
+                .enabled(true)
+                .fill('#545f69');
+
+        //Gauge percentage
+        circularGauge3.label(0)
+        .text('<span style="">' + data3[0] + '%</span>')
+        .useHtml(true)
+        .fontSize(17)
+        .fontColor('#026cf5')
+        .hAlign('center')
+        .width("50%")
+        .height("80%")
+        .anchor('center')
+        .offsetY("-100%")
+        .offsetX("50%")
+        .zIndex(10);
+
+      circularGauge3.container('score-gauge3').draw();
+
+      /**
+     * Enables gauge animation.
+     *
+     * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+     * @param {number} animation duration
+     */
+      function animateGauge(chart, duration) {
+        var originalValue = chart.data().get(0, 'value');
+        // set 0 as initial data value
+        chart.data().set(0, 'value', 0);
+
+        // launch the animation when the chart is rendered
+        chart.listenOnce('chartDraw', function() {
+
+          // provide animation timing
+          var start = performance.now();
+          requestAnimationFrame(function animationStep(time) {
+            var timePassed = time - start;
+            var timeFraction = timePassed / duration;
+            if (timePassed > duration) {
+              timePassed = duration;
+              timeFraction = 1;
+            }
+            //Set Background
+            var background = chart.background();
+            background.stroke('0 #000');
+            background.corners();
+            background.enabled(false);
+            // chart credits false
+            var credits = chart.credits();
+            credits.enabled(false);
+
+
+            //redraw by increasing the value from zero to the required one
+            chart.data().set(0, 'value', originalValue * timeFraction);
+
+            if (timePassed < duration) {
+              requestAnimationFrame(animationStep);
+            }
+          });
+        });
+      }
+    });
+
+    // score-gauge4
+    anychart.onDocumentReady(function () {
+
+        var axisMaximum4 = 100;
+        var data4 = [
+        {% if porcentaje_entrada_correcta %}
+            {% if porcentaje_entrada_correcta == "Nada" %}
+                0
+            {% else %}
+                {{porcentaje_entrada_correcta}}
+            {% endif %}
+        {% else %}
+            60
+        {% endif %}
+        ];
+        var dataSet4 = anychart.data.set(data4);
+
+      var circularGauge4 = anychart.gauges.circular();
+      circularGauge4.data(dataSet4);
+      circularGauge4.fill(false)
+        .stroke(null)
+        .padding(0)
+        .startAngle(235)
+        .sweepAngle(250);
+
+    circularGauge4.needle()
+                .stroke('2 #545f69')
+                .startRadius('2%')
+                .endRadius('100%')
+                .startWidth('0.1%')
+                .endWidth('0.1%')
+                .middleWidth('0.9%');
+
+      var circularAxis = circularGauge4.axis().radius(70).width(50).fill('#969696');
+      circularAxis.scale()
+        .minimum(0)
+        .maximum(axisMaximum4);
+      circularAxis.labels().enabled(false);
+      circularAxis.ticks().enabled(false);
+      circularAxis.minorTicks().enabled(false);
+
+      circularGauge4.bar(0).dataIndex(0)
+        .radius(70)
+        .width(50)
+        .fill('#026cf5')
+        .stroke(null)
+        .zIndex(50);
+
+      circularGauge4.bounds('0%','0%', '100%', '100%');
+
+      //enable gauge animation
+      animateGauge(circularGauge4, 1000);
+
+
+
+        circularGauge4.cap()
+                .radius('10%')
+                .enabled(true)
+                .fill('#545f69');
+
+        //Gauge percentage
+        circularGauge4.label(0)
+        .text('<span style="">' + data4[0] + '%</span>')
+        .useHtml(true)
+        .fontSize(17)
+        .fontColor('#026cf5')
+        .hAlign('center')
+        .width("50%")
+        .height("80%")
+        .anchor('center')
+        .offsetY("-100%")
+        .offsetX("50%")
+        .zIndex(10);
+
+      circularGauge4.container('score-gauge4').draw();
+
+      /**
+     * Enables gauge animation.
+     *
+     * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+     * @param {number} animation duration
+     */
+      function animateGauge(chart, duration) {
+        var originalValue = chart.data().get(0, 'value');
+        // set 0 as initial data value
+        chart.data().set(0, 'value', 0);
+
+        // launch the animation when the chart is rendered
+        chart.listenOnce('chartDraw', function() {
+
+          // provide animation timing
+          var start = performance.now();
+          requestAnimationFrame(function animationStep(time) {
+            var timePassed = time - start;
+            var timeFraction = timePassed / duration;
+            if (timePassed > duration) {
+              timePassed = duration;
+              timeFraction = 1;
+            }
+            //Set Background
+            var background = chart.background();
+            background.stroke('0 #000');
+            background.corners();
+            background.enabled(false);
+            // chart credits false
+            var credits = chart.credits();
+            credits.enabled(false);
+
+
+            //redraw by increasing the value from zero to the required one
+            chart.data().set(0, 'value', originalValue * timeFraction);
+
+            if (timePassed < duration) {
+              requestAnimationFrame(animationStep);
+            }
+          });
+        });
+      }
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,191 @@
+{% if producto.id %}
+  <form action="{% url 'dashboards:catalogoProductosEdit' producto.id %}" id="form" class="container" method="POST">
+{% else %}
+  <form action="{% url 'dashboards:catalogoProductos' %}" id="form" class="container" method="POST">
+{% endif %}
+  {% csrf_token %}
+  <div class="container-fluid">
+    <aside class="form-aeto">
+      <div class="form__group field">
+        <input
+          type="hidden"
+          name="id"
+          {% if producto.id %}value="{{producto.id}}"{% endif %}
+        />
+        <input
+          type="hidden"
+          name="compania"
+          value="{{compania}}"
+        />
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Marca..."
+          name="marca"
+          autocomplete="off"
+          {% if producto.marca %}value="{{producto.marca}}"{% endif %}
+          id="marca"
+          required
+        />
+        <label for="marca" class="form__label">Marca</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Dibujo..."
+          name="dibujo"
+          {% if producto.dibujo %}value="{{producto.dibujo}}"{% endif %}
+          autocomplete="off"
+          id="dibujo"
+          required
+        />
+        <label for="dibujo" class="form__label">Dibujo</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Rango..."
+          name="rango"
+          id="rango"
+          {% if producto.rango %}value="{{producto.rango}}"{% endif %}
+          autocomplete="off"
+        />
+        <label for="rango" class="form__label">Rango</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Dimension..."
+          name="dimension"
+          id="dimension"
+          {% if producto.dimension %}value="{{producto.dimension}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="dimension" class="form__label">Dimension</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="producto..."
+          name="producto"
+          id="producto"
+          readonly
+          autocomplete="off"
+          required
+        />
+        <label for="producto" class="form__label">Producto</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="number"
+          placeholder="Profundidad inicial..."
+          name="profundidad_inicial"
+          {% if producto.profundidad_inicial %}value="{{producto.profundidad_inicial}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="profundidad-inicial" class="form__label">Profundidad inicial</label>
+      </div>
+
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Aplicación..."
+          name="aplicacion"
+          {% if producto.aplicacion %}value="{{producto.aplicacion}}"{% endif %}
+          list="aplicacion"
+          autocomplete="off"
+          required
+        />
+        <label for="aplicacion" class="form__label">Aplicación</label>
+        <datalist id="aplicacion">
+          <option value="Dirección">Dirección</option>
+          <option value="Tracción">Tracción</option>
+          <option value="Arrastre">Arrastre</option>
+          <option value="Mixta">Mixta</option>
+          <option value="Regional">Regional</option>
+          <option value="Urbano">Urbano</option>
+        </datalist>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="Vida..."
+          name="vida"
+          {% if producto.vida %}value="{{producto.vida}}"{% endif %}
+          list="vida"
+          autocomplete="off"
+          required
+        />
+        <label for="vida" class="form__label">Vida</label>
+        <datalist id="vida">
+          <option value="Nueva">Nueva</option>
+          <option value="Renovada">Renovada</option>
+          <option value="Vitacasco">Vitacasco</option>
+        </datalist>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="number"
+          placeholder="Precio actual..."
+          name="precio"
+          {% if producto.precio %}value="{{producto.precio}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="precio" class="form__label">Precio actual</label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="number"
+          placeholder="KM esperado..."
+          name="km_esperado"
+          {% if producto.km_esperado %}value="{{producto.km_esperado}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="km" class="form__label">KM esperado</label>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="btn-group">
+    {% if producto.id %}
+    
+    <button class="btn btn-success">
+      <span class="icon-checkmark"></span>
+    </button>
+
+    <a href="{% url 'dashboards:catalogoProductos' %}" class="btn btn-danger">
+      <span class="icon-cross"></span>
+    </a>
+
+    {% else %}
+    <button class="btn btn-success">
+      <span class="icon-plus6"></span>
+    </button>
+    <a href="" class="btn btn-download">
+      <span class="icon-download"></span>
+    </a>
+    {% endif %}
+  </nav>
+</form>

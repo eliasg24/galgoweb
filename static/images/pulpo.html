@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+    {% load static %}
+
+    <meta name="description" content="Este meta sirve para hacer SEO, lo que va aquí da más info en el navegador">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>FASE PULPO</title>
+
+{% endblock  %}
+
+{% block container %}
+    <header>
+        <nav class="menu">
+            <ul>
+                <form id="form_fecha" action="{% url 'dashboards:buscar' %}" method="GET">
+                    <!--<li class="menu_li--right"><input type="text" placeholder="clase"></li>
+                    <li class="menu_li--right"><input type="text" placeholder="localidad"></li>-->
+
+                    {% if fecha %}
+                        <li class="menu_li--right"><input class="li_input--date" {% if fecha2 %}value="{{fecha2}}"{% endif %} type="date" name="fecha2"></li>
+                    {% endif %}
+                    <li class="menu_li--right"><input class="li_input--date" {% if fecha %}value="{{fecha}}"{% endif %} type="date" name="fecha1"></li>
+                    
+                    <button class="menu_li--right" type="submit">Buscar</button>
+                </form>
+
+
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <section class="horizontal">
+                <section class="horizontal_graficas--1">
+                    <div class="sec1_grafica">
+                        <h3>Vehículos inflados</h3>
+                        {% if fecha_con_formato %}
+                            <p>{{fecha_con_formato}}</p>
+                        {% else %}
+                            <p>Último mes</p>
+                        {% endif %}
+                        {% if porcentaje_inflado %}
+                            {% if porcentaje_inflado == "Nada" %}
+                                <p>No hay vehículos aún</p>
+                            {% else %}
+                                <p>{{porcentaje_inflado}}%</p>
+                            {% endif %}
+                        {% else %}
+                            {% if porcentaje_inflado == 0 %}
+                                <p>{{porcentaje_inflado}}%</p>
+                            {% endif %}
+                        {% endif %}
+                        
+                    </div>
+                    <div class="sec1_grafica">
+                        <h3>Entradas correctas</h3>
+                        {% if fecha_con_formato %}
+                            <p>{{fecha_con_formato}}</p>
+                        {% else %}
+                            <p>Último mes</p>
+                        {% endif %}
+                        {% if porcentaje_entrada_correcta %}
+                            {% if porcentaje_entrada_correcta == "Nada" %}
+                                <p>No hay vehículos en esta fecha</p>                        
+                            {% else %}
+                                <p>{{porcentaje_entrada_correcta}}%</p>
+                            {% endif %}
+                        {% else %}
+                            {% if porcentaje_entrada_correcta == 0 %}
+                                <p>{{porcentaje_entrada_correcta}}%</p>
+                            {% endif %}
+                        {% endif %}
+                        
+                    </div>
+                </section>
+                <section class="horizontal_graficas--2">
+                    <div class="sec2_grafica">Periodos de inflado                        
+                        <p id="rango_0">Entre 0 a 30 días: 0</p>
+                        <p id="rango_30">Entre 31 a 60 días: 0</p>
+                        <p id="rango_60">Más de 60 días: 0</p>
+                    </div>
+                    <div class="sec2_grafica">Cantidad de vehículos correctos vs inflados
+                        {% if fecha %}
+                        <ul>
+                            <li class="menu_li--right"><input value="diario" type="radio" name="rango_fecha" checked>Diario</li>
+                            <li class="menu_li--right"><input value="semanal" type="radio" name="rango_fecha" {% if rango_fecha == "semanal" %}checked{% endif %}>Semanal</li>
+                            <li class="menu_li--right"><input value="mensual" type="radio" name="rango_fecha" {% if rango_fecha == "mensual" %}checked{% endif %}>Mensual</li>
+                            <button class="menu_li--right" type="submit">Buscar</button>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </section>
+                <section class="horizontal_graficas--3">
+                    <div class="sec3_grafica--table">
+                        <table>                            
+                            {% if vehiculos_periodo %}
+                                <tr>
+                                    <th>Icono</th>
+                                    <th>Serial</th>
+                                    <th>clase</th>
+                                    <th>Días sin inflado</th>
+                                    <th>Tendencia</th>
+                                </tr>
+
+                                    {% for vehiculo_p in vehiculos_periodo %}
+                                    <tr>
+                                        <td>foto</td>
+                                        <td>{{vehiculo_p.id}}</td>
+                                        <td>{{vehiculo_p.clase}}</td>
+                                        <td id="dias {{vehiculo_p.id}}"></td>
+                                        <td>Gráfica</td>
+                                    </tr>
+                                    {% endfor %}
+                            {% endif %}
+                        </table>
+                    </div>
+                    
+                        <div class="sec3_grafica">Tiempo promedio de inflado: {% if tiempo_promedio %}{{tiempo_promedio}}{% else %}0{% endif %} minutos</div>
+                    
+                </section>
+            </section>
+            
+            <section class="vertical">
+                <section class="vertical_graficas--1">
+                    <h3>Excel a todas las gráficas</h3>
+                    <div class="grafica_vertical">% de Vehículos inflado</div>
+                    <div class="grafica_vertical">% de inflados por localidad</div>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="">Terminos de uso</a>
+        <a href="">Declaración de privacidad</a>
+        <a href="">Centro de ayuda</a>
+    </footer>
+
+    <script>
+        window.onload = function dias_sin_inflado(){
+            hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
+            var rango_0 = 0;
+            var rango_30 = 0;
+            var rango_60 = 0;
+
+
+            {% for vehiculo in vehiculos_todos %}
+            vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+            var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
+            days = Math.round(difference/(1000 * 3600 * 24));
+            {% if vehiculo in vehiculos_periodo %}
+            document.getElementById("dias {{vehiculo.id}}").innerText = days;
+            {% endif %}
+
+            if (1<=days && days<=30){
+                rango_0 = rango_0 + 1;
+            }
+            else if (31<=days && days<=60){
+                rango_30++;
+            }
+            else if (61<=days){
+                rango_60++;
+            }
+            
+            {% endfor %}
+
+            document.getElementById("rango_0").innerText = "Entre 0 a 30 días: " + rango_0;
+            document.getElementById("rango_30").innerText = "Entre 30 a 60 días: " + rango_30;
+            document.getElementById("rango_60").innerText = "Más de 60 días: " + rango_60;
+            
+
+        }
+    </script>
+
+{% endblock  %}

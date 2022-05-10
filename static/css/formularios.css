@@ -1,0 +1,90 @@
+.main-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  position: relative;
+}
+
+fieldset {
+  border: none;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.flex-row {
+  flex-flow: row wrap;
+}
+
+.form-title {
+  font-size: 2.25rem;
+}
+
+.form__label {
+  color: #ccc;
+}
+
+.form__field {
+  font-size: 1rem;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 1rem;
+}
+
+.form__field:placeholder-shown ~ .form__label.small-text {
+  font-size: 0.95rem;
+}
+
+.form-container {
+  height: 100%;
+  margin: auto;
+  padding: 1rem 0;
+  width: 90%;
+}
+
+.form-content {
+  background-color: #555;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: inherit;
+  padding: 1rem;
+}
+
+.form-content__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  padding: 0.5rem;
+}
+
+.form-content__flex {
+  align-items: center;
+  display: flex;
+  height: fit-content;
+  flex-flow: row wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.form-content__flex > * {
+  flex: 1 1 300px;
+}
+
+input[type='date']::-webkit-inner-spin-button,
+::-webkit-calendar-picker-indicator {
+  filter: invert(100%);
+}
+
+.dropdown {
+  border-bottom: 2px solid #9b9b9b;
+}
+
+.drop-btn {
+  color: #ccc;
+}
+
+.drop-menu {
+  width: 100%;
+}

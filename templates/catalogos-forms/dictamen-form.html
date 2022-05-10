@@ -1,0 +1,109 @@
+{% if desecho.id %}
+  <form action="{% url 'dashboards:catalogoDesechosEdit' desecho.id %}" id="form" class="container" method="POST">
+{% else %}
+  <form action="{% url 'dashboards:catalogoDesechos' %}" id="form" class="container" method="POST">
+{% endif %}
+  {% csrf_token %}
+  <div class="container-fluid">
+    <aside class="form-aeto">
+
+      <!-- Start input -->
+      <div class="form__group field">
+        <input
+          type="hidden"
+          name="id"
+          {% if desecho.id %}value="{{desecho.id}}"{% endif %}
+        />
+        <input
+          class="form__field"
+          type="text"
+          placeholder="llanta"
+          name="llanta"
+          list="llanta"
+          {% if desecho.llanta %}value="{{desecho.llanta}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="llanta" class="form__label">
+          Llanta
+        </label>
+        <datalist id="llanta">
+          {% for llanta in llantas %}
+            <option value="{{llanta}}">{{llanta}}</option>
+          {% endfor %}
+        </datalist>
+      </div>
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="zona"
+          name="zona_de_llanta"
+          {% if desecho.zona_de_llanta %}value="{{desecho.zona_de_llanta}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="zona_de_llanta" class="form__label">
+          Zona de llanta
+        </label>
+      </div>
+      <!-- End input -->
+
+      <!-- Start input -->
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="condicion"
+          name="condicion"
+          {% if desecho.condicion %}value="{{desecho.condicion}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="condicion" class="form__label">
+          Condición
+        </label>
+      </div>
+      <!-- End input -->
+
+      <!-- Start input -->
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="razon"
+          name="razon"
+          {% if desecho.razon %}value="{{desecho.razon}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="razon" class="form__label">
+          Razón
+        </label>
+      </div>
+      <!-- End input -->
+
+    </aside>
+  </div>
+
+  <nav class="btn-group">
+    {% if desecho.id %}
+    
+    <button class="btn btn-success">
+      <span class="icon-checkmark"></span>
+    </button>
+
+    <a href="{% url 'dashboards:catalogoDesechos' %}" class="btn btn-danger">
+      <span class="icon-cross"></span>
+    </a>
+
+    {% else %}
+    <button class="btn btn-success">
+      <span class="icon-plus6"></span>
+    </button>
+    <a href="" class="btn btn-download">
+      <span class="icon-download"></span>
+    </a>
+    {% endif %}
+  </nav>
+</form>

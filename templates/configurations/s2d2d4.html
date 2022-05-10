@@ -1,0 +1,64 @@
+{% comment %} 
+<!-- configC -->
+<!-- S2-D2-D4--> 
+{% endcomment %}
+<div class="column configC" id="col1">
+
+    <!-- S2 -->
+    <div class="par-llantas">
+        <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta1.id %}">
+            <span class="icon-tire2 {{color}}"></span>
+        </a>
+
+        <span class="icon-da"></span>
+
+        <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta2.id %}">
+            <span class="icon-tire2 {{color}}"></span>
+        </a>
+
+    </div>
+
+    <!-- D2 -->
+    <div class="par-llantas">
+        <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta3.id %}">
+            <span class="icon-tire2 {{color}}"></span>
+        </a>
+
+        <span class="icon-da"></span>
+
+        <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta4.id %}">
+            <span class="icon-tire2 {{color}}"></span>
+        </a>
+
+    </div>
+
+    <!-- D4 -->
+    <div class="par-doble-llanta">
+
+        <div class="doble-llanta">
+            
+            <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta5.id %}">
+                <span class="icon-tire2 {{color}}"></span>
+            </a>
+
+            <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta6.id %}">
+                <span class="icon-tire2 {{color}}"></span>
+            </a>
+        </div>
+
+        <span class="icon-central-axle"></span>
+
+        <div class="doble-llanta">
+            
+            <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta7.id %}">
+                <span class="icon-tire2 {{color}}"></span>
+            </a>
+
+            <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta8.id %}">
+                <span class="icon-tire2 {{color}}"></span>
+            </a>
+        </div>
+
+    </div>
+
+</div>

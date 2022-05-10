@@ -1,0 +1,215 @@
+:root {
+  --inputs-laterales: linear-gradient(#d76369, #f4aa74);
+  --red: #d76369;
+  --orange: #f6aa6f;
+  --black: #171717;
+  --gray: linear-gradient(#363636, #242424);
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  background-color: #363636;
+  color: white;
+}
+
+label, input {
+  display: block;
+  width: 98%;
+}
+
+input {
+  padding: .25rem;
+  outline: none;
+}
+
+.all-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.img-logo {
+  margin-left: 1vw;
+  margin-top: 1vh;
+}
+
+.main-cont {
+  background: var(--black);
+  border-radius: 0.5rem;
+  height: 90%;
+  width: 90%;
+  align-self: center;
+  justify-self: center;
+}
+
+.btn {
+  background: none;
+  border: none;
+  background-color: #9147ff;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.5vw;
+  padding: .5rem;
+  text-decoration: none;
+  transition: all .4s ease;
+}
+
+.btn:hover {
+  opacity: .75;
+}
+
+.btn1 {
+  background: none;
+  border: none;
+  background-color: seagreen;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.5vw;
+  padding: .5rem;
+  text-decoration: none;
+  transition: all .4s ease;
+}
+
+.btn1:hover {
+  opacity: .50;
+}
+
+.main-title {
+  margin: 0;
+}
+
+.containers {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  column-gap: 20px;
+  padding: 1vh 1vw;
+  height: inherit;
+}
+
+.cont-left {
+  background: #242424;
+  border-radius: 0.5rem;
+  margin-top: 1.3rem;
+}
+
+.cont-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.title-cont {
+  margin: 0;
+}
+
+.table-cont {
+  height: 100%;
+  width: 100%;
+  background: #242424;
+  border-radius: 0.5rem;
+}
+
+/* Agregar producto */
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem;
+  justify-content: space-between;
+}
+
+.max-content {
+  height: 90%;
+}
+
+/* Dropdown */
+
+.drop-btn {
+  background: none;
+  border: none;
+  border-bottom: thin solid #fff;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  padding: 0.25rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.dropdown-content {
+  display: none;
+  padding: 0.5rem;
+}
+
+.dropdown-content.active {
+  display: block;
+}
+
+.dropdown-content a {
+  color: #fff;
+  display: block;
+  padding: 0.5rem;
+  text-decoration: none;
+  transition: ease 0.4s;
+}
+
+.dropdown-content a:hover {
+  background-color: rgb(255, 255, 255, 0.25);
+}
+
+/* Tabla de productos */
+
+.products-table {
+  margin: 0;
+  width: 100%;
+}
+
+.products-table th,
+td {
+  border-bottom: solid 5px #ddd;
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.label-form {
+  margin-top: .5rem;
+  gap: .25rem;
+}
+
+.label-form > input {
+  background: #171717;
+  border: thin solid #fff;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.list{
+  overflow-y: scroll;
+  height: 43vh;
+}
+.list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.list::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}

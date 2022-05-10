@@ -1,0 +1,45 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+h2 {
+	margin: 0;
+}
+
+html {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  word-wrap: break-word;
+}
+
+header {
+	background: #003366;
+	padding: 1rem;
+}
+
+body {
+	margin: 0;
+}
+
+.titulo {
+	color: white;
+}
+
+main {
+	margin-left: 1rem;
+	margin-top: 2rem;
+}
+
+nav {
+	margin-left: 2rem;
+}
+
+li {
+	margin-bottom: 0.5rem;
+	font-size: 1.5rem;
+}
+
+p {
+	font-size: 1.5rem;
+}

@@ -1,0 +1,183 @@
+<!-- Start input -->
+<div class="form__group field">
+    <input
+    type="hidden"
+    name="id"
+    value="{{sucursal.id}}"
+    required/>
+    <input
+      class="form__field"
+      type="text"
+      placeholder="nombre"
+      name="nombre"
+      autocomplete="off"
+      value="{{sucursal.nombre}}"
+      required
+      readonly
+    />
+    <label for="nombre" class="form__label">
+      Nombre
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="compania"
+      name="compania"
+      list="compania"
+      autocomplete="off"
+      value="{{sucursal.compania}}"
+      required
+      readonly
+    />
+    <label for="compania" class="form__label">
+      Compañia
+    </label>
+      <datalist id="compania">
+        {% for compania in companias %}
+          <option value="{{compania}}">{{compania}}</option>
+        {% endfor %}
+      </datalist>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="rendimiento-nueva-1r"
+      name="rendimiento_de_nueva"
+      autocomplete="off"
+      value="{{sucursal.rendimiento_de_nueva}}"
+      required
+    />
+    <label for="rendimiento-nueva-1r" class="form__label">
+      Rendimiento nueva a 1R
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="rendimiento-1r-2r"
+      name="rendimiento_de_primera"
+      autocomplete="off"
+      value="{{sucursal.rendimiento_de_primera}}"
+      required
+    />
+    <label for="rendimiento-1r" class="form__label">
+      Rendimiento 1R a 2R
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="rendimiento-1r-2r"
+      name="rendimiento_de_segunda"
+      autocomplete="off"
+      value="{{sucursal.rendimiento_de_segunda}}"
+      required
+    />
+    <label for="rendimiento-1r" class="form__label">
+      Rendimiento 2R a 3R
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="rendimiento-1r-2r"
+      name="rendimiento_de_tercera"
+      autocomplete="off"
+      value="{{sucursal.rendimiento_de_tercera}}"
+      required
+    />
+    <label for="rendimiento-1r" class="form__label">
+      Rendimiento 3R a 4R
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="rendimiento-1r-2r"
+      name="rendimiento_de_cuarta"
+      value="{{sucursal.rendimiento_de_cuarta}}"
+      autocomplete="off"
+      required
+    />
+    <label for="rendimiento-1r" class="form__label">
+      Rendimiento 4R a 5R
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="precio-promedio-llanta-direccion"
+      name="precio_nueva_direccion"
+      value="{{sucursal.precio_nueva_direccion}}"
+      autocomplete="off"
+      required
+    />
+    <label for="precio-promedio-llanta-direccion" class="form__label">
+      Precio promedio llanta dirección
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="precio-promedio-llanta-nueva"
+      name="precio_nueva"
+      value="{{sucursal.precio_nueva}}"
+      autocomplete="off"
+      required
+    />
+    <label for="precio-promedio-llanta-nueva" class="form__label">
+      Precio promedio llanta nueva
+    </label>
+  </div>
+  <!-- End input -->
+  
+  <!-- Start input -->
+  <div class="form__group field">
+    <input
+      class="form__field"
+      type="text"
+      placeholder="precio-promedio-llanta-renovada"
+      name="precio_renovada"
+      value="{{sucursal.precio_renovada}}"
+      autocomplete="off"
+      required
+    />
+    <label for="precio-promedio-llanta-renovada" class="form__label">
+      Precio promedio llanta renovada
+    </label>
+  </div>
+  <!-- End input -->
+  

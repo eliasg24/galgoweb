@@ -1,0 +1,207 @@
+.head-cont {
+  flex-flow: row wrap;
+  gap: 1rem;
+}
+
+.head-cont h1 {
+  padding: 0.25rem;
+}
+
+.drop-search i {
+  font-size: 1.25rem;
+}
+
+.drop-input {
+  font-size: 1rem;
+}
+
+.relative {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.absolute {
+  height: inherit;
+  position: absolute;
+  overflow-y: auto;
+  width: inherit;
+}
+
+.absolute::-webkit-scrollbar {
+  width: 10px;
+}
+
+.absolute::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.absolute::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}
+
+.main__container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.cards__container {
+  /* display: grid; */
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  /* grid-template-columns: repeat(auto-fill, minmax(325px, 1fr)); */
+  padding: 1rem;
+}
+
+.card__wrapper {
+  align-items: center;
+  background-color: #202020;
+  border-radius: 0.25rem;
+  display: grid;
+  height: fit-content;
+  flex: 1 1 400px;
+  gap: 1rem;
+  grid-template-columns: auto 1fr;
+  padding: 1rem;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  /* box-shadow: 1px 1px 6px rgba(255, 255, 255, 0.5); */
+  box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.card__wrapper.filter {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  order: 1;
+}
+
+.card__img {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.card__img .icon-tire2 {
+  /* font-size: 18vmin; */
+  font-size: 10rem;
+}
+
+.card__body {
+  background-color: var(--main-background);
+  border-radius: 0.25rem;
+  height: 100%;
+  padding: 1rem;
+  position: relative;
+}
+
+.card__body p {
+  margin: 0;
+}
+
+.tire__status {
+  background-color: #fff;
+  border-radius: 50%;
+  height: 1.25rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 1.25rem;
+}
+
+.tire__status.good {
+  background-color: var(--main-blue);
+}
+
+.tire__status.yellow {
+  background-color: var(--yellow-color);
+}
+
+.tire__status.bad {
+  background-color: var(--red-color);
+}
+
+.tire__status.suspiciuos {
+  background-color: var(--purple-color);
+}
+
+/* ? Filter Menu */
+
+.filter__container {
+  align-items: center;
+  background-color: rgba(33, 33, 33, 0.5);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  transition: all 0.4s ease;
+  z-index: 1000;
+
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filter__container.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.filter__content {
+  background-color: var(--main-background);
+  border-radius: 0.25rem;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  padding: 2rem;
+  min-width: 300px;
+  position: relative;
+}
+
+.filter__content .btn-danger {
+  top: -25px;
+  right: -25px;
+  position: absolute;
+}
+
+.form__wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+}
+
+.form__wrapper > * {
+  flex: 1 1 auto;
+}
+
+h1 {
+  background: #026cf5;
+  border-radius: 5px;
+}
+
+@media screen and (min-width: 768px) {
+  .flex-row {
+    justify-content: flex-end;
+  }
+
+  .head-cont {
+    flex-flow: row nowrap;
+  }
+
+  .head-cont > * {
+    flex: 1 1 auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .filter__content {
+    min-width: 630px;
+  }
+}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}" />
+<link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+
+<title>Calendario</title>
+
+{% endblock %} {% block content %}
+
+<div class="all-cont">
+  <div class="calendar" id="calendar"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'esLocale',
+        initialView: 'timeGridWeek',
+        height: '100vh',
+        selectable: true ,
+        events: [
+            {
+                id: 1,
+                start: Date.now(),
+                title: 'Hello World :D',
+            },
+            {
+                id: 2,
+                start: '2022-02-25', // Format year-month-day
+                title: 'Yesterday',
+            },
+        ],
+        eventColor: 'seagreen',
+        eventClick: function (info) {
+            alert('Event: ' + info.event.title);
+
+            // change the border color just for fun
+            // info.el.style.borderColor = 'red';
+        },
+    });
+      calendar.render();
+  });
+</script>
+
+{% endblock %}

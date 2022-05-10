@@ -1,0 +1,37 @@
+<a href="{% url 'dashboards:detail' vehiculo.id %}" class="transition">
+    {% if vehiculo in vehiculos_verdes %}
+        <figure class="vehicle-card status__card-ok">
+    {% elif vehiculo in vehiculos_amarillos %}
+        <figure class="vehicle-card status__card-yellow">
+    {% elif vehiculo in vehiculos_rojos %}
+        <figure class="vehicle-card status__card-bad">
+    {% elif vehiculo in vehiculos_sospechosos %}
+        <figure class="vehicle-card status__card-suspicious">
+    {% else %}
+        <figure class="vehicle-card status__card-bad">
+    {% endif %}
+    
+
+        <div class="vehicle-card__img">
+            <span class="icon-truck vehicle-card__icon"></span>
+            <h3>{{vehiculo.numero_economico}}</h3>
+        </div>
+
+        <figcaption class="vehicle-card__info">
+            <p>
+                <span class="icon-pulpo"></span>
+            </p>
+            <p>
+            {% if vehiculo.fecha_de_inflado %}
+                {{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.year}}
+            {% elif vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
+                {{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}
+            {% endif %}
+
+            </p>
+            <p>
+                <span class="icon-checkmark"></span>
+            </p>
+        </figcaption>
+    </figure>
+</a>

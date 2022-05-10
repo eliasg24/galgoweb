@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	{% load static %}
+	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+</head>
+	<body>
+		<header>
+			<h2 class="titulo">Formulario</h2>
+		</header>
+		<main>
+			<p>Ingresar Formulario</p>
+			<form action="">
+				<input type="hidden">
+				<aside>
+					<div class="form__group field">
+						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
+						<label for="text1" class="form__label">text1</label>
+					</div>
+					<div class="form__group field">
+						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
+						<label for="text1" class="form__label">text1</label>
+					</div>
+					<div class="form__group field">
+						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
+						<label for="text1" class="form__label">text1</label>
+					</div>
+					<div class="form__group field">
+						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
+						<label for="text1" class="form__label">text1</label>
+					</div>
+					<div class="form__group field">
+						<input class="form__field" placeholder=""  type="date" autocomplete="off" name="text1">
+						<label for="date1" class="form__label">date1</label>
+					</div>
+				</aside>
+				<nav>
+					<button class="btn-green">
+						Enviar
+						<span class="icon-checkmark"></span>
+					</button>
+				</nav>
+			</form>
+		</main>
+	</body>
+</html>

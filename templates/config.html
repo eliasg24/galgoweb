@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/config2.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+<title>Configuracion</title>
+{% endblock head %}
+
+{% block content %}
+<div class="all-cont">
+    <section class="container">
+
+        <div class="form__container">
+
+            <nav class="config-nav">
+                <h1>CONFIGURACIÓN</h1>
+            </nav>
+
+            <nav class="buttonsC">
+                <button class="btn btn-aeto-crunch active" id="btn-operacion">
+                    Parametros de Operación
+                </button>
+                <button class="btn btn-aeto-crunch" id="btn-usuario">
+                    Parametros de Usuario
+                </button>
+                <button class="btn btn-aeto-crunch" id="btn-vehiculos">
+                    Alta Vehículos
+                </button>
+                <button class="btn btn-aeto-crunch" id="btn-llantas">
+                    Alta Llantas
+                </button>
+                <button class="btn btn-aeto-crunch" id="btn-catalogos">
+                    Catalogos
+                </button>
+                <button class="btn btn-aeto-crunch" id="btn-contexto">
+                    Alta Contexto
+                </button>
+            </nav>
+    
+            <article class="grid">
+                <div class="row page active" id="page-1">
+                    <div class="con on-view" id="operacion" >
+                        <div class="con-title">
+                            <h2 class="con-title__text">
+                                Parametros de operación
+                            </h2>
+                        </div>
+        
+                        <div class="wrapper">
+                            <form class="con-sec" action="{% url 'dashboards:config' %}" method="POST">
+                                {% csrf_token %}
+                                {% include 'config-params/operacion.html' %}
+                            </form>
+                        </div>
+                    </div>
+        </form>
+    
+                    <div class="con" id="usuario">
+        
+                        <div class="con-title">
+                            <h2 class="con-title__text">
+                               <span class="icon-cog5"></span> Parametros de Usuario
+                            </h2>
+                        </div>
+                        
+                        <div class="wrapper">
+                            <form class="con-sec" action="{% url 'dashboards:config' %}" method="POST">
+                                {% csrf_token %}
+                                {% include 'config-params/usuario.html' %}
+                            </form>
+                        </div>
+                    </div>
+    
+                    <div class="con" id="vehiculos">
+                        <div class="con-title">
+                            <h2 class="con-title__text">
+                                <span class="icon-upload-cloud"></span>
+                                ALTA VEHÍCULOS
+                            </h2>
+                        </div>
+                        <div class="wrapper">
+                            <div class="con-sec">
+                                <div class="buttons">
+                                    <div>
+                                        <form style="margin: 0" action="{% url 'dashboards:config' %}" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="compania" value="{{user.perfil.compania}}">
+                                            <label>
+                                                <input type="file" name="file"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                            </label>
+                                            <button class="btn btn-download w-100" value="excelform" type="submit">Continuar</button>
+                                        </form>
+                                    </div>
+                                    <a href="https://drive.google.com/uc?id=1AgjEnTFj8jZpS6zJcCJF1G_s8Wxu6ohp&export=download" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row page" id="page-2">
+                    <div class="con" id="llantas">
+                        <div class="con-title">
+                            <h2 class="con-title__text">
+                                <span class="icon-upload-cloud"></span>
+                                Alta de llantas rodantes
+                            </h2>
+                        </div>
+                        <div class="wrapper">
+                            <div class="con-sec">
+                                <div class="buttons">
+                                    <div>
+                                        <form style="margin: 0" action="{% url 'dashboards:config' %}"  method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="compania" value="{{user.perfil.compania}}">
+                                            <label>
+                                                <input type="file" name="file2"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                            </label>
+                                            <button class="btn btn-download w-100" type="submit">Continuar</button>
+                                        </form>
+                                    </div>
+                                    <a href="https://drive.google.com/uc?id=1DtE-s-P6C47l6df30PIAQtzm4QzSAPCw&export=download" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="con" id="catalogos">
+                        <div class="con-title">
+                            <h2 class="con-title__text">
+                                <span class="icon-bookmark14"></span>
+                                Catálogos
+                            </h2>
+                        </div>
+                        <div class="wrapper">
+                            <div class="con-sec">
+                                <div class="buttons">
+                                    <a href="{% url 'dashboards:catalogoProductos' %}" class="btn btn-redirect">
+                                        Catálogos de productos
+                                    </a>
+                                    <a href="{% url 'dashboards:catalogoRenovadores' %}" class="btn btn-redirect">
+                                        Catálogos de renovadores
+                                    </a>
+                                    <a href="{% url 'dashboards:catalogoDesechos' %}" class="btn btn-redirect">
+                                        Catálogos de desechos
+                                    </a>
+                                    <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-redirect">
+                                        Catálogos de observaciones
+                                    </a>
+                                    <a href="{% url 'dashboards:catalogoRechazos' %}" class="btn btn-redirect">
+                                        Catálogos de rechazos
+                                    </a>
+                                    <!-- <a href="https://drive.google.com/uc?export=download&id=1Lg7iQZf_N3bwSjutnlWAJwF5mlPXERai" class="btn btn-redirect">
+                                        Catálogos de metas
+                                    </a>
+                                    <a href="https://drive.google.com/uc?export=download&id=1Lg7iQZf_N3bwSjutnlWAJwF5mlPXERai" class="btn btn-redirect">
+                                        Catálogos de presupuestos
+                                    </a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    {% if perms.compania.add_compania %}
+                        <div class="con" id="contexto">
+                            <div class="con-title">
+                                <h2 class="con-title__text">
+                                    Contexto
+                                </h2>
+                            </div> 
+                            <div class="wrapper">
+                                <div class="con-sec">
+                                    <a href="{% url 'dashboards:companyFormulario' %}" class="btn btn-redirect">
+                                        Compañia
+                                    </a>
+                                    <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-redirect">
+                                        Sucursal
+                                    </a>
+                                    <a href="{% url 'dashboards:tallerFormulario' %}" class="btn btn-redirect">
+                                        Taller
+                                    </a>
+                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
+                                        Usuario
+                                    </a>
+                                    <a href="{% url 'dashboards:aplicacionFormulario' %}" class="btn btn-redirect">
+                                        Aplicación
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <nav class="nav justify-end indicators">
+                    <button class="btn btn-download not-allowed" id="prev">
+                        <span class="icon-arrow-left2"></span>
+                    </button>
+                    <button class="btn btn-download" id="next">
+                        <span class="icon-arrow-right2"></span>
+                    </button>
+                </nav>
+            </article>
+        
+    </section>
+</div>                                        
+<script>
+
+document.addEventListener('DOMContentLoaded', (e) => {
+  handleButtons('.buttonsC');
+  handleView('btn-llantas', 'llantas');
+  handleView('btn-operacion', 'operacion');
+  handleView('btn-vehiculos', 'vehiculos');
+  handleView('btn-catalogos', 'catalogos');
+  handleView('btn-usuario', 'usuario');
+  handleView('btn-contexto', 'contexto');
+  handleNav();
+});
+
+const handleNav = () => {
+    const next = document.getElementById('next');
+    const prev = document.getElementById('prev');
+
+    next.addEventListener('click', (e) => {
+        e.preventDefault();
+        next.classList.add('not-allowed');
+        prev.classList.remove('not-allowed');
+
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById('page-2').classList.add('active');
+    });
+    prev.addEventListener('click', (e) => {
+        e.preventDefault();
+        next.classList.remove('not-allowed');
+        prev.classList.add('not-allowed');
+
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById('page-1').classList.add('active');
+    });
+};
+
+const handleView = (button = '', view = '') => { // Manejador de cambio de vista al hacer click en un boton
+  const btn = document.getElementById(button); // El boton tiene que tener un id
+  const image = document.getElementById(view); // El image (contenedor) tiene que tener un id
+  
+  btn.addEventListener('click', (e) => {
+  document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
+  
+  image.classList.add('on-view');
+  });         
+};
+
+const handleButtons = (container = '') => { // Solo recibe el contenedor donde estan los botones
+  const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
+    
+  buttons.forEach( button => {
+  button.addEventListener('click', (e) => {
+    e.preventDefault()   
+    buttons.forEach(item => item.classList.remove('active'))    
+    e.target.classList.add('active');
+    });
+  } );
+};
+
+</script>
+{% endblock %}

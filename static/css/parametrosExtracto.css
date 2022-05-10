@@ -1,0 +1,329 @@
+:root{
+  --inputs-laterales:  linear-gradient(#D76369, #F4AA74);
+  --red: #D76369;
+  --orange: #F6AA6F;
+  --black: #171717;
+  --gray: linear-gradient(#363636, #242424);
+}
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  background: #f1f1f1;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #363636;
+}
+
+html{
+  font-size: 62.5%;
+  color: white;
+}
+.container{
+  display: grid;
+  margin-left: 70px;
+  height: 100%;
+}
+.horizontal{
+  width: 100%;
+  margin: 0;
+  background: #363636;
+  display: grid;
+  grid-template-rows: 2fr 16fr;
+}
+.top-nav{
+  margin-left: 5px;
+  background: #171717;
+  width: calc(100% - 5px);
+  display: flex;
+  align-items: center;
+}
+/* h2{
+  margin: 0;
+  margin-left: 1vw;
+} */
+  .informe-name{
+    margin-left: 1vw;
+  }
+
+  .parametrosReporte{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    border-radius: 10px;
+  }
+
+  .parametro-title{
+      width: 35vw;
+      display: flex;
+      color: white;
+      background: #171717;
+      margin: 0;
+      border-radius: 10px 10px 0 0;
+      height: 5vh;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .parametros{
+      background: #242424;
+      /* height: 50vh; */
+      border-radius: 10px;
+  }
+
+  .parametros select{
+      border: none;
+      outline: none;
+      margin-bottom: 1vh;
+      height: 4vh;
+  }
+
+  .argumentos-reporte form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .p-title {
+    text-align: center;
+    font-size: 1.6rem;
+  }
+
+  .arrow-a{
+    text-decoration: none;
+    outline: none;
+  }
+
+  .icon-arrow-left2{
+    color: white;
+    font-size: 24;
+    margin-left: 1.5vw;
+  }
+
+  .button-a{
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .reporte-descarga{
+    background: linear-gradient(to right, #D76369, #F4AA74);
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    height: 50px;
+    border-radius: 8px;
+
+  }
+
+  label{
+    margin: 0 auto;
+  }
+
+  .parametro-texto{
+    background: white;
+    width: 80%;
+    color: black;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  /* CHECKBOX */
+.multiselect{
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 1vh;
+}
+
+.selectBox{
+  position: relative;
+}
+
+.selectBox select{
+  width: 100%;
+  height: 30;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.overSelect{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#checkboxes{
+  display: none;
+  width: 26.8%;
+  border: 1px #dadada solid;
+}
+
+#checkboxes p{
+  margin-left: 25px;
+  margin-top: -15px;
+}
+
+#checkboxes label{
+  display: block;
+  margin-left: 0px;
+  margin-top: 5px;
+}
+
+#checkboxes label:hover{
+  background-color: #f6aa6f;
+}
+
+.multiselect2{
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 1vh;
+}
+
+.selectBox2{
+  position: relative;
+}
+
+.selectBox2 select{
+  width: 100%;
+  text-align: center;
+  height: 30;
+  font-size: 1.2rem;
+}
+
+.overSelect2{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#checkboxes2{
+  display: none;
+  width: 26.8%;
+  border: 1px #dadada solid;
+  z-index: 3001;
+}
+
+#checkboxes2 p{
+  margin-left: 20px;
+  margin-top: -15px;
+} 
+
+#checkboxes2 label{
+  display: block;
+  margin-left: 0px;
+  margin-top: 5px;
+}
+
+#checkboxes2 label:hover{
+  background-color: #f6aa6f;
+}
+
+/*3*/
+
+.multiselect3{
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 1vh;
+}
+
+.selectBox3{
+  position: relative;
+}
+
+.selectBox3 select{
+  width: 100%;
+  text-align: center;
+  height: 30;
+  font-size: 1.2rem;
+}
+
+.overSelect3{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#checkboxes3{
+  display: none;
+  width: 26.8%;
+  border: 1px #dadada solid;
+  z-index: 3001;
+}
+
+#checkboxes3 p{
+margin-left: 20px;
+margin-top: -15px;
+} 
+
+#checkboxes3 label{
+display: block;
+margin-left: 0px;
+margin-top: 5px;
+}
+
+#checkboxes3 label:hover{
+background-color: #f6aa6f;
+}
+
+.multiselect4{
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 1vh;
+}
+
+.selectBox4{
+  position: relative;
+}
+
+.selectBox4 select{
+  width: 100%;
+  text-align: center;
+  height: 30;
+  font-size: 1.2rem;
+}
+
+.overSelect4{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#checkboxes4{
+  display: none;
+  width: 26.8%;
+  border: 1px #dadada solid;
+  z-index: 3001;
+}
+
+#checkboxes4 p{
+margin-left: 20px;
+margin-top: -15px;
+} 
+
+#checkboxes4 label{
+display: block;
+margin-left: 0px;
+margin-top: 5px;
+}
+
+#checkboxes4 label:hover{
+background-color: #f6aa6f;
+}

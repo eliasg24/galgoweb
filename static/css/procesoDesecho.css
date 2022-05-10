@@ -1,0 +1,401 @@
+html {
+  color: white;
+  box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  background-color: #363636;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+button {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+h2 {
+  text-align: center;
+  background-color: seagreen;
+  margin: 0;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+  padding: 10px;
+  width: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+p {
+  margin: .25rem 0;
+}
+
+.all-cont {
+  display: grid;
+  height: 100vh;
+  width: calc(100% - 70px);
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+}
+
+.grid-items {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  width: 100%;
+}
+
+.top-nav {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1vh;
+}
+
+.title-panel {
+  font-weight: 1.5vw;
+  margin: 0;
+}
+
+.mr-1 {
+  margin-right: 1vw;
+}
+
+.icon-arrow-left2 {
+  margin-left: 1vw;
+  font-size: calc(2rem + 2vh);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  margin: 0 1vw 1vh;
+}
+
+.left-column, 
+.right-column {
+  display: flex;
+  flex-flow: column nowrap;
+  background: #171717;
+  border-radius: 0.75rem;
+  position: relative;
+}
+
+.main-cont {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.main-top,
+.main-bottom {
+  display: flex;
+  align-items: center;
+  background: #171717;
+  flex-flow: column nowrap;
+  border-radius: 0.75rem;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+
+
+.two-columns {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  height: 100%;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
+}
+
+.column {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.list-container {
+  bottom: 0;
+  /* display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); */
+  display: flex;
+  align-content: flex-start;
+  flex-flow: row wrap;
+  gap: 1rem;
+  left: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.drop-zone {
+  transition: ease-in .4s ease;
+  z-index: 3;
+}
+
+.drop-zone.active {
+  background-color: rgb(46, 139, 87, .25);
+  border: 6px dashed seagreen;
+  cursor: copy;
+}
+
+.card {
+  align-items: center;
+  background-color: #353535;
+  border-radius: .5rem;
+  cursor: grab;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: .5rem;
+  justify-content: space-around;
+  padding: .75rem;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  transition: all .4s ease;
+}
+
+.card.drag-active {
+  cursor: copy;
+  opacity: 0;
+}
+
+.card-img {
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+}
+
+.card-img > .tag {
+  border-radius: .25rem;
+  font-size: 1vw;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: -2px;
+  width: 100%;
+}
+
+.tag.good {
+  background-color: #026cf5;
+}
+
+.tag.yellow {
+  background-color: #dbc002;
+}
+
+.tag.bad {
+  background-color: #f0412c;
+}
+
+.card-img > .icon-tire2 {
+  font-size: 5vw;
+}
+
+.card-info {
+  font-size: 1.25vw;
+  word-wrap: break-word;
+}
+
+.scratch {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* Form start */
+
+.dictamen-form {
+  display: grid;
+  align-items: center;
+  bottom: 0;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: 
+    "input input file"
+    "input input nav"
+  ;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.input-group {
+  display: flex;
+  align-items: flex-start;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  grid-area: input;
+  height: 100%;
+  justify-content: space-evenly;
+  overflow-y: auto;
+  padding: .5rem;
+}
+
+.form-list {
+  width: 80%;
+}
+
+.form-control{
+  background: none;
+  border: thin solid #fff;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.5rem;
+  padding: .5rem;
+  width: 100%;
+}
+
+.items-list {
+  font-weight: normal;
+  font-size: .75rem;
+  word-wrap: break-word;
+}
+
+.file {
+  align-items: center;
+  border: 6px dashed transparent;
+  grid-area: file;
+  height: min-content;
+  justify-content: start;
+  position: relative;
+  text-align: center;
+  transition: background .4s ease;
+}
+
+.file:hover {
+  background-color: rgb(46, 139, 87, .25);
+  border-color: seagreen;
+}
+
+.icon-camera1 {
+  font-size: 2vw;
+}
+
+.file > input[type="file"] {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.options-nav {
+  display: flex;
+  align-items: center;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  gap: 1rem;
+  grid-area: nav;
+}
+
+.btn {
+  border-radius: 50%;
+  cursor: pointer;
+  padding: .75rem;
+  transition: all .4s ease;
+}
+
+.btn:hover {
+  opacity: .75;
+}
+
+.btn.disabled {
+  background-color: gainsboro;
+  color: gray;
+  cursor: not-allowed;
+}
+
+.btn.ok,
+.btn.danger {
+  font-size: 2vw;
+}
+
+/* Form End */
+
+
+.ok {
+  background-color: seagreen;
+  color: #fff;
+}
+
+.danger {
+  background-color: red;
+  color: #fff;
+}
+
+.delete {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 1vw;
+  padding: 0;
+}
+
+/* Remove cursor move */
+
+.ok-items > .card {
+  cursor: auto;
+}
+
+.delete > .icon-cross {
+  border-radius: 50%;
+  padding: .5rem;
+}
+
+/* Custom Scroll */
+
+.list-container::-webkit-scrollbar,
+.dictamen-form::-webkit-scrollbar,
+.input-group::-webkit-scrollbar {
+  width: 10px;
+}
+
+.list-container::-webkit-scrollbar-thumb,
+.dictamen-form::-webkit-scrollbar-thumb,
+.input-group::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.list-container::-webkit-scrollbar-track,
+.dictamen-form::-webkit-scrollbar-track,
+.input-group::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}

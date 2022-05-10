@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+    {% comment %}
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Last-Modified" content="0" />
+    <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <link rel="canonical" href="www.aetoweb.com" />
+    <meta name="description" content="Aeto Web oficial">
+    <meta property=”og:type” content=”website” />
+    <meta property=”og:title” content="Aeto Web" />
+    <meta property=”og:description” content="Aeto web oficial" />
+    <meta property=”og:image” content="{% static 'images/aeto.svg' %}" />
+    <meta property=”og:url” content=”permalink” />
+    {% endcomment %}
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/logo-border.png' %}"
+      type="image/x-icon"
+    />
+    <link
+    href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+    rel="stylesheet"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% include 'nav.html' %} 
+    {% block content %} {% endblock%}
+    <script src="{% static 'js/menu.js' %}"></script>
+  </body>
+</html>

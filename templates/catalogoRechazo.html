@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {%load static%}
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/catalogos.css' %}"
+  />
+  <meta charset="utf-8" />
+  <title>Catalogo de observaciones</title>
+{% endblock %}
+
+{% block content %}
+  <div class="all-cont animate__animated animate__fadeIn">
+    <header class="header">
+      <div class="logo">
+        <img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
+      </div>
+      <h1 class="main-title">CATÁLOGO DE RECHAZOS</h1>
+    </header>
+    <main class="main-cont">
+        <div class="cont-left">
+          <header class="section-head">
+            <h2 class="section-title">Agregar rechazo</h2>
+          </header>
+          {% include 'catalogos-forms/rechazo-form.html' %}
+        </div>
+        <div class="cont-right">
+          <header class="section-head">
+            <h2 class="section-title">Rechazo</h2>
+          </header>
+          <div class="table-cont">
+            <table class="main-table">
+              <thead>
+                <tr>
+                  <th>Acciones</th>
+                  <th>Llanta</th>
+                  <th>Razón</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for rechazo in rechazos %}
+                  <tr id="{{rechazo.id}}">
+                    <td class="flex-row">
+                      <a href="{% url 'dashboards:catalogoRechazosEdit' rechazo.id %}" class="btn btn-download">
+                        <span class="icon-pencil"></span>
+                      </a>
+                      <form action="{% url "dashboards:catalogoRechazosDelete" %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{rechazo.id}}">
+                        <button class="btn btn-danger">
+                          <span class="icon-trash"></span>
+                        </button>
+                      </form>
+                    </td>
+                    <td>{{rechazo.llanta}}</td>
+                    <td>{{rechazo.razon}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </main>
+  </div>
+
+  <script></script>
+{% endblock %}

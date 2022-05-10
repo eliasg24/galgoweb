@@ -1,0 +1,683 @@
+.btn-download {
+  background-color: var(--border-button);
+}
+
+.eje {
+  text-align: center;
+}
+
+.tire-relative {
+  color: white;
+  text-decoration: none;
+  position: relative;
+}
+
+.tire__top,
+.tire__medium,
+.tire__bottom {
+  font-size: 0.75rem;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  right: -1px;
+  /* padding: 0.25rem; */
+  text-align: center;
+  width: auto;
+}
+
+.tire__top {
+  border-radius: 0.25rem 0.25rem 0 0;
+  top: -1px;
+}
+
+.tire__medium {
+  border-radius: 50%;
+  bottom: 35%;
+  margin: auto;
+  padding: 0.25rem;
+  width: fit-content;
+}
+
+.tire__bottom {
+  border-radius: 0 0 0.25rem 0.25rem;
+  bottom: 0;
+}
+
+.tire__data {
+  font-size: 1rem;
+  color: #fff;
+  text-shadow: 2px 2px #000;
+}
+
+.icon-central-axle,
+.icon-da {
+  background-color: #fff;
+  height: 1rem;
+}
+
+.double-tire {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
+}
+
+.icon-tire2 {
+  font-size: 6rem;
+}
+
+.flex-row {
+  flex-flow: row wrap;
+}
+
+.btn-info {
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.btn-aeto-crunch,
+.btn-info {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-aeto-crunch span {
+  font-size: 1.25rem;
+}
+
+.detail__title {
+  font-size: 2rem;
+}
+
+.main-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+}
+
+.container {
+  display: grid;
+  gap: 0.5rem;
+  /* grid-template-rows: auto 1fr; */
+  height: 100%;
+  width: 95%;
+  padding: 1rem 0;
+  margin: auto;
+}
+
+.main__content {
+  display: none;
+}
+
+.main__content.on-view {
+  display: grid;
+}
+
+#nav-table .btn-aeto-crunch.active {
+  border-top: none;
+  border-bottom: thin solid var(--border-alt-button);
+}
+
+.tables__table {
+  display: none;
+  position: absolute;
+  width: 100%;
+}
+
+.tables__table.on-table {
+  display: table;
+}
+
+.dash__content {
+  display: none;
+}
+
+.dash__content.active {
+  display: block;
+}
+
+.config__container-table {
+  height: 100%;
+  position: relative;
+}
+
+.config__data {
+  background-color: #202020;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.config__data::-webkit-scrollbar {
+  width: 10px;
+}
+
+.config__data::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.config__data::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}
+
+.dash__data {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.score-card {
+  align-items: center;
+  background-color: var(--main-background);
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.chart__container {
+  background-color: #202020;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0.5rem;
+}
+
+.container_fluid {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.chart {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.col-2 {
+  gap: 2rem;
+  grid-template-rows: repeat(2, auto);
+}
+
+.grid-4 {
+  gap: 1rem;
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.rows-2 {
+  gap: 1rem;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.config__container {
+  background-color: #202020;
+  border-radius: 0.25rem;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  overflow: hidden;
+}
+
+#km-vehiculo {
+  text-align: center;
+  margin: 0;
+}
+
+.config__header {
+  background-color: var(--main-blue);
+  /* border-bottom: thin solid #00f0ff; */
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.config__config {
+  align-self: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+
+.config__config {
+  margin: auto;
+  width: 90%;
+}
+
+.config__config > .relative {
+  height: 100%;
+  min-height: 70vh;
+  width: 100%;
+}
+
+.dash__nav {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.good {
+  background-color: var(--main-blue);
+}
+
+.yellow {
+  background-color: var(--yellow-color);
+}
+
+.bad {
+  background-color: var(--red-color);
+}
+
+.purple {
+  background-color: var(--purple-color);
+}
+
+
+.good-text {
+  color: seagreen;
+}
+
+.yellow-text {
+  color: var(--yellow-color);
+}
+
+.bad-text {
+  color: var(--red-color);
+}
+
+.config__nav {
+  padding: 0.5rem;
+}
+
+.config__buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.relative.absolute {
+  overflow-y: auto;
+}
+
+/* .btn-download.relative {
+  justify-content: flex-start;
+} */
+
+.pop-out {
+  background-color: #111;
+  position: absolute;
+  font-size: 1rem;
+  width: max-content;
+  padding: 0.25rem;
+  top: 4px;
+  transition: all 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn:hover .pop-out {
+  opacity: 1;
+  transform: translateY(45px);
+  visibility: visible;
+}
+
+.btn:hover {
+  opacity: 1;
+}
+
+.config__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.config__table th {
+  border-bottom: 2px solid var(--border-alt-button);
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.config__table td {
+  padding: 0.5rem;
+  text-align: center;
+}
+.config__table thead {
+  background-color: #213944;
+}
+
+.config__table tbody tr:nth-child(even) {
+  background-color: #213944;
+}
+
+.config__table .icon-cross {
+  color: var(--red-color);
+}
+
+.config__table .icon-checkmark {
+  color: var(--green-color);
+}
+
+.bitacora-title {
+  text-align: center;
+}
+
+.bit-dash {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.bitacora {
+  background: #202020;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.dash__container {
+  background: #202020;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.cont-chart {
+  height: 100%;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.dash__content {
+  height: 100%;
+}
+
+.dash__chart {
+  height: 100%;
+}
+
+.cont-right {
+  height: 50vh;
+  position: relative;
+}
+
+#lineChart {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.buttons {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.buttons button span {
+  font-size: 1.25rem;
+}
+
+.space-around {
+  width: 100%;
+  justify-content: space-around;
+}
+
+.print__container {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+}
+
+.print__content {
+  background-color: #202020;
+}
+
+.par-llantas,
+.par-doble-llanta {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto 1fr auto;
+  padding: 1rem;
+}
+
+.icon-central-axle,
+.icon-da {
+  background-color: #fff;
+  height: 1rem;
+}
+
+.axle {
+  display: flex;
+  background-color: white;
+  height: 1rem;
+}
+
+.eje span {
+  font-weight: bold;
+}
+
+.config__container.none {
+  grid-template-rows: auto 1fr;
+}
+
+@media screen and (min-width: 1024px) {
+  .eje span {
+    font-size: 1.5rem;
+  }
+
+  .tire__medium {
+    bottom: 37%;
+    padding: 0.75rem;
+  }
+
+  .col-2 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .config__config {
+    width: 80%;
+  }
+
+  .icon-tire2 {
+    color: #fff;
+    font-size: 15vmin;
+  }
+
+  .dash__data {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .cont-right {
+    height: 100%;
+  }
+
+  .config__buttons {
+    padding: 1rem;
+  }
+}
+
+@media screen and (min-width: 1336px) {
+  .pop-out-llanta h4 {
+    font-size: 1.5rem;
+  }
+
+  .icon-central-axle,
+  .icon-da {
+    font-size: 0.75rem;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .pop-out-llanta h4 {
+    font-size: 2rem;
+  }
+
+  .icon-tire2 {
+    font-size: 20vmin;
+  }
+
+  .icon-central-axle,
+  .icon-da {
+    font-size: 1rem;
+  }
+}
+
+.tire {
+  position: relative;
+}
+
+.absolute {
+  display: grid;
+  height: 100%;
+  position: absolute;
+  overflow-y: auto;
+  width: 100%;
+}
+
+@media screen and (min-width: 1024px) {
+  .config__config > .relative {
+    min-height: auto;
+  }
+
+  /*ejes__1*/
+
+  .par-doble-llanta.ejes__1 {
+    width: 50%;
+  }
+
+  .ejes__1 > .tire > .icon-tire2 {
+    font-size: 34vmin;
+  }
+
+  .ejes__1 > .axle {
+    height: 2rem;
+  }
+  /*end ejes__1*/
+
+  /*ejes__2*/
+
+  .ejes__2 > .tire > .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .par-doble-llanta.ejes__2 .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .ejes__2 > .axle {
+    height: 2rem;
+  }
+  /*end ejes__2*/
+
+  /*ejes__3*/
+  .ejes__3 > .tire > .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .par-doble-llanta.ejes__3 .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .ejes__3 > .axle {
+    height: 1.4rem;
+  }
+  /*end ejes__3*/
+
+  /*ejes__4*/
+
+  .ejes__4 > .tire > .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .par-doble-llanta.ejes__4 .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .ejes__4 > .axle {
+    height: 1.2rem;
+  }
+  /*end ejes__4*/
+
+  /*ejes__5*/
+  .ejes__5 > .tire > .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .par-doble-llanta.ejes__5 .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .ejes__5 > .axle {
+    height: 1rem;
+  }
+  /*end ejes__5*/
+
+  /*ejes__6*/
+
+  .ejes__6 > .tire > .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .par-doble-llanta.ejes__6 .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .ejes__6 > .axle {
+    height: 0.8rem;
+  }
+  /*end ejes__6*/
+
+  .ejes__7 > .tire > .icon-tire2 {
+    font-size: 12vmin;
+  }
+
+  .par-doble-llanta.ejes__7 .icon-tire2 {
+    font-size: 12vmin;
+  }
+
+  .ejes__7 > .axle {
+    height: 0.6rem;
+  }
+  /*end ejes__7*/
+
+  .icon-tire2 {
+    font-size: 20vmin;
+  }
+}

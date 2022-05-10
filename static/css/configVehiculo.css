@@ -1,0 +1,327 @@
+/* ? Colors */
+
+.good {
+  background-color: var(--main-blue);
+}
+
+.yellow {
+  background-color: var(--yellow-color);
+}
+
+.bad {
+  background-color: var(--red-color);
+}
+
+.purple {
+  background-color: var(--purple-color);
+}
+
+.tire {
+  width: max-content;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.axle {
+  display: flex;
+  background-color: white;
+  height: 1rem;
+}
+
+.main-title {
+  text-align: center;
+}
+
+.config__llantas {
+  background: #202020;
+  border-radius: 0.25rem;
+  margin: 1rem;
+  display: grid;
+  position: relative;
+}
+
+.par-llantas,
+.par-doble-llanta {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto 1fr auto;
+  padding: 1rem;
+}
+
+.tire-relative {
+  color: white;
+  text-decoration: none;
+  position: relative;
+}
+
+.tire__top,
+.tire__bottom {
+  font-size: 1rem;
+  position: absolute;
+  left: 0;
+  right: -1px;
+  /* padding: 0.25rem; */
+  text-align: center;
+  width: auto;
+}
+
+.tire__top {
+  border-radius: 0.25rem 0.25rem 0 0;
+  top: -1px;
+}
+
+.tire__bottom {
+  border-radius: 0 0 0.25rem 0.25rem;
+  bottom: 0;
+}
+
+.tire__medium {
+  bottom: 30%;
+  padding: 0.25rem;
+}
+
+.tire__bottom .tire__title {
+  font-size: 1rem;
+}
+
+.tire__title {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  transition: all 0.4s ease-in;
+  left: 0;
+  right: 0;
+}
+
+.tire__data {
+  font-size: 1rem;
+}
+
+.icon-central-axle,
+.icon-da {
+  background-color: #fff;
+  height: 1rem;
+}
+
+.double-tire {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
+}
+
+.icon-tire2 {
+  font-size: 5rem;
+}
+
+.head-cont {
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.main-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.main-content {
+  display: grid;
+}
+
+.smart__container {
+  background-color: var(--head-bg);
+  margin: 1rem;
+}
+
+.config__container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  justify-content: center;
+  margin: auto;
+  width: 90%;
+}
+
+.tire {
+  position: relative;
+}
+
+.absolute {
+  display: grid;
+  height: 100%;
+  position: absolute;
+  overflow-y: auto;
+  width: 100%;
+}
+
+@media screen and (min-width: 1024px) {
+  .tire__medium {
+    bottom: 40%;
+    padding: 0.75rem;
+  }
+
+  .par-llantas,
+  .par-doble-llanta {
+    margin: 0 auto;
+  }
+
+  /*ejes__1*/
+  .par-llantas.ejes__1 {
+    width: 48%;
+  }
+
+  .par-doble-llanta.ejes__1 {
+    width: 50%;
+  }
+
+  .ejes__1 > .tire > .icon-tire2 {
+    font-size: 34vmin;
+  }
+
+  .ejes__1 > .axle {
+    height: 2rem;
+  }
+  /*end ejes__1*/
+
+  /*ejes__2*/
+  .par-llantas.ejes__2 {
+    width: 48%;
+  }
+
+  .par-doble-llanta.ejes__2 {
+    width: 50%;
+  }
+
+  .ejes__2 > .tire > .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .par-doble-llanta.ejes__2 .icon-tire2 {
+    font-size: 24vmin;
+  }
+
+  .ejes__2 > .axle {
+    height: 2rem;
+  }
+  /*end ejes__2*/
+
+  /*ejes__3*/
+  .par-llantas.ejes__3 {
+    width: 38%;
+  }
+
+  .par-doble-llanta.ejes__3 {
+    width: 40%;
+  }
+
+  .ejes__3 > .tire > .icon-tire2 {
+    font-size: 22vmin;
+  }
+
+  .par-doble-llanta.ejes__3 .icon-tire2 {
+    font-size: 22vmin;
+  }
+
+  .ejes__3 > .axle {
+    height: 1.4rem;
+  }
+  /*end ejes__3*/
+
+  /*ejes__4*/
+  .par-llantas.ejes__4 {
+    width: 28%;
+  }
+
+  .par-doble-llanta.ejes__4 {
+    width: 30%;
+  }
+
+  .ejes__4 > .tire > .icon-tire2 {
+    font-size: 20vmin;
+  }
+
+  .par-doble-llanta.ejes__4 .icon-tire2 {
+    font-size: 20vmin;
+  }
+
+  .ejes__4 > .axle {
+    height: 1.2rem;
+  }
+  /*end ejes__4*/
+
+  /*ejes__5*/
+  .par-llantas.ejes__5 {
+    width: 28%;
+  }
+
+  .par-doble-llanta.ejes__5 {
+    width: 30%;
+  }
+
+  .ejes__5 > .tire > .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .par-doble-llanta.ejes__5 .icon-tire2 {
+    font-size: 18vmin;
+  }
+
+  .ejes__5 > .axle {
+    height: 1rem;
+  }
+  /*end ejes__5*/
+
+  /*ejes__6*/
+  .par-llantas.ejes__6 {
+    width: 26%;
+  }
+
+  .par-doble-llanta.ejes__6 {
+    width: 28%;
+  }
+
+  .ejes__6 > .tire > .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .par-doble-llanta.ejes__6 .icon-tire2 {
+    font-size: 16vmin;
+  }
+
+  .ejes__6 > .axle {
+    height: 0.8rem;
+  }
+  /*end ejes__6*/
+
+  /*ejes__7*/
+  .par-llantas.ejes__7 {
+    width: 24%;
+  }
+
+  .par-doble-llanta.ejes__7 {
+    width: 26%;
+  }
+
+  .ejes__7 > .tire > .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .par-doble-llanta.ejes__7 .icon-tire2 {
+    font-size: 14vmin;
+  }
+
+  .ejes__7 > .axle {
+    height: 0.6rem;
+  }
+  /*end ejes__7*/
+
+  .icon-tire2 {
+    font-size: 20vmin;
+  }
+
+  .config__container {
+    width: 70%;
+  }
+}

@@ -1,0 +1,97 @@
+<div class="form__group field">
+  <input
+      class="form__field"
+      type="email"
+      placeholder="correo"
+      name="email"
+      autocomplete="off"
+      value="{{user.email}}"
+      required
+  />
+  <label for="correo" class="form__label">
+      Correo
+  </label>
+</div>
+
+<div class="form__group field">
+  <input
+      class="form__field"
+      type="text"
+      placeholder="nombre"
+      name="username"
+      autocomplete="off"
+      value="{{user.username}}"
+      required
+  />
+  <label for="name" class="form__label">
+      Nombre
+  </label>
+</div>
+
+<div class="form__group field">
+  <input
+      class="form__field"
+      type="text"
+      placeholder="idioma"
+      name="idioma"
+      list="language"
+      autocomplete="off"
+      value="{{user.perfil.idioma}}"
+      required
+  />
+  <label for="idioma" class="form__label">
+      Idioma
+  </label>
+  <datalist id="language">
+      <option value="Español">
+      <option value="Inglés">
+  </datalist>
+</div>
+
+<div class="form__group field">
+  <input
+      class="form__field"
+      type="text"
+      placeholder="unidades"
+      name="unity"
+      list="unidades"
+      autocomplete="off"
+      value="{{user.perfil.compania.unidades_presion}}"
+      required
+  />
+  <label for="unity" class="form__label">
+      Unidades
+  </label>
+  <datalist id="unidades">
+      <option value="psi"></option>
+      <option value="bar"></option>
+      <option value="mPa"></option>
+  </datalist>
+</div>
+
+<div class="form__group field">
+    <input
+        class="form__field"
+        type="text"
+        placeholder="rol"
+        name="groups"
+        list="rol"
+        autocomplete="off"
+        value="{{user.groups.all.0}}"
+        required
+    />
+    <label for="rol" class="form__label">
+        Rol de usuario
+    </label>
+    <datalist id="rol">
+        {% for grupo in groups_names %}
+            <option value="{{grupo}}"></option>
+        {% endfor %}
+    </datalist>
+</div>
+
+<nav class="flex-row">
+    <button value='usuarioform' type="submit" class="btn btn-success">
+        <span class="icon-floppy1"></span>
+    </button>
+</nav>

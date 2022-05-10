@@ -1,0 +1,450 @@
+:root {
+  --black: #171717;
+  --gray: linear-gradient(#363636, #242424);
+}
+
+/* Customize the label (the container) */
+.input-check-dual {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.input-check-dual input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* On mouse-over, add a grey background color */
+.input-check-dual:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.input-check-dual input:checked ~ .checkmark {
+  background-color: var(--pink-color);
+}
+
+/* Show the checkmark when checked */
+.input-check-dual input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.input-check-dual .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.checkmark {
+  top: 5px;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.all-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.head-menu {
+  align-items: center;
+  background: #202020;
+  flex-flow: row wrap;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.head-item {
+  float: right;
+  margin-right: 1%;
+  align-self: center;
+  display: block;
+}
+
+.head-item a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.btn-group {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.form-head {
+  margin: 0;
+  width: 100%;
+  height: auto;
+}
+
+.menu_li--left {
+  float: left;
+  margin-left: 1vw;
+  margin-top: 1vh;
+}
+
+.input-aeto {
+  color: #fff;
+}
+
+#input-fecha {
+  width: 11vw;
+}
+#btn-buscar {
+  background: #026cf5;
+  display: none;
+}
+
+.input-aeto {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.4s ease;
+}
+
+.input-aeto {
+  align-items: center;
+  display: flex;
+  background: none;
+  color: white;
+  border: none;
+  /*border-bottom: white solid;*/
+}
+
+.btn-aeto > span,
+.input-aeto {
+  font-size: 1.25rem;
+  color: white;
+  display: block;
+}
+
+.btn-wh {
+  align-items: center;
+  background-color: #026cf5;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+}
+
+.grafica {
+  height: 50vh;
+}
+
+.cont-horizontal {
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: auto 1fr;
+  margin: 1rem;
+}
+
+.cont-left {
+  background: var(--black);
+  border-radius: 5px;
+  height: 100%;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.flex-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tnavs {
+  gap: 10px;
+}
+
+.container-fluid {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.cont-right {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+}
+
+.cont-chart {
+  background: var(--black);
+  border-radius: 5px;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  position: relative;
+}
+
+#pronostico-consumo {
+  height: 50vh;
+}
+
+/*.buttons-bubble{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}*/
+
+.cont-chart h2 {
+  text-align: center;
+}
+
+.total {
+  border-top: white;
+}
+
+.popout-text {
+  background-color: #000;
+  border-radius: 0.25rem;
+  display: none;
+  font-size: 0.85rem;
+  margin-left: 3rem;
+  padding: 0.75rem;
+  position: absolute;
+  right: 0px;
+  top: 45px;
+  transition: all 0.4s ease;
+  z-index: 2;
+}
+
+.popout-text p {
+  color: white;
+  margin: 0;
+}
+
+.icono-pantallaC:hover .popout-text {
+  display: block;
+  z-index: 3;
+  width: 230px;
+}
+
+.icono-pantallaC {
+  background: none;
+  border: none;
+  float: right;
+  cursor: pointer;
+}
+
+.icon-fullscreen {
+  color: white;
+  font-size: 20px;
+}
+
+.icon-fullscreen_exit {
+  color: white;
+  font-size: 20px;
+}
+
+.icon-question-circle-o {
+  color: white;
+  font-size: 20px;
+}
+
+#ocultarC1,
+#ocultarC2 {
+  display: none;
+}
+
+.column {
+  background: var(--black);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.form-dual {
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  margin-bottom: 0;
+}
+
+#column-total {
+  border: solid 2px #0096fb;
+}
+
+.horizontal {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+}
+
+.h2-score {
+  font-family: inherit;
+  font-size: 1.25rem;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.table1 {
+  border-collapse: collapse;
+  text-align: center;
+  width: 100%;
+}
+
+td,
+th {
+  padding: 0.25rem;
+}
+
+.bt2 {
+  border-top: solid 1px white;
+}
+
+@media screen and (min-width: 1024px) {
+  .head-menu {
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  .form-head {
+    width: auto;
+  }
+
+  .btn-group {
+    /* align-items: center; */
+    border-radius: 0.75rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    padding: 0.25rem;
+    position: relative;
+  }
+
+  .icon-trash2 {
+    font-size: 20px;
+  }
+
+  .horizontal {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .submit-dual {
+    display: none;
+    align-self: center;
+    margin-left: 1vw;
+  }
+
+  .checkmark-dual {
+    align-self: center;
+    margin: 0;
+    opacity: 0;
+    height: 20px;
+    width: 22px;
+    position: absolute;
+  }
+
+  .icon-checkmark {
+    color: white;
+    font-size: 20px;
+    background: #2196f3;
+    border-radius: 2px 5px 2px 2px;
+  }
+
+  .h2-desgaste {
+    font-family: energize-thin;
+    font-size: 2.5rem;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+    margin-bottom: 7px;
+  }
+
+  .table-score {
+    width: 100%;
+    height: 14vh;
+    overflow-y: auto;
+  }
+
+  .table-score::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .table-score::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: black;
+  }
+
+  .table-score::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: gray;
+  }
+
+  .td2 {
+    font-weight: bold;
+    text-decoration: overline 2px;
+  }
+
+  .td-center {
+    text-align: center;
+  }
+
+  .cont-horizontal {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 5fr 7fr;
+    gap: 20px;
+    margin: 1vh 1vw;
+  }
+
+  .cont-right {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    height: 100%;
+  }
+
+  #pronostico-consumo,
+  #cantidad-presupuesto {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}

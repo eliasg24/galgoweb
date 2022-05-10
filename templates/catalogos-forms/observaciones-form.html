@@ -1,0 +1,94 @@
+{% if observacion.id %}
+  <form action="{% url 'dashboards:catalogoObservacionesEdit' observacion.id %}" id="form" class="container" method="POST">
+{% else %}
+  <form action="{% url 'dashboards:catalogoObservaciones' %}" id="form" class="container" method="POST">
+{% endif %}
+  {% csrf_token %}
+  <div class="container-fluid">
+    <aside class="form-aeto">
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="llanta"
+          name="llanta"
+          list="llanta"
+          {% if observacion.llanta %}value="{{observacion.llanta}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="llanta" class="form__label">
+          Llanta
+        </label>
+        <datalist id="llanta">
+          {% for llanta in llantas %}
+            <option value="{{llanta}}">{{llanta}}</option>
+          {% endfor %}
+        </datalist>
+      </div>
+
+      <!-- Start input -->
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="observacion"
+          name="observacion"
+          {% if observacion.observacion %}value="{{observacion.observacion}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="observacion" class="form__label">
+          Observación
+        </label>
+      </div>
+      <!-- End input -->
+
+      <!-- Start input -->
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
+          placeholder="color"
+          name="color"
+          list="color"
+          {% if observacion.color %}value="{{observacion.color}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <label for="color" class="form__label">
+          Color
+        </label>
+        <datalist id="color">
+          <option value="Verde">Verde</option>
+          <option value="Amarillo">Amarillo</option>
+          <option value="Rojo">Rojo</option>
+          <option value="Morado">Morado</option>
+        </datalist>
+      </div>
+      <!-- End input -->
+    </aside>
+  </div>
+
+  <nav class="btn-group">
+    {% if observacion.id %}
+    
+    <button class="btn btn-success">
+      <span class="icon-checkmark"></span>
+    </button>
+
+    <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-danger">
+      <span class="icon-cross"></span>
+    </a>
+
+    {% else %}
+    <button class="btn btn-success">
+      <span class="icon-plus6"></span>
+    </button>
+    <a href="" class="btn btn-download">
+      <span class="icon-download"></span>
+    </a>
+    {% endif %}
+  </nav>
+</form>

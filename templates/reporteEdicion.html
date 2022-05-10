@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="inspeccion" lang="en">
+<head>
+  {% load static %}
+    <link rel="stylesheet" href="{% static 'css/reporteVehiculo.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="shortcut icon" href="{% static 'images/logo-border.png' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+    <title></title>
+</head>
+<body>
+  <aside>
+    <button class="btn btn-download" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+  </aside>
+  <header class="report__inspeccion">
+
+    <div class="flex-row space-between">
+      <h1 class="report__title">Reporte de Edición</h1>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" alt="logo aeto reporte">
+      </div>
+    </div>
+    
+    {% for cambio in cambios %}
+
+      <nav class="report__details">
+        <div class="report__card">
+          <div class="report__card-title">Datos Iniciales {{cambio.posicion}}</div>
+
+          {% for original in cambio.original %}
+            <div class="report__card-body">{{original}}</div>
+          {% endfor %}
+          
+        </div>
+      
+        <section class="content__wrapper center">
+          <span class="icon-arrow-right2"></span>
+        </section>
+      
+        <div class="report__card">
+          <div class="report__card-title">Datos modificados {{cambio.posicion}}</div>
+
+          {% for cambio in cambio.cambio %}
+            <div class="report__card-body">{{cambio}}</div>
+          {% endfor %}
+        </div>
+        
+      </nav>
+
+    {% endfor %}
+
+  </header>
+</body>
+</html>

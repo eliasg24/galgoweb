@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/procesoDesecho.css' %}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+  rel="stylesheet"
+/>
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+<title>Proceso de desecho</title>
+{% endblock %}
+
+
+{% block content %}
+<div class="all-cont">
+  <div class="top-nav">
+    <a href="{% url 'dashboards:antesDesechar' %}">
+      <span class="icon-arrow-left2"></span>
+    </a>
+
+    <h1 class="title-panel">Panel de Desecho</h1>
+
+    <button type="submit" class="btn ok disabled mr-1">
+      <span class="icon-checkmark"></span>
+    </button>
+  </div>
+  <div class="container">
+    <div class="left-column">
+      <h2>Pendientes de Dictamen</h2>
+
+      <div class="column">
+        <aside class="list-container">
+          <input
+            type="search"
+            name=""
+            id=""
+            placeholder="Buscar..."
+            class="form-control"
+          />
+
+          <div class="grid-items drop-zone">
+            <!-- Drag item -->
+
+            <div class="card" id="1">
+              <div class="card-img">
+                <span class="tag good" id="profundidad"></span>
+                <span class="icon-tire2"></span>
+              </div>
+
+              <div class="card-info">
+                <p id="random"></p>
+                <p id="product">Michellin</p>
+              </div>
+            </div>
+
+            <!-- Drag Item  -->
+
+            <div class="card" id="2">
+              <div class="card-img">
+                <span class="tag yellow" id="profundidad"></span>
+                <span class="icon-tire2"></span>
+              </div>
+
+              <div class="card-info">
+                <p id="random"></p>
+                <p id="product">Michellin</p>
+              </div>
+            </div>
+
+            <div class="card" id="3">
+              <div class="card-img">
+                <span class="tag bad" id="profundidad"></span>
+                <span class="icon-tire2"></span>
+              </div>
+
+              <div class="card-info">
+                <p id="random"></p>
+                <p id="product">Michellin</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <div class="main-cont">
+      <div class="main-top">
+        <h2>Donde esta el daño</h2>
+
+        <main class="two-columns">
+          <section class="column">
+            <div class="scratch">
+              <img src="{% static './images/tireIns.svg' %}" alt="">
+            </div>
+          </section>
+          <section class="column">
+            <div class="list-container">
+              
+              <div class="grid-items drop-zone damage">
+                <div class="card" id="4">
+                  <div class="card-img">
+                    <span class="tag bad" id="profundidad"></span>
+                    <span class="icon-tire2"></span>
+                  </div>
+
+                  <div class="card-info">
+                    <p id="random"></p>
+                    <p>Michellin</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </main>
+      </div>
+      <div class="main-bottom">
+        <h2>Dictamen de llanta</h2>
+
+        <section class="column">
+          <form class="dictamen-form" id="dictamen-form">
+            
+            <div class="input-group">
+
+              <div class="form-list">
+                <input
+                  type="text"
+                  placeholder="razón"
+                  class="form-control"
+                  list="razon"
+                />
+
+                <datalist id="razon">
+                  <option value="option 1"></option>
+                  <option value="option 2"></option>
+                  <option value="option 3"></option>
+                  <option value="option 4"></option>
+                  <option value="option 5"></option>
+                  <option value="option 6"></option>
+                  <option value="option 7"></option>
+                  <option value="option 8"></option>
+                  <option value="option 9"></option>
+                  <option value="option 10"></option>
+                </datalist>
+              </div>
+
+              <div class="form-list">
+                <input
+                  type="text"
+                  placeholder="condición"
+                  class="form-control"
+                  list="condicion"
+                />
+
+                <datalist id="condicion">
+                  <option value="option 1"></option>
+                  <option value="option 2"></option>
+                  <option value="option 3"></option>
+                  <option value="option 4"></option>
+                  <option value="option 5"></option>
+                  <option value="option 6"></option>
+                  <option value="option 7"></option>
+                  <option value="option 8"></option>
+                  <option value="option 9"></option>
+                  <option value="option 10"></option>
+                </datalist>
+              </div>
+
+              <div class="form-list">
+                <input
+                type="number"
+                placeholder="profundidad"
+                class="form-control"
+                />
+              </div>
+              
+            </div>
+
+            <div class="input-group file">
+              <span class="icon-camera1"></span>
+              <input
+                type="file"
+                name="photo"
+                id="photo"
+                placeholder="Photo"
+              />
+            </div>
+
+            <nav class="options-nav">
+              <button type="submit" class="btn ok disabled">
+                <span class="icon-checkmark"></span>
+              </button>
+              <button type="reset" class="btn danger disabled">
+                <span class="icon-cross"></span>
+              </button>
+            </nav>
+
+          </form>
+        </section>
+      </div>
+    </div>
+    <div class="right-column">
+      <h2>Dictamen Hecho</h2>
+
+      <div class="column">
+        <aside class="list-container ok-items">
+          <input
+            type="search"
+            name=""
+            id=""
+            placeholder="Buscar..."
+            class="form-control"
+          />
+
+          <div class="grid-items">
+            <div class="card" id="5">
+              <!-- El data-delete-id es obligatorio para eliminar el elemento con ese ID que tienen que ser el mismo -->
+              <button class="btn delete" data-delete-id="5">
+                <span class="icon-cross danger"></span>
+              </button>
+
+              <div class="card-img">
+                <span class="tag good" id="profundidad"></span
+                ><span class="icon-tire2"></span>
+              </div>
+              <div class="card-info">
+                <p id="random"></p>
+                <p>Michellin</p>
+              </div>
+            </div>
+
+            <div class="card" id="6">
+              <button class="btn delete" data-delete-id="6">
+                <span class="icon-cross danger"></span>
+              </button>
+
+              <div class="card-img">
+                <span class="tag good" id="profundidad"></span
+                ><span class="icon-tire2"></span>
+              </div>
+              <div class="card-info">
+                <p id="random"></p>
+                <p>Michellin</p>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', (e) => {
+    randomNumber();
+    dragElements();
+    dropZones();
+    onInputChange();
+    handleForm();
+  });
+
+  const numbers = document.querySelectorAll('#random');
+  const profundidad = document.querySelectorAll('#profundidad');
+  const products = document.querySelectorAll('#product');
+  //Info de relleno
+  const randomNumber = (numbers = [], limit = 100, symbols = '') => {
+    numbers.forEach(
+      (number) =>
+        (number.textContent = `${ symbols }${Math.floor(Math.random() * limit)}`)
+    );
+  };
+
+  randomNumber(numbers, 1000000, '#');
+  randomNumber(profundidad, 100);
+
+  // Creando elementos drag and drop
+
+  const dragElements = () => {
+    const cards = document.querySelectorAll('.card');
+    const noDragCards = document.querySelectorAll('.ok-items > .card');
+
+    cards.forEach((item) => {
+      item.setAttribute('draggable', true); // create drag element
+
+      item.addEventListener('dragstart', (e) => {
+        // Cuando el elemento empieza a ser el evento drag
+        e.dataTransfer.setData('text/plain', e.target.id);
+        setTimeout(() => {
+          e.target.classList.add('drag-active');
+        }, 0);
+      });
+
+      item.addEventListener('dragend', (e) => {
+        // Cuando acaba el evento drag
+        e.target.classList.remove('drag-active');
+      });
+    });
+
+    noDragCards.forEach((item) => {
+      item.removeAttribute('draggable');
+    });
+  };
+
+  const dropZones = () => {
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    document
+      .querySelector('.damage')
+      .querySelectorAll('.card')
+      .forEach(
+        (card) =>
+          (card.innerHTML += `
+    <button class="btn delete">
+      <span class="icon-cross danger"></span>
+    </button>
+    `)
+      );
+
+    dropZones.forEach((zone) => {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.target.classList.add('active');
+      });
+
+      zone.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        e.target.classList.add('active');
+      });
+
+      zone.addEventListener('dragleave', (e) => {
+        e.target.classList.remove('active');
+      });
+
+      zone.addEventListener('drop', (e) => {
+        e.target.classList.remove('active');
+
+        const id = e.dataTransfer.getData('text/plain');
+        const draggable = document.getElementById(id);
+
+        if (e.target.classList.contains('drop-zone')) {
+          // Solo inserta el elemento en la zona indicada
+          // Insertando element
+
+          draggable.classList.remove('drag-active');
+          e.target.appendChild(draggable);
+
+          document
+            .querySelector('.damage')
+            .querySelectorAll('.card')
+            .forEach(
+              (card) =>
+                (card.innerHTML += `
+        <button class="btn delete">
+          <span class="icon-cross danger"></span>
+        </button>
+        `)
+            );
+        }
+      });
+    });
+  };
+
+  const onInputChange = () => {
+    document.addEventListener('change', (e) => {
+      document
+        .querySelectorAll('.btn.disabled')
+        .forEach((item) => item.classList.remove('disabled'));
+    });
+  };
+
+  const handleForm = () => {
+    const form = document.getElementById('dictamen-form');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+    });
+  };
+</script>
+{% endblock %}

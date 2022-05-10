@@ -1,0 +1,912 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/tire-dashboard2.css' %}"
+/>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-pyramid-funnel.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/themes/dark_glamour.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/themes/dark_provence.js"></script>
+<meta charset="utf-8" />
+<title>TIRE EYE</title>
+{% endblock head %} {% block content %}
+
+<div class="all-cont animate__animated animate__fadeIn">
+  <header class="head-menu">
+    <div class="menu-li__left">
+      <img src="{% static 'images/aeto.svg' %}" alt="" />
+    </div>
+
+    <form
+      class="form-head"
+      method="GET"
+      action="{% url 'dashboards:tireDB2' %}" 
+    >
+      <nav class="btn-group" id="nav-dash">
+
+        <a class="btn btn-trash" id="btn-limpiar" href="{% url 'dashboards:tireDB2' %}">
+          <span class="icon-trash2"></span>
+        </a>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="flota">
+            Sucursal
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-flota">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-flota" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-flota" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="flota2" value="all" id="all-flota" {% if flota2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for flota in flotas %}
+            <li class="search-item">
+              <label for="{{flota}}" class="input-check">
+                {{flota}}
+                <input type="checkbox" name="flota" value="{{flota}}" id="{{flota}}" {% for f in flota1 %}{% if f|slugify == flota|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="clase">
+            Clase
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-clase">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-clase" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-clase" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="clase2" value="all" id="all-clase" {% if clase2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for clase in clases_mas_frecuentes_infladas %}
+            <li class="search-item">
+              <label for="{{clase}}" class="input-check">
+                {{clase}}
+                <input type="checkbox" name="clase" value="{{clase}}" id="{{clase}}" {% for c in clase1 %}{% if c|slugify == clase|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="app">
+            Aplicacion
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-app">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-app" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="aplicacion2" value="all" id="all-app" {% if aplicacion2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for aplicacion in aplicaciones %}
+            <li class="search-item">
+              <label for="{{aplicacion}}" class="input-check">
+                {{aplicacion}}
+                <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" {% for c in aplicacion1 %}{% if c|slugify == aplicacion|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <button class="btn btn-aeto" id="btn-buscar" type="submit">
+          <span>Buscar</span>
+          <span class="icon-magnifier"></span>
+        </button>
+      </nav>
+    </form>
+  </header>
+
+  <!-- contenedor principal -->
+  <div class="cont-horizontal">
+    <div class="cont-left">
+      <div class="cont-chart" id="p1">
+        <!-- <div class="buttons-bubble">
+					<button class="menu_li--right">Flota</button>
+					<button class="menu_li--right">Aplicación</button>
+				</div> -->
+
+        <div class="buttons">
+          <h2>Embudo de Renovabilidad</h2>
+          <nav class="flex-nav">
+            <button class="icono-pantallaC">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Cantidad de llantas por vida de las que se tienen que reemplazar con base al punto de retiro de profunidad. Utiliza la probabilidad de renovavildad para pronosticar la cantidad de llanta nueva o renovada que se tendrá que adquirir.
+                </p>
+              </div>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="ocultarC1"
+              onclick="closeFullscreenP1();"
+            >
+              <span class="icon-fullscreen_exit"></span>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="mostrarC1"
+              onclick="openFullscreenP1();"
+            >
+              <span class="icon-fullscreen"></span>
+            </button>
+          </nav>
+        </div>
+        <div class="container-fluid">
+          <div id="cantidad-presupuesto" class="grafica"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cont-right">
+      <div class="horizontal">
+        <div class="column">
+          <h2 class="h2-score">Reemplazo Actual</h2>
+          <hr>
+          <div class="table-score">
+            <table class="table1">
+              <thead class="thead1">
+                <tr class="tr1">
+                  <th class="header1" scope="col">EJE</th>
+                  <th class="header2" scope="col">CANT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for eje, cantidad in reemplazo_actual_ejes.items %}
+
+                {% if eje|capfirst == "Total" %}
+                <tr class="tr2 bt2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center">{{cantidad}}</td>
+                </tr>
+
+                {% else %}
+
+                <tr class="tr2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center">{{cantidad}}</td>
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="column">
+          <form
+            class="form-dual"
+            action="{% url 'dashboards:tireDB2' %}"
+            method="GET"
+          >
+            <!-- <input type="hidden" name="app_dual" value="true" /> -->
+            <!-- <h2 class="h2-score">Reemplazo Dual</h2> -->
+            
+            <label class="input-check-dual">
+              <h3>Remplazo Dual</h3>
+              <input type="checkbox" name="app-dual" id="dual" checked />
+              <div class="checkmark"></div>
+            </label>
+
+            {% comment %}
+            <div>
+              <input class="submit-dual" type="submit" />
+              <input class="checkmark-dual" type="checkbox" name="" />
+              <span class="icon-checkmark"></span>
+            </div>
+            {% endcomment %}
+          </form>
+          <hr>
+          <div class="table-score">
+            <table class="table1">
+              <thead class="thead1">
+                <tr class="tr1">
+                  <th class="header1" scope="col">EJE</th>
+                  <th class="header2" scope="col">CANT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for eje, cantidad in reemplazo_dual.items %}
+                {% if eje|capfirst == "Total" %}
+                <tr class="tr2 bt2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center" data-id>{{cantidad}}</td>
+                </tr>
+
+                {% else %}
+
+                <tr class="tr2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center" data-id>{{cantidad}}</td>
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="column" id="column-total">
+          <h2 class="h2-score">Reemplazo Total</h2>
+          <hr>
+          <div class="table-score">
+            <table class="table1">
+              <thead class="thead1">
+                <tr class="tr1">
+                  <th class="header1" scope="col">EJE</th>
+                  <th class="header2" scope="col">CANT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for eje, cantidad in reemplazo_total.items %}
+                {% if eje|capfirst == "Total" %}
+                <tr class="tr2 bt2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center">{{cantidad}}</td>
+                </tr>
+
+                {% else %}
+
+                <tr class="tr2">
+                  <td class="td1">{{eje|capfirst}}</td>
+                  <td class="td1 td-center">{{cantidad}}</td>
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="cont-chart" id="p2">
+        <div class="buttons">
+          <a href="{% url 'dashboards:download2' %}">
+            <button class="btn btn-wh">
+              <span class="icon-file-text-o"></span>
+            </button>
+            </a>
+          <div class="buttons">
+            <h2>Pronostico de Consumo</h2>
+            <nav class="flex-nav">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">Proyeccion de volumen de reemplazo a  90 dias diferenciado por cantidad de llanta nueva y renovada a adquirir. </p>
+                </div>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarC2"
+                onclick="closeFullscreenP2();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarC2"
+                onclick="openFullscreenP2();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </nav>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div id="pronostico-consumo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static './js/filter.js' %}"></script>
+<script>
+
+  	document.addEventListener('DOMContentLoaded', (e) => {
+  		dualCheck();
+      dropdown('flota', 'menu-flota');
+      dropdown('app', 'menu-app');
+      dropdown('clase', 'menu-clase');
+      handleCheckbox();
+      handleSelectAll({ container: 'menu-flota', selectAll: 'all-flota' });
+      handleSelectAll({ container: 'menu-clase', selectAll: 'all-clase' });
+      handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+  	});
+
+    const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+      const selector = document.querySelector(`#${container} #${selectAll}`);
+      const checkboxs = document.querySelectorAll(
+        `#${container} input[type="checkbox"]`
+      );
+
+      selector.addEventListener('change', (e) => {
+        selector.checked
+          ? checkboxs.forEach((check) => (check.checked = true))
+          : checkboxs.forEach((check) => (check.checked = false));
+      });
+
+      checkboxs.forEach((item) => {
+        item.addEventListener('change', (e) => {
+          let notAll = false;
+
+          checkboxs.forEach((item) => {
+            if (!item.checked) notAll = true;
+            if (notAll) selector.checked = false;
+          });
+        });
+      });
+    };
+
+    const handleCheckbox = () => {
+      const inputs = document.querySelectorAll('.input-check');
+      const form = document.querySelector('.form-head');
+      inputs.forEach(input => {
+        input.addEventListener('change', (e) => form.submit());
+      })
+    };
+
+    const dropdown = (button = '', menu = '') => {
+      const dropBtn = document.getElementById(button);
+      const dropMenu = document.getElementById(menu);
+
+      dropBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropMenu.classList.toggle('active');
+        if (dropMenu.classList.contains('active')) {
+          dropBtn.querySelector('.indicator').classList.add('active');
+        } else {
+          dropBtn.querySelector('.indicator').classList.remove('active');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+          if (!e.target.matches('.dropdown *')) {
+            dropMenu.classList.remove('active');
+            dropBtn.querySelector('.indicator').classList.remove('active');
+          }
+        });
+    };
+
+  	const dualCheck = () => {
+  		const dualCheck = document.getElementById('dual');
+  		const cantidad = document.querySelectorAll('[data-id]');
+      {% for eje, cantidad in reemplazo_actual_ejes.items %}
+  		const suma{{eje}} = document.querySelectorAll('[data-suma{{eje}}]');
+      {% endfor %}
+
+  		document.addEventListener('change', (e) => {
+  			if (e.target === dualCheck) {
+  				if (!dualCheck.checked) {
+  					cantidad.forEach((item) => item.textContent = 0);
+            {% for eje, cantidad in reemplazo_actual_ejes.items %}
+            
+  					suma{{eje}}.forEach((total) => total.textContent = {{cantidad}} );
+            
+            {% endfor %}
+  				} else {
+  					{% for eje, cantidad in reemplazo_dual.items %}
+  						cantidad.forEach((item) => item.textContent = {{cantidad}});
+  					{% endfor %}
+  					{% for eje, cantidad in reemplazo_total.items %}
+  						suma{{eje}}.forEach( (total) => total.textContent = {{cantidad}} );
+  					{% endfor %}
+  				}
+  			}
+  		});
+  	};
+
+
+  var expanded = false;
+  function showCheckboxes(){
+  	var checkboxes = document.getElementById("checkboxes");
+  	if (!expanded) {
+  		checkboxes.style.display = "block";
+  		checkboxes.style.position = "fixed";
+  		expanded = true;
+  	} else {
+  		checkboxes.style.display = "none";
+  		expanded = false;
+  	}
+  }
+
+  function showCheckboxes2(){
+  	var checkboxes = document.getElementById("checkboxes2");
+  	if (!expanded) {
+  		checkboxes.style.display = "block";
+  		checkboxes.style.position = "fixed";
+  		expanded = true;
+  	} else {
+  		checkboxes.style.display = "none";
+  		expanded = false;
+  	}
+  }
+
+  function showCheckboxes3(){
+  	var checkboxes = document.getElementById("checkboxes3");
+  	if (!expanded) {
+  		checkboxes.style.display = "block";
+  		checkboxes.style.position = "fixed";
+  		expanded = true;
+  	} else {
+  		checkboxes.style.display = "none";
+  		expanded = false;
+  	}
+  }
+  	//funciones mostrar y ocultar clases
+  var elem1 = document.getElementById('p1');
+  function openFullscreenP1() {
+  	if (elem1.requestFullscreen) {
+  		elem1.requestFullscreen();
+  		document.getElementById('mostrarC1').style.display = "none";
+  		document.getElementById('ocultarC1').style.display = "block";
+  	} else if (elem1.webkitRequestFullscreen) { /* Safari */
+  		elem1.webkitRequestFullscreen();
+  	} else if (elem1.msRequestFullscreen) { /* IE11 */
+  		elem1.msRequestFullscreen();
+  	}
+  }
+  function closeFullscreenP1() {
+  	if (document.exitFullscreen) {
+  		document.exitFullscreen();
+  		document.getElementById('mostrarC1').style.display = "block";
+  		document.getElementById('ocultarC1').style.display = "none";
+  	} else if (document.webkitExitFullscreen) { /* Safari */
+  		document.webkitExitFullscreen();
+  	} else if (document.msExitFullscreen) { /* IE11 */
+  		document.msExitFullscreen();
+  	}
+  }
+
+  //funciones mostrar y ocultar clases
+  var elem2 = document.getElementById('p2');
+  function openFullscreenP2() {
+  	if (elem2.requestFullscreen) {
+  		elem2.requestFullscreen();
+  		document.getElementById('mostrarC2').style.display = "none";
+  		document.getElementById('ocultarC2').style.display = "block";
+  	} else if (elem2.webkitRequestFullscreen) { /* Safari */
+  		elem2.webkitRequestFullscreen();
+  	} else if (elem2.msRequestFullscreen) { /* IE11 */
+  		elem2.msRequestFullscreen();
+  	}
+  }
+  function closeFullscreenP2() {
+  	if (document.exitFullscreen) {
+  		document.exitFullscreen();
+  		document.getElementById('mostrarC2').style.display = "block";
+  		document.getElementById('ocultarC2').style.display = "none";
+  	} else if (document.webkitExitFullscreen) { /* Safari */
+  		document.webkitExitFullscreen();
+  	} else if (document.msExitFullscreen) { /* IE11 */
+  		document.msExitFullscreen();
+  	}
+  }
+
+
+  	anychart.licenseKey("aeto.com.mx-16056097-34281685");
+  // Graph pronostico-consumo
+  anychart.onDocumentReady(function () {
+
+  // set the default types of legend icons
+  anychart.theme({
+  chart: {
+  defaultSeriesSettings: {
+  column: {legendItem: {iconType: "column"}},
+  line: {legendItem: {iconType: "line"}}
+
+  }
+  }
+  });
+
+  var chart = anychart.line();
+
+  chart.title(false);
+  var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+
+  // setting yAxis settings
+  chart.yAxis(0).title("");
+  chart.yAxis(0).labels().format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+  chart.yAxis(1).title("");
+
+  // setting Grid settings
+  chart.yGrid(true);
+
+  // adding extra Y scale
+  var extraYScale = anychart.scales.linear();
+  extraYScale.ticks().interval(10);
+
+  // adding and adjust extra Y axis
+  var extraYAxis = chart.yAxis(1);
+  extraYAxis.orientation("right");
+  extraYAxis.scale(extraYScale);
+
+  // setting first series of data
+
+  {% if compania == "Equipo Logistico" %}
+
+  var firstSeries = [
+  ["Hoy", 0],
+  ["30 dias", 0],
+  ["60 dias", 0],
+  ["90 dias", 0]
+  ];
+
+  // setting second series of data
+  var secondSeries = [
+  ["Hoy", 0],
+  ["30 dias", 0],
+  ["60 dias", 0],
+  ["90 dias", 0]
+  ];
+
+  var thirdSeries = [
+  ["Hoy", 0],
+  ["30 dias", 0],
+  ["60 dias", 0],
+  ["90 dias", 0]
+  ];
+
+  {% else %}
+
+  var firstSeries = [
+  ["Hoy", {{presupuesto}}],
+  ["30 dias", {{presupuesto2}}],
+  ["60 dias", {{presupuesto3}}],
+  ["90 dias", {{presupuesto4}}]
+  ];
+
+  // setting second series of data
+  var secondSeries = [
+  ["Hoy", {% for vida, cantidad in pronostico_de_consumo.items %}{% if vida == "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["30 dias", {% for vida, cantidad in pronostico_de_consumo2.items %}{% if vida == "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["60 dias", {% for vida, cantidad in pronostico_de_consumo3.items %}{% if vida == "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["90 dias", {% for vida, cantidad in pronostico_de_consumo4.items %}{% if vida == "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}]
+  ];
+
+  var thirdSeries = [
+  ["Hoy", {% for vida, cantidad in pronostico_de_consumo.items %}{% if vida != "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["30 dias", {% for vida, cantidad in pronostico_de_consumo2.items %}{% if vida != "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["60 dias", {% for vida, cantidad in pronostico_de_consumo3.items %}{% if vida != "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}],
+  ["90 dias", {% for vida, cantidad in pronostico_de_consumo4.items %}{% if vida != "renovadonuevo" %} {{cantidad}},{% endif %} {% endfor %}]
+  ];
+
+  {% endif %}
+
+  // setting and adjusting data visualisation
+  var columnSeries = chart.line(firstSeries);
+  columnSeries.name("Presupuesto");
+
+  // configure the visual settings of the second series
+  columnSeries.normal().stroke("#A349A4", 6);
+  columnSeries.hovered().stroke("#A349A4", 4);
+  columnSeries.selected().stroke("#A349A4", 8);
+
+
+  var lineSeries = chart.column(secondSeries);
+  lineSeries.name("Nueva");
+  // configure the visual settings of the second series
+  lineSeries.normal().fill("#0097fc");
+  lineSeries.hovered().fill("#0097fc", 0.1);
+  lineSeries.selected().fill("#0097fc", 0.5);
+  lineSeries.normal().stroke("#0097fc", 2);
+  lineSeries.hovered().stroke("#0097fc", 4);
+  lineSeries.selected().stroke("#0097fc", 6);
+  lineSeries.yScale(extraYScale);
+
+  var lineSeries2 = chart.column(thirdSeries);
+  lineSeries2.name("Renovado");
+  // configure the visual settings of the second series
+  lineSeries2.normal().fill("#12bcc8");
+  lineSeries2.hovered().fill("#12bcc8", 0.1);
+  lineSeries2.selected().fill("#12bcc8", 0.5);
+  lineSeries2.normal().stroke("#12bcc8", 2);
+  lineSeries2.hovered().stroke("#12bcc8", 4);
+  lineSeries2.selected().stroke("#12bcc8", 6);
+  lineSeries2.yScale(extraYScale);
+
+  //tooltip
+  columnSeries.tooltip().format("{%seriesName}: ${%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+  // enable the legend
+  chart.legend(true);
+
+  // set the size of legend icons
+  chart.legend().iconSize(25);
+
+  chart.container("pronostico-consumo");
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+
+  //turn on chart animation
+  chart.animation(true);
+
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  });
+  	// Graph pronostico-consumo F
+  // 		anychart.onDocumentReady(function () {
+
+  // 		// create a data set
+  // 		var data = anychart.data.set([
+  // 		    ["Hoy",   {% for eje, cantidad in pronostico_de_consumo.items %}{{cantidad}}, {% endfor %} 1150],
+  // 		    ["30 dias", 265, 3150],
+  // 		    ["60 dias", 165, 2150],
+  // 		    ["90 dias", 465, 4150]
+  // 		]);
+
+  // 		// map the data
+  // 		{% for eje in pronostico_de_consumo %}
+  // 		var seriesData_{{forloop.counter}} = data.mapAs({x: 0, value: {{forloop.counter}}});
+  // 		{% endfor %}
+
+  // 		var seriesData_{{pronostico_de_consumo_contar}} = data.mapAs({x: 0, value: 2});
+
+  // 		// create chart
+  // 		var chart = anychart.column();
+
+  // 		chart.yScale().ticks().interval(1000);
+
+  // 		{% for eje in pronostico_de_consumo %}
+  // 		// create the second series, set the data and name
+  // 		var series{{forloop.counter}} = chart.column(seriesData_{{forloop.counter}});
+  // 		series{{forloop.counter}}.name("{{eje|capfirst}}");
+
+  // 		// configure the visual settings of the second series
+  // 		series{{forloop.counter}}.normal().fill("#0097fc");
+  // 		series{{forloop.counter}}.hovered().fill("#0097fc", 0.1);
+  // 		series{{forloop.counter}}.selected().fill("#0097fc", 0.5);
+  // 		series{{forloop.counter}}.normal().stroke("#0097fc", 2);
+  // 		series{{forloop.counter}}.hovered().stroke("#0097fc", 4);
+  // 		series{{forloop.counter}}.selected().stroke("#0097fc", 6);
+  // 		{% endfor %}
+
+  // 		// create the second series, set the data and name
+  // 		var series{{pronostico_de_consumo_contar}} = chart.line(seriesData_{{pronostico_de_consumo_contar}});
+  // 		series{{pronostico_de_consumo_contar}}.name("Presupuesto");
+
+  // 		// configure the visual settings of the second series
+  // 	    series{{pronostico_de_consumo_contar}}.normal().stroke("#A349A4", 6);
+  // 	    series{{pronostico_de_consumo_contar}}.hovered().stroke("#A349A4", 4);
+  // 	    series{{pronostico_de_consumo_contar}}.selected().stroke("#A349A4", 8);
+
+  // 		// set chart title text settings
+  // 		chart.title('Pronostico de Consumo');
+  // 		var title = chart.title();
+  // 		title.fontColor('#fff');
+  // 		title.fontSize(18);
+  // 		title.fontWeight(600);
+
+  // 		// enable major grids
+  // 		chart.yGrid().enabled(true);
+
+  // 		// adjusting y axis title and setting additional axis
+  // 		chart.yAxis(0).labels().format("${%value}");
+  // 		chart.yAxis(1).orientation("right");
+
+  // 		chart.yAxis(1).labels().format(function() {
+  // 		var value = this.value;
+  // 		// scale USD and rouns the result
+  // 		value = Math.round(value/10);
+  // 		return "" + value;
+  // 		});
+
+  // 		// enable the legend
+  // 	    chart.legend(true);
+
+  // 	    // set the size of legend icons
+  // 	    chart.legend().iconSize(25);
+
+  // 		{% for eje in pronostico_de_consumo %}
+  // 		var legendItem{{forloop.counter}} = series{{forloop.counter}}.legendItem();
+  // 		{% endfor %}
+  // 		var legendItem{{pronostico_de_consumo_contar}} = series{{pronostico_de_consumo_contar}}.legendItem();
+
+  // 	    // set the types of legend icons
+  // 		{% for eje in pronostico_de_consumo %}
+  // 	    legendItem{{forloop.counter}}.iconType("");
+  // 		{% endfor %}
+  // 	    legendItem{{pronostico_de_consumo_contar}}.iconType("line");
+
+  // 		// display chart
+  // 		chart.container("pronostico-consumo");
+
+  // 		//Set Background
+  // 		var background = chart.background();
+  // 		    background.stroke('0 #000');
+  // 		    background.corners();
+  // 		    background.enabled(false);
+
+  // 		//turn on chart animation
+  // 		chart.animation(true);
+
+  // 		chart.draw();
+
+  // 		// chart credits false
+  // 		var credits = chart.credits();
+  // 		credits.enabled(false);
+
+  // });
+
+  	// anychart.onDocumentReady(function () {
+  	// 	// create a categorized chart
+  	// 	chart = anychart.cartesian();
+
+  	// 	// data
+  	// 	data = [
+  	// 		["2000", 1100, 1],
+  	// 		["2001", 880, 2],
+  	// 		["2002", 1100, 5],
+  	// 		["2003", 1500, 3],
+  	// 		["2004", 921, 3],
+  	// 		["2005", 1000, 2],
+  	// 		["2006", 1400, 1]
+  	// 	];
+
+  	// 	// add a marker seris
+  	// 	chart.bubble(data);
+
+  	// 	// set chart title
+  	// 	chart.title("Bubble Chart");
+
+  	// 	// set axes titles
+  	// 	chart.xAxis().title("Years");
+  	// 	chart.yAxis().title("Sales");
+
+  	//   	let background = chart.background();
+  	// 	background.fill({
+  	// 		keys: [
+  	// 			'#171717'
+  	// 		],
+  	// 	});
+
+  	// 	var credits = chart.credits();
+  //           credits.enabled(false);
+
+  	//   	// set container id for the chart
+  	//   	chart.container('cantidad-presupuesto');
+
+  	//   	// initiate chart drawing
+  	//   	chart.draw();
+  	// });
+  // Graph Funnel Chart
+  anychart.onDocumentReady(function () {
+  // prepare data for the chart
+  var data = [
+  {x: "Nueva", value: {{embudo.renovadonuevo}}, size: 10,
+  normal:   {fill: "#A349A4", stroke: "#A349A4"},
+  hovered:  {fill: "#A349A4 0.1", stroke: "2 #A349A4"},
+  selected: {fill: "#A349A4 0.5",stroke: "4 #A349A4"}
+  },
+  {x: "1R", value: {{embudo.renovado1}}, size: 10,
+  normal:   {fill: "#0097fc", stroke: "#0097fc"},
+  hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
+  selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+  },
+  {x: "2R", value: {{embudo.renovado2}}, size: 10,
+  normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
+  hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8"},
+  selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+  },
+  {x: "3R", value: {{embudo.renovado3}}, size: 10,
+  normal:   {fill: "#166991", stroke: "#166991"},
+  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
+  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  },
+  {x: "4R", value: {{embudo.renovado4}}, size: 10,
+  normal:   {fill: "#166991", stroke: "#166991"},
+  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
+  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  },
+  {x: "5R", value: {{embudo.renovado5}}, size: 10,
+  normal:   {fill: "#166991", stroke: "#166991"},
+  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
+  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  }
+  ];
+  // create a chart and set the data
+  var chart = anychart.funnel(data);
+  chart.baseWidth("100%");
+  chart.neckWidth("40%");
+  chart.neckHeight("80%");
+
+  // configure labels
+  chart.labels().format("{%x}: {%yPercentOfTotal}%");
+
+  // configure tooltips
+  chart.tooltip().format("{%yPercentOfTotal}% ({%value})\n\n{%custom_field}");
+
+  // set chart margin
+  chart
+  .margin(10, '20%', 10, '20%')
+  // set chart base width settings
+  .baseWidth('70%')
+  // set the neck height
+  .neckHeight('20%');
+
+  // set chart labels settings
+  chart.labels().position('outside-left').format('{%X} - {%Value}');
+
+  // enable animation
+  chart.animation(true);
+
+  // set container id for the chart
+  chart.container('cantidad-presupuesto');
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+
+  chart.title(false);
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  var credits = chart.credits();
+  credits.enabled(false);
+  // initiate chart drawing
+  chart.draw();
+  });
+</script>
+
+{% endblock content %}

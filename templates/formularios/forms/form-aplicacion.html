@@ -1,0 +1,59 @@
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="nombre"
+    name="nombre"
+    autocomplete="off"
+    required
+  />
+  <label for="nombre" class="form__label">
+    Nombre
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="company"
+    name="compania"
+    list="company"
+    autocomplete="off"
+    required
+  />
+  <label for="company" class="form__label">
+    Compañia
+  </label>
+  <datalist id="company">
+    {% for compania in companias %}
+      <option value="{{compania}}">{{compania}}</option>
+    {% endfor %}
+  </datalist>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="sucursal"
+    name="ubicacion"
+    list="sucursal"
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Sucursal
+  </label>
+  <datalist id="sucursal">
+    {% for sucursal in sucursales %}
+      <option value="{{sucursal}}">{{sucursal}}</option>
+    {% endfor %}
+  </datalist>
+</div>
+<!-- End input -->

@@ -1,0 +1,620 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/tireDetail.css' %}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+  rel="stylesheet"
+/>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLanta</title>
+
+{% endblock head %}
+  
+{% block content %}
+
+<main class="main-cont">
+  <header class="head-cont animate__animated animate__fadeIn">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}">
+    </div>
+    <a href="{% url 'dashboards:detail' vehiculo.id %}">
+      <h1>{{vehiculo.numero_economico}}</h1>
+    </a>
+    <nav class="flex-row" id="nav-dash">
+      <button class="btn btn-aeto-crunch active" id="btn-pulpo">
+        <span class="icon-pulpo"></span>
+        Pulpo
+      </button>
+      <button class="btn btn-aeto-crunch" id="btn-tire">
+        <span class="icon-tireeye"></span>
+        Tire Eye
+      </button>
+    </nav>
+  </header>
+  <section class="container col-2">
+    <div class="animate__animated animate__fadeIn config__tables">
+      <div class="card card__config">
+        <header class="config__header">
+          <h1 class="detail__title">{{llanta.numero_economico}}</h1>
+        </header>
+        <div class="config__buttons">
+          <a class="btn btn-download relative" 
+          href="{% url 'dashboards:configuracionLlanta' %}">
+            <span class="icon-brain"></span>
+            <div class="pop-out">Smart View</div>
+          </a>
+          <a class="btn btn-download relative" 
+          href="{% url 'dashboards:tireDiagrama' %}">
+            <span class="icon-pencil"></span>
+            <div class="pop-out">Edición Manual</div>
+          </a>
+        </div>
+        <div class="card__tire">
+          <div class="cont__config">
+            <div class="tire__config">
+
+              <div class="tire__top {{llanta_info.2}}">
+                <span class="tire__data">{{llanta_info.0.presion_actual}}</span>
+              </div>
+
+              <div class="tire__medium {{llanta_info.4}}">
+                <span class="tire__data">
+                    {{llanta_info.0.posicion}}
+                </span>
+              </div>
+
+              <span class="icon-tire2"></span>
+              
+              <div class="tire__bottom {{llanta_info.1}}">
+                <span class="tire__data">{{llanta_info.3}}</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card config__data">
+        <nav class="config__nav">
+          <div class="flex-row" id="nav-table">
+            <button class="btn btn-aeto-crunch alt active" id="btn-general">General</button>
+            <button class="btn btn-aeto-crunch alt" id="btn-problemas">Problemas Abiertos</button>
+            <button class="btn btn-aeto-crunch alt" id="btn-bitacora">Bitacora</button>
+          </div>
+        </nav>
+        <div class="relative">
+          <div class="absolute">
+            <div class="config__cont-table on-table" id="general">
+              <table class="config__table">
+                  <thead>
+                    <tr>
+                      <th class="th-table3">Serial</th>
+                      <th class="th-table3">Producto</th>
+                      <th class="th-table3">Km</th>
+                      <th class="th-table3">Precio</th>
+                      <th class="th-table3">Vida</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{llanta.numero_economico}}</td>
+                      <td>{{llanta.producto}}</td>
+                      <td>{{llanta.km_actual}}</td>
+                      <td>{{llanta.producto.precio}}</td>
+                      <td>{{llanta.vida}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="config__cont-table" id="problemas">
+              <table class="config__table">
+                <thead>
+                  <tr>
+                    <th>Posición</th>
+                    <th>Problema Abierto</th>
+                    <th>Icono</th>
+                  </tr>
+                </thead>
+                {% if problemas_abiertos %}
+                <tbody>
+                  {% for llanta in problemas_abiertos %}
+                    <tr>
+                        <td class="td-table2">{{llanta.0.posicion}}</td>
+                        <td class="td-table2">{{llanta.1}}</td>
+                        <td class="td-table2"><span class="icon-cross"></span>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                {% endif %}
+              </table>
+            </div>
+            <div class="config__cont-table" id="bitacora">
+              <table class="config__table">
+                <thead>
+                  <tr>
+                    <th class="th-table3">
+                      Evento
+                    </th>
+                    <th class="th-table3">
+                      Fecha
+                    </th>
+                    <th class="th-table3">
+                      Encontrado
+                    </th>
+                    <th class="th-table3">
+                      Tiempo
+                    </th>
+                    <th class="th-table3">
+                      Reporte
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for evento in eventos %}
+                    <tr id="paragraph {{evento.0.id}}">
+                      <td class="td-table3">
+                        <span class="icon-pulpo"></span>
+                      </td>
+                      <td class="td-table3">
+                        {{evento.0.fecha_de_inflado.day}}/{{evento.0.fecha_de_inflado.month}}/{{evento.0.fecha_de_inflado.year}}
+                      </td>
+                      <td class="td-table3">
+                        <span id="icon {{evento.0.id}}"></span>
+                      </td>
+                      <td class="td-table3">{{evento.0.tiempo_de_inflado}}</td>
+                      <td class="td-table3">
+                        <a href="{% url 'dashboards:reporteLlanta' evento.0.id llanta.id numero_eje_check numero_llanta_check evento.1 %}" rel="noopener" target="_blank">
+                          <span class="icon-file-pdf" ></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="animate__animated animate__fadeIn dashboards__wrapper card">
+      <header class="config__header">
+        <h1 class="detail__title">Dashboards</h1>
+      </header>
+      <div class="circle__chart on-view" id="pulpo">
+        <div class="cont__circle">
+          <div class="card__circle">
+            <h2>Días sin Inflar</h2>
+            <div class="circle">
+              <span id="days">0</span>
+            </div>
+          </div>
+          <div class="card__circle">
+            <h2>Tiempo Promedio</h2>
+            <div class="circle">
+              <span>{% if llanta.vehiculo.tiempo_de_inflado %}{{llanta.vehiculo.tiempo_de_inflado}}{% else %}0{% endif %}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card relative">
+          <div class="absolute" id="lineChart"></div>
+        </div>
+      </div>
+
+      <div class="circle__chart" id="tireeye">
+        <div class="cont__circle">
+          <div class="card__circle">
+            <h2>Km Proyectado</h2>
+            <div class="circle1">
+              <span>{{km_proyectado}}</span>
+            </div>
+          </div>
+          <div class="card__circle">
+            <h2>Km por mm</h2>
+            <div class="circle1">
+              <span>{{km_x_mm}}</span>
+            </div>
+          </div>
+          <div class="card__circle">
+            <h2>Desgaste Mensual</h2>
+            <div class="circle1">
+              <span>{{desgaste_mensual}}</span>
+            </div>
+          </div>
+          <div class="card__circle">
+            <h2>CPK</h2>
+            <div class="circle1">
+              <span>{{cpk}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card relative">
+          <div class="absolute" id="spline-chart"></div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+</main>
+
+<script type="text/javascript">
+
+  document.addEventListener('DOMContentLoaded', (e) => {
+    handleButtons('#nav-table');
+    handleButtons('#nav-dash');
+
+    handleTables('btn-general', '#general');
+    handleTables('btn-problemas', '#problemas');
+    handleTables('btn-bitacora', '#bitacora');
+
+    handleView('btn-pulpo', '#pulpo');
+    handleView('btn-tire', '#tireeye');
+  });
+
+  const handleTables = (button = '', view = '') => {
+        const btn = document.getElementById(button);
+        const image = document.querySelector(view);
+
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.on-table').forEach(view => view.classList.remove('on-table'));
+
+            image.classList.add('on-table');
+        });
+    };
+
+  const handleView = (button = '', view = '') => {
+      const btn = document.getElementById(button);
+      const image = document.querySelector(view);
+
+      btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
+
+          image.classList.add('on-view');
+      });
+  };
+
+
+  const handleButtons = (container = '') => {
+    const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
+
+    buttons.forEach( button => {
+        button.addEventListener('click', (e) => {
+        buttons.forEach(item => item.classList.remove('active'));
+
+        button.classList.add('active');
+        });
+    } );    
+  };
+
+
+
+  //variables
+  hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
+  {% if vehiculo.ultima_bitacora_pro and vehiculo.fecha_de_inflado %}
+    fecha1 = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+    fecha2 = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+    if (fecha1 > fecha2){
+        llanta_fecha{{llanta.id}} = fecha1
+    }
+    else {
+        llanta_fecha{{llanta.id}} = fecha2
+    }
+  {% elif vehiculo.ultima_bitacora_pro %}
+    llanta_fecha{{llanta.id}} = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+  {% elif vehiculo.fecha_de_inflado %}
+    llanta_fecha{{llanta.id}} = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+  {% endif %}
+
+  var difference= Math.abs(hoy-llanta_fecha{{llanta.id}});
+  days = Math.round(difference/(1000 * 3600 * 24));
+
+  if (days) {
+      document.getElementById("days").innerText = days;
+  }else{
+      document.getElementById("days").innerText = "0";
+  }
+
+  {% for id, entrada in entradas.items %}
+    {% if entrada %}                    
+        {% if entrada == "Doble" %}    
+            document.getElementById("icon {{id}}").className = "icon-cross";
+            document.getElementById("icon2 {{id}}").className = "icon-cross";
+        {% else %}
+            document.getElementById("icon {{id}}").className = "icon-checkmark";
+        {% endif %}
+    {% else %}
+        document.getElementById("icon {{id}}").className = "icon-cross";
+        {% if id in .0 %}
+            document.getElementById("icon2 {{id}}").className = "icon-cross";
+        {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% for id, entrada in entradas_pro.items %}
+    console.log("{{entrada}}")
+    {% if entrada %}
+        {% if entrada == "Doble" %}    
+            document.getElementById("icon {{id}}").className = "icon-cross";
+            document.getElementById("icon2 {{id}}").className = "icon-cross";
+        {% else %}
+            document.getElementById("icon {{id}}").className = "icon-checkmark";
+        {% endif %}
+    {% else %}
+        document.getElementById("icon {{id}}").className = "icon-cross";
+        {% if id in .0 %}
+            document.getElementById("icon2 {{id}}").className = "icon-cross";
+        {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  //licencia de anyChart
+  anychart.licenseKey('aeto.com.mx-16056097-34281685');
+
+  //funciones mostrar y ocultar clases
+  var elem1 = document.getElementById('p1');
+  function openFullscreenP1() {
+    if (elem1.requestFullscreen) {
+      elem1.requestFullscreen();
+      document.getElementById('mostrarL1').style.display = 'none';
+      document.getElementById('ocultarL1').style.display = 'block';
+    } else if (elem1.webkitRequestFullscreen) {
+      /* Safari */
+      elem1.webkitRequestFullscreen();
+    } else if (elem1.msRequestFullscreen) {
+      /* IE11 */
+      elem1.msRequestFullscreen();
+    }
+  }
+  function closeFullscreenP1() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+      document.getElementById('mostrarL1').style.display = 'block';
+      document.getElementById('ocultarL1').style.display = 'none';
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
+
+  //funciones mostrar y ocultar clases
+  var elem2 = document.getElementById('p2');
+  function openFullscreenP2() {
+    if (elem2.requestFullscreen) {
+      elem2.requestFullscreen();
+      document.getElementById('mostrarS1').style.display = 'none';
+      document.getElementById('ocultarS1').style.display = 'block';
+    } else if (elem2.webkitRequestFullscreen) {
+      /* Safari */
+      elem2.webkitRequestFullscreen();
+    } else if (elem2.msRequestFullscreen) {
+      /* IE11 */
+      elem2.msRequestFullscreen();
+    }
+  }
+  function closeFullscreenP2() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+      document.getElementById('mostrarS1').style.display = 'block';
+      document.getElementById('ocultarS1').style.display = 'none';
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
+
+  anychart.onDocumentReady(function () {
+    // set the default types of legend icons
+    anychart.theme({
+      chart: {
+        defaultSeriesSettings: {
+          spline: { legendItem: { iconType: 'spline' } },
+          column: { legendItem: { iconType: 'column' } },
+        },
+      },
+    });
+
+    // create data set on our data
+    var dataSet = anychart.data.set(getData());
+
+    // map data for the first series, take x from the zero column and value from the first column of data set
+    var seriesData_1 = dataSet.mapAs({ x: 0, value: 1 });
+
+    // map data for the second series, take x from the zero column and value from the second column of data set
+    var seriesData_2 = dataSet.mapAs({ x: 0, value: 2 });
+
+    // map data for the third series, take x from the zero column and value from the third column of data set
+    var seriesData_3 = dataSet.mapAs({ x: 0, value: 3 });
+
+    // create line chart
+    var chart = anychart.line();
+
+    chart.yScale().ticks().interval(1);
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart padding
+    chart.padding([10, 20, 5, 20]);
+
+    // turn on the crosshair
+    chart.crosshair().enabled(true).yLabel(false).yStroke(null);
+
+    // set tooltip mode to point
+    chart.tooltip().positionMode('point');
+
+    // set chart title text settings
+    //chart.title('Statistiques des déclarations sur les 12 derniers mois');
+
+    // set yAxis title
+    //chart.yAxis().title('Nombres');
+    //chart.xAxis().labels().padding(5);
+
+    // create first series with mapped data
+    var series_1 = chart.column(seriesData_1);
+    series_1.name('Inflados');
+    series_1.normal().fill('#0097fc');
+    series_1.hovered().fill('#0097fc', 0.1);
+    series_1.selected().fill('#0097fc', 0.5);
+    series_1.normal().stroke('#0097fc');
+    series_1.hovered().stroke('#0097fc', 2);
+    series_1.selected().stroke('#0097fc', 4);
+    series_1.hovered().markers().enabled(true).type('circle').size(4);
+    series_1
+      .tooltip()
+      .position('right')
+      .anchor('left-center')
+      .offsetX(5)
+      .offsetY(5);
+
+    // create second series with mapped data
+    var series_2 = chart.spline(seriesData_2);
+    series_2.name('Entrada');
+    series_2.normal().stroke('#A349A4', 4);
+    series_2.hovered().stroke('#A349A4', 2);
+    series_2.selected().stroke('#A349A4', 6);
+    series_2.hovered().markers().enabled(true).type('circle').size(4);
+    series_2
+      .tooltip()
+      .position('right')
+      .anchor('left-center')
+      .offsetX(5)
+      .offsetY(5);
+
+    // enable and configure markers on the first series
+    series_2.markers(true);
+    series_2.markers().type('circle');
+    series_2.markers().fill('#A349A4');
+    series_2.markers().size(5);
+
+    // create third series with mapped data
+    var series_3 = chart.spline(seriesData_3);
+    series_3.name('Doble Entrada');
+    series_3.normal().stroke('#F0412C', 4);
+    series_3.hovered().stroke('#F0412C', 2);
+    series_3.selected().stroke('#F0412C', 6);
+    series_3.hovered().markers().enabled(true).type('circle').size(4);
+    series_3
+      .tooltip()
+      .position('right')
+      .anchor('left-center')
+      .offsetX(5)
+      .offsetY(5);
+
+    // enable and configure markers on the first series
+    series_3.markers(true);
+    series_3.markers().type('square');
+    series_3.markers().fill('#F0412C');
+    series_3.markers().size(5);
+
+    // turn the legend on
+    chart.legend().enabled(true).fontSize(13).padding([0, 0, 10, 0]);
+
+    // set container id for the chart
+    chart.container('lineChart');
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    // initiate chart drawing
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+
+    // horizontal expandable
+    chart.legend().itemsLayout('horizontal');
+  });
+  function getData() {
+    return [
+        ["{{mes_8}}", {{vehiculo_mes8}}, {{cantidad_entrada_mes8}}, {{cantidad_doble_entrada_mes8}}],
+        ["{{mes_7}}", {{vehiculo_mes7}}, {{cantidad_entrada_mes7}}, {{cantidad_doble_entrada_mes7}}],
+        ["{{mes_6}}", {{vehiculo_mes6}}, {{cantidad_entrada_mes6}}, {{cantidad_doble_entrada_mes6}}],
+        ["{{mes_5}}", {{vehiculo_mes5}}, {{cantidad_entrada_mes5}}, {{cantidad_doble_entrada_mes5}}],
+        ["{{mes_4}}", {{vehiculo_mes4}}, {{cantidad_entrada_mes4}}, {{cantidad_doble_entrada_mes4}}],
+        ["{{mes_3}}", {{vehiculo_mes3}}, {{cantidad_entrada_mes3}}, {{cantidad_doble_entrada_mes3}}],
+        ["{{mes_2}}", {{vehiculo_mes2}}, {{cantidad_entrada_mes2}}, {{cantidad_doble_entrada_mes2}}],
+        ["{{mes_1}}", {{vehiculo_mes1}}, {{cantidad_entrada_mes1}}, {{cantidad_doble_entrada_mes1}}]
+    ];
+  }
+
+  // spline-chart
+  anychart.onDocumentReady(function () {
+    // create data
+    var data = [
+    {% for i in inspecciones %}
+      { x: '{{i.km_vehiculo}}', value: {{i.profundidad_izquierda}} },
+    {% endfor %}
+    ];
+
+    // create a chart
+    var chart = anychart.line();
+
+    // create a spline series and set the data
+    var series = chart.spline(data);
+    series.stroke({ keys: [{ color: '#A349A4' }], thickness: 4 });
+
+    // adjust scales
+    var xScale = anychart.scales.linear();
+    xScale.ticks().interval(1);
+    chart.xScale(xScale);
+    chart.yScale().ticks().interval(2);
+
+    // enable major grids
+    chart.xGrid().enabled(true);
+    chart.yGrid().enabled(true);
+
+    // set the chart title
+    chart.title('Comportamiento de Desgaste');
+    var title = chart.title();
+    title.align('center');
+    title.fontColor('#fff');
+    title.fontSize(18);
+    title.fontWeight(600);
+
+    // set the titles of the axes
+    var xAxis = chart.xAxis();
+    xAxis.title('');
+    var yAxis = chart.yAxis();
+    yAxis.title('');
+
+    // set the container id
+    chart.container('spline-chart');
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    // initiate chart drawing
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,1286 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/detail2.css' %}">
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<title>Vehículo {{vehiculo.numero_economico}}</title>
+{% endblock head %}
+
+{% block content %}
+
+<main class="main-cont">
+    <header class="head-cont animate__animated animate__fadeIn">
+        <div class="logo">
+            <img src="{% static 'images/aeto.svg' %}" alt="logo">
+        </div>
+
+        <nav class="flex-row" id="nav-dash">
+            <button class="btn btn-aeto-crunch active" id="btn-table">
+                <span class="icon-truck"></span>
+                Vehículo
+            </button>
+            <button class="btn btn-aeto-crunch" id="btn-chart">
+                <span class="icon-tireeye"></span>
+                Tire Eye
+            </button>
+            <button class="btn btn-aeto-crunch" id="btn-pulpo">
+                <span class="icon-pulpo"></span>
+                Pulpo
+            </button>
+        </nav>
+    </header>
+
+    <section class="container">
+        <div class="animate__animated animate__fadeIn main__content col-2 on-view" id="table">
+            
+            <div class="{% if sin_llantas %} config__container none {% else %} config__container  {% endif %}">
+                <header class="config__header">
+                    <h1 class="detail__title">VEHÍCULO {{vehiculo.numero_economico}}</h1>
+                </header>
+                {% if sin_llantas %}
+
+                {% else %}
+                    <div class="config__buttons">
+                        <a 
+                            href="{% url 'dashboards:configuracionVehiculo' vehiculo.id %}" 
+                            class="btn btn-download relative">
+                            <span class="icon-brain"></span>
+                            <div class="pop-out">Smart View</div>
+                        </a>
+                        <a 
+                            href="{% url 'dashboards:diagrama' vehiculo.id %}" 
+                            class="btn btn-download relative">
+                            <span class="icon-pencil"></span>
+                            <div class="pop-out">Edición Manual</div>
+                        </a>  
+                        <a 
+                            href="{% url 'dashboards:inspeccionVehiculo' vehiculo.id %}" 
+                            class="btn btn-download relative">
+                            <span class="icon-magnifier"></span>
+                            <div class="pop-out">Inspección</div>
+                        </a> 
+                    </div>
+
+                    <h2 id="km-vehiculo">KM: {{vehiculo.km}}</h2> 
+                {% endif %}
+                <div class="{% if sin_llantas %} alert__container {% else %} config__config {% endif %}">
+
+                    <!-- * Configuración -->
+
+                    {% if sin_llantas %}
+                    <div class="alert__warn">
+                        <span class="alert__icon">:(</span>
+                        <p class="alert__message">El vehículo no tiene una configuración</p>
+                    </div>
+                    {% else %}
+                    <div class="relative">
+                        <div class="absolute">
+                            
+                                {% for eje in ejes %}
+
+                                    {% if eje|length == 2 %}
+                                        <div class="par-llantas ejes__{{cant_ejes|safe}}">
+                                            <a href="{% url 'dashboards:tireDetail' eje.0.0.id %}" class="tire">
+                                                <div class="tire__top {{eje.0.2}}">
+                                                    <span class="tire__data">
+                                                        {{eje.0.0.presion_actual}}
+                                                    </span>
+                                                </div>
+
+                                                <div class="tire__medium {{eje.0.4}}">
+                                                    <span class="tire__data">
+                                                        {{eje.0.0.posicion}}
+                                                    </span>
+                                                </div>
+                                                
+                                                <span class="icon-tire2"></span>
+                                                
+                                                <div class="tire__bottom {{eje.0.1}}">
+                                                    <span class="tire__data">
+                                                         {{eje.0.3}}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                            <div class="eje">
+                                                <span>{{eje.0.6}} - {{eje.0.7}}</span>
+                                                    <div class="axle"></div>
+                                                <span class="axle__prof">{{dimension}}</span>
+                                            </div>
+                                    
+                                            <a href="{% url 'dashboards:tireDetail' eje.1.0.id %}" class="tire">
+                                                <div class="tire__top {{eje.1.2}}">
+                                                    <span class="tire__data">
+                                                        {{eje.1.0.presion_actual}}
+                                                    </span>
+                                                </div>
+
+                                                <div class="tire__medium {{eje.1.4}}">
+                                                    <span class="tire__data">
+                                                        {{eje.1.0.posicion}}
+                                                    </span>
+                                                </div>
+                                                
+                                                <span class="icon-tire2"></span>
+                                                
+                                                <div class="tire__bottom {{eje.1.1}}">
+                                                    <span class="tire__data">
+                                                        {{eje.1.3}}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        
+                                    {% else %}
+
+                                        <div class="par-doble-llanta ejes__{{cant_ejes|safe}}">
+                            
+                                            <div class="double-tire">
+                                                <a href="{% url 'dashboards:tireDetail' eje.0.0.id %}" class="tire">
+                                                    <div class="tire__top {{eje.0.2}}">
+                                                        <span class="tire__data">
+                                                            {{eje.0.0.presion_actual}}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="tire__medium {{eje.0.4}}">
+                                                        <span class="tire__data">
+                                                            {{eje.0.0.posicion}}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <span class="icon-tire2"></span>
+                                                    
+                                                    <div class="tire__bottom {{eje.0.1}}">
+                                                        <span class="tire__data">
+                                                            {{eje.0.3}}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                                <a href="{% url 'dashboards:tireDetail' eje.1.0.id %}" class="tire">
+                                                    <div class="tire__top {{eje.1.2}}">
+                                                        <span class="tire__data">
+                                                            {{eje.1.0.presion_actual}}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="tire__medium {{eje.1.4}}">
+                                                        <span class="tire__data">
+                                                            {{eje.1.0.posicion}}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <span class="icon-tire2"></span>
+                                                    
+                                                    <div class="tire__bottom {{eje.1.1}}">
+                                                        <span class="tire__data">
+                                                            {{eje.1.3}}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                    
+                                            <div class="eje">
+                                                <span>{{eje.0.6}} - {{eje.0.7}}</span>
+                                                    <div class="axle"></div>
+                                                <span class="axle__prof">{{dimension}}</span>
+                                            </div>
+                                            
+                                            <div class="double-tire">
+                                                <a href="{% url 'dashboards:tireDetail' eje.2.0.id %}" class="tire">
+                                                    <div class="tire__top {{eje.2.2}}">
+                                                        <span class="tire__data">
+                                                            {{eje.2.0.presion_actual}}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="tire__medium {{eje.2.4}}">
+                                                        <span class="tire__data">
+                                                            {{eje.2.0.posicion}}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <span class="icon-tire2"></span>
+                                                    
+                                                    <div class="tire__bottom {{eje.2.1}}">
+                                                        <span class="tire__data">
+                                                            {{eje.2.3}}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                                <a href="{% url 'dashboards:tireDetail' eje.3.0.id %}" class="tire">
+                                                    <div class="tire__top {{eje.3.2}}">
+                                                        <span class="tire__data">
+                                                            {{eje.3.0.presion_actual}}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="tire__medium {{eje.3.4}}">
+                                                        <span class="tire__data">
+                                                            {{eje.3.0.posicion}}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <span class="icon-tire2"></span>
+                                                    
+                                                    <div class="tire__bottom {{eje.3.1}}">
+                                                        <span class="tire__data">
+                                                            {{eje.3.3}}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    <!-- *** -->
+                    
+                </div>
+            </div>
+
+            <div class="bit-dash">
+                <div class="config__data">
+                    <nav class="config__nav">
+                        <div id="nav-table" class="flex-row">
+                            <button class="btn btn-aeto-crunch alt" id="btn-general">
+                                General
+                            </button>
+                            <button class="btn btn-aeto-crunch alt" id="btn-problemas">
+                                Problemas Abiertos
+                            </button>
+                            <button class="btn btn-aeto-crunch alt" id="btn-llantas">
+                                Info Llantas
+                            </button>
+                            <button class="btn btn-aeto-crunch alt active" id="btn-bitacora">
+                                Bitacora
+                            </button>
+                        </div>            
+                    </nav>
+
+                    <div class="config__container-table">
+                        <div class="tables__table" id="general">
+                            <table class="config__table active">
+                                <thead>
+                                    <tr>
+                                        <th class="th-table3">Modelo</th>
+                                        <th class="th-table3">Marca</th>
+                                        <th class="th-table3">Clase</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>   
+                                    <tr>
+                                        <td class="td-table3">{{vehiculo.modelo}}</td>
+                                        <td class="td-table3">{{vehiculo.marca}}</td>
+                                        <td class="td-table3">{{vehiculo.clase}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tables__table" id="problemas">
+                            <table class="config__table">
+                                <thead> 
+                                    <tr>
+                                        <th class="th-table2">Llanta</th>
+                                        <th class="th-table2">Problemas Abiertos</th>
+                                        <th class="th-table2">Icono</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for llanta in problemas %}
+                                        <tr>
+                                            <td class="td-table2">{{llanta.0}}</td>
+                                            <td class="td-table2">{{llanta.1.observacion}}</td>
+                                            <td class="td-table2"><span class="{{llanta.2}}"></span>
+                                        </tr>
+                                    {% endfor %}
+                                    {% if problemas_abiertos %}
+                                        {% for llanta in problemas_abiertos %}
+                                            <tr>
+                                                <td class="td-table2">{{llanta.0.posicion}}</td>
+                                                <td class="td-table2">{{llanta.1}}</td>
+                                                <td class="td-table2"><span class="icon-cross"></span>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                                
+                            </table>
+                        </div>
+
+                        <div class="tables__table" id="llantas">
+                            <table class="config__table">
+                                <thead> 
+                                    <tr>
+                                        <th class="th-table1">Pos</th>
+                                        <th class="th-table1">Serial</th>
+                                        <th class="th-table1">Producto</th>
+                                        <th class="th-table1">Km</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for llanta in llantas %}
+                                        <tr>
+                                            <td class="td-table1">{{llanta.posicion}}</td>
+                                            <td class="td-table1">{{llanta.numero_economico}}</td>
+                                            <td class="td-table1">{{llanta.producto}}</span>
+                                            <td class="td-table1">{{llanta.km_actual}}</span>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tables__table on-table" id="bitacora">
+                            <div class="column" id="col-table">
+                                <table class="config__table">
+                                    <thead class="thead-dark">
+                                        <tr class="tr-head">
+                                            <th class="header" scope="col">Evento</th>
+                                            <th class="header" scope="col">Fecha</th>
+                                            <th class="header" scope="col">Encontrado</th>
+                                            <th class="header" scope="col">ID</th>
+                                            <th class="header" scope="col">Reporte</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for evento in eventos %}
+                                            {% if evento.2 == 'pulpo' or evento.2 == 'pulpopro'%}
+                                            
+                                            
+                                                <tr id="paragraph {{evento.1.id}}">
+                                                    <td class="td-table4"><span class="icon-pulpo"></span></td>
+                                                    <td class="td-table4">{{evento.1.fecha_de_inflado.day}}/{{evento.1.fecha_de_inflado.month}}/{{evento.1.fecha_de_inflado.year}}</td>
+                                                    <td class="td-table4"><span id="icon {{evento.1.id}}"></span><span id="icon2 {{evento.1.id}}"></span></td>
+                                                    <td class="td-table4">{{evento.1.id}}</td>
+                                                    <td class="td-table4">
+                                                        <a href="{% url 'dashboards:reporteVehiculo' evento.1.id evento.2 %}" rel="noopener" target="_blank">
+                                                            <span class="icon-file-pdf" ></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            
+                                            {% elif evento.2 == 'edicion'%}  
+                                        
+                                                <tr id="paragraph {{evento.1.id}}">
+                                                    <td class="td-table4"><span class="icon-pencil"></span></td>
+                                                    <td class="td-table4">{{evento.1.fecha.day}}/{{evento.1.fecha.month}}/{{evento.1.fecha.year}}</td>
+                                                    <td class="td-table4"><span class="{{evento.3}}"></span><span id="icon2 {{evento.1.id}}"></span></td>
+                                                    <td class="td-table4">{{evento.1.id}}</td>
+                                                    <td class="td-table4">
+                                                        <a href="{% url 'dashboards:reporteEdicion' evento.1.id evento.2 %}" rel="noopener" target="_blank">
+                                                            <span class="icon-file-pdf" ></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            
+                                            {% elif evento.2 == 'inspeccion'%}  
+                                            
+                                                <tr id="paragraph {{evento.1.id}}">
+                                                    <td class="td-table4"><span class="icon-magnifier"></span></td>
+                                                    <td class="td-table4">{{evento.1.fecha.day}}/{{evento.1.fecha.month}}/{{evento.1.fecha.year}}</td>
+                                                    <td class="td-table4"><span class="{{evento.3}}"></span><span id="icon2 {{evento.1.id}}"></span></td>
+                                                    <td class="td-table4">{{evento.1.id}}</td>
+                                                    <td class="td-table4">
+                                                        <a href="{% url 'dashboards:reporteInspeccion' evento.1.id evento.2 %}" rel="noopener" target="_blank">
+                                                            <span class="icon-file-pdf" ></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            {% else %}
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+        
+                        </div>
+                    </div>
+                </div>
+                <div class="dash__container">
+                    <!-- <nav class="dash__nav">
+                        <div class="flex-row">
+                            <button class="btn btn-download" type="button" id="prev" disabled>
+                                <span class="icon-arrow-left2"></span>
+                            </button>
+                            <button class="btn btn-download" type="button" id="next">
+                                <span class="icon-arrow-right2"></span>
+                            </button>
+                        </div>
+                    </nav> -->
+
+                    <div class="dash__content page active" id="page-1">
+                        <div class="dash__data">
+                            <div class="score-card">
+                                <h2>DÍAS SIN INFLAR</h2>
+                                
+                                <div class="circle">
+                                    <span id="days">
+                                        0
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="score-card">
+                                <h2>CPK del vehículo</h2>
+                                <div class="circle">
+                                    <span>${{cpk_vehiculo}}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="dash__content page" id="page-2">
+                        <div class="dash__chart">
+                            <div class="cont-chart" id="tire-eye-chart">
+                                <div class="buttons">
+                                    <button class="icono-pantallaC">
+                                        <span class="icon-question-circle-o"></span>
+                                    </button>
+                                    <button id="line-chart">
+                                        <span class="icon-fullscreen"></span>
+                                    </button>
+                                </div>
+                                <div class="cont-right" id="lineChartF">
+                                    <div id="lineChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="animate__animated animate__fadeIn main__content grid-4" id="charts">
+            <div class="chart__container" id="pos-pro">
+                <nav class="chart__container-nav">
+                    <h2>Posición y profundidad</h2>
+                    <div class="flex-row"></div>
+                </nav>
+                <div class="container_fluid">
+                    <div id="chart-scatter" class="chart"></div>
+                </div>
+            </div>
+            <div class="chart__container" id="km-pro">
+                <nav class="chart__container-nav">
+                    <h2>Kilometro proyectado por posición</h2>
+                    <div class="flex-row"></div>
+                </nav>
+                <div class="container_fluid">
+                    <div id="bar-chart1" class="chart"></div>
+                </div>
+            </div>
+            <div class="chart__container" id="km-mm">
+                <nav class="chart__container-nav">
+                    <h2>Km por mm por Eje</h2>
+                    <div class="flex-row"></div>
+                </nav>
+                <div class="container_fluid">
+                    <div id="bar-chart" class="chart"></div>
+                </div>
+            </div>
+            <div class="chart__container" id="tire-axle">
+                <div class="dash__data">
+                    <div class="score-card">
+                        <h2>Necesidad de llanta por tipo de Eje</h2>
+                        <div class="flex-row-nowrap space-around">
+                            {% for eje, cantidad in reemplazo_actual_ejes.items %}
+                                <div class="circle">
+                                    <h3>{{eje|capfirst}}</h3>
+                                    <span>{{cantidad}}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="score-card">
+                        <h2>CPK del vehículo</h2>
+                        <div class="circle">
+                            <span>${{cpk_vehiculo}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="animate__animated animate__fadeIn main__content rows-2" id="pulpo">
+            <div class="chart__container">
+                <div class="dash__data">
+                    <div class="score-card">
+                        <h2>DÍAS SIN INFLAR</h2>
+                        
+                        <div class="circle">
+                            <span id="days2">
+                                0
+                            </span>
+                        </div>
+                    </div>
+                    <div class="score-card">
+                        <h2>Tiempo Promedio</h2>
+                        <div class="circle">
+                            <span>{% if tiempo_promedio %}{{tiempo_promedio}}{% else %}0{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="chart__container">
+                <div class="container_fluid">
+                    <div id="spline-chart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+<script type="text/javascript">
+
+
+    document.addEventListener("DOMContentLoaded", (e) => { // Cargando los scripts en la carga del documento    
+        // Llanta();
+        // hoverLlantas();
+        handleButtons('#nav-dash');
+        handleButtons('#nav-table');
+        handleView('btn-table', '#table');
+        handleView('btn-chart', '#charts');
+        handleView('btn-pulpo', '#pulpo');
+        // Tablas
+        handleTables('btn-general', '#general');
+        handleTables('btn-problemas', '#problemas');
+        handleTables('btn-llantas', '#llantas');
+        handleTables('btn-bitacora', '#bitacora');
+
+        // Handle Fullscreen
+        handleFullscreen('line-chart', 'tire-eye-chart');
+
+        // handleNav();
+
+        dbFullscreen('pos-pro');
+        dbFullscreen('km-pro');
+        dbFullscreen('km-mm');
+        dbFullscreen('tire-axle');
+    });
+
+    const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('#km-vehiculo');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+
+    decimalConverter();
+
+    const dbFullscreen = (container = '') => {
+        const element = document.getElementById(container);
+
+        element.addEventListener('dblclick', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                // Cuando se cierra
+            } else {
+                // Cuando se abre
+                element.requestFullscreen();
+            }
+        });
+    };
+
+    const handleFullscreen = (button = '', element = '') => {
+        const btn = document.getElementById(button);
+        const el = document.getElementById(element);
+
+        btn.addEventListener('click', (e) => {
+            if (!document.fullscreenElement) {
+            el.requestFullscreen();
+            btn.innerHTML = `
+                <span class="icon-fullscreen_exit"></span>
+            `;
+            console.clear();
+            } else {
+                document.exitFullscreen();
+                btn.innerHTML = `
+                    <span class="icon-fullscreen"></span>
+                `;
+            }
+        })
+    };
+
+    const handleNav = () => {
+        const next = document.getElementById('next');
+        const prev = document.getElementById('prev');
+
+        next.addEventListener('click', (e) => {
+            e.preventDefault();
+            prev.removeAttribute('disabled');
+            next.setAttribute('disabled', 'disabled');
+
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-2').classList.add('active');
+        });
+        prev.addEventListener('click', (e) => {
+            e.preventDefault();
+            next.removeAttribute('disabled');
+            prev.setAttribute('disabled', 'disabled');
+
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-1').classList.add('active');
+        });
+    };
+    
+    const handleTables = (button = '', view = '') => {
+        const btn = document.getElementById(button);
+        const image = document.querySelector(view);
+
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.on-table').forEach(view => view.classList.remove('on-table'));
+
+            image.classList.add('on-table');
+        });
+    };
+
+    const handleView = (button = '', view = '') => {
+        const btn = document.getElementById(button);
+        const image = document.querySelector(view);
+
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
+
+            image.classList.add('on-view');
+        });
+    };
+
+    const handleButtons = (container = '') => {
+        const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
+
+        buttons.forEach( button => {
+            button.addEventListener('click', (e) => {
+            buttons.forEach(item => item.classList.remove('active'));
+
+            button.classList.add('active');
+            });
+        } );    
+    };
+
+    //funciones mostrar y ocultar clases
+    var elem1 = document.getElementById('p1');
+    function openFullscreenP1() {
+        if (elem1.requestFullscreen) {
+            elem1.requestFullscreen();
+            document.getElementById('mostrarL1').style.display = "none";
+            document.getElementById('lineChartF').style.height = "90vh"
+            document.getElementById('ocultarL1').style.display = "block";
+        } else if (elem1.webkitRequestFullscreen) { /* Safari */
+            elem1.webkitRequestFullscreen();
+        } else if (elem1.msRequestFullscreen) { /* IE11 */
+            elem1.msRequestFullscreen();
+        }
+    }
+    function closeFullscreenP1() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.getElementById('mostrarL1').style.display = "block";
+            document.getElementById('lineChartF').style.height = "auto"
+            document.getElementById('ocultarL1').style.display = "none";
+            
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+    
+    //funciones mostrar y ocultar clases
+    var elem2 = document.getElementById('p2');
+    function openFullscreenP2() {
+        if (elem2.requestFullscreen) {
+            elem2.requestFullscreen();
+            document.getElementById('mostrarS1').style.display = "none";
+            document.getElementById('ocultarS1').style.display = "block";
+        } else if (elem2.webkitRequestFullscreen) { /* Safari */
+            elem2.webkitRequestFullscreen();
+        } else if (elem2.msRequestFullscreen) { /* IE11 */
+            elem2.msRequestFullscreen();
+        }
+    }
+    function closeFullscreenP2() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.getElementById('mostrarS1').style.display = "block";
+            document.getElementById('ocultarS1').style.display = "none";
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+
+    //funciones mostrar y ocultar clases
+    var elem3 = document.getElementById('p3');
+    function openFullscreenP3() {
+        if (elem3.requestFullscreen) {
+            elem3.requestFullscreen();
+            document.getElementById('mostrarB1').style.display = "none";
+            document.getElementById('ocultarB1').style.display = "block";
+        } else if (elem3.webkitRequestFullscreen) { /* Safari */
+            elem3.webkitRequestFullscreen();
+        } else if (elem3.msRequestFullscreen) { /* IE11 */
+            elem3.msRequestFullscreen();
+        }
+    }
+    function closeFullscreenP3() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.getElementById('mostrarB1').style.display = "block";
+            document.getElementById('ocultarB1').style.display = "none";
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+
+    //funciones mostrar y ocultar clases
+    var elem4 = document.getElementById('p4');
+    function openFullscreenP4() {
+        if (elem4.requestFullscreen) {
+            elem4.requestFullscreen();
+            document.getElementById('mostrarB2').style.display = "none";
+            document.getElementById('ocultarB2').style.display = "block";
+        } else if (elem4.webkitRequestFullscreen) { /* Safari */
+            elem4.webkitRequestFullscreen();
+        } else if (elem4.msRequestFullscreen) { /* IE11 */
+            elem4.msRequestFullscreen();
+        }
+    }
+    function closeFullscreenP4() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.getElementById('mostrarB2').style.display = "block";
+            document.getElementById('ocultarB2').style.display = "none";
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+
+
+        window.onload = function dias_sin_inflado(){
+            hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
+            {% if vehiculo.ultima_bitacora_pro and vehiculo.fecha_de_inflado %}
+                fecha1 = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+                fecha2 = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+                if (fecha1 > fecha2){
+                    vehiculo_fecha{{vehiculo.id}} = fecha1
+                }
+                else {
+                    vehiculo_fecha{{vehiculo.id}} = fecha2
+                }
+            {% elif vehiculo.ultima_bitacora_pro %}
+                vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+            {% elif vehiculo.fecha_de_inflado %}
+                vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+            {% endif %}
+            
+            var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
+            days = Math.round(difference/(1000 * 3600 * 24));
+
+            if (days) {
+                document.getElementById("days").innerText = days;
+                document.getElementById("days2").innerText = days;
+            }else{
+                document.getElementById("days").innerText = "0";
+                document.getElementById("days2").innerText = "0";
+            }
+
+            {% for id, entrada in entradas.items %}
+                {% if entrada %}                    
+                    {% if entrada == "Doble" %}    
+                        document.getElementById("icon {{id}}").className = "icon-cross";
+                        document.getElementById("icon2 {{id}}").className = "icon-cross";
+                    {% else %}
+                        document.getElementById("icon {{id}}").className = "icon-checkmark";
+                    {% endif %}
+                {% else %}
+                    document.getElementById("icon {{id}}").className = "icon-cross";
+                    {% if id in .0 %}
+                        document.getElementById("icon2 {{id}}").className = "icon-cross";
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% for id, entrada in entradas_pro.items %}
+                console.log("{{entrada}}")
+                {% if entrada %}                    
+                    {% if entrada == "Doble" %}
+                        document.getElementById("icon {{id}}").className = "icon-cross";
+                        document.getElementById("icon2 {{id}}").className = "icon-cross";
+                    {% else %}
+                        document.getElementById("icon {{id}}").className = "icon-checkmark";
+                    {% endif %}
+                {% else %}
+                    document.getElementById("icon {{id}}").className = "icon-cross";
+                    {% if id in .0 %}
+                        document.getElementById("icon2 {{id}}").className = "icon-cross";
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+
+        // //gráfica
+        // var ctx = document.getElementById('myChart2').getContext('2d');
+        //                 var myChart = new Chart(ctx, {
+        //                     type: 'line',
+        //                     data: {
+        //                         labels: ["{{mes_4}}", "{{mes_3}}", "{{mes_2}}", "{{mes_1}}"],
+        //                         datasets: [{
+        //                             label: 'Inflados',
+                                    
+        //                             data: [mes_4, mes_3, mes_2, mes_1],
+        //                             backgroundColor: [
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                             ],
+        //                             borderColor: [
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                                 'rgba(18, 188, 200, 1)',
+        //                             ],
+        //                             borderWidth: 1
+        //                         },
+        //                         {
+        //                             label: 'Entrada',
+        //                             data: [{{cantidad_entrada_mes4}}, {{cantidad_entrada_mes3}}, {{cantidad_entrada_mes2}}, {{cantidad_entrada_mes1}}],
+        //                             backgroundColor: [
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)'
+        //                             ],
+        //                             borderColor: [
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)',
+        //                                 'rgba(246, 170, 111, 1)'
+        //                             ],
+        //                             borderWidth: 1
+        //                         },
+        //                         {
+        //                             label: 'Doble Entrada',
+        //                             data: [{% for mes, cantidad in cantidad_doble_entrada.items %}{{cantidad}}, {% endfor %}],
+        //                             backgroundColor: [
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                             ],
+        //                             borderColor: [
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                                 'rgba(255, 0, 0, 0.6)',
+        //                             ],
+        //                             borderWidth: 1
+        //                         }]
+        //                     },
+        //                     options: {
+        //                         plugins: {
+        //                             title: {
+        //                                 display: true,
+        //                                 text: '',
+        //                                 font: {
+        //                                     family: "Montserrat",
+        //                                     size: 15,
+        //                                     lineHeight: 0
+        //                                 },
+        //                                 color: 'white'
+        //                             }
+        //                         },
+        //                         scales: {
+        //                             y: {
+        //                                 beginAtZero: true
+        //                             }
+        //                         }
+        //                     }
+        //                 });
+//licencia de anyChart
+anychart.licenseKey("aeto.com.mx-16056097-34281685");
+    }
+
+anychart.onDocumentReady(function () {
+
+    // set the default types of legend icons
+    anychart.theme({
+    chart: {
+    defaultSeriesSettings: {
+    spline: {legendItem: {iconType: "spline"}},
+    column: {legendItem: {iconType: "column"}}
+    }
+  }
+});
+   
+    // create data set on our data
+    var dataSet = anychart.data.set(getData());
+
+    // map data for the first series, take x from the zero column and value from the first column of data set
+    var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+
+    // map data for the second series, take x from the zero column and value from the second column of data set
+    var seriesData_2 = dataSet.mapAs({'x': 0, 'value': 2});
+
+    // map data for the third series, take x from the zero column and value from the third column of data set
+    var seriesData_3 = dataSet.mapAs({'x': 0, 'value': 3});
+
+    // create line chart
+    var chart = anychart.line();
+  
+    chart.yScale().ticks().interval(1);
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart padding
+    chart.padding([10, 20, 5, 20]);
+
+    // turn on the crosshair
+    chart.crosshair()
+            .enabled(true)
+            .yLabel(false)
+            .yStroke(null);
+
+    // set tooltip mode to point
+    chart.tooltip().positionMode('point');
+
+    // set chart title text settings
+    //chart.title('Statistiques des déclarations sur les 12 derniers mois');
+
+    // set yAxis title
+    //chart.yAxis().title('Nombres');
+    //chart.xAxis().labels().padding(5);
+
+    // create first series with mapped data
+    var series_1 = chart.column(seriesData_1);
+    series_1.name('Inflados');
+    series_1.normal().fill("#0097fc");
+    series_1.hovered().fill("#0097fc", 0.1);
+    series_1.selected().fill("#0097fc", 0.5);
+    series_1.normal().stroke("#0097fc");
+    series_1.hovered().stroke("#0097fc", 2);
+    series_1.selected().stroke("#0097fc", 4);
+    series_1.hovered().markers()
+            .enabled(true)
+            .type('circle')
+            .size(4);
+    series_1.tooltip()
+            .position('right')
+            .anchor('left-center')
+            .offsetX(5)
+            .offsetY(5);
+            
+
+    // create second series with mapped data
+    var series_2 = chart.line(seriesData_2);
+    series_2.name('Mala Entrada');
+    series_2.normal().stroke("#A349A4", 4);
+    series_2.hovered().stroke("#A349A4", 2);
+    series_2.selected().stroke("#A349A4", 6);
+    series_2.hovered().markers()
+            .enabled(true)
+            .type('circle')
+            .size(4);
+    series_2.tooltip()
+            .position('right')
+            .anchor('left-center')
+            .offsetX(5)
+            .offsetY(5);
+
+    // enable and configure markers on the first series
+    series_2.markers(true);
+    series_2.markers().type("circle");
+    series_2.markers().fill("#A349A4");
+    series_2.markers().size(5);
+
+    // create third series with mapped data
+    var series_3 = chart.spline(seriesData_3);
+    series_3.name('Doble Entrada');
+    series_3.normal().stroke("#F0412C", 4);
+    series_3.hovered().stroke("#F0412C", 2);
+    series_3.selected().stroke("#F0412C", 6);
+    series_3.hovered().markers()
+            .enabled(true)
+            .type('circle')
+            .size(4);
+    series_3.tooltip()
+            .position('right')
+            .anchor('left-center')
+            .offsetX(5)
+            .offsetY(5);
+
+    // enable and configure markers on the first series
+    series_3.markers(true);
+    series_3.markers().type("square");
+    series_3.markers().fill("#F0412C");
+    series_3.markers().size(5);   
+
+    // turn the legend on
+    chart.legend()
+            .enabled(true)
+            .fontSize(13)
+            .padding([0, 0, 10, 0]);
+
+    // set container id for the chart
+    chart.container('spline-chart');
+
+    //Set Background
+    var background = chart.background();
+    background.stroke('0 #000');
+    background.corners();
+    background.enabled(false);
+
+    //turn on chart animation
+    chart.animation(true);
+
+    // initiate chart drawing
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+
+    // horizontal expandable
+    chart.legend().itemsLayout('horizontal');
+  
+});
+ function getData() {
+    return [
+        ["{{mes_8}}", {{vehiculo_mes8}}, {{cantidad_entrada_mes8}}, {{cantidad_doble_entrada_mes8}}],
+        ["{{mes_7}}", {{vehiculo_mes7}}, {{cantidad_entrada_mes7}}, {{cantidad_doble_entrada_mes7}}],
+        ["{{mes_6}}", {{vehiculo_mes6}}, {{cantidad_entrada_mes6}}, {{cantidad_doble_entrada_mes6}}],
+        ["{{mes_5}}", {{vehiculo_mes5}}, {{cantidad_entrada_mes5}}, {{cantidad_doble_entrada_mes5}}],
+        ["{{mes_4}}", {{vehiculo_mes4}}, {{cantidad_entrada_mes4}}, {{cantidad_doble_entrada_mes4}}],
+        ["{{mes_3}}", {{vehiculo_mes3}}, {{cantidad_entrada_mes3}}, {{cantidad_doble_entrada_mes3}}],
+        ["{{mes_2}}", {{vehiculo_mes2}}, {{cantidad_entrada_mes2}}, {{cantidad_doble_entrada_mes2}}],
+        ["{{mes_1}}", {{vehiculo_mes1}}, {{cantidad_entrada_mes1}}, {{cantidad_doble_entrada_mes1}}]
+    ]
+}
+
+
+// Graph bar chart
+anychart.onDocumentReady(function () {
+
+// create a data set
+var data = anychart.data.set([
+{% for eje, kmxmm in comparativa_de_ejes.items %}
+{x: "{{eje}}", value: {{kmxmm}},
+normal:   {fill: "#0097fc", stroke: "#0097fc"},
+hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
+selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+},
+{% endfor %}
+]);
+
+// create a chart
+var chart = anychart.bar();
+
+// create a bar series and set the data
+var series = chart.bar(data);
+
+series.name('Km');
+
+// set the chart title
+chart.title("");
+var title = chart.title();
+    title.fontColor('#fff');
+    title.fontSize('1vw');
+    title.fontWeight(600);
+
+// set the titles of the axes
+chart.xAxis().title("");
+chart.yAxis().title("");
+
+// set function to format y axis labels
+var yLabels = chart.yAxis(0).labels();
+yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+//tooltip
+series.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+// set the container id
+chart.container("bar-chart");
+//Set Background
+var background = chart.background();
+background.stroke('0 #000');
+background.corners();
+background.enabled(false);
+
+//turn on chart animation
+chart.animation(true);
+
+// initiate drawing the chart
+chart.draw();
+// chart credits false
+var credits = chart.credits();
+credits.enabled(false);
+ 
+});
+
+// Graph bar chart
+anychart.onDocumentReady(function () {
+
+// create a data set
+var data = anychart.data.set([
+    {% for posicion, profundidad in comparativa_de_posiciones.items %}
+        {x: "{{posicion}}", value: {{profundidad.0}},
+        normal:   {fill: "#0097fc", stroke: "#0097fc"},
+        hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
+        selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+        },
+    {% endfor %}
+
+]);
+
+// create a chart
+var chart1 = anychart.column();
+
+// create a bar series and set the data
+var series = chart1.column(data);
+series.name('Km');
+
+// set the chart title
+chart1.title(""); /* Pendiente de cambiar */
+var title = chart1.title();
+    title.fontColor('#fff');
+    title.fontSize('1vw');
+    title.fontWeight(600);
+
+// set the titles of the axes
+chart1.yScale().ticks().interval(10);
+chart1.xAxis().title("");
+chart1.yAxis().title("");
+
+// set function to format y axis labels
+var yLabels = chart1.yAxis(0).labels();
+yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+//tooltip
+series.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+// set the container id
+chart1.container("bar-chart1");
+//Set Background
+var background = chart1.background();
+background.stroke('0 #000');
+background.corners();
+background.enabled(false);
+
+//turn on chart animation
+chart1.animation(true);
+
+// initiate drawing the chart
+chart1.draw();
+// chart credits false
+var credits = chart1.credits();
+credits.enabled(false);
+ 
+});
+
+
+// scatter
+anychart.onDocumentReady(function () {
+
+// create data
+var data = [
+    {% for posicion, profundidad in comparativa_de_posiciones.items %}
+        {x: "{{posicion}}", value: {{profundidad.1}}, markerSize:12,
+        normal:   {fill: "#A349A4", stroke: "#A349A4", type: "circle"},
+        hovered:  {fill: "#A349A4 0.3", stroke: "4 #A349A4"},
+        selected: {fill: "#A349A4 0.5",stroke: "6 #A349A4"}
+        },
+    {% endfor %}
+];
+
+// create data for the third series
+
+
+// create a chart
+var chart = anychart.scatter();
+var chart = anychart.area();
+
+chart.yScale().ticks().interval(1);
+chart.xScale().ticks().interval(1);
+
+// create series, set the data and names
+series1 = chart.marker(data);
+series1.name("Profundidad");
+
+// create a marker series and set the data
+var series = chart.marker(data);
+series.name('Posición');
+
+// enable major grids
+chart.xGrid(true);
+chart.yGrid(true);
+
+//turn on chart animation
+chart.animation(true);
+  
+// set chart title text settings
+chart.title('');
+var title = chart.title();
+title.fontColor('#fff');
+title.fontSize(18);
+title.fontWeight(600);
+
+var tooltip = chart.tooltip();
+tooltip.positionMode("point");
+
+// set the container id
+chart.container("chart-scatter");
+
+//Set Background
+var background = chart.background();
+background.stroke('0 #000');
+background.corners();
+background.enabled(false);
+
+// chart credits false
+var credits = chart.credits();
+credits.enabled(false);
+
+// initiate drawing the chart
+chart.draw();
+});
+
+//Graph spline-chart
+
+
+</script>
+
+{% endblock content %}

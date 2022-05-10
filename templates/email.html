@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title></title>
+    <style>
+      table,
+      td,
+      div,
+      h1,
+      p {
+        font-family: Arial, sans-serif;
+      }
+
+      table th, td {
+        padding: .25rem;
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0">
+    <table
+      role="presentation"
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        border: 0;
+        border-spacing: 0;
+        background: #ffffff;
+      "
+    >
+      <tr>
+        <td align="center" style="padding: 0">
+          <table
+            role="presentation"
+            style="
+              width: 602px;
+              border-collapse: collapse;
+              border: 1px solid #cccccc;
+              border-spacing: 0;
+              text-align: left;
+            "
+          >
+            <tr>
+              <td
+                align="center"
+              >
+                <img
+                  src="https://images.squarespace-cdn.com/content/v1/61c2132ad8d6687cc43ffad3/16646345-616b-4064-8bbc-86b3081b21a3/INICIO+EXTRA.png?format=2500w"
+                  alt="aeto header"
+                  width="100%"
+                  style="height: auto; display: block"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 36px 30px 42px 30px">
+                <table
+                  role="presentation"
+                  style="
+                    width: 100%;
+                    border-collapse: collapse;
+                    border: 0;
+                    border-spacing: 0;
+                  "
+                >
+                  <tr>
+                    <td style="padding: 0 0 36px 0; color: #153643">
+                      <h1
+                        style="
+                          font-size: 24px;
+                          margin: 0 0 20px 0;
+                          font-family: Arial, sans-serif;
+                        "
+                      >
+                        Hola {{ubicacion.nombre}}
+                      </h1>
+                      <p
+                        style="
+                          margin: 0 0 12px 0;
+                          font-size: 16px;
+                          line-height: 24px;
+                          font-family: Arial, sans-serif;
+                        "
+                      >
+                        Nos comunicamos con usted, ya que acaba de ocurrir un evento pulpo, y aqui dejamos el resumen de lo sucedido
+                      </p>
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 16px;
+                          line-height: 24px;
+                          font-family: Arial, sans-serif;
+                        "
+                      >
+                      <!--
+                        <a
+                          href="http://www.example.com"
+                          style="color: #026cf5; text-decoration: none"
+                          >In tempus felis blandit</a
+                        >
+                        -->
+                      </p>
+                      <br>
+                    <center>
+                        <p style="font-size: 25px;">Numero Economico: <b>{{vehiculo}}</b></p>
+                    </center>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0">
+                      <table
+                        role="presentation"
+                        style="
+                          width: 100%;
+                          border-collapse: collapse;
+                          border: thin solid #000;
+                          border-spacing: 0;
+                        "
+                        border="#000"
+                      >
+                      <tr>
+                        <td>Llanta</td>
+                        <td>Presión de entrada</td>
+                        <td>Estado</td>
+                        <td>Presión de salida</td>
+                        <td>Estado</td>
+                      </tr>
+                    {% for eje in ejes %}
+                        
+                        {% for ej in eje %}
+                            <tr>
+                                <td>{{ej.0.posicion}}</td>
+                                <td>{{ej.1}}</td>
+                                <td><center><img src="https://img.icons8.com/color/96/{{ej.2}}" alt="" height='20px'></center></td>
+                                <td>{{ej.3}}</td>
+                                <td><center><img src="https://img.icons8.com/color/96/{{ej.4}}" alt="" height='20px'></center></td>
+                            </tr>
+                        {% endfor %}
+                        
+                    {% endfor %}
+                      
+                    </table>
+                    </td>
+                  </tr>
+                </table>
+                <br><br>
+                <div style="width: 100%; text-align: center">
+					<a style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #3498db" href="https://www.aetoweb.com/reporteVehiculo/{{bitacora}}/{{tipo}}">
+                        Ver reporte detallado
+                    </a>	
+				</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 30px; background: #026cf5">
+                <table
+                  role="presentation"
+                  style="
+                    width: 100%;
+                    border-collapse: collapse;
+                    border: 0;
+                    border-spacing: 0;
+                    font-size: 9px;
+                    font-family: Arial, sans-serif;
+                  "
+                >
+                  <tr>
+                    <td style="padding: 0; width: 50%" align="left">
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 16px;
+                          font-family: Arial, sans-serif;
+                          color: #ffffff;
+                        "
+                      >
+                        &reg; AETO 2021<br />
+                      </p>
+                    </td>
+                    <td style="padding: 0; width: 50%" align="right">
+                      <table
+                        role="presentation"
+                        style="
+                          border-collapse: collapse;
+                          border: 0;
+                          border-spacing: 0;
+                        "
+                      >
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

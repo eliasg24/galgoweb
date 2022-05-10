@@ -1,0 +1,2171 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/tire-dashboard.css' %}"
+/>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+></script>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'js/daterangepicker.css' %}"
+/>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bullet.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-radar.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-circular-gauge.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/themes/dark_provence.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/themes/dark_glamour.js"></script>
+<meta charset="utf-8" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Last-Modified" content="0" />
+<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<title>TIRE EYE</title>
+{% endblock head %} {% block content %}
+
+<main class="all-cont animate__animated animate__fadeIn">
+  <header class="head-menu">
+    <div class="menu-li__left">
+      <img src="{% static 'images/aeto.svg' %}" alt="" />
+    </div>
+
+    <form
+      class="form-head"
+      action="{% url 'dashboards:tireDB1' %}"
+      method="GET"
+    >
+      <nav class="btn-group" id="nav-dash">
+        <a href="{% url 'dashboards:tireDB1' %}" class="btn btn-trash">
+          <span class="icon-trash2"></span>
+        </a>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="ubicacion">
+            Sucursal
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-ubicacion">
+            <li>
+              <div class="drop-search">
+                <input
+                  type="search"
+                  id="search-ubicacion"
+                  class="drop-input"
+                  autocomplete="off"
+                />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-flota" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="flota2" value="all" id="all-flota" {% if flota2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for flota in flotas %}
+            <li class="search-item">
+              <label for="{{flota}}" class="input-check">
+                {{flota}} 
+                <input type="checkbox" name="flota" id="{{flota}}" value="{{flota}}" {% for f in flota1 %}{% if f|slugify == flota|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="clase">
+            Clase
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-clase">
+            <li>
+              <div class="drop-search">
+                <input
+                  type="search"
+                  id="search-clase"
+                  class="drop-input"
+                  autocomplete="off"
+                />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-clase" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" name="clase2" value="all" id="all-clase" {% if clase2|slugify == "all" %}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for clase in clases_mas_frecuentes_infladas %}
+            <li class="search-item">
+              <label for="{{clase.clase}}" class="input-check">
+                {{clase.clase|lower|capfirst}} 
+                <input type="checkbox"name="clase" id="{{clase.clase}}" value="{{clase.clase}}" {% for c in clase1 %}{% if c|slugify == clase.clase|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </nav>
+    </form>
+  </header>
+
+  <div class="horizontal">
+    <div class="column">
+      <div class="bullet-cont">
+        <div id="score-gauge1" class="score-gauge"></div>
+      </div>
+      <div class="title-icon">
+        <div class="title-score">
+          <h2 class="h2-score">{{porcentaje_visto}}%</h2>
+          <h2 class="h2-score">{{vehiculos_vistos}}/{{vehiculos_totales}}</h2>
+        </div>
+
+        <div class="icon-score">
+          <span class="icon-eye"></span>
+
+          <div class="popout-text">
+            <p>Vehiculos vencidos</p>
+          </div>
+        </div>
+      </div>
+      <aside class="about-btn">
+        <span class="icon-question-circle-o"></span>
+        <div class="popout-text">
+          <p class="italic">
+            Porcentaje de vehiculos vencidos de inspección sobre el periodo de inspección. 
+          </p>
+          <p>
+            <strong>Objetivo</strong>: Ver el gauge lo mas cercano a 0%
+          </p>
+        </div>
+      </aside>
+    </div>
+    <div class="column">
+      <div class="bullet-cont">
+        <div id="score-gauge2" class="score-gauge"></div>
+      </div>
+      <div class="title-icon">
+        <div class="title-score">
+          <h2 class="h2-score">{{porcentaje_rojo}}%</h2>
+          <h2 class="h2-score">{{vehiculos_rojos}}/{{vehiculos_totales}}</h2>
+        </div>
+        <div class="icon-score">
+          <span class="icon-warning"></span>
+
+          <div class="popout-text">
+            <p>Vehiculos rojos</p>
+          </div>
+        </div>
+      </div>
+      <aside class="about-btn">
+        <span class="icon-question-circle-o"></span>
+        <div class="popout-text">
+          <p class="italic">
+            Porcentaje de vehiculos actualmente en estatus rojo. 
+          </p>
+          <p>
+            <strong>Objetivo</strong>: Ver el gauge lo mas cerca a 0%
+          </p>
+        </div>
+      </aside>
+    </div>
+    <div class="column">
+      <div class="bullet-cont">
+        <div id="score-gauge3" class="score-gauge"></div>
+      </div>
+      <div class="title-icon">
+        <div class="title-score">
+          <h2 class="h2-score">{{porcentaje_amarillo}}%</h2>
+          <h2 class="h2-score">
+            {{vehiculos_amarillos}}/{{vehiculos_totales}}
+          </h2>
+        </div>
+        <div class="icon-score">
+          <span class="icon-notification"></span>
+
+          <div class="popout-text">
+            <p>Vehiculos amarillos</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="about-btn">
+        <span class="icon-question-circle-o"></span>
+        <div class="popout-text">
+          <p class="italic">
+            Porcentaje de vehiculos actualmente en estatus amarillo.
+          </p>
+          <p>
+            <strong>Objetivo</strong>: Ver el gauge lo mas cerca a 0%
+          </p>
+        </div>
+      </aside>
+    </div>
+    <div class="column">
+      <div class="bullet-cont">
+        <div id="score-gauge4" class="score-gauge"></div>
+      </div>
+      <div class="title-icon">
+        <div class="title-score">
+          <h2 class="h2-score">{{porcentaje_sospechoso}}%</h2>
+          <h2 class="h2-score">
+            {{vehiculos_sospechosos}}/{{vehiculos_totales}}
+          </h2>
+        </div>
+        <div class="icon-score">
+          <span class="icon-question"></span>
+
+          <div class="popout-text">
+            <p>Vehiculos sospechosos</p>
+          </div>
+        </div>
+      </div>
+      
+      <aside class="about-btn">
+        <span class="icon-question-circle-o"></span>
+        <div class="popout-text">
+          <p class="italic">
+            Porcentaje de vehiculos actualmente en estatus sospechoso. 
+          </p>
+          <p>
+            <strong>Objetivo</strong>: Ver el gauge lo mas cerca a 0%
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="cont-horizontal">
+    <div class="cont-left">
+      <div class="buttons">
+        <nav class="nav-crunch">
+          <button class="btn btn-aeto-crunch active" id="clase-g">Clase</button>
+          <button class="btn btn-aeto-crunch" id="aplicacion">
+            Aplicación
+          </button>
+        </nav>
+      </div>
+      <div id="p1" class="radar-webo">
+        <div class="title-buttons">
+          <h2>Porcentaje de Vehículos Inspeccionados</h2>
+
+          <div class="chart-buttons">
+            <button class="icono-pantallaC">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Porcentaje de aplicación de vehiculos inspeccionado en el periodo de inspeccion.
+                </p>
+                <p>
+                  <strong>Objetivo</strong>: Ver el Radar lo mas lleno posible. Los puntos del radar bajos son aread de oportunidad.
+                </p>
+              </div>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="ocultarR1"
+              onclick="closeFullscreenP1();"
+            >
+              <span class="icon-fullscreen_exit"></span>
+            </button>
+            <button
+              class="icono-pantallaC"
+              id="mostrarR1"
+              onclick="openFullscreenP1();"
+            >
+              <span class="icon-fullscreen"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div id="radarhuevo"></div>
+          <div id="radarhuevo1"></div>
+        </div>
+      </div>
+      <div id="p2" class="bar-egg">
+        <div class="bar-webo">
+          <div class="buttons">
+            <h2>Vehículos sin inspeccionar</h2>
+            <div class="chart-buttons">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">
+                    Porcentaje de aplicación de vehiculos inspeccionado en el periodo de inspeccion.
+                  </p>
+                  <p>
+                    <strong>Objetivo</strong>: Ver el Radar lo mas lleno posible. Los puntos del radar bajos son aread de oportunidad.
+                  </p>
+                </div>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarB1"
+                onclick="closeFullscreenP2();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarB1"
+                onclick="openFullscreenP2();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </div>
+          </div>
+          <div class="container-fluid">
+            <div id="barwebo"></div>
+            <div id="barwebo2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cont-right">
+      <nav class="option-nav">
+        <button class="btn btn-aeto-crunch active" id="view1">
+          Tendencia de estatus tire eye
+        </button>
+        <button class="btn btn-aeto-crunch" id="view2" style="display: none">
+          Encontrado/Actual
+        </button>
+        <button class="btn btn-aeto-crunch" id="view3">
+          Estatus de profundidad por eje
+        </button>
+        <button class="btn btn-aeto-crunch" id="view4">
+          Estatus de presión
+        </button>
+      </nav>
+
+      <article class="view">
+        <div class="comboChart on-view">
+          <div class="cont-combo" id="p3">
+            <div class="buttons">
+              <h2>Tendencia de estatus Tire eye</h2>
+              <nav class="flex-nav">
+                <button class="icono-pantallaC">
+                  <span class="icon-question-circle-o"></span>
+                  <div class="popout-text">
+                    <p class="italic">
+                      Tendencia de Vehiculos inspeccionados, vehiculos en cada estatus. 
+                    </p>
+                    <p>
+                      <strong>Objetivo</strong>: La barra azul lo mas alta posible y las lineas lo mas bajas posible.
+                    </p>
+                  </div>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="ocultarC1"
+                  onclick="closeFullscreenP3();"
+                >
+                  <span class="icon-fullscreen_exit"></span>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="mostrarC1"
+                  onclick="openFullscreenP3();"
+                >
+                  <span class="icon-fullscreen"></span>
+                </button>
+              </nav>
+            </div>
+            <div id="pronostico-consumo"></div>
+          </div>
+        </div>
+
+        <div class="donaChart">
+          <div class="buttons">
+            <div class="nav" id="encontrado-actual">
+              <button class="btn btn-aeto-crunch alt ea-desgaste active">
+                Desgaste Irregular
+              </button>
+              <button class="btn btn-aeto-crunch alt ea-dual">
+                Dualización
+              </button>
+              <button class="btn btn-aeto-crunch alt ea-pres">Presión</button>
+              <button class="btn btn-aeto-crunch alt ea-obser">
+                Observación
+              </button>
+            </div>
+            <nav class="flex-nav">
+              <button class="icono-pantallaC">
+                <span class="icon-question-circle-o"></span>
+                <div class="popout-text">
+                  <p class="italic">
+                    Porcentaje de aplicación de vehiculos inspeccionado en el periodo de inspeccion.
+                  </p>
+                  <p>
+                    <strong>Objetivo</strong>: Ver el Radar lo mas lleno posible. Los puntos del radar bajos son aread de oportunidad.
+                  </p>
+                </div>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="ocultarD1"
+                onclick="closeFullscreenP4();"
+              >
+                <span class="icon-fullscreen_exit"></span>
+              </button>
+              <button
+                class="icono-pantallaC"
+                id="mostrarD1"
+                onclick="openFullscreenP4();"
+              >
+                <span class="icon-fullscreen"></span>
+              </button>
+            </nav>
+          </div>
+          <div class="cont-2dona" id="p4">
+            <div class="container-fluid">
+              <div class="cont-dona ea-graph active" id="ea-desgaste">
+                <div id="dona"></div>
+                <div id="dona2"></div>
+              </div>
+              {% include 'encontrado-actual/dualizacion.html' %} {% include
+              'encontrado-actual/observacion.html' %} {% include
+              'encontrado-actual/presion.html' %}
+            </div>
+          </div>
+        </div>
+
+        <div class="percent-bar">
+          <div class="cont-percentBar" id="p5">
+            <div class="title-buttons">
+              <h2>Estatus de profundidad por eje</h2>
+              <div class="buttons justify-content-end">
+                <button class="icono-pantallaC">
+                  <span class="icon-question-circle-o"></span>
+                  <div class="popout-text">
+                    <p class="italic">
+                      Cantidad de llantas por eje con estatus correcto, amarillo y rojo de profundiad.
+                    </p>
+                    <p>
+                      <strong>Objetivo</strong>: La barra debe tener el menor rojo posible.
+                    </p>
+                  </div>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="ocultarP1"
+                  onclick="closeFullscreenP5();"
+                >
+                  <span class="icon-fullscreen_exit"></span>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="mostrarP1"
+                  onclick="openFullscreenP5();"
+                >
+                  <span class="icon-fullscreen"></span>
+                </button>
+              </div>
+            </div>
+            <div id="stacked-percent"></div>
+          </div>
+        </div>
+
+        <section class="col">
+          <aside class="row" id="p6">
+            <nav class="buttons">
+              <h2>Estatus de mala presión</h2>
+              <h2 class="h2-ebpD">Estatus de buena presión</h2>
+              <nav class="flex-nav">
+                <button class="icono-pantallaC">
+                  <span class="icon-question-circle-o"></span>
+                  <div class="popout-text">
+                    <p class="italic">
+                      Porcentaje de aplicación de vehiculos inspeccionado en el periodo de inspeccion.
+                    </p>
+                    <p>
+                      <strong>Objetivo</strong>: Ver el Radar lo mas lleno posible. Los puntos del radar bajos son aread de oportunidad.
+                    </p>
+                  </div>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="ocultarP2"
+                  onclick="closeFullscreenP6();"
+                >
+                  <span class="icon-fullscreen_exit"></span>
+                </button>
+                <button
+                  class="icono-pantallaC"
+                  id="mostrarP2"
+                  onclick="openFullscreenP6();"
+                >
+                  <span class="icon-fullscreen"></span>
+                </button>
+              </nav>
+            </nav>
+            <div class="grid-col-2">
+              <article class="container-fluid">
+                <div id="estatus-presion"></div>
+              </article>
+              <article class="container-fluid">
+                <h2 class="h2-ebpM">Estatus de buena presión</h2>
+                <div id="x"></div>
+              </article>
+            </div>
+          </aside>
+        </section>
+      </article>
+    </div>
+  </div>
+<script src="{% static './js/filter.js' %}"></script>
+<script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', (e) => {
+          dropdown('ubicacion', 'menu-ubicacion');
+          dropdown('clase', 'menu-clase');
+          handleButtons('.option-nav');
+          handleButtons('.nav-crunch');
+          handleButtons('#encontrado-actual');
+          handleView('view1', '.comboChart');
+          handleView('view2', '.donaChart');
+          handleView('view3', '.percent-bar');
+          handleView('view4', '.col');
+          handleCheckbox();
+          changeGraph('.ea-graph', 'ea-dual', 'ea-desgaste', 'ea-obser', 'ea-pres');
+          handleSelectAll({ container: 'menu-ubicacion', selectAll: 'all-flota' });
+          handleSelectAll({ container: 'menu-clase', selectAll: 'all-clase' });
+          handleCheckbox();
+        });
+
+        const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+          const selector = document.querySelector(`#${container} #${selectAll}`);
+          const checkboxs = document.querySelectorAll(
+            `#${container} input[type="checkbox"]`
+          );
+
+          selector.addEventListener('change', (e) => {
+            selector.checked
+              ? checkboxs.forEach((check) => (check.checked = true))
+              : checkboxs.forEach((check) => (check.checked = false));
+          });
+
+          checkboxs.forEach((item) => {
+            item.addEventListener('change', (e) => {
+              let notAll = false;
+
+              checkboxs.forEach((item) => {
+                if (!item.checked) notAll = true;
+                if (notAll) selector.checked = false;
+              });
+            });
+          });
+        };
+
+        const changeGraph = (graphs = '', flota = '', app = '', eje = '', pos = '') => {
+          document.addEventListener('click', (e) => {
+            if (app) {
+              if (e.target.matches(`.${app}`)) {
+                document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+                document.getElementById(app).classList.add('active');
+              }
+            }
+
+            if (flota) {
+              if (e.target.matches(`.${flota}`)) {
+                document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+                document.getElementById(flota).classList.add('active');
+              }
+            }
+
+            if (eje) {
+              if (e.target.matches(`.${eje}`)) {
+                document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+                document.getElementById(eje).classList.add('active');
+              }
+            }
+
+            if (pos) {
+              if (e.target.matches(`.${pos}`)) {
+                document.querySelectorAll(graphs).forEach(item => item.classList.remove('active'));
+
+                document.getElementById(pos).classList.add('active');
+              }
+            }
+          });
+
+      };
+
+        const handleCheckbox = () => {
+          const inputs = document.querySelectorAll('.input-check');
+          const form = document.querySelector('.form-head');
+          inputs.forEach(input => {
+            input.addEventListener('change', (e) => form.submit());
+          })
+        };
+
+        const switchBtns = () => {
+          const clase = document.getElementById('clase-g'),
+                aplicacion = document.getElementById('aplicacion');
+
+          document.addEventListener('click', ({ target }) => {
+              if ( target === clase ) {
+                  clase.classList.add('active');
+
+                  document.getElementById('radarhuevo').style.display = 'block';
+                  document.getElementById('radarhuevo1').style.display = 'none';
+                  document.getElementById('barwebo').style.display = 'block';
+                  document.getElementById('barwebo2').style.display = 'none';
+
+                  if (clase.classList.contains('disable')) {
+                      clase.classList.remove('disable');
+                      aplicacion.classList.add('disable');
+                      aplicacion.classList.remove('active');
+                  }
+
+              }
+
+              if ( target === aplicacion ) {
+
+                  aplicacion.classList.add('active');
+                  document.getElementById('radarhuevo').style.display = 'none';
+                  document.getElementById('radarhuevo1').style.display = 'block';
+                  document.getElementById('barwebo').style.display = 'none';
+                  document.getElementById('barwebo2').style.display = 'block';
+
+
+                  if (aplicacion.classList.contains('disable')) {
+                      clase.classList.remove('active');
+                      clase.classList.add('disable');
+                      aplicacion.classList.remove('disable');
+                  }
+
+              }
+          });
+
+        };
+
+        switchBtns();
+
+        const dropdown = (button = '', menu = '') => {
+          const dropBtn = document.getElementById(button);
+          const dropMenu = document.getElementById(menu);
+          const checks = document.querySelectorAll('input[type="checkbox"]');
+
+
+          dropBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropMenu.classList.toggle('active');
+            if (dropMenu.classList.contains('active')) {
+              dropBtn.querySelector('.indicator').classList.add('active');
+            } else {
+              dropBtn.querySelector('.indicator').classList.remove('active');
+            }
+          });
+
+          document.addEventListener('click', (e) => {
+            if (!e.target.matches('.dropdown *')) {
+              dropMenu.classList.remove('active');
+              dropBtn.querySelector('.indicator').classList.remove('active');
+            }
+          });
+        };
+
+        const handleButtons = (container = '') => {
+          const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
+          buttons.forEach( button => {
+            button.addEventListener('click', ({ target }) => {
+              buttons.forEach(item => item.classList.remove('active'));
+              target.classList.add('active');
+            });
+          } );
+        };
+
+        const handleView = (button = '', view = '') => {
+          const btn = document.getElementById(button);
+          const image = document.querySelector(view);
+
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
+
+            image.classList.add('on-view');
+          });
+        };
+
+        anychart.onDocumentReady(function () {
+          // create data
+          var data = [
+            {x: "{{mes_4}}", value: {{entrada_correcta_mes_4}} },
+            {x: "{{mes_3}}", value: {{entrada_correcta_mes_3}} },
+            {x: "{{mes_2}}", value: {{entrada_correcta_mes_2}} },
+            {x: "{{mes_1}}", value: {{entrada_correcta_mes_1}} }
+          ];
+
+          // create data
+          var data1 = [
+            {x: "{{mes_4}}", value: {{entrada_correcta_mes_4}} },
+            {x: "{{mes_3}}", value: {{entrada_correcta_mes_3}} },
+            {x: "{{mes_2}}", value: {{entrada_correcta_mes_2}} },
+            {x: "{{mes_1}}", value: {{entrada_correcta_mes_1_cantidad}} }
+          ];
+
+          // create a chart
+          var chart = anychart.line();
+
+          // set chart legend
+          chart.legend(false);
+
+          var yScale = anychart.scales.linear();
+          yScale.minimum(0).maximum(100);
+          chart.yScale(yScale);
+
+          yLabels = chart.yAxis().labels();
+          yLabels.format("{%value}%");
+
+          chart.labels(false);
+
+          // create a spline series and set the data
+          var series = chart.spline(data);
+          series.markers(true);
+          series.name('%');
+
+          // create a spline series and set the data
+          var series = chart.spline(data1);
+          series.markers(true);
+          series.name('Cantidad');
+
+          var background = chart.background();
+          background.enabled(false);
+
+          // set the container id
+          chart.container("x").draw();
+
+          var credits = chart.credits();
+              credits.enabled(false);
+          });
+
+
+      //Doughnut
+    anychart.onDocumentReady(function () {
+
+  // create pie chart with passed data
+  var chart = anychart.pie([
+  {% for eje, cantidad in mala_entrada_ejes.items %}
+    { x: '{{eje|lower|capfirst}}', value: {{cantidad}},  fill: '#026CF5' },
+  {% endfor %}
+  ]);
+  // set the position of the legend
+
+  var legend = chart.legend();
+  legend.position('right');
+  legend.align('top');
+  legend.itemsLayout('vertical');
+
+  // turn on chart animation
+  chart.animation(true);
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+  // set chart title text settings
+  chart.title('')
+  //set chart radius
+  .radius('100%')
+  // create empty area in pie chart
+  .innerRadius('60%');
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  // set container id for the chart
+  chart.container('estatus-presion');
+  // initiate chart drawing
+  chart.draw();
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  // horizontal expandable
+  //chart.legend().itemsLayout('horizontal');
+  });
+
+
+          anychart.licenseKey("aeto.com.mx-16056097-34281685");
+
+          function radar() {
+              document.getElementById('radarhuevo').style.display = "none";
+              document.getElementById('radarhuevo1').style.display = "block";
+          }
+
+          function gauge() {
+              document.getElementById('radarhuevo').style.display = "block";
+              document.getElementById('radarhuevo1').style.display = "none";
+          }
+
+              //funciones mostrar y ocultar clases
+          var elem1 = document.getElementById('p1');
+          function openFullscreenP1() {
+              if (elem1.requestFullscreen) {
+                  elem1.requestFullscreen();
+                  document.getElementById('mostrarR1').style.display = "none";
+                  document.getElementById('ocultarR1').style.display = "block";
+              } else if (elem1.webkitRequestFullscreen) { /* Safari */
+                  elem1.webkitRequestFullscreen();
+              } else if (elem1.msRequestFullscreen) { /* IE11 */
+                  elem1.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP1() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarR1').style.display = "block";
+                  document.getElementById('ocultarR1').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+              //funciones mostrar y ocultar clases
+          var elem2 = document.getElementById('p2');
+          function openFullscreenP2() {
+              if (elem2.requestFullscreen) {
+                  elem2.requestFullscreen();
+                  document.getElementById('mostrarB1').style.display = "none";
+                  document.getElementById('ocultarB1').style.display = "block";
+              } else if (elem2.webkitRequestFullscreen) { /* Safari */
+                  elem2.webkitRequestFullscreen();
+              } else if (elem2.msRequestFullscreen) { /* IE11 */
+                  elem2.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP2() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarB1').style.display = "block";
+                  document.getElementById('ocultarB1').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+              //funciones mostrar y ocultar clases
+          var elem3 = document.getElementById('p3');
+          function openFullscreenP3() {
+              if (elem3.requestFullscreen) {
+                  elem3.requestFullscreen();
+                  document.getElementById('mostrarC1').style.display = "none";
+                  document.getElementById('ocultarC1').style.display = "block";
+              } else if (elem3.webkitRequestFullscreen) { /* Safari */
+                  elem3.webkitRequestFullscreen();
+              } else if (elem3.msRequestFullscreen) { /* IE11 */
+                  elem3.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP3() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarC1').style.display = "block";
+                  document.getElementById('ocultarC1').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+          //funciones mostrar y ocultar clases
+          var elem4 = document.getElementById('p4');
+          function openFullscreenP4() {
+              if (elem4.requestFullscreen) {
+                  elem4.requestFullscreen();
+                  document.getElementById('mostrarD1').style.display = "none";
+                  document.getElementById('ocultarD1').style.display = "block";
+              } else if (elem4.webkitRequestFullscreen) { /* Safari */
+                  elem4.webkitRequestFullscreen();
+              } else if (elem4.msRequestFullscreen) { /* IE11 */
+                  elem4.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP4() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarD1').style.display = "block";
+                  document.getElementById('ocultarD1').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+
+          //funciones mostrar y ocultar clases
+          var elem5 = document.getElementById('p5');
+          function openFullscreenP5() {
+              if (elem5.requestFullscreen) {
+                  elem5.requestFullscreen();
+                  document.getElementById('mostrarP1').style.display = "none";
+                  document.getElementById('ocultarP1').style.display = "block";
+              } else if (elem5.webkitRequestFullscreen) { /* Safari */
+                  elem5.webkitRequestFullscreen();
+              } else if (elem5.msRequestFullscreen) { /* IE11 */
+                  elem5.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP5() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarP1').style.display = "block";
+                  document.getElementById('ocultarP1').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+          //funciones mostrar y ocultar clases
+          var elem6 = document.getElementById('p6');
+          function openFullscreenP6() {
+              if (elem6.requestFullscreen) {
+                  elem6.requestFullscreen();
+                  document.getElementById('mostrarP2').style.display = "none";
+                  document.getElementById('ocultarP2').style.display = "block";
+              } else if (elem6.webkitRequestFullscreen) { /* Safari */
+                  elem6.webkitRequestFullscreen();
+              } else if (elem6.msRequestFullscreen) { /* IE11 */
+                  elem6.msRequestFullscreen();
+              }
+          }
+          function closeFullscreenP6() {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+                  document.getElementById('mostrarP2').style.display = "block";
+                  document.getElementById('ocultarP2').style.display = "none";
+              } else if (document.webkitExitFullscreen) { /* Safari */
+                  document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE11 */
+                  document.msExitFullscreen();
+              }
+          }
+              //drops
+               var expanded = false;
+                  function showCheckboxes(){
+                      var checkboxes = document.getElementById("checkboxes");
+                      if (!expanded) {
+                          checkboxes.style.display = "block";
+                          checkboxes.style.position = "fixed";
+                          expanded = true;
+                      } else {
+                          checkboxes.style.display = "none";
+                          expanded = false;
+                      }
+                  }
+
+                  function showCheckboxes2(){
+                      var checkboxes = document.getElementById("checkboxes2");
+                      if (!expanded) {
+                          checkboxes.style.display = "block";
+                          checkboxes.style.position = "fixed";
+                          expanded = true;
+                      } else {
+                          checkboxes.style.display = "none";
+                          expanded = false;
+                      }
+                  }
+
+                  function showCheckboxes3(){
+                      var checkboxes = document.getElementById("checkboxes3");
+                      if (!expanded) {
+                          checkboxes.style.display = "block";
+                          checkboxes.style.position = "fixed";
+                          expanded = true;
+                      } else {
+                          checkboxes.style.display = "none";
+                          expanded = false;
+                      }
+                  }
+
+                  function showCheckboxes4(){
+                      var checkboxes = document.getElementById("checkboxes4");
+                      if (!expanded) {
+                          checkboxes.style.display = "block";
+                          checkboxes.style.position = "fixed";
+                          expanded = true;
+                      } else {
+                          checkboxes.style.display = "none";
+                          expanded = false;
+                      }
+                  }
+
+      // score gauge1
+      anychart.onDocumentReady(function () {
+        var axisMaximum1 = 100;
+        var data1 = [
+          {% if porcentaje_visto %}
+              {% if porcentaje_visto == "Nada" %}
+                  0
+              {% else %}
+                  {{porcentaje_visto}}
+              {% endif %}
+          {% else %}
+              0
+          {% endif %}
+        ];
+        var dataSet1 = anychart.data.set(data1);
+
+        var circularGauge1 = anychart.gauges.circular();
+        circularGauge1.data(dataSet1);
+        circularGauge1.fill(false)
+          .stroke(null)
+          .padding(0)
+          .startAngle(235)
+          .sweepAngle(250);
+
+      circularGauge1.needle()
+                  .stroke('2 #545f69')
+                  .startRadius('2%')
+                  .endRadius('100%')
+                  .startWidth('0.1%')
+                  .endWidth('0.1%')
+                  .middleWidth('0.9%');
+
+        var circularAxis = circularGauge1.axis().radius(70).width(50).fill('#969696');
+        circularAxis.scale()
+          .minimum(0)
+          .maximum(axisMaximum1);
+        circularAxis.labels().enabled(false);
+        circularAxis.ticks().enabled(false);
+        circularAxis.minorTicks().enabled(false);
+
+        circularGauge1.bar(0).dataIndex(0)
+          .radius(70)
+          .width(50)
+          .fill('#026cf5')
+          .stroke(null)
+          .zIndex(50);
+
+        circularGauge1.bounds('0%','0%', '100%', '100%');
+
+        //enable gauge animation
+        animateGauge(circularGauge1, 1000);
+
+
+
+          circularGauge1.cap()
+                  .radius('10%')
+                  .enabled(true)
+                  .fill('#545f69');
+
+          // Gauge percentage
+          circularGauge1.label(0)
+          .text('<span style="">' + data1[0] + '%</span>')
+          .useHtml(true)
+          .fontSize(17)
+          .fontColor('#026cf5')
+          .hAlign('center')
+          .width("50%")
+          .height("80%")
+          .anchor('center')
+          .offsetY("-100%")
+          .offsetX("50%")
+          .zIndex(10);
+
+        circularGauge1.container('score-gauge1').draw();
+
+        /**
+       * Enables gauge animation.
+       *
+       * @param {anychart.circularGaugeModule.Chart} gauge chart instance.
+       * @param {number} animation duration
+       */
+        function animateGauge(chart, duration) {
+          var originalValue = chart.data().get(0, 'value');
+          // set 0 as initial data value
+          chart.data().set(0, 'value', 0);
+
+          // launch the animation when the chart is rendered
+          chart.listenOnce('chartDraw', function() {
+
+            // provide animation timing
+            var start = performance.now();
+            requestAnimationFrame(function animationStep(time) {
+              var timePassed = time - start;
+              var timeFraction = timePassed / duration;
+              if (timePassed > duration) {
+                timePassed = duration;
+                timeFraction = 1
+              }
+              //Set Background
+              var background = chart.background();
+              background.stroke('0 #000');
+              background.corners();
+              background.enabled(false);
+              // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+
+
+              //redraw by increasing the value from zero to the required one
+              chart.data().set(0, 'value', originalValue * timeFraction);
+
+              if (timePassed < duration) {
+                requestAnimationFrame(animationStep);
+              }
+            });
+          });
+        }
+      });
+
+      // score-gauge2
+      anychart.onDocumentReady(function () {
+
+          var axisMaximum2 = 100;
+          var data2 = [
+          {% if porcentaje_rojo %}
+              {% if porcentaje_rojo == "Nada" %}
+                  0
+              {% else %}
+                  {{porcentaje_rojo}}
+              {% endif %}
+          {% else %}
+              0
+          {% endif %}
+          ];
+          var dataSet2 = anychart.data.set(data2);
+
+        var circularGauge2 = anychart.gauges.circular();
+        circularGauge2.data(dataSet2);
+        circularGauge2.fill(false)
+          .stroke(null)
+          .padding(0)
+          .startAngle(235)
+          .sweepAngle(250);
+
+      circularGauge2.needle()
+                  .stroke('2 #545f69')
+                  .startRadius('2%')
+                  .endRadius('100%')
+                  .startWidth('0.1%')
+                  .endWidth('0.1%')
+                  .middleWidth('0.9%');
+
+        var circularAxis = circularGauge2.axis().radius(70).width(50).fill('#969696');
+        circularAxis.scale()
+          .minimum(0)
+          .maximum(axisMaximum2);
+        circularAxis.labels().enabled(false);
+        circularAxis.ticks().enabled(false);
+        circularAxis.minorTicks().enabled(false);
+
+        circularGauge2.bar(0).dataIndex(0)
+          .radius(70)
+          .width(50)
+          .fill('#026cf5')
+          .stroke(null)
+          .zIndex(50);
+
+        circularGauge2.bounds('0%','0%', '100%', '100%');
+
+        //enable gauge animation
+        animateGauge(circularGauge2, 1000);
+
+
+
+          circularGauge2.cap()
+                  .radius('10%')
+                  .enabled(true)
+                  .fill('#545f69');
+
+          //Gauge percentage
+          circularGauge2.label(0)
+          .text('<span style="">' + data2[0] + '%</span>')
+          .useHtml(true)
+          .fontSize(17)
+          .fontColor('#026cf5')
+          .hAlign('center')
+          .width("50%")
+          .height("80%")
+          .anchor('center')
+          .offsetY("-100%")
+          .offsetX("50%")
+          .zIndex(10);
+
+        circularGauge2.container('score-gauge2').draw();
+
+        /**
+       * Enables gauge animation.
+       *
+       * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+       * @param {number} animation duration
+       */
+        function animateGauge(chart, duration) {
+          var originalValue = chart.data().get(0, 'value');
+          // set 0 as initial data value
+          chart.data().set(0, 'value', 0);
+
+          // launch the animation when the chart is rendered
+          chart.listenOnce('chartDraw', function() {
+
+            // provide animation timing
+            var start = performance.now();
+            requestAnimationFrame(function animationStep(time) {
+              var timePassed = time - start;
+              var timeFraction = timePassed / duration;
+              if (timePassed > duration) {
+                timePassed = duration;
+                timeFraction = 1;
+              }
+              //Set Background
+              var background = chart.background();
+              background.stroke('0 #000');
+              background.corners();
+              background.enabled(false);
+              // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+
+
+              //redraw by increasing the value from zero to the required one
+              chart.data().set(0, 'value', originalValue * timeFraction);
+
+              if (timePassed < duration) {
+                requestAnimationFrame(animationStep);
+              }
+            });
+          });
+        }
+      });
+
+      // score-gauge3
+      anychart.onDocumentReady(function () {
+
+          var axisMaximum3 = 100;
+          var data3 = [
+          {% if porcentaje_amarillo %}
+              {% if porcentaje_amarillo == "Nada" %}
+                  0
+              {% else %}
+                  {{porcentaje_amarillo}}
+              {% endif %}
+          {% else %}
+              0
+          {% endif %}
+          ];
+          var dataSet3 = anychart.data.set(data3);
+
+        var circularGauge3 = anychart.gauges.circular();
+        circularGauge3.data(dataSet3);
+        circularGauge3.fill(false)
+          .stroke(null)
+          .padding(0)
+          .startAngle(235)
+          .sweepAngle(250);
+
+      circularGauge3.needle()
+                  .stroke('2 #545f69')
+                  .startRadius('2%')
+                  .endRadius('100%')
+                  .startWidth('0.1%')
+                  .endWidth('0.1%')
+                  .middleWidth('0.9%');
+
+        var circularAxis = circularGauge3.axis().radius(70).width(50).fill('#969696');
+        circularAxis.scale()
+          .minimum(0)
+          .maximum(axisMaximum3);
+        circularAxis.labels().enabled(false);
+        circularAxis.ticks().enabled(false);
+        circularAxis.minorTicks().enabled(false);
+
+        circularGauge3.bar(0).dataIndex(0)
+          .radius(70)
+          .width(50)
+          .fill('#026cf5')
+          .stroke(null)
+          .zIndex(50);
+
+        circularGauge3.bounds('0%','0%', '100%', '100%');
+
+        //enable gauge animation
+        animateGauge(circularGauge3, 1000);
+
+
+
+          circularGauge3.cap()
+                  .radius('10%')
+                  .enabled(true)
+                  .fill('#545f69');
+
+          //Gauge percentage
+          circularGauge3.label(0)
+          .text('<span style="">' + data3[0] + '%</span>')
+          .useHtml(true)
+          .fontSize(17)
+          .fontColor('#026cf5')
+          .hAlign('center')
+          .width("50%")
+          .height("80%")
+          .anchor('center')
+          .offsetY("-100%")
+          .offsetX("50%")
+          .zIndex(10);
+
+        circularGauge3.container('score-gauge3').draw();
+
+        /**
+       * Enables gauge animation.
+       *
+       * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+       * @param {number} animation duration
+       */
+        function animateGauge(chart, duration) {
+          var originalValue = chart.data().get(0, 'value');
+          // set 0 as initial data value
+          chart.data().set(0, 'value', 0);
+
+          // launch the animation when the chart is rendered
+          chart.listenOnce('chartDraw', function() {
+
+            // provide animation timing
+            var start = performance.now();
+            requestAnimationFrame(function animationStep(time) {
+              var timePassed = time - start;
+              var timeFraction = timePassed / duration;
+              if (timePassed > duration) {
+                timePassed = duration;
+                timeFraction = 1;
+              }
+              //Set Background
+              var background = chart.background();
+              background.stroke('0 #000');
+              background.corners();
+              background.enabled(false);
+              // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+
+
+              //redraw by increasing the value from zero to the required one
+              chart.data().set(0, 'value', originalValue * timeFraction);
+
+              if (timePassed < duration) {
+                requestAnimationFrame(animationStep);
+              }
+            });
+          });
+        }
+      });
+
+      // score-gauge4
+      anychart.onDocumentReady(function () {
+
+          var axisMaximum4 = 100;
+          var data4 = [
+          {% if porcentaje_sospechoso %}
+              {% if porcentaje_sospechoso == "Nada" %}
+                  0
+              {% else %}
+                  {{porcentaje_sospechoso}}
+              {% endif %}
+          {% else %}
+              0
+          {% endif %}
+          ];
+          var dataSet4 = anychart.data.set(data4);
+
+        var circularGauge4 = anychart.gauges.circular();
+        circularGauge4.data(dataSet4);
+        circularGauge4.fill(false)
+          .stroke(null)
+          .padding(0)
+          .startAngle(235)
+          .sweepAngle(250);
+
+      circularGauge4.needle()
+                  .stroke('2 #545f69')
+                  .startRadius('2%')
+                  .endRadius('100%')
+                  .startWidth('0.1%')
+                  .endWidth('0.1%')
+                  .middleWidth('0.9%');
+
+        var circularAxis = circularGauge4.axis().radius(70).width(50).fill('#969696');
+        circularAxis.scale()
+          .minimum(0)
+          .maximum(axisMaximum4);
+        circularAxis.labels().enabled(false);
+        circularAxis.ticks().enabled(false);
+        circularAxis.minorTicks().enabled(false);
+
+        circularGauge4.bar(0).dataIndex(0)
+          .radius(70)
+          .width(50)
+          .fill('#ff0000')
+          .stroke(null)
+          .zIndex(50);
+
+        circularGauge4.bounds('0%','0%', '100%', '100%');
+
+        //enable gauge animation
+        animateGauge(circularGauge4, 1000);
+
+
+
+          circularGauge4.cap()
+                  .radius('10%')
+                  .enabled(true)
+                  .fill('#545f69');
+
+          //Gauge percentage
+          circularGauge4.label(0)
+          .text('<span style="">' + data4[0] + '%</span>')
+          .useHtml(true)
+          .fontSize(17)
+          .fontColor('#ff0000')
+          .hAlign('center')
+          .width("50%")
+          .height("80%")
+          .anchor('center')
+          .offsetY("-100%")
+          .offsetX("50%")
+          .zIndex(10);
+
+        circularGauge4.container('score-gauge4').draw();
+
+        /**
+       * Enables gauge animation.
+       *
+       * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+       * @param {number} animation duration
+       */
+        function animateGauge(chart, duration) {
+          var originalValue = chart.data().get(0, 'value');
+          // set 0 as initial data value
+          chart.data().set(0, 'value', 0);
+
+          // launch the animation when the chart is rendered
+          chart.listenOnce('chartDraw', function() {
+
+            // provide animation timing
+            var start = performance.now();
+            requestAnimationFrame(function animationStep(time) {
+              var timePassed = time - start;
+              var timeFraction = timePassed / duration;
+              if (timePassed > duration) {
+                timePassed = duration;
+                timeFraction = 1;
+              }
+              //Set Background
+              var background = chart.background();
+              background.stroke('0 #000');
+              background.corners();
+              background.enabled(false);
+              // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+
+
+              //redraw by increasing the value from zero to the required one
+              chart.data().set(0, 'value', originalValue * timeFraction);
+
+              if (timePassed < duration) {
+                requestAnimationFrame(animationStep);
+              }
+            });
+          });
+        }
+      });
+
+      
+    // Gauge-radar1
+      var stage = anychart.graphics.create("radarhuevo");
+          anychart.onDocumentReady(function () {
+
+          // set data for the Winter Sales
+      var names = [{% for clase in porcentaje_vehiculos_inspeccionados_por_clase %}"{{clase.clase}}",{% endfor %}];
+      var data = [{% for clase in porcentaje_vehiculos_inspeccionados_por_clase %}{% widthratio clase.inspeccionado clase.total 100 %},{% endfor %}];
+      var dataSet = anychart.data.set(data);
+      var palette = anychart.palettes.distinctColors().items(['#5a9fd5', '#1a69b7', '#cf6105', '#ddb948']);
+
+      var makeBarWithBar = function Gauge (gauge, radius, i, width, without_stroke) {
+          var stroke = null;
+              
+          gauge.bar(i).dataIndex(i)
+                  .radius(radius)
+                  .width(width)
+                  .fill(palette.itemAt(i))
+                  .stroke(null)
+                  .zIndex(5);
+          gauge.bar(i + 100).dataIndex(5)
+                  .radius(radius)
+                  .width(width)
+                  .fill('#ffff00')
+                  .stroke(stroke)
+                  .zIndex(4);
+
+          return gauge.bar(i)
+      };
+          var gauge = anychart.gauges.circular();
+          gauge.title(false);
+          var title = gauge.title();
+          title.fontColor('#fff');
+          title.fontSize(18);
+          title.fontWeight(600);
+
+          gauge.padding(0, 0, 0, 0);
+          gauge.data(dataSet);
+          gauge.stroke(null);
+          gauge.fill(false)
+                  .stroke(null)
+                  .padding(0)
+                  .margin(0)
+                  .startAngle(0)
+                  .sweepAngle(270);
+
+          var axis = gauge.axis().radius(100).width(1).fill(null);
+          axis.scale()
+                  .minimum(0)
+                  .maximum(100)
+                  .ticks({interval: 1})
+                  .minorTicks({interval: 1});
+                  axis.labels().enabled(false);
+                  axis.ticks().enabled(false);
+                  axis.minorTicks().enabled(false);
+                  {% if porcentaje_vehiculos_inspeccionados_por_clase|length > 0 %}makeBarWithBar(gauge, 100, 0, 17, true);{% endif %}
+                  {% if porcentaje_vehiculos_inspeccionados_por_clase|length > 1 %}makeBarWithBar(gauge, 80, 1, 17, true);{% endif %}
+                  {% if porcentaje_vehiculos_inspeccionados_por_clase|length > 2 %}makeBarWithBar(gauge, 60, 2, 17, true);{% endif %}
+                  {% if porcentaje_vehiculos_inspeccionados_por_clase|length > 3 %}makeBarWithBar(gauge, 40, 3, 17, true);{% endif %}
+                  {% if porcentaje_vehiculos_inspeccionados_por_clase|length > 4 %}makeBarWithBar(gauge, 20, 4, 17, true);{% endif %}
+
+          var background = gauge.background();
+          background.enabled(false);
+
+          // turn on chart animation
+          gauge.animation(true);
+
+
+          var legend = anychart.standalones.legend();
+          legend.items([
+              {index: 0, text: "Rabon", iconFill: "#5a9fd5"},
+              {index: 1, text: "Remolque", iconFill: "#1a69b7"},
+              {index: 2, text: "Tolva", iconFill: "#cf6105"},
+              {index: 3, text: "Tractor", iconFill: "#ddb948"}
+              
+          ]);
+          legend.position('bottom');
+
+          var credits = gauge.credits();
+          credits.enabled(false);
+
+          gauge.container(stage).draw();
+          legend.container(stage).draw();
+      });
+
+      // Gauge-radar2
+      var stage1 = anychart.graphics.create("radarhuevo1");
+      anychart.onDocumentReady(function () {
+
+      // set data for the Winter Sales
+      var names = [{% for aplicacion in porcentaje_vehiculos_inspeccionados_por_aplicacion %}"{{aplicacion.aplicacion__nombre}}",{% endfor %}];
+      var data = [{% for aplicacion in porcentaje_vehiculos_inspeccionados_por_aplicacion %}{% widthratio aplicacion.inspeccionado aplicacion.total 100 %},{% endfor %}];
+      var dataSet = anychart.data.set(data);
+      var palette = anychart.palettes.distinctColors().items(['#5a9fd5', '#1a69b7']);
+
+      var makeBarWithBar = function Gauge (gauge, radius, i, width, without_stroke) {
+      var stroke = null;
+         
+      gauge.bar(i).dataIndex(i)
+              .radius(radius)
+              .width(width)
+              .fill(palette.itemAt(i))
+              .stroke(null)
+              .zIndex(5);
+      gauge.bar(i + 100).dataIndex(5)
+              .radius(radius)
+              .width(width)
+              .fill('#ffff00')
+              .stroke(stroke)
+              .zIndex(4);
+
+      return gauge.bar(i)
+      };
+      var gauge = anychart.gauges.circular();
+      gauge.title(false);
+      var title = gauge.title();
+      title.fontColor('#fff');
+      title.fontSize(18);
+      title.fontWeight(600);
+
+      gauge.padding(0, 0, 0, 0);
+      gauge.data(dataSet);
+      gauge.stroke(null);
+      gauge.fill(false)
+              .stroke(null)
+              .padding(0)
+              .margin(0)
+              .startAngle(0)
+              .sweepAngle(270);
+
+      var axis = gauge.axis().radius(100).width(1).fill(null);
+      axis.scale()
+              .minimum(0)
+              .maximum(100)
+              .ticks({interval: 1})
+              .minorTicks({interval: 1});
+              axis.labels().enabled(false);
+              axis.ticks().enabled(false);
+              axis.minorTicks().enabled(false);
+              {% if porcentaje_vehiculos_inspeccionados_por_aplicacion|length > 0 %}makeBarWithBar(gauge, 100, 0, 17, true);{% endif %}
+              {% if porcentaje_vehiculos_inspeccionados_por_aplicacion|length > 1 %}makeBarWithBar(gauge, 80, 1, 17, true);{% endif %}
+              {% if porcentaje_vehiculos_inspeccionados_por_aplicacion|length > 2 %}makeBarWithBar(gauge, 60, 2, 17, true);{% endif %}
+              {% if porcentaje_vehiculos_inspeccionados_por_aplicacion|length > 3 %}makeBarWithBar(gauge, 40, 3, 17, true);{% endif %}
+              {% if porcentaje_vehiculos_inspeccionados_por_aplicacion|length > 4 %}makeBarWithBar(gauge, 20, 4, 17, true);{% endif %}
+
+      var background = gauge.background();
+      background.enabled(false);
+
+      // turn on chart animation
+      gauge.animation(true);
+
+      var legend = anychart.standalones.legend();
+      legend.items([
+          {index: 0, text: "Foraneo", iconFill: "#5a9fd5"},
+          {index: 1, text: "Local", iconFill: "#1a69b7"}
+      ]);
+      legend.position('bottom');
+  
+
+      var credits = gauge.credits();
+      credits.enabled(false);
+      gauge.container(stage1).draw();
+      legend.container(stage1).draw();
+
+      });
+
+      // // radar egg
+      // anychart.onDocumentReady(function () {
+      //     // create data
+      //    var data = [
+      //         {% for aplicacion in porcentaje_vehiculos_inspeccionados_por_aplicacion %}
+      //                 {x: "{{aplicacion.aplicacion__nombre}}", value: {% widthratio aplicacion.inspeccionado aplicacion.total 100 %}},
+      //         {% endfor %}
+      //     ];
+      //     // configure the visual settings of the first series
+
+      //     // create a chart
+      //     var chart = anychart.radar();
+      //     // turn on chart animation
+      //     chart.animation(true);
+      //   // force chart to stack values by Y scale.
+      //     chart.yScale().stackMode();
+      //   // set yAxis labels settings
+      //     chart.yAxis().labels()
+      //             .fontColor('#939393')
+      //             .format('{%Value}%');
+      //  // Get chart background.
+      //     var background = chart.background();
+      //     background.enabled(false);
+
+      //     var credits = chart.credits();
+      //     credits.enabled(false);
+      //     // create an area series and set the data
+      //     var series = chart.area(data);
+
+      //     // set the chart title
+      //     chart.title("Porcentaje de Vehículos Inspeccionados");
+      //     var title = chart.title();
+      //     title.fontColor('#fff');
+      //     title.fontSize(18);
+      //     title.fontWeight(600);
+
+      //     // set the container id
+      //     chart.container("radarhuevo1");
+
+      //     // initiate drawing the chart
+      //     chart.draw();
+      // });
+
+
+          // bar
+          anychart.onDocumentReady(function () {
+          // create data set on our data
+          chartData = {
+              title: '',
+              header: ["#",{% for clase in vehiculos_por_clase_sin_inspeccionar %} "{{clase.clase|lower|capfirst}}", {% endfor %}],
+              rows: [['{{mes_3}}', {% for clase, cantidad in clase_sin_inspeccionar_mes_3.items %} {{cantidad}},{% endfor %}], ['{{mes_2}}', {% for clase, cantidad in clase_sin_inspeccionar_mes_2.items %} {{cantidad}},{% endfor %}], ['{{mes_1}}', {% for clase, cantidad in clase_sin_inspeccionar_mes_1.items %} {{cantidad}},{% endfor %}]],
+            //   header: ["#",{% for clase in vehiculos_por_clase_sin_inspeccionar %} "{{clase.clase|lower|capfirst}}", {% endfor %}],
+            // rows: [
+            //     ['{{mes_3}}',
+            //     {% for clase, cantidad in clase_sin_inspeccionar_mes_3.items %}
+            //     {{cantidad}},
+            //     {% endfor %}],
+            //     ['{{mes_2}}',{% for clase, cantidad in clase_sin_inspeccionar_mes_2.items %} {{cantidad}},{% endfor %}],
+            //     ['{{mes_1}}',{% for clase, cantidad in clase_sin_inspeccionar_mes_1.items %} {{cantidad}},{% endfor %}]
+            // ],
+          };
+
+              // create column chart
+              var chart = anychart.column();
+              var background = chart.background();
+              background.enabled(false);
+              // set chart data
+              chart.data(chartData);
+
+              // turn on chart animation
+              chart.animation(true);
+
+              chart.hovered().labels(false);
+
+              chart.yScale().ticks().interval(1);
+
+              // turn on legend
+              chart.legend()
+              .enabled(true)
+              .fontSize(13)
+              .padding([0, 0, 20, 0]);
+
+              // set tooltip settings
+              chart.tooltip()
+              .positionMode('point')
+              .position('center-top')
+              .anchor('center-bottom')
+              .offsetX(0)
+              .offsetY(5)
+              .displayMode('union')
+
+              var credits = chart.credits();
+              credits.enabled(false);
+
+              var title = chart.title();
+              title.fontColor('#fff');
+              title.fontSize(18);
+              title.fontWeight(600);
+              // set container id for the chart
+              chart.container('barwebo');
+
+              // initiate chart drawing
+              chart.draw();
+          });
+
+          // Bar 2
+
+          anychart.onDocumentReady(function () {
+          // create data set on our data
+          chartData = {
+
+              header: ["#",{% for aplicacion in vehiculos_por_aplicacion_sin_inspeccionar %} "{{aplicacion.aplicacion__nombre|lower|capfirst}}", {% endfor %}],
+              rows: [
+                          ['{{mes_3}}',{% for aplicacion, cantidad in aplicacion_sin_inspeccionar_mes_3.items %} {{cantidad}},{% endfor %}],
+                          ['{{mes_2}}',{% for aplicacion, cantidad in aplicacion_sin_inspeccionar_mes_2.items %} {{cantidad}},{% endfor %}],
+                          ['{{mes_1}}',{% for aplicacion, cantidad in aplicacion_sin_inspeccionar_mes_1.items %} {{cantidad}},{% endfor %}]
+              ]
+          };
+
+              // create column chart
+              var chart = anychart.column();
+              var background = chart.background();
+              background.enabled(false);
+              // set chart data
+              chart.data(chartData);
+
+              // turn on chart animation
+              chart.animation(true);
+
+              chart.hovered().labels(false);
+
+              chart.yScale().ticks().interval(1);
+
+              // turn on legend
+              chart.legend()
+              .enabled(true)
+              .fontSize(13)
+              .padding([0, 0, 20, 0]);
+
+              // set tooltip settings
+              chart.tooltip()
+              .positionMode('point')
+              .position('center-top')
+              .anchor('center-bottom')
+              .offsetX(0)
+              .offsetY(5)
+              .displayMode('union')
+
+              var credits = chart.credits();
+              credits.enabled(false);
+
+              var title = chart.title();
+              title.fontColor('#fff');
+              title.fontSize(18);
+              title.fontWeight(600);
+              // set container id for the chart
+              chart.container('barwebo2');
+
+              // initiate chart drawing
+              chart.draw();
+          });
+
+          //combo chart
+          anychart.onDocumentReady(function () {
+
+          // set the default types of legend icons
+          anychart.theme({
+            chart: {
+              defaultSeriesSettings: {
+                line: {legendItem: {iconType: "line"}},
+                spline: {legendItem: {iconType: "spline"}},
+                column: {legendItem: {iconType: "column"}}
+              }
+            }
+          });
+
+        // create data set on our data
+        var dataSet = anychart.data.set([
+            ['{{mes_4}}', {{vehiculos_rojos_mes_4}}, {{vehiculos_amarillos_mes_4}}, {{vehiculos_sospechosos_mes_4}}, {{vehiculos_vistos_mes_4}}],
+            ['{{mes_3}}', {{vehiculos_rojos_mes_3}}, {{vehiculos_amarillos_mes_3}}, {{vehiculos_sospechosos_mes_3}}, {{vehiculos_vistos_mes_3}}],
+            ['{{mes_2}}', {{vehiculos_rojos_mes_2}}, {{vehiculos_amarillos_mes_2}}, {{vehiculos_sospechosos_mes_2}}, {{vehiculos_vistos_mes_2}}],
+            ['{{mes_1}}', {{vehiculos_rojos_mes_1}}, {{vehiculos_amarillos_mes_1}}, {{vehiculos_sospechosos_mes_1}}, {{vehiculos_vistos_mes_1}}],
+          ]);
+
+          // map data for the first series, take x from the zero column and value from the first column of data set
+          var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+
+        // map data for the second series, take x from the zero column and value from the second column of data set
+          var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
+
+          // map data for the third series, take x from the zero column and value from the third column of data set
+          var thirdSeriesData = dataSet.mapAs({ x: 0, value: 3 });
+
+          // map data for the fourth series, take x from the zero column and value from the fourth column of data set
+          var fourthSeriesData = dataSet.mapAs({ x: 0, value: 4 });
+
+          // create column chart
+          var chart = anychart.column();
+
+          // turn on chart animation
+          chart.animation(true);
+
+           // enable the legend
+          var legend = chart.legend();
+          legend.enabled(true);
+
+          // set chart title text settings
+          // chart.title('Tendencia de estatus Tire eye');
+          var title = chart.title();
+          title.fontWeight(600);
+          title.fontColor('#fff');
+          title.fontSize(18);
+
+          // create scale for line series and extraYAxis
+          // it force line series to not stuck with over series
+          var scale = anychart.scales.linear();
+          scale.minimum(0).maximum(100).ticks({ interval: 20 });
+
+          chart.crosshair(false);
+
+          // create line series and set scale for it
+          var lineSeries1 = chart.spline(firstSeriesData);
+          // // configure the visual settings of the second series
+          lineSeries1.normal().stroke("#F0412C", 4);
+          lineSeries1.hovered().stroke("#F0412C", 2);
+          lineSeries1.selected().stroke("#F0412C", 6);
+          lineSeries1.name('Rojo');
+           // enable and configure markers on the first series
+          lineSeries1.markers(true);
+          lineSeries1.markers().type("square");
+          lineSeries1.markers().fill("#F0412C");
+          lineSeries1.markers().size(4);
+
+          // create third series with mapped data
+          var lineSeries2 = chart.spline(secondSeriesData);
+          // // configure the visual settings of the second series
+          lineSeries2.normal().stroke("#D0F533", 4);
+          lineSeries2.hovered().stroke("#D0F533", 2);
+          lineSeries2.selected().stroke("#D0F533", 6);
+          lineSeries2.name('Amarillo');
+           // enable and configure markers on the first series
+          lineSeries2.markers(true);
+          lineSeries2.markers().type("circle");
+          lineSeries2.markers().fill("#D0F533");
+          lineSeries2.markers().size(4);
+
+
+          // create third series with mapped data
+          var lineSeries3 = chart.spline(thirdSeriesData);
+          // // configure the visual settings of the second series
+          lineSeries3.normal().stroke("#A349A4", 4);
+          lineSeries3.hovered().stroke("#A349A4", 2);
+          lineSeries3.selected().stroke("#A349A4", 6);
+          lineSeries3.name('Sospechosos');
+           // enable and configure markers on the first series
+          lineSeries3.markers(true);
+          lineSeries3.markers().type("diamond");
+          lineSeries3.markers().fill("#A349A4");
+          lineSeries3.markers().size(4);
+
+          // create fourth series with mapped data
+          var columnSeries4 = chart.column(fourthSeriesData);
+          // // configure the visual settings of the second series
+          columnSeries4.normal().fill("#0097fc");
+          columnSeries4.hovered().fill("#0097fc", 0.1);
+          columnSeries4.selected().fill("#0097fc", 0.5);
+          columnSeries4.normal().stroke("#0097fc");
+          columnSeries4.hovered().stroke("#0097fc", 2);
+          columnSeries4.selected().stroke("#0097fc", 4);
+          columnSeries4.name('Leído');
+
+          chart.tooltip().displayMode('union');
+
+          chart.yScale().ticks().interval(1);
+
+          var background = chart.background();
+          background.enabled(false);
+
+          // set container id for the chart
+          chart.container('pronostico-consumo');
+          var credits = chart.credits();
+          credits.enabled(false);
+          // initiate chart drawing
+          chart.draw();
+          });
+
+          // dona
+          anychart.onDocumentReady(function () {
+
+              // create a pie chart and set the data
+              var chart = anychart.pie();
+
+              {% if parametro_encontrado_existente %}
+              // create data
+              var data = [{% for eje, cantidad in parametro_encontrado.items %}
+                              {x: "{{eje|capfirst}}", value: {{cantidad}} },
+                          {% endfor %}
+              ];
+
+              // create a pie chart and set the data
+              chart = anychart.pie(data);
+              // turn on chart animation
+              chart.animation(true);
+              /* set the inner radius
+              (to turn the pie chart into a doughnut chart)*/
+              chart.innerRadius("75%");
+
+              // set the position of labels
+              var labels = chart.labels();
+              labels.position("inside");
+
+              // configure the labels: font, overlap, offset
+              labels.fontColor("#fff");
+              chart.overlapMode(true);
+              chart.insideLabelsOffset("-300%");
+
+              {% endif %}
+
+              // disable the legend
+              chart.legend(true);
+
+              // set the chart title
+              chart.title("Encontrado");
+              var title = chart.title();
+              title.fontWeight(600);
+              title.fontColor('#fff');
+              title.fontSize(18);
+
+               //Set Background
+              var background = chart.background();
+              background.enabled(false);
+
+              //no DataLabels
+              noDataLabel = chart.noData().label();
+              noDataLabel.enabled(true);
+              noDataLabel.text("No hay datos").fontColor("#fff");
+
+              // set the container id
+              chart.container("dona");
+
+              // initiate drawing the chart
+              chart.draw();
+               // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+          });
+          // dona2
+          anychart.onDocumentReady(function () {
+
+              // create a pie chart and set the data
+              var chart = anychart.pie();
+
+              {% if parametro_actual_existente %}
+              // create data
+              var data = [{% for eje, cantidad in parametro_actual.items %}
+                              {x: "{{eje|capfirst}}", value: {{cantidad}} },
+                          {% endfor %}
+              ];
+
+              // create a pie chart and set the data
+              chart = anychart.pie(data);
+
+              // turn on chart animation
+              chart.animation(true);
+              /* set the inner radius
+              (to turn the pie chart into a doughnut chart)*/
+              chart.innerRadius("75%");
+
+              // set the position of labels
+              var labels = chart.labels();
+              labels.position("inside");
+
+              // configure the labels: font, overlap, offset
+              labels.fontColor("#fff");
+              chart.overlapMode(true);
+              chart.insideLabelsOffset("-300%");
+
+              {% endif %}
+
+              // disable the legend
+              chart.legend(true);
+
+              //Set Background
+              var background = chart.background();
+              background.enabled(false);
+
+              // set the chart title
+              chart.title("Actual");
+              var title = chart.title();
+              title.fontWeight(600);
+              title.fontColor('#fff');
+              title.fontSize(18);
+
+              //no DataLabels
+              noDataLabel = chart.noData().label();
+              noDataLabel.enabled(true);
+              noDataLabel.text("No hay datos").fontColor("#fff");
+
+              // set the container id
+              chart.container("dona2");
+
+              // initiate drawing the chart
+              chart.draw();
+               // chart credits false
+              var credits = chart.credits();
+              credits.enabled(false);
+          });
+
+          //stackedBar
+          anychart.onDocumentReady(function () {
+              // create data set on our data
+              var dataSet = anychart.data.set([
+                  {% for estatus in estatus_profundidad %}
+                  ['{{estatus.nombre_eje|capfirst}}', {{estatus.num_rojo}}, {{estatus.num_amarillo}}, {{estatus.num_verde}}],//derecha a izquierda %
+                  {% endfor %}
+              ]);
+
+              // map data for the first series, take x from the zero area and value from the first area of data set
+              var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+
+              // map data for the second series, take x from the zero area and value from the second area of data set
+              var seriesData_2 = dataSet.mapAs({'x': 0, 'value': 2});
+
+              // map data for the second series, take x from the zero area and value from the third area of data set
+              var seriesData_3 = dataSet.mapAs({'x': 0, 'value': 3});
+
+
+              // create bar chart
+              var chart = anychart.bar();
+              // turn on chart animation
+              chart.animation(true).barGroupsPadding(0.1);
+
+              // force chart to stack values by Y scale.
+              chart.yScale().stackMode('percent');
+              chart.labels().enabled(true).position("center-center").offsetX(30).offsetY(-15);
+              chart.labels().format('{%value}{decimalsCount:0}').fontColor('black').fontWeight(600).fontSize(16);
+              var crosshair = chart.crosshair();
+              // turn on the crosshair
+              crosshair.enabled(true)
+                      .yStroke(null)
+                      .xStroke('#fff')
+                      .zIndex(99);
+              crosshair.yLabel().enabled(false);
+              crosshair.xLabel().enabled(false);
+
+              // set chart title text settings
+              chart.title(false);
+              chart.title().padding([0, 0, 10, 0]);
+              var title = chart.title();
+              title.fontWeight(600);
+              title.fontColor('#fff');
+              title.fontSize(18);
+              // set yAxis labels formatting, force it to add % to values
+              chart.yAxis(0).labels().format("{%Value}%");
+
+              // helper function to setup label settings for all series
+              var setupSeries = function (series, name, color) {
+                  series.name(name)
+                           .stroke('1 #fff 1')
+                          .fill(color);
+              };
+
+              // temp variable to store series instance
+              var series;
+
+              // create third series with mapped data
+              series = chart.bar(seriesData_3);
+              setupSeries(series, 'Correctos', '#026CF5');
+
+              // create fourth series with mapped data
+              series = chart.bar(seriesData_2);
+              setupSeries(series, 'Amarillo', '#D0F533');
+
+                  // create fourth series with mapped data
+              series = chart.bar(seriesData_1);
+              setupSeries(series, 'Rojo' , '#f0412c');
+              // set interactivity and toolitp settings
+              // chart.interactivity().hoverMode('by-x');
+              // chart.tooltip().displayMode('union');
+              //background color
+              var credits = chart.credits();
+              credits.enabled(false);
+              var background = chart.background();
+              background.enabled(false);
+              // turn on legend
+              chart.legend()
+                      .enabled(true)
+                      .fontSize(13)
+                      .padding([0, 0, 25, 0]);
+
+              // set container id for the chart
+              chart.container('stacked-percent');
+               var axisLabels = chart.xAxis().labels();
+            axisLabels.useHtml(true);
+            axisLabels.format("<span style='color:grey;'>{%value}</span>");
+              // initiate chart drawing
+              chart.draw();
+      });
+</script>
+
+{% endblock content %}

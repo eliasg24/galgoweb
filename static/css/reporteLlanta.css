@@ -1,0 +1,12 @@
+.tire .icon-tire2 {
+  font-size: 15rem;
+}
+
+.tire .tire__tag {
+  font-size: 1.5rem;
+}
+
+.tire__tag.pos {
+  padding: 0.5rem;
+  top: 40%;
+}

@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<title>Informe de perdida y rendimiento</title>
+{% endblock %}
+
+{% block content %}
+
+<main class="main-cont">
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+
+    <h1>Informe de perdida y rendimiento</h1>
+  </header>
+
+  <section class="form-container">
+
+    <form action="{% url 'dashboards:informe_de_perdida_y_rendimiento' %}" class="form-content" method="POST">
+    {% csrf_token %}
+      <div class="flex-row space-between">
+        <h2>Agregar informe</h2>
+        <nav>
+          <button class="btn btn-success">
+            <span class="icon-checkmark"></span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="form-content__flex">
+        
+        <div class="dropdown">
+          <button class="drop-btn" id="company" type="button">
+            Compañia
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-company">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-company" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-company" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" id="all-company" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            <li class="search-item">
+              <label for="{{compania}}" class="input-check">
+                {{compania}}
+                <input type="checkbox" name="compania" value="{{compania}}" id="{{compania}}" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="sucursal" type="button">
+            Sucursal
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-sucursal">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-sucursal" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-sucursal" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" id="all-sucursal" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for sucursal in sucursales %}
+            <li class="search-item">
+                <label for="{{sucursal}}" class="input-check">
+                  {{sucursal}}
+                  <input type="checkbox" name="sucursal" value="{{sucursal}}" id="{{sucursal}}" />
+                  <span class="checkmark"></span>
+                </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="app" type="button">
+            Aplicación
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-app">
+            <li>
+              <div class="drop-search">
+                <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-app" class="input-check select-all">
+                Seleccionar todas
+                <input type="checkbox" id="all-app" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for aplicacion in aplicaciones %}
+            <li class="search-item">
+                <label for="{{aplicacion}}" class="input-check">
+                  {{aplicacion}}
+                  <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" />
+                  <span class="checkmark"></span>
+                </label>
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="date"
+            placeholder="fechaInicio"
+            name="fechaInicio"
+            autocomplete="off"
+            required
+          />
+          <label for="fechaInicio" class="form__label">
+            Desde
+          </label>
+        </div>
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="date"
+            placeholder="fechaFin"
+            name="fechaFin"
+            autocomplete="off"
+            required
+          />
+          <label for="fechaFin" class="form__label">
+            Hasta
+          </label>
+        </div>
+      </div>
+    </form>
+
+  </section>
+</main>
+
+<script src="{% static './js/filter.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (e) => {
+    handleSelectAll({ container: 'menu-company', selectAll: 'all-company' });
+    handleSelectAll({ container: 'menu-sucursal', selectAll: 'all-sucursal' });
+    handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+    dropdown('company', 'menu-company');
+    dropdown('sucursal', 'menu-sucursal');
+    dropdown('app', 'menu-app');
+  });
+
+  const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+    const selector = document.querySelector(`#${container} #${selectAll}`);
+    const checkboxs = document.querySelectorAll(
+      `#${container} input[type="checkbox"]`
+    );
+
+    selector.addEventListener('change', (e) => {
+      selector.checked
+        ? checkboxs.forEach((check) => (check.checked = true))
+        : checkboxs.forEach((check) => (check.checked = false));
+    });
+
+    checkboxs.forEach((item) => {
+      item.addEventListener('change', (e) => {
+        let notAll = false;
+
+        checkboxs.forEach((item) => {
+          if (!item.checked) notAll = true;
+          if (notAll) selector.checked = false;
+        });
+      });
+    });
+  };
+
+  const dropdown = (button = '', menu = '') => {
+    const dropBtn = document.getElementById(button);
+    const dropMenu = document.getElementById(menu);
+
+    dropBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropMenu.classList.toggle('active');
+      if (dropMenu.classList.contains('active')) {
+        dropBtn.querySelector('.indicator').classList.add('active');
+      } else {
+        dropBtn.querySelector('.indicator').classList.remove('active');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.matches('.dropdown *')) {
+          dropMenu.classList.remove('active');
+          dropBtn.querySelector('.indicator').classList.remove('active');
+        }
+      });
+  };
+</script>
+
+{% endblock %}

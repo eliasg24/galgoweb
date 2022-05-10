@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <link rel="stylesheet" href="{% static 'css/reporteVehiculo.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="shortcut icon" href="{% static 'images/logo-border.png' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+    <title>Reporte Vehiculo {{bitacora}}</title>
+</head>
+<body>
+  <main class="report" id="reporte">
+    <div class="title">
+      <nav class="flex-row">
+        <img class="img-pulpo" src="/static/images/logo-aeto.png" alt="logo">
+        <h1 class="main-title">Reporte de Cambios</h1>
+      </nav>
+      <div class="header">
+        <h4 class="user">Numero economico: {{bitacora.vehiculo}}</h4>
+        <h4 class="date">Fecha Reporte: {{bitacora.fecha}}</h4>
+      </div>
+    </div>
+    <div class="container">
+        
+        {% for registro in registros %}
+            {{registro.evento}}
+            <br>
+        {% endfor %}
+      
+    </div>
+    <div class="text">
+      <h4 class="text-center">Usuario: {{user}}</h4>
+    </div>
+  </main>
+
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+  ></script>
+  
+  <script>
+
+  document.addEventListener('DOMContentLoaded', (e) => {
+    printBtn();
+  });
+
+  const print = () => {
+    const $elementoParaConvertir = document.getElementById('reporte'); // <-- Aquí puedes elegir cualquier elemento del DOM
+    html2pdf()
+      .set({
+        margin: .25,
+        filename: 'reporte-vehiculo-{{bitacora}}.pdf',
+        image: {
+          type: 'jpeg',
+          quality: 0.98,
+        },
+        html2canvas: {
+          scale: 3, // A mayor escala, mejores gráficos, pero más peso
+          letterRendering: true,
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'letter',
+          orientation: 'portrait', // landscape o portrait
+        },
+      })
+      .from($elementoParaConvertir)
+      .save()
+      .catch((err) => console.log(err));
+  };
+
+  const printBtn = () => {
+    const button = document.getElementById('btn-print');
+
+    button.addEventListener('click', print);
+  };
+
+    const Llanta = () => {
+      //Creando un web component
+      const llantas = document.querySelectorAll('#llanta');
+  
+      llantas.forEach((llanta) => {
+        llanta.innerHTML = `
+              {% include 'tireSvg.html' %}
+  
+              <div class="pop-out-llanta"></div>
+              `;
+      });
+    };
+      
+    Llanta();
+  </script>
+</body>
+</html>

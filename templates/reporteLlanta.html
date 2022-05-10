@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reporteVehiculo.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reporteLlanta.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reporte llanta X</title>
+  </head>
+  <body id="report">
+    <header class="report__head">
+      <div class="flex-row space-between">
+        <h1 class="report__title">Reporte {{pulpo}}: Llanta {{bitacora}}</h1>
+        <div class="logo">
+          <img src="{% static 'images/aeto-logo.svg' %}" alt="logo aeto reporte">
+        </div>
+      </div>
+  
+      <nav class="report__details">
+        <div class="report__card">
+          <div class="report__card-title">Fecha</div>
+          <div class="report__card-body">{{hoy}}</div>
+        </div>
+  
+        <div class="report__card">
+          <div class="report__card-title">Numero economico</div>
+          <div class="report__card-body">{{bitacora}}</div>
+        </div>
+  
+        <div class="report__card">
+          <div class="report__card-title">Tiempo de inflado</div>
+          <div class="report__card-body">{{bitacora.tiempo_de_inflado}}</div>
+        </div>
+  
+        <div class="report__card">
+          <div class="report__card-title">Usuario</div>
+          <div class="report__card-body">{{user}}</div>
+        </div>
+      </nav>
+    </header>
+    <main class="main__container">
+      <section class="content__wrapper">
+        <h2>Entrada</h2>
+
+        <div class="tire__container">
+          <div class="tire">
+            <div class="tire__tag pos {{color_entrada}}">
+              {{llanta.posicion}}
+            </div>
+            <div class="tire__tag up {{color_entrada}}">
+              {{entrada}}
+            </div>
+            <span class="icon-tire2"></span>
+            <div class="tire__tag down {{color_entrada}}">
+              <span class="{{signo_entrada}}"></span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <section class="content__wrapper center">
+        <span class="icon-arrow-right2"></span>
+      </section>
+      <section class="content__wrapper">
+        <h2>Salida</h2>
+
+        <div class="tire__container">
+          <div class="tire">
+            <div class="tire__tag pos {{color_salida}}">
+              {{llanta.posicion}}
+            </div>
+            <div class="tire__tag up {{color_salida}}">
+              {{salida}}
+            </div>
+            <span class="icon-tire2"></span>
+            <div class="tire__tag down {{color_salida}}">
+              <span class="{{signo_salida}}"></span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      (() => {
+        const $elementoParaConvertir = document.getElementById('report'); // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
+          .set({
+            margin: .5,
+            filename: 'reporte_vehiculo_{{bitacora}}.pdf',
+            image: {
+              type: 'jpeg',
+              quality: 0.98,
+            },
+            html2canvas: {
+              scale: 3, // A mayor escala, mejores gráficos, pero más peso
+              letterRendering: true,
+            },
+            jsPDF: {
+              unit: 'in',
+              format: 'letter',
+              orientation: 'portrait', // landscape o portrait
+            },
+          })
+          .from($elementoParaConvertir)
+          .save()
+          .catch((err) => console.log(err));
+      })()
+    </script>
+  </body>
+</html>

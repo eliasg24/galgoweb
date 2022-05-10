@@ -1,0 +1,46 @@
+{% extends '../base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<title>Formulario de taller</title>
+{% endblock %}
+
+{% block content %}
+
+<main class="main-cont">
+
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+
+    <h1>Formulario de taller</h1>
+  </header>
+
+  <section class="form-container">
+    <form action="{% url 'dashboards:tallerFormulario' %}" class="form-content" method="POST">
+      {% csrf_token %}
+      <fieldset class="flex-row space-between">
+        <h2 class="form-title">Nueva taller</h2>
+
+        <nav class="flex-row">
+          <button class="btn btn-success disabled" type="submit">
+            <span class="icon-checkmark"></span>
+          </button>
+          <button class="btn btn-danger" type="reset">
+            <span class="icon-cross"></span>
+          </button>
+        </nav>
+      </fieldset>
+      <article class="form-content__flex">
+        {% include './forms/form-taller.html' %}
+      </article>
+    </form>
+  </section>
+
+</main>
+
+<script src="{% static 'js/inputChange.js' %}"></script>
+
+{% endblock %}

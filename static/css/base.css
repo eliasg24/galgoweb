@@ -1,0 +1,595 @@
+/* New colors */
+
+:root {
+  --main-background: #363636;
+  --head-bg: #242424;
+  --main-blue: #026cf5;
+  --yellow-color: #dbc002;
+  --purple-color: #8a2be2;
+  --red-color: #f0412c;
+  --green-color: #2e8b57;
+  --pink-color: #ff1493;
+  --bg-button: #23252b;
+  --bg-button-hover: #2f5161;
+  --bg-button-active: #213944;
+  --border-button: #f47521;
+  --border-alt-button: #00e5f3;
+  --font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  --font-size: 16px;
+  --font-size-button: 1.25rem;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #363636;
+  color: #fff;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  word-wrap: break-word;
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0.25rem 0;
+}
+
+.flex-row,
+.flex-row-nowrap {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
+}
+
+/* Start header */
+
+.head-cont {
+  align-items: center;
+  background-color: var(--head-bg);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+@media screen and (min-width: 1024px) {
+  .head-cont {
+    justify-content: space-between;
+  }
+}
+
+/* End header */
+
+.logo {
+  width: 150px;
+}
+
+.dropdown {
+  color: #fff;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.drop-btn {
+  align-items: center;
+  background-color: #222;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1.25rem;
+  gap: 0.25rem;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+.drop-menu {
+  background-color: #222;
+  border-radius: 0.25rem;
+  border: 2px solid #ff1493;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  max-height: 200px;
+  opacity: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  padding: 1rem;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(0px, 40px);
+  transition: all 0.4s ease;
+  z-index: 5;
+}
+
+.drop-menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.drop-menu::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: black;
+}
+
+.drop-menu::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: gray;
+}
+
+.drop-search {
+  position: relative;
+}
+
+.drop-search i {
+  position: absolute;
+  right: 12px;
+  top: 30%;
+  pointer-events: none;
+}
+
+.drop-input {
+  background: transparent;
+  border: thin solid #fff;
+  color: #fff;
+  font-family: inherit;
+  outline: none;
+  padding: 0.5rem;
+  padding-right: 1rem;
+  width: 100%;
+}
+
+.search-item {
+  transition: all 0.2s ease-out;
+}
+
+.search-item.filter {
+  order: 1;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.drop-input::-webkit-search-cancel-button {
+  /* Remove default */
+  -webkit-appearance: none;
+}
+
+.drop-menu.active {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.indicator i {
+  font-size: 0.8rem;
+  transition: all 0.2s ease-out;
+}
+
+.indicator.active i {
+  transform: rotate(90deg);
+}
+
+/* Customize the label (the container) */
+.input-check {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.input-check input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.input-check:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.input-check input:checked ~ .checkmark {
+  background-color: var(--pink-color);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.input-check input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.input-check .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* Button */
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn-aeto-crunch {
+  background-color: #23252b;
+  color: #fff;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-aeto-crunch:hover {
+  background-color: #2f5161;
+}
+
+.btn-aeto-crunch.active {
+  border-top: thin solid #f47521;
+  background-color: #213944;
+  font-weight: bold;
+}
+
+.btn-aeto-crunch.alt {
+  border-color: #00e5f3;
+  height: 100%;
+}
+
+.btn-trash {
+  align-items: center;
+  background-color: deeppink;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem;
+  transition: all 0.2s ease-in;
+}
+
+.btn-trash:hover {
+  opacity: 0.85;
+}
+
+.btn-success,
+.btn-download,
+.btn-info,
+.btn-danger {
+  align-items: center;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 1.25rem;
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.btn-success.disabled,
+.btn-download.disabled,
+.btn-info.disabled,
+.btn-danger.disabled {
+  background-color: gainsboro;
+  color: gray;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-success {
+  background-color: var(--green-color);
+}
+
+.btn-download {
+  background-color: var(--main-blue);
+}
+
+.btn-info {
+  background-color: var(--purple-color);
+}
+
+.btn-danger {
+  background-color: var(--red-color);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.select-all {
+  color: deeppink;
+}
+
+/* Font Style */
+
+.italic {
+  font-style: italic;
+}
+
+/* Input */
+
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  transition: all 0.4s ease;
+}
+
+.form__field.invalid,
+.form__field.invalid ~ .form__label {
+  border-color: red;
+}
+
+.form__field.invalid ~ .form__label {
+  color: red;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: #fff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 1.25rem;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #9b9b9b;
+  pointer-events: none;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-color: #00e5f3;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #00e5f3;
+  font-weight: 700;
+}
+
+/* reset input */
+.form__field:required,
+.form__field:invalid {
+  box-shadow: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  /* Remove default */
+  -webkit-appearance: none;
+}
+
+/* Pop Out */
+
+.popout-text {
+  position: absolute;
+  background-color: #000;
+  border-radius: 0.25rem;
+  display: none;
+  margin-left: 3rem;
+  padding: 0.75rem;
+  transition: all 0.4s ease;
+  z-index: 2;
+  top: 45px;
+  right: -50px;
+}
+
+.about-btn > .popout-text {
+  top: 30px;
+  right: 0;
+}
+
+.popout-text p {
+  font-family: var(--font);
+  color: white;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+.icon-score:hover .popout-text {
+  display: block;
+  z-index: 3;
+}
+
+.icono-pantallaC:hover .popout-text {
+  display: block;
+  z-index: 3;
+  width: 230px;
+}
+
+.about-btn:hover .popout-text {
+  display: block;
+  z-index: 3;
+  width: 230px;
+}
+
+.icon-score:hover .popout-text {
+  display: block;
+  z-index: 3;
+}
+
+.circle {
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 151, 240, 1) 0%,
+    rgba(18, 188, 200, 1) 100%
+  );
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 1rem rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  font-weight: bold;
+  height: 100px;
+  width: 100px;
+}
+
+.circle span {
+  font-size: 1.5rem;
+}
+
+.alert__container {
+  align-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* ? Alerts */
+
+.alert__warn,
+.alert__error {
+  border-radius: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  transition: all 0.4s ease;
+  /* Visibilty */
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+
+.alert__warn {
+  background-color: var(--yellow-color);
+  color: #fff;
+}
+
+.alert__error {
+  background-color: var(--red-color);
+  color: #fff;
+}
+
+.alert__warn.active,
+.alert__error.active {
+  visibility: visible;
+  opacity: 1;
+  position: relative;
+  pointer-events: all;
+}
+
+input[type='date']::-webkit-inner-spin-button,
+::-webkit-calendar-picker-indicator {
+  filter: invert(100%);
+}
+
+@media screen and (min-width: 1024px) {
+  body {
+    grid-template-rows: auto;
+    grid-template-columns: auto 1fr;
+  }
+
+  .drop-menu {
+    width: max-content;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .circle {
+    height: 150px;
+    width: 150px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .circle {
+    height: 200px;
+    width: 200px;
+  }
+
+  .circle span {
+    font-size: 2rem;
+  }
+}

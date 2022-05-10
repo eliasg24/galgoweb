@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {%load static%}
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/catalogos.css' %}"
+  />
+  <meta charset="utf-8" />
+  <title>Catalogo de productos</title>
+{% endblock %}
+
+{% block content %}
+<div class="all-cont animate__animated animate__fadeIn">
+  <header class="header">
+    <div class="logo">
+      <img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
+    </div>
+    <h1 class="main-title">CATÁLOGO DE PRODUCTOS</h1>
+  </header>
+  <main class="main-cont">
+      <div class="cont-left">
+        {% if producto.id %}
+          <header class="section-head">
+            <h2 class="section-title">Editar producto</h2>
+          </header>
+          {% else %}
+          <header class="section-head">
+            <h2 class="section-title">Agregar producto</h2>
+          </header>
+        {% endif %}
+        {% include 'catalogos-forms/productos-form.html' %}
+      </div>
+      <div class="cont-right">
+        <header class="section-head">
+          <h2 class="section-title">Productos</h2>
+        </header>
+        <div class="table-cont">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th>Acciones</th>
+                <th>Marca</th>
+                <th>Dibujo</th>
+                <th>Rango</th>
+                <th>Dimensión</th>
+                <th>Profundidad inicial</th>
+                <th>Código</th>
+                <th>Aplicación</th>
+                <th>Vida</th>
+                <th>Precio Actual</th>
+                <th>Km esperado</th>
+              </tr>
+            </thead>
+
+              <tbody>
+                {% for producto in productos %}
+                  <tr id="{{producto.id}}">
+                    <td class="flex-row">
+                      <a href="{% url 'dashboards:catalogoProductosEdit' producto.id %}" class="btn btn-download">
+                        <span class="icon-pencil"></span>
+                      </a>
+                      <form action="{% url "dashboards:catalogoProductoDelete" %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{producto.id}}">
+                        <button class="btn btn-danger">
+                          <span class="icon-trash"></span>
+                        </button>
+                      </form>
+                    </td>
+                    <td>{{producto.marca}}</td>
+                    <td>{{producto.dibujo}}</td>
+                    <td>{{producto.rango}}</td>
+                    <td>{{producto.dimension}}</td>
+                    <td>{{producto.profundidad_inicial}}</td>
+                    <td>{{producto}}</td>
+                    <td>{{producto.aplicacion}}</td>
+                    <td>{{producto.vida}}</td>
+                    <td>{{producto.precio}}</td>
+                    <td></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </main>
+</div>
+
+<script>
+  const createProduct = () => {
+    const inputProduct = document.getElementById('producto');
+    
+    const strings = ['marca', 'dibujo', 'rango', 'dimension', 'vida'];
+
+    const values = strings.map(string => {
+      return document.getElementById(string);
+    });
+
+    values.forEach(value => {
+      value.addEventListener('input', (e) => {
+        inputProduct.value = `${values[0].value.toUpperCase()} ${values[1].value.toUpperCase()} ${values[2].value.toUpperCase()} ${values[3].value.toUpperCase()}`
+      });
+    });
+
+  }
+  document.addEventListener('DOMContentLoaded', createProduct);
+</script>
+{% endblock %}
