@@ -1,8 +1,8 @@
 /* New colors */
 
 :root {
-  --main-background: #363636;
-  --head-bg: #242424;
+  --main-background: #fff;
+  --head-bg: #0a2a75;
   --main-blue: #026cf5;
   --yellow-color: #dbc002;
   --purple-color: #8a2be2;
@@ -26,8 +26,8 @@
 }
 
 html {
-  background-color: #363636;
-  color: #fff;
+  background-color: #ccc;
+  color: #3c3c3c;
   font-family: 'Poppins', Arial, Helvetica, sans-serif;
   word-wrap: break-word;
 }
@@ -109,9 +109,9 @@ h6 {
 }
 
 .drop-menu {
-  background-color: #222;
+  background-color: #fff;
   border-radius: 0.25rem;
-  border: 2px solid #ff1493;
+  border: 2px solid #ed2a3d;
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -134,13 +134,13 @@ h6 {
 }
 
 .drop-menu::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: black;
+  border-radius: 3px;
+  background-color: #404040;
 }
 
 .drop-menu::-webkit-scrollbar-track {
-  border-radius: 5px;
-  background-color: gray;
+  border-radius: 3px;
+  background-color: #909090;
 }
 
 .drop-search {
@@ -152,12 +152,13 @@ h6 {
   right: 12px;
   top: 30%;
   pointer-events: none;
+  color: #5c5c5c;
 }
 
 .drop-input {
   background: transparent;
-  border: thin solid #fff;
-  color: #fff;
+  border: thin solid #929292;
+  color: #000;
   font-family: inherit;
   outline: none;
   padding: 0.5rem;
@@ -204,6 +205,7 @@ h6 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  color: #5c5c5c;
 }
 
 /* Hide the browser's default checkbox */
@@ -232,7 +234,7 @@ h6 {
 
 /* When the checkbox is checked, add a blue background */
 .input-check input:checked ~ .checkmark {
-  background-color: var(--pink-color);
+  background-color: #ed2a3d;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -266,31 +268,38 @@ h6 {
   transition: all 0.3s ease;
 }
 
+.title-galgo {
+  color: white;
+  font-size: 2.5rem;
+  font-style: italic;
+}
+
 .btn-aeto-crunch {
-  background-color: #23252b;
-  color: #fff;
+  background-color: #ddd;
+  color: #000;
   padding: 0.75rem;
   transition: background-color 0.2s ease;
+  font-weight: bold;
 }
 
 .btn-aeto-crunch:hover {
-  background-color: #2f5161;
+  background-color: #929292;
 }
 
 .btn-aeto-crunch.active {
-  border-top: thin solid #f47521;
-  background-color: #213944;
+  border-top: solid 2px #ed2a3d;
+  background-color: white;
   font-weight: bold;
 }
 
 .btn-aeto-crunch.alt {
-  border-color: #00e5f3;
+  border-color: #0d42bb;
   height: 100%;
 }
 
 .btn-trash {
   align-items: center;
-  background-color: deeppink;
+  background-color: #ed2a3d;
   border-radius: 50%;
   color: #fff;
   display: flex;
@@ -347,7 +356,7 @@ h6 {
 }
 
 .select-all {
-  color: deeppink;
+  color: #ed2a3d;
 }
 
 /* Font Style */
@@ -410,7 +419,7 @@ h6 {
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
-  border-color: #00e5f3;
+  border-color: #ed2a3d;
 }
 
 .form__field:focus ~ .form__label {
@@ -419,7 +428,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: #00e5f3;
+  color: #ed2a3d;
   font-weight: 700;
 }
 
@@ -450,7 +459,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text {
   position: absolute;
-  background-color: #000;
+  background-color: #ddd;
   border-radius: 0.25rem;
   display: none;
   margin-left: 3rem;
@@ -468,7 +477,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text p {
   font-family: var(--font);
-  color: white;
+  color: #222;
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }

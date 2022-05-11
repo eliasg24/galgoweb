@@ -31,7 +31,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .icon-checkmark {
-  color: lightgreen;
+  color: seagreen;
 }
 
 #input-fecha {
@@ -113,7 +113,7 @@ input[type='date']::-webkit-inner-spin-button,
 .chart-container {
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: #222;
+  background-color: #fff;
   border-radius: 0.25rem;
   height: 100%;
   position: relative;
@@ -129,7 +129,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .nav-btn .btn {
-  color: #fff;
+  color: #000;
   font-size: 1.25rem;
 }
 
@@ -199,7 +199,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .table {
-  background-color: #202020;
+  background-color: #fff;
   border-collapse: collapse;
   border: thin solid #fff;
   display: none;
@@ -211,8 +211,13 @@ input[type='date']::-webkit-inner-spin-button,
 
 td,
 th {
-  border: thin solid #fff;
+  border: thin solid #404040;
   padding: 0.5rem;
+  color: #3c3c3c;
+}
+
+.td-truck {
+  color: #3c3c3c;
 }
 
 .table.active {
@@ -266,7 +271,7 @@ th {
   align-items: center;
   display: flex;
   justify-content: flex-start;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .btn-aeto-crunch {
