@@ -17,7 +17,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-menu">
     <div class="menu-li__left">
-      <img src="{% static 'images/aeto.svg' %}" alt="" />
+      <img src="{% static 'images/perro-galgo.png' %}" alt="" />
     </div>
 
     <form
@@ -561,6 +561,9 @@
   // setting Grid settings
   chart.yGrid(true);
 
+  // set grid stroke appearance
+  chart.yGrid().stroke({color: "#000"});
+
   // adding extra Y scale
   var extraYScale = anychart.scales.linear();
   extraYScale.ticks().interval(10);
@@ -627,41 +630,61 @@
   columnSeries.name("Presupuesto");
 
   // configure the visual settings of the second series
-  columnSeries.normal().stroke("#A349A4", 6);
-  columnSeries.hovered().stroke("#A349A4", 4);
-  columnSeries.selected().stroke("#A349A4", 8);
+  columnSeries.normal().stroke("#8a00aa", 6);
+  columnSeries.hovered().stroke("#8a00aa", 4);
+  columnSeries.selected().stroke("#8a00aa", 8);
 
 
   var lineSeries = chart.column(secondSeries);
   lineSeries.name("Nueva");
   // configure the visual settings of the second series
-  lineSeries.normal().fill("#0097fc");
-  lineSeries.hovered().fill("#0097fc", 0.1);
-  lineSeries.selected().fill("#0097fc", 0.5);
-  lineSeries.normal().stroke("#0097fc", 2);
-  lineSeries.hovered().stroke("#0097fc", 4);
-  lineSeries.selected().stroke("#0097fc", 6);
+  lineSeries.normal().fill("#051026");
+  lineSeries.hovered().fill("#051026", 0.1);
+  lineSeries.selected().fill("#051026", 0.5);
+  lineSeries.normal().stroke("#051026", 2);
+  lineSeries.hovered().stroke("#051026", 4);
+  lineSeries.selected().stroke("#051026", 6);
   lineSeries.yScale(extraYScale);
 
   var lineSeries2 = chart.column(thirdSeries);
   lineSeries2.name("Renovado");
   // configure the visual settings of the second series
-  lineSeries2.normal().fill("#12bcc8");
-  lineSeries2.hovered().fill("#12bcc8", 0.1);
-  lineSeries2.selected().fill("#12bcc8", 0.5);
-  lineSeries2.normal().stroke("#12bcc8", 2);
-  lineSeries2.hovered().stroke("#12bcc8", 4);
-  lineSeries2.selected().stroke("#12bcc8", 6);
+  lineSeries2.normal().fill("#4973f2");
+  lineSeries2.hovered().fill("#4973f2", 0.1);
+  lineSeries2.selected().fill("#4973f2", 0.5);
+  lineSeries2.normal().stroke("#4973f2", 2);
+  lineSeries2.hovered().stroke("#4973f2", 4);
+  lineSeries2.selected().stroke("#4973f2", 6);
   lineSeries2.yScale(extraYScale);
 
   //tooltip
   columnSeries.tooltip().format("{%seriesName}: ${%value}{groupsSeparator:\\,, decimalsCount:3}");
 
   // enable the legend
-  chart.legend(true);
+  var legend = chart.legend();
+  legend.enabled(true);
+
+  // configure the font of legend items
+  legend.fontColor("#000");
+  legend.fontSize(10);
+  legend.fontWeight(600);
 
   // set the size of legend icons
   chart.legend().iconSize(25);
+
+  // adjust y axis
+  chart.yAxis().stroke("#000");
+  chart.yAxis().ticks(false);
+  chart.yAxis().labels().fontColor("#000");
+
+  // adjust y axis
+  chart.yAxis(1).stroke("#000");
+  chart.yAxis(1).ticks(false);
+  chart.yAxis(1).labels().fontColor("#000");
+
+  // adjust x axis
+  chart.xAxis().stroke("#000");
+  chart.xAxis().labels().fontColor("#000");
 
   chart.container("pronostico-consumo");
 
@@ -831,41 +854,49 @@
   // prepare data for the chart
   var data = [
   {x: "Nueva", value: {{embudo.renovadonuevo}}, size: 10,
-  normal:   {fill: "#A349A4", stroke: "#A349A4"},
-  hovered:  {fill: "#A349A4 0.1", stroke: "2 #A349A4"},
-  selected: {fill: "#A349A4 0.5",stroke: "4 #A349A4"}
+  normal:   {fill: "#051026", stroke: "#051026"},
+  hovered:  {fill: "#051026 0.1", stroke: "2 #051026"},
+  selected: {fill: "#051026 0.5",stroke: "4 #051026"}
   },
   {x: "1R", value: {{embudo.renovado1}}, size: 10,
-  normal:   {fill: "#0097fc", stroke: "#0097fc"},
-  hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
-  selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+  normal:   {fill: "#32498c", stroke: "#32498c"},
+  hovered:  {fill: "#32498c 0.1", stroke: "2 #32498c"},
+  selected: {fill: "#32498c 0.5",stroke: "4 #32498c"}
   },
   {x: "2R", value: {{embudo.renovado2}}, size: 10,
-  normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-  hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8"},
-  selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
+  normal:   {fill: "#4973f2", stroke: "#4973f2"},
+  hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2"},
+  selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2"}
   },
   {x: "3R", value: {{embudo.renovado3}}, size: 10,
-  normal:   {fill: "#166991", stroke: "#166991"},
-  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
-  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  normal:   {fill: "#0081fc", stroke: "#0081fc"},
+  hovered:  {fill: "#0081fc 0.1", stroke: "2 #0081fc"},
+  selected: {fill: "#0081fc 0.5",stroke: "4 #0081fc"}
   },
   {x: "4R", value: {{embudo.renovado4}}, size: 10,
-  normal:   {fill: "#166991", stroke: "#166991"},
-  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
-  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  normal:   {fill: "#00b3fc", stroke: "#00b3fc"},
+  hovered:  {fill: "#00b3fc 0.1", stroke: "2 #00b3fc"},
+  selected: {fill: "#00b3fc 0.5",stroke: "4 #00b3fc"}
   },
   {x: "5R", value: {{embudo.renovado5}}, size: 10,
-  normal:   {fill: "#166991", stroke: "#166991"},
-  hovered:  {fill: "#166991 0.1", stroke: "2 #166991"},
-  selected: {fill: "#166991 0.5",stroke: "4 #166991"}
+  normal:   {fill: "#00d3fc", stroke: "#00d3fc"},
+  hovered:  {fill: "#00d3fc 0.1", stroke: "2 #00d3fc"},
+  selected: {fill: "#00d3fc 0.5",stroke: "4 #00d3fc"}
   }
   ];
+
   // create a chart and set the data
   var chart = anychart.funnel(data);
   chart.baseWidth("100%");
   chart.neckWidth("40%");
   chart.neckHeight("80%");
+
+  // enable the legend
+  var legend = chart.legend();
+  legend.enabled(true);
+
+  // configure the font of legend items
+  legend.fontColor("#000");
 
   // configure labels
   chart.labels().format("{%x}: {%yPercentOfTotal}%");

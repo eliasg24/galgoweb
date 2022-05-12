@@ -31,7 +31,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .input-check-dual input:checked ~ .checkmark {
-  background-color: var(--pink-color);
+  background-color: #ed2a3d;
 }
 
 /* Show the checkmark when checked */
@@ -71,7 +71,7 @@ ul {
 
 .head-menu {
   align-items: center;
-  background: #202020;
+  background: #0a2a75;
   flex-flow: row wrap;
   display: flex;
   justify-content: center;
@@ -210,7 +210,7 @@ ul {
 }
 
 .cont-chart {
-  background: var(--black);
+  background: #fff;
   border-radius: 5px;
   display: flex;
   flex-flow: column nowrap;
@@ -289,7 +289,7 @@ ul {
 }
 
 .column {
-  background: var(--black);
+  background: #fff;
   border-radius: 0.25rem;
   padding: 0.5rem;
   width: 100%;
