@@ -1457,6 +1457,20 @@ function training_filter_constructor(val) {
         title.fontSize(18);
         title.fontWeight(600);
 
+        // set chart axes settings
+        // adjust x axis
+        chart.xAxis()
+                .title('')
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+        // adjust y axis
+        chart.yAxis()
+                .title('')
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+
         // create scale for line series and extraYAxis
         // it force line series to not stuck values with over series
         var scale = anychart.scales.linear();
@@ -1475,12 +1489,12 @@ function training_filter_constructor(val) {
         columnSeries.name('Cantidad');
 
         // configure the visual settings of the second series
-        columnSeries.normal().fill("#166991");
-        columnSeries.hovered().fill("#166991", 0.1);
-        columnSeries.selected().fill("#166991", 0.5);
-        columnSeries.normal().stroke("#166991");
-        columnSeries.hovered().stroke("#166991", 2);
-        columnSeries.selected().stroke("#166991", 4);
+        columnSeries.normal().fill("#051026");
+        columnSeries.hovered().fill("#051026", 0.1);
+        columnSeries.selected().fill("#051026", 0.5);
+        columnSeries.normal().stroke("#051026");
+        columnSeries.hovered().stroke("#051026", 2);
+        columnSeries.selected().stroke("#051026", 4);
 
         // adding red line to emphasize zero of extra axis
         var lineMarker = chart.lineMarker();
@@ -1551,7 +1565,7 @@ function training_filter_constructor(val) {
 
     // adding extra Y scale
     var extraYScale = anychart.scales.linear();
-    extraYScale.ticks().interval(100000);
+    extraYScale.ticks().interval(1000);
 
     // set function to format y axis labels
     var yLabels = chart.yAxis(0).labels();
@@ -1559,15 +1573,22 @@ function training_filter_constructor(val) {
 
     // adding and adjust extra Y axis
     chart.xAxis().orientation("left");
+    // adjust x axis
+    chart.xAxis().stroke("#000");
+    chart.xAxis().labels().fontColor("#000");
 
     // adding and adjust extra Y axis
-    var extraYAxis0 = chart.yAxis(0);
-    extraYAxis0.orientation("bottom");
+    var extraYAxis0 = chart.yAxis(0)
+          .orientation("bottom")
+          .stroke("#000")
+          .labels().fontColor("#000");
 
     // adding and adjust extra Y axis
-    var extraYAxis = chart.yAxis(1);
-    extraYAxis.orientation("top");
-    extraYAxis.scale(extraYScale);
+    var extraYAxis = chart.yAxis(1)
+          .orientation("top")
+          .scale(extraYScale)
+          .stroke("#000")
+          .labels().fontColor("#000");
 
     // setting first series of data
     var firstSeries = [
@@ -1588,12 +1609,12 @@ function training_filter_constructor(val) {
     DosSeries.name("CPK");
 
     // configure the visual settings of the second series
-    DosSeries.normal().fill("#12bcc8");
-    DosSeries.hovered().fill("#12bcc8", 0.1);
-    DosSeries.selected().fill("#12bcc8", 0.5);
-    DosSeries.normal().stroke("#12bcc8");
-    DosSeries.hovered().stroke("#12bcc8", 2);
-    DosSeries.selected().stroke("#12bcc8", 4);
+    DosSeries.normal().fill("#4973f2");
+    DosSeries.hovered().fill("#4973f2", 0.1);
+    DosSeries.selected().fill("#4973f2", 0.5);
+    DosSeries.normal().stroke("#4973f2");
+    DosSeries.hovered().stroke("#4973f2", 2);
+    DosSeries.selected().stroke("#4973f2", 4);
 
 
     var UnoSeries = chart.bar(secondSeries);
@@ -1601,12 +1622,12 @@ function training_filter_constructor(val) {
     UnoSeries.name("KM");
 
     // configure the visual settings of the second series
-    UnoSeries.normal().fill("#0097fc");
-    UnoSeries.hovered().fill("#0097fc", 0.1);
-    UnoSeries.selected().fill("#0097fc", 0.5);
-    UnoSeries.normal().stroke("#0097fc");
-    UnoSeries.hovered().stroke("#0097fc", 2);
-    UnoSeries.selected().stroke("#0097fc", 4);
+    UnoSeries.normal().fill("#051026");
+    UnoSeries.hovered().fill("#051026", 0.1);
+    UnoSeries.selected().fill("#051026", 0.5);
+    UnoSeries.normal().stroke("#051026");
+    UnoSeries.hovered().stroke("#051026", 2);
+    UnoSeries.selected().stroke("#051026", 4);
 
     //tooltip
     UnoSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
