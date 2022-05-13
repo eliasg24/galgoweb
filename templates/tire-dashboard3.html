@@ -1160,34 +1160,41 @@
              .maxBubbleSize(45);
 
         // set chart axes settings
+        // adjust x axis
         chart.xAxis()
                 .title('')
-                .minorTicks(false);
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+        // adjust y axis
         chart.yAxis()
                 .title('')
-                .minorTicks(false);
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
 
         //set chart legend settings
-        chart.legend()
-                .enabled(true)
-                .padding({bottom: 10});
-      
+        var legend = chart.legend();
+        legend.enabled(true)
+              .fontColor("#000")
+              .fontSize(12);
+        
         // create first series with mapped data
         {% for pro, valores in comparativa_de_productos.items %}
         
         var {{valores.6|lower}} = chart.bubble(sportsmen{{forloop.counter}}).name('{{valores.6}}');
         // configure the visual settings of the first series
         {{valores.6|lower}}.selected().fill("#5089b7", 0.5);
-        {{valores.6|lower}}.normal().stroke("2 white");
+        {{valores.6|lower}}.normal().stroke("2 black");
         {{valores.6|lower}}.hovered().stroke("3 #5089b7");
         {{valores.6|lower}}.selected().stroke("4 #5089b7");
         // labels
         {{valores.6|lower}}.labels(true);
         {{valores.6|lower}}.labels().format("{{valores.6}}");
         // set the color for the text of the labels
-        {{valores.6|lower}}.labels().fontColor('white');
-        {{valores.6|lower}}.hovered().labels().fontColor("white");
-        {{valores.6|lower}}.selected().labels().fontColor("white");
+        {{valores.6|lower}}.labels().fontColor('black');
+        {{valores.6|lower}}.hovered().labels().fontColor("black");
+        {{valores.6|lower}}.selected().labels().fontColor("black");
         {{valores.6|lower}}.labels().fontSize(10);
         {% endfor %}
 
