@@ -1658,6 +1658,17 @@ function training_filter_constructor(val) {
     // Graph AreaLine-chart
     anychart.onDocumentReady(function () {
 
+    // set the default types of legend icons
+    anychart.theme({
+    chart: {
+    defaultSeriesSettings: {
+    column: {legendItem: {iconType: "cubo"}},
+    line: {legendItem: {iconType: "circle"}}
+
+    }
+    }
+    });
+
     // create a data set
     var data = anychart.data.set([
 
@@ -1682,10 +1693,35 @@ function training_filter_constructor(val) {
     // it force line series to not stuck values with over series
     var scale = anychart.scales.linear();
 
+    // adjust y axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
     // adjusting y axis title and setting additional axis
     chart.yAxis(1).scale(scale);
     chart.yAxis(1).orientation("right");
     chart.yAxis(1).labels().format("${%value}");
+
+    // adjust y axis
+    chart.yAxis(1)
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+     //set chart legend settings
+    var legend = chart.legend();
+    legend.enabled(true)
+          .fontColor("#000")
+          .fontSize(12);
 
     // create the first series, set the data and name
     var series1 = chart.line(seriesData_1);
@@ -1701,21 +1737,21 @@ function training_filter_constructor(val) {
     chart.interactivity().hoverMode('by-x');
 
     // configure the visual settings of the first series
-    series1.normal().stroke("#0097fc", 4);
-    series1.hovered().stroke("#0097fc", 2);
-    series1.selected().stroke("#0097fc", 6);
+    series1.normal().stroke("#ed2a3d", 4);
+    series1.hovered().stroke("#ed2a3d", 2);
+    series1.selected().stroke("#ed2a3d", 6);
 
     // create the second series, set the data and name
     var series2 = chart.area(seriesData_2);
     series2.name("Cantidad");
 
     // configure the visual settings of the second series
-    series2.normal().fill("#A349A4", 0.5);
-    series2.hovered().fill("#A349A4", 0.1);
-    series2.selected().fill("#A349A4", 0.3);
-    series2.normal().stroke("#A349A4", 4);
-    series2.hovered().stroke("#A349A4", 2);
-    series2.selected().stroke("#A349A4", 6);
+    series2.normal().fill("#4973f2", 0.5);
+    series2.hovered().fill("#4973f2", 0.1);
+    series2.selected().fill("#4973f2", 0.3);
+    series2.normal().stroke("#4973f2", 4);
+    series2.hovered().stroke("#4973f2", 2);
+    series2.selected().stroke("#4973f2", 6);
 
     // set the chart title
     // chart.title("Tendencia CPK vida");
@@ -1751,9 +1787,9 @@ function training_filter_constructor(val) {
     var data = [
     {% for flota, valores in km_flotas.items %}
     {x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
-    normal:   {fill: "#12bcc8", stroke: "#12bcc8", medianStroke: "4 #000", whiskerWidth: 30},
-    hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8",medianStroke: "2 #12bcc8", whiskerWidth: 10},
-    selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8", medianStroke: "4 #12bcc8", whiskerWidth: 20}
+    normal:   {fill: "#4973f2", stroke: "#4973f2", medianStroke: "4 #000", whiskerWidth: 30},
+    hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2",medianStroke: "2 #4973f2", whiskerWidth: 10},
+    selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}
     },
     {% endfor %}
     ];
@@ -1762,6 +1798,21 @@ function training_filter_constructor(val) {
     var chart = anychart.box(data);
     chart.isVertical(true)
     chart.yScale().ticks().interval();
+
+    // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     // set function to format y axis labels
     var yLabels = chart.yAxis(0).labels();
