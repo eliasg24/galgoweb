@@ -1,5 +1,5 @@
 body {
-  background: #cccccc;
+  background: #fff;
   background-color: #cccccc;
 }
 
@@ -335,17 +335,17 @@ ul {
 }
 
 .icon-fullscreen {
-  color: white;
+  color: black;
   font-size: 20px;
 }
 
 .icon-fullscreen_exit {
-  color: white;
+  color: black;
   font-size: 20px;
 }
 
 .icon-question-circle-o {
-  color: white;
+  color: black;
   font-size: 20px;
 }
 
@@ -533,6 +533,7 @@ ul {
 .column-chart,
 .bar-chart,
 .areaLine-chart {
+  background: #fff;
   display: none;
   grid-template-rows: auto 1fr;
   height: 100%;
