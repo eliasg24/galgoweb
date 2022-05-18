@@ -5,6 +5,7 @@ h2 {
 
 .config-nav h1 {
   font-size: 3rem;
+  color: white;
 }
 
 h3 {
@@ -31,6 +32,7 @@ h3 {
 }
 
 .btn-download {
+  background-color: #08a63f ;
   border-radius: 0.25rem;
   padding: 0.5rem;
 }
@@ -41,7 +43,7 @@ h3 {
 
 .config-nav {
   align-items: center;
-  background-color: var(--head-bg);
+  background-color: #0a2a75;
   display: flex;
   flex-flow: row nowrap;
   gap: 1rem;
@@ -57,6 +59,7 @@ h3 {
   flex-flow: column nowrap;
   gap: 1rem;
   margin: 1rem;
+  padding: 1rem;
 }
 
 .con.on-view {
@@ -71,7 +74,7 @@ h3 {
 }
 
 .con {
-  background-color: #242424;
+  background-color: #cccccc;
   border-radius: 0.25rem;
   display: none;
   flex-flow: column nowrap;
@@ -83,11 +86,11 @@ h3 {
 
 .con-title,
 .con-sec {
-  background-color: #333;
+  background-color: #fff;
 }
 
 .con-title {
-  border-radius: 0.25rem;
+  border-radius: 2rem;
   padding: 0.5rem;
   text-align: center;
 }
@@ -121,10 +124,20 @@ h3 {
 }
 
 .btn-redirect {
-  background-color: #fff;
+  background-color: #cccccc;
   border: thin solid #fff;
   border-radius: 0.5rem;
   color: #000;
+  font-weight: bold;
+  padding: 1rem;
+  width: 100%;
+}
+
+.btn-redirect-download {
+  background-color: #ed2a3d;
+  border: thin solid #fff;
+  border-radius: 0.5rem;
+  color: #fff;
   font-weight: bold;
   padding: 1rem;
   width: 100%;
@@ -144,7 +157,7 @@ h3 {
 }
 
 .con-sec {
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -160,12 +173,12 @@ h3 {
 
 .con-sec::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: #0a2a75;
 }
 
 .con-sec::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: #0a2a756e;
 }
 
 .form-group {
@@ -282,7 +295,7 @@ h3 {
   cursor: pointer;
   text-align: center;
   vertical-align: middle;
-  background: #6666d9;
+  background: #051026;
 }
 
 .buttons .button2 {
@@ -314,7 +327,6 @@ h3 {
 @media only screen and (min-width: 1024px) {
   .all-cont {
     display: flex;
-    padding: 1rem;
     height: 100vh;
   }
 
@@ -338,7 +350,6 @@ h3 {
     border-radius: 0.25rem;
     gap: 1rem;
     height: 100%;
-    padding: 1rem;
     width: 100%;
   }
 
