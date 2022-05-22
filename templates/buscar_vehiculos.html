@@ -21,253 +21,84 @@
         </div>
         <h1>Vehiculos</h1>
     </header>
-    <section class="container">
-        <form action="{% url 'dashboards:search_id' %}" method="GET" class="form-container">
-            {% csrf_token %}
-            <nav class="nav-header">
-                <div class="flex-row wrap" id="status">
-                    <button type="button" class="btn btn-aeto-crunch active" id="btn-all">
-                        Todos los vehículos
-                        <span>
-                            <strong>
-                                {{cantidad_total}}
-                            </strong>
-                        </span>
+
+    <section class="main__cont">
+        <header class="vehicle__head">
+            <div class="search__wrapper">
+                <input type="search" name="numero_economico" id="economico" placeholder="buscar">
+                <button type="submit">
+                    <i class="bx bx-search"></i>
+                </button>
+            </div>
+
+            <button class="btn btn-filter" type="button" role="button">
+                Filtros
+            </button>
+        </header>
+
+        <article class="list__container">
+            <aside class="filter__container">
+                <button class="btn btn-close" type="button" role="button">
+                    <i class="bx bx-x"></i>
+                </button>
+
+                <h2>Filtros</h3>
+                <details class="form-group">
+                    <summary class="group-title">Fecha</summary>
+                    <label for="desde" class="label-form">
+                        Desde
+                        <input type="date" name="desde" id="desde" class="form-control">
+                    </label>
+    
+                    <label for="hasta" class="label-form">
+                        Hasta
+                        <input type="date" name="hasta" id="hasta" class="form-control">
+                    </label>
+                </details>
+
+                <details class="form-group">
+                    <summary class="group-title">Por status</summary>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Azul
                     </button>
-                    <button type="button" class="btn btn-aeto-crunch ok" id="btn-ok">
-                        Azules
-                        <span class="status__ok">{{cantidad_verdes}}</span>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Amarillo
                     </button>
-                    <button type="button" class="btn btn-aeto-crunch yellow" id="btn-yellow">
-                        Amarillos
-                        <span class="status__yellow">{{cantidad_amarillos}}</span>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Rojo
                     </button>
-                    <button type="button" class="btn btn-aeto-crunch bad" id="btn-bad">
-                        Rojos
-                        <span class="status__bad">{{cantidad_rojos}}</span>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Sospechoso
                     </button>
-                    <button type="button" class="btn btn-aeto-crunch suspicious" id="btn-suspicious">
-                        Sospechosos
-                        <span class="status__suspicious">{{cantidad_sospechosos}}</span>
-                    </button>
-                </div>
-                <div class="flex-row wrap">
-                    <input 
-                        name="desde" 
-                        placeholder="Desde..."
-                        id="desde" 
-                        class="drop-input"
-                        type="text" 
-                        onblur="(this.type='text')" 
-                        onfocus="(this.type='date')" 
-                        data-fecha
-                    >
-                    <input 
-                        name="hasta" 
-                        id="hasta" 
-                        placeholder="Hasta..." 
-                        class="drop-input"
-                        type="text" 
-                        onblur="(this.type='text')" 
-                        onfocus="(this.type='date')" 
-                        data-fecha
-                    >
-                    <div class="drop-search">
-                        <input
-                          type="search"
-                          placeholder="Buscar vehiculo..."
-                          name="numero_economico"
-                          id="vehiculo"
-                          class="drop-input"
-                          autocomplete="off"
-                        />
-                        <i class="bx bx-search"></i>
-                      </div>
-                      <!-- <a href="{% url 'dashboards:search' %}" class="btn btn-danger">
-                          <span class="icon-trash"></span>
-                      </a> -->
-                </div>
-            </nav>
-            <article class="wrapper on-view" id="all">
-                <div class="container-fluid">
-                    <div class="card-container">
-                        {% for vehiculo in vehiculos_verdes %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                        {% for vehiculo in vehiculos_amarillos %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                        {% for vehiculo in vehiculos_rojos %}
-                        <a href="{% url 'dashboards:detail' vehiculo.id %}" class="transition">
-                            <figure class="vehicle-card status__card-bad">
-                        
-                                <div class="vehicle-card__img">
-                                    <span class="icon-truck vehicle-card__icon"></span>
-                                    <h3>{{vehiculo.numero_economico}}</h3>
-                                </div>
-                        
-                                <figcaption class="vehicle-card__info">
-                                    <p>
-                                        <span class="icon-pulpo"></span>
-                                    </p>
-                                    <p>
-                                        {% if vehiculo.fecha_de_inflado %}
-                                            {{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.year}}
-                                        {% elif vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
-                                            {{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}
-                                        {% endif %}
-                                    </p>
-                                    <p>
-                                        <span class="icon-cross"></span>
-                                    </p>
-                                </figcaption>
-                            </figure>
-                        </a>
-                        {% endfor %}
-                        {% for vehiculo in vehiculos_sospechosos %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
-            <article class="wrapper" id="ok">
-                <div class="container-fluid">
-                    <div class="card-container">
-                        {% for vehiculo in vehiculos_verdes %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
-            <article class="wrapper" id="yellow">
-                <div class="container-fluid">
-                    <div class="card-container">
-                        {% for vehiculo in vehiculos_amarillos %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
-            <article class="wrapper" id="bad">
-                <div class="container-fluid">
-                    <div class="card-container">
-                        {% for vehiculo in vehiculos_rojos %}
-                        <a href="{% url 'dashboards:detail' vehiculo.id %}" class="transition">
-                            <figure class="vehicle-card status__card-bad">
-                        
-                                <div class="vehicle-card__img">
-                                    <span class="icon-truck vehicle-card__icon"></span>
-                                    <h3>{{vehiculo.numero_economico}}</h3>
-                                </div>
-                        
-                                <figcaption class="vehicle-card__info">
-                                    <p>
-                                        <span class="icon-pulpo"></span>
-                                    </p>
-                                    <p>
-                                        {% if vehiculo.fecha_de_inflado %}
-                                            {{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.year}}
-                                        {% elif vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
-                                            {{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}
-                                        {% endif %}
-                                    </p>
-                                    <p>
-                                        <span class="icon-cross"></span>
-                                    </p>
-                                </figcaption>
-                            </figure>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
-            <article class="wrapper" id="suspicious">
-                <div class="container-fluid">
-                    <div class="card-container">
-                        {% for vehiculo in vehiculos_sospechosos %}
-                            {% include 'search/vehiculos-lista.html' %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
-        </form>
+                </details>
+            </aside>
+            <div class="vehicle__list">
+                <span class="icon-spinner2"></span>
+            </div>
+        </article>
     </section>
 </main>
 
+<template id="card-template">
+    <a href="" class="card__item">
+        <figure class="vehicle-card">
+            <div class="status"></div>
+            <div class="vehicle-card__img">
+                <span class="icon-truck vehicle-card__icon"></span>
+                <h3 class="card__economic"></h3>
+            </div>
+            <figcaption class="vehicle-card__info">
+                <span class="card__date"></span>
+                /
+                <span id="icon"></span>
+                /
+                <span class="icon-pulpo"></span>
+            </figcaption>
+        </figure>
+    </a>
+</template>
+
 <script src="{% static './js/buscador/index.js' %}"></script>
+<script src="{% static './js/vehicle-list/index.js' %}" type="module"></script>
     
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-        handleView('btn-all', 'all');
-        handleView('btn-ok', 'ok');
-        handleView('btn-yellow', 'yellow');
-        handleView('btn-bad', 'bad');
-        handleView('btn-suspicious', 'suspicious');
-        handleButtons('#status');
-        handleDate()
-    });
-
-    const handleDate = () => {
-        const form = document.querySelector('form')
-        const dates = document.querySelectorAll('input[data-fecha]');
-
-        dates.forEach(input => {
-            input.addEventListener('input', (e) => {
-            if (!dates[0].value) {
-                alert('Selecciona una fecha inicial');
-                dates[0].focus();
-                return;
-            } 
-            if (dates[0].value && dates[1].value) {
-                if (dates[0].value > dates[1].value) {
-                alert('La fecha inicial no puede ser mayor a la fecha final');
-                dates[0].focus();
-                return;
-                }
-                
-                form.submit();
-            }
-            });
-        })
-    }
-
-    const handleButtons = (container = '') => {
-      const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
-
-      buttons.forEach( button => {
-        button.addEventListener('click', ({ target }) => {
-          buttons.forEach(item => item.classList.remove('active'));
-
-          target.classList.add('active');
-        });
-      } );
-    };
-
-    const handleView = (button = '', view = '') => { // clase on-view 
-      const btn = document.getElementById(button); // Boton por ID
-      const image = document.getElementById(view); // Vista por ID
-
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view')); // Limpia
-
-        image.classList.add('on-view'); // agrega on view
-      });
-
-    };
-
-    // Rango de fechas
-    $(function() {
-        $('#date-input').daterangepicker({
-            opens: 'left',
-            autoUpdateInput: false,
-            "autoApply": true
-        },
-        function(start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-        });
-        $('#date-input').on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-        });
-    });
-</script>
 {% endblock content %}

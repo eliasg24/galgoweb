@@ -1,19 +1,51 @@
 /* New colors */
 
 :root {
-  --main-background: #fff;
-  --head-bg: #0a2a75;
-  --main-blue: #026cf5;
-  --yellow-color: #dbc002;
-  --purple-color: #8a2be2;
-  --red-color: #f0412c;
-  --green-color: #2e8b57;
-  --pink-color: #ff1493;
-  --bg-button: #23252b;
-  --bg-button-hover: #2f5161;
-  --bg-button-active: #213944;
-  --border-button: #f47521;
-  --border-alt-button: #00e5f3;
+  --colorv00: #363636;
+  --colorv01: #242424;
+  --colorv02: #fff;
+  --colorv03: #606060;
+  --colorv04: #026cf5;
+  --colorv05: #dbc002;
+  --colorv06: #8a2be2;
+  --colorv07: #f0412c;
+  --colorv08: #2e8b57;
+  --colorv09: #ff1493;
+  --colorv10: #23252b;
+  --colorv11: #2f5161;
+  --colorv12: #213944;
+  --colorv13: #f47521;
+  --colorv14: #00e5f3;
+  --colorv15: #222;
+  --colorv16: #000;
+  --colorv17: #808080;
+  --colorv18: transparent;
+  --colorv19: #eee;
+  --colorv20: #ccc;
+  --colorv21: #9b9b9b;
+  --colorv22: #ff0000;
+  --colorv23: #dcdcdc;
+  --colorv24: #90ee90;
+  --colorv25: #171717;
+  --colorv26: #111;
+  --colorv27: #202020;
+  --colorv28: #21664d;
+  --colorv29: #00558f;
+  --colorv30: #1f1f1f;
+  --colorv31: rgb(255, 255, 255, 0.7);
+  --colorv32: #4d4d4d;
+  --colorv33: #0071bc;
+  --colorv34: #ddd;
+  --colorv35: #9147ff;
+  --colorv36 :rgb(255, 255, 255, 0.25);
+  --colorv37: #333;
+  --colorv38: #646464;
+  --colorv39: #353535;
+  --colorv40: #6666d9;
+  --colorv41: #009245;
+  --colorv42: #4caf50;
+  --colorv43: #555;
+  --colorv44: #f1f1f1;
   --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
@@ -26,8 +58,8 @@
 }
 
 html {
-  background-color: #ccc;
-  color: #3c3c3c;
+  background-color: var(--colorv00);
+  color: var(--colorv02);
   font-family: 'Poppins', Arial, Helvetica, sans-serif;
   word-wrap: break-word;
 }
@@ -53,6 +85,85 @@ h6 {
   margin: 0.25rem 0;
 }
 
+/* Skeleton */
+
+.skeleton {
+  background-color: var(--colorv01);
+  animation: skeleton 1s linear infinite alternate;
+}
+
+@keyframes skeleton {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.3;
+  }
+}
+
+/* .loader__container {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.loader {
+  width: 8px;
+  height: 48px;
+  display: block;
+  margin: auto;
+  left: -20px;
+  position: relative;
+  border-radius: 4px;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite alternate;
+}
+
+@keyframes animloader {
+  0% {
+    box-shadow: 20px 0 rgba(255, 255, 255, 0.25), 40px 0 white, 60px 0 white;
+  }
+  50% {
+    box-shadow: 20px 0 white, 40px 0 rgba(255, 255, 255, 0.25), 60px 0 white;
+  }
+  100% {
+    box-shadow: 20px 0 white, 40px 0 white, 60px 0 rgba(255, 255, 255, 0.25);
+  }
+} */
+
+.badge-btn {
+  border: thin solid var(--colorv02);
+  border-radius: 0.25rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+.icon-spinner2 {
+  animation: spinner 1s linear infinite;
+  display: block;
+  font-size: 3rem;
+  height: fit-content;
+  margin: auto;
+  width: fit-content;
+  grid-column: span 4;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .flex-row,
 .flex-row-nowrap {
   align-items: center;
@@ -65,7 +176,7 @@ h6 {
 
 .head-cont {
   align-items: center;
-  background-color: var(--head-bg);
+  background-color: var(--colorv01);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -86,7 +197,7 @@ h6 {
 }
 
 .dropdown {
-  color: #fff;
+  color: var(--colorv02);
   position: relative;
   display: inline-flex;
   justify-content: center;
@@ -94,10 +205,10 @@ h6 {
 
 .drop-btn {
   align-items: center;
-  background-color: #222;
+  background-color: var(--colorv15);
   background: none;
   border: none;
-  color: #fff;
+  color: var(--colorv02);
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
@@ -109,9 +220,9 @@ h6 {
 }
 
 .drop-menu {
-  background-color: #fff;
+  background-color: var(--colorv15);
   border-radius: 0.25rem;
-  border: 2px solid #ed2a3d;
+  border: 2px solid var(--colorv09);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -134,13 +245,13 @@ h6 {
 }
 
 .drop-menu::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: #404040;
+  border-radius: 5px;
+  background-color: var(--colorv16);
 }
 
 .drop-menu::-webkit-scrollbar-track {
-  border-radius: 3px;
-  background-color: #909090;
+  border-radius: 5px;
+  background-color: var(--colorv17);
 }
 
 .drop-search {
@@ -152,13 +263,12 @@ h6 {
   right: 12px;
   top: 30%;
   pointer-events: none;
-  color: #5c5c5c;
 }
 
 .drop-input {
-  background: transparent;
-  border: thin solid #929292;
-  color: #000;
+  background: var(--colorv18);
+  border: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-family: inherit;
   outline: none;
   padding: 0.5rem;
@@ -205,7 +315,6 @@ h6 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  color: #5c5c5c;
 }
 
 /* Hide the browser's default checkbox */
@@ -224,17 +333,17 @@ h6 {
   left: 0;
   height: 25px;
   width: 25px;
-  background-color: #eee;
+  background-color: var(--colorv19);
 }
 
 /* On mouse-over, add a grey background color */
 .input-check:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color: var(--colorv20);
 }
 
 /* When the checkbox is checked, add a blue background */
 .input-check input:checked ~ .checkmark {
-  background-color: #ed2a3d;
+  background-color: var(--colorv09);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -255,7 +364,7 @@ h6 {
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid white;
+  border: solid var(--colorv02);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -268,40 +377,33 @@ h6 {
   transition: all 0.3s ease;
 }
 
-.title-galgo {
-  color: white;
-  font-size: 2.5rem;
-  font-style: italic;
-}
-
 .btn-aeto-crunch {
-  background-color: #ddd;
-  color: #000;
+  background-color: var(--colorv10);
+  color: var(--colorv02);
   padding: 0.75rem;
   transition: background-color 0.2s ease;
-  font-weight: bold;
 }
 
 .btn-aeto-crunch:hover {
-  background-color: #929292;
+  background-color: var(--colorv11);
 }
 
 .btn-aeto-crunch.active {
-  border-top: solid 2px #ed2a3d;
-  background-color: white;
+  border-top: thin solid var(--colorv13);
+  background-color: var(--colorv12);
   font-weight: bold;
 }
 
 .btn-aeto-crunch.alt {
-  border-color: #0d42bb;
+  border-color: var(--colorv14);
   height: 100%;
 }
 
 .btn-trash {
   align-items: center;
-  background-color: #ed2a3d;
+  background-color: var(--colorv09);
   border-radius: 50%;
-  color: #fff;
+  color: var(--colorv02);
   display: flex;
   justify-content: center;
   padding: 0.75rem;
@@ -318,7 +420,7 @@ h6 {
 .btn-danger {
   align-items: center;
   border-radius: 50%;
-  color: #fff;
+  color: var(--colorv02);
   display: flex;
   font-size: 1.25rem;
   justify-content: center;
@@ -329,26 +431,26 @@ h6 {
 .btn-download.disabled,
 .btn-info.disabled,
 .btn-danger.disabled {
-  background-color: gainsboro;
-  color: gray;
+  background-color: var(--colorv23);
+  color: var(--colorv17);
   cursor: not-allowed;
   pointer-events: none;
 }
 
 .btn-success {
-  background-color: var(--green-color);
+  background-color: var(--colorv08);
 }
 
 .btn-download {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .btn-info {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
 }
 
 .btn-danger {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .btn:hover {
@@ -356,7 +458,7 @@ h6 {
 }
 
 .select-all {
-  color: #ed2a3d;
+  color: var(--colorv09);
 }
 
 /* Font Style */
@@ -375,28 +477,28 @@ h6 {
 
 .form__field.invalid,
 .form__field.invalid ~ .form__label {
-  border-color: red;
+  border-color: var(--colorv22);
 }
 
 .form__field.invalid ~ .form__label {
-  color: red;
+  color: var(--colorv22);
 }
 
 .form__field {
   font-family: inherit;
   width: 100%;
   border: 0;
-  border-bottom: 2px solid #9b9b9b;
+  border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: #fff;
+  color: var(--colorv02);
   padding: 7px 0;
-  background: transparent;
+  background: var(--colorv18);
   transition: border-color 0.2s;
 }
 
 .form__field::placeholder {
-  color: transparent;
+  color: var(--colorv18);
 }
 
 .form__field:placeholder-shown ~ .form__label {
@@ -411,7 +513,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: #9b9b9b;
+  color: var(--colorv21);
   pointer-events: none;
 }
 
@@ -419,7 +521,7 @@ h6 {
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
-  border-color: #ed2a3d;
+  border-color: var(--colorv14);
 }
 
 .form__field:focus ~ .form__label {
@@ -428,7 +530,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: #ed2a3d;
+  color: var(--colorv14);
   font-weight: 700;
 }
 
@@ -459,7 +561,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text {
   position: absolute;
-  background-color: #ddd;
+  background-color: var(--colorv16);
   border-radius: 0.25rem;
   display: none;
   margin-left: 3rem;
@@ -477,7 +579,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text p {
   font-family: var(--font);
-  color: #222;
+  color: var(--colorv02);
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }
@@ -553,12 +655,12 @@ input[type='search']::-webkit-search-cancel-button {
 
 .alert__warn {
   background-color: var(--yellow-color);
-  color: #fff;
+  color: var(--colorv02);
 }
 
 .alert__error {
   background-color: var(--red-color);
-  color: #fff;
+  color: var(--colorv02);
 }
 
 .alert__warn.active,

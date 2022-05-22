@@ -10,132 +10,99 @@
 {% endblock %}
 
 {% block content %}
-<div class="all-cont" id="doc">
-  <link
-    rel="stylesheet"
-    href="{% static 'css/ordenSalidaRen.css' %}"
-    media="all"
-  />
-  <header class="doc-head">
-    <div class="head-title">
-      <h2 class="doc-title">Orden de Nueva Llanta</h2>
-      <h2 class="doc-sub">Folio: SR</h2>
-    </div>
-    <div class="logo">
-      <img src="{% static 'images/pulpo.png' %}" />
-    </div>
-  </header>
 
-  <div class="two-columns">
-    <div class="container">
-      <div class="cont-item">
-        <strong>Fecha:</strong>
-        <span class="italic">22/02/2022</span>
-      </div>
-      <div class="cont-item">
-        <strong>Usuario:</strong>
-        <span class="italic">pruebacal</span>
-      </div>
-      <div class="cont-item">
-        <label for="destino">
-          <strong>Renovador Destino:</strong>
-          <input
-            type="text"
-            list="destino"
-            placeholder="Destino..."
-            class="form-control"
-            required
-          />
-          <datalist id="destino">
-            <option value="Destino 1"></option>
-            <option value="Destino 2"></option>
-            <option value="Destino 3"></option>
-          </datalist>
-        </label>
-      </div>
-    </div>
-
-    <div class="col">
-      <input
-        type="number"
-        name="cantidad"
-        id="cantidad"
-        placeholder="Ingrese la cantidad de llantas"
-        class="form-control"
-        value="1"
-      />
-    </div>
-  </div>
-
-  <div class="main-cont">
-    <div class="table-cont">
-      <table>
-        <thead>
-          <tr>
-            <th>Producto #</th>
-            <th>
-              <input
-                type="text"
-                name="product"
-                id="product"
-                list="products"
-                placeholder="Seleccione un producto..."
-                class="form-control table-control"
-              />
-              <datalist id="products">
-                <option value="Michellin"></option>
-                <option value="Opción 2"></option>
-              </datalist>
-            </th>
-            <th>
-              <input
-                type="number"
-                name=""
-                id=""
-                class="form-control table-control"
-                value="1"
-              />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <ul class="tire-list">
-                <li>123456789</li>
-                <li>123456789</li>
-                <li>123456789</li>
-              </ul>
-            </td>
-            <td></td>
-            <td>1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="firma">
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/5/53/Miguel_D%C3%ADaz-Canel_firma.png"
-      alt=""
-      class="firma-img"
+<div class="orden-salida">
+  <div class="all-cont" id="doc">
+    <link
+      rel="stylesheet"
+      href="{% static 'css/ordenSalidaRen.css' %}"
+      media="all"
     />
-    <hr />
-    <h1>Firmas de Salida de llantas</h1>
+    <header class="doc-head">
+      <div class="head-title">
+        <h2 class="doc-title">Orden de Nueva Llanta</h2>
+        <h2 class="doc-sub">Folio: {{folio}}</h2>
+      </div>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" />
+      </div>
+    </header>
+  
+    <div class="two-columns">
+      <div class="container">
+        <div class="cont-item">
+          <strong>Fecha</strong>
+          <span class="italic">{{fecha.day}}/{{fecha.month}}/{{fecha.year}}</span>
+        </div>
+        <div class="cont-item">
+          <strong>Usuario</strong>
+          <span class="italic">{{perfil}}</span>
+        </div>
+        <div class="cont-item">
+          <strong>Taller destino</strong>
+          <span class="italic"> {{taller}} </span>
+        </div>
+        <div class="cont-item">
+          <strong>Cantidad</strong>
+          <span class="italic"> {{total}} </span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="main-cont">
+      <div class="table-cont">
+        {% for data in templeta_data %}
+          <table>
+            <thead>
+              <tr>
+                <th>{{data.producto}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for nums in data.nums_ecos %}
+                <tr>
+                    <td>{{nums}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Total: {{data.nums_ecos|length}}</td>
+              </tr>
+            </tfoot>
+          </table>
+          <br>
+        {% endfor %}
+      </div>
+    </div>
+  
+    <div class="firma">
+      <!-- <img
+        src="https://upload.wikimedia.org/wikipedia/commons/5/53/Miguel_D%C3%ADaz-Canel_firma.png"
+        alt=""
+        class="firma-img"
+      /> -->
+      <hr />
+      <h1>Firmas de Salida de llantas</h1>
+    </div>
   </div>
-</div>
-
-<div class="nav-buttons">
-  <button class="btn btn-info" id="btn-print">
-    <span class="icon-printer8"></span>
-  </button>
-  <button class="btn btn-primary">Subir firma</button>
-  <button class="btn btn-success">
-    <a href="{% url 'dashboards:conRenovador' %}">
-      <span class="icon-checkmark"></span>
+  
+  <div class="nav-buttons">
+    <button class="btn btn-info" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+    {% if status == 'PreOrden' %}
+    
+      <a class="btn btn-success" href="{% url 'dashboards:ordenLlantaDef' id %}">
+        <span class="icon-checkmark"></span>
+      </a>
+      <a class="btn btn-danger" href="{% url 'dashboards:ordenLlantaDeleteDef' id %}">
+        <span class="icon-cross"></span>
     </a>
-  </button>
+  
+    {% else %}
+    {% endif %}
+  </div>
 </div>
 
 <script
@@ -153,8 +120,8 @@
     const $elementoParaConvertir = document.getElementById('doc'); // <-- Aquí puedes elegir cualquier elemento del DOM
     html2pdf()
       .set({
-        margin: 1,
-        filename: 'ordenLlantaNueva.pdf',
+        margin: .75,
+        filename: 'orden-llanta-nueva-folio.pdf',
         image: {
           type: 'jpeg',
           quality: 0.98,
@@ -165,7 +132,7 @@
         },
         jsPDF: {
           unit: 'in',
-          format: 'a3',
+          format: 'letter',
           orientation: 'portrait', // landscape o portrait
         },
       })

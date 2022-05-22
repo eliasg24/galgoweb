@@ -1,5 +1,5 @@
 a {
-  color: #fff;
+  color: var(--colorv02);
   text-decoration: none;
 }
 
@@ -32,7 +32,7 @@ img {
   align-items: center;
   display: flex;
   justify-content: center;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 2rem;
 }
 
@@ -50,7 +50,7 @@ img {
 
 .nav-cont {
   font-family: 'Poppins', Arial, Helvetica, sans-serif !important;
-  background-color: #131d34;
+  background-color: var(--colorv26);
   font-size: 16px;
   position: sticky;
   top: 0;
@@ -106,8 +106,8 @@ img {
 
 .menu-item:hover,
 .menu-item.active {
-  background-color: #2f5161;
-  border-left: 6px solid #eee;
+  background-color: var(--colorv11);
+  border-left: 6px solid var(--colorv19);
 }
 
 .menu-item > a {
@@ -129,6 +129,7 @@ img {
   .nav-cont {
     display: flex;
     flex-flow: column nowrap;
+    height: 100vh;
   }
 
   .navbar {

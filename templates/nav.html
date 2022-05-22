@@ -1,5 +1,5 @@
 {% load static %}
-<header class="nav-cont animate__animated animate__fadeIn">
+<aside class="nav-cont animate__animated animate__fadeIn">
   <nav class="navbar">
     <button class="btn btn-menu">
       <span class="icon-menu"></span>
@@ -8,7 +8,7 @@
       <img src="{% static 'images/logo-aeto.png' %}" alt="logo">
     </div>
   </nav>
-  <aside class="menu">
+  <div class="menu">
     <ul class="menu-items">
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:home' %}">
@@ -52,5 +52,5 @@
         <span class="icon-log-out"></span>
       </a>
     </button>
-  </aside>
-</header>
+  </div>
+</aside>

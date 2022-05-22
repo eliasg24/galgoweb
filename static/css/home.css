@@ -3,7 +3,7 @@
 }
 
 .input-check input:checked ~ .checkmark {
-  background-color: var(--border-alt-button);
+  background-color: var(--colorv14);
 }
 
 .btn-success {
@@ -23,7 +23,7 @@
 }
 
 .context__container {
-  background-color: var(--head-bg);
+  background-color: var(--colorv01);
   border-radius: 0.25rem;
   display: grid;
   gap: 1rem;
@@ -39,7 +39,7 @@
 }
 
 .context__card {
-  border: thin solid var(--border-alt-button);
+  border: thin solid var(--colorv14);
   display: grid;
   flex: 1 1 auto;
   grid-template-rows: auto 1fr;
@@ -47,12 +47,12 @@
 
 .card__header,
 .card__body {
-  background-color: var(--main-background);
+  background-color: var(--colorv00);
   padding: 0.75rem;
 }
 
 .card__header h2 {
-  border-bottom: thin solid var(--border-alt-button);
+  border-bottom: thin solid var(--colorv14);
   padding-bottom: 0.5rem;
 }
 

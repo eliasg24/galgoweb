@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reporteVehiculo.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reporteLlanta.css' %}" />
+    <link rel="shortcut icon" href="{% static 'images/logo-border.png' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+    <title>
+      Reporte de Inspeccion - {{ vehiculo }}
+    </title>
+  </head>
+  <body id="report">
+    <header class="report__head">
+      <div class="flex-row space-between">
+        <h1 class="report__title">Reporte inspección - {{ vehiculo }}</h1>
+        <div class="logo">
+          <img src="{% static 'images/aeto-logo.svg' %}" alt="logo aeto reporte">
+        </div>
+      </div>
+      <nav class="report__details">
+        <div class="report__card">
+          <div class="report__card-title">N° de flota</div>
+          <div class="report__card-body">
+            {{llanta.ubicacion}}
+          </div>
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Marca</div>
+          <div class="report__card-body">
+            {{producto.marca}}
+          </div>
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Modelo</div>
+          <div class="report__card-body">
+            {{producto}}
+          </div>
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Flota</div>
+          <div class="report__card-body">
+            {{llanta.ubicacion}}
+          </div>
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Localización</div>
+          <div class="report__card-body">
+            {{llanta.aplicacion}}
+          </div>
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Fecha</div>
+          <div class="report__card-body">
+            {{inspeccion.fecha_hora.date}}
+          </div>
+        </div>
+        <!--
+        <div class="report__card">
+          <div class="report__card-title">Kilómetros</div>
+          <div class="report__card-body">
+            -
+          </div>
+          -->
+        </div>
+        <div class="report__card">
+          <div class="report__card-title">Tipo de inspección</div>
+          <div class="report__card-body">Inspection</div>
+        </div>
+      </nav>
+    </header>
+
+    <main style="width: fit-content; margin: auto; margin-bottom: 12rem;">
+      <div class="tire__content">
+        <div class="tire__economic-top" style="font-size: 1rem;">
+          &downarrow; {{llanta.numero_economico}}
+        </div>
+        <div class="tire">
+          <div class="tire__tag pos {{color_observaciones}}">
+            {{posicion}}
+          </div>
+          <div class="tire__tag up {{color_presion}}">
+            {{presion}}
+          </div>
+          <span class="icon-tire2" style="font-size: 20rem;"></span>
+          <div class="tire__tag down {{color_profundidad}}">
+            {{min_profundidad}}
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {% if problemas|length > 0 %}
+
+      <div class="config__list">
+        
+        <div class="list__cont">
+          <div class="title-list">
+            <h1>Lista de problemas</h1>
+          </div>
+          <div class="config__container-table">
+              <table class="config__table">
+                  <thead>
+                      <tr>
+                          <th class="th-table">Pos</th>
+                          <th class="th-table">Icono</th>
+                          <th class="th-table">Incidencia</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for problema in problemas %}
+
+
+                      {% if forloop.counter|divisibleby:2  == False %}
+                      <tr>
+                          <td class="td-table" id="{{forloop.counter}}">{{problema.posicion}}</td>
+                          <td class="td-table"><span class="{{problema.observacion.icono}}"></span></td>
+                          <td class="td-table">{{problema.observacion.observacion}}</td>
+                      </tr>
+                      {% endif %}
+
+                    {% endfor %}
+                  </tbody>
+              </table>
+              <table class="config__table">
+                  <thead>
+                      <tr>
+                          <th class="th-table">Pos</th>
+                          <th class="th-table">Icono</th>
+                          <th class="th-table">Incidencia</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for problema in problemas %}
+                    
+                        {% if forloop.counter|divisibleby:2  == True %}
+                        <tr>
+                          <td class="td-table" id="{{forloop.counter}}">{{problema.posicion}}</td>
+                          <td class="td-table"><span class="{{problema.observacion.icono}}"></span></td>
+                          <td class="td-table">{{problema.observacion.observacion}}</td>
+                        </tr>
+                        {% endif %}
+
+                    {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      (() => {
+        const $elementoParaConvertir = document.getElementById('report'); // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
+          .set({
+            margin: .5,
+            filename: 'inspeccion_vehiculo_{{vehiculo}}.pdf',
+            image: {
+              type: 'jpeg',
+              quality: 0.98,
+            },
+            html2canvas: {
+              scale: 3, // A mayor escala, mejores gráficos, pero más peso
+              letterRendering: true,
+            },
+            jsPDF: {
+              unit: 'in',
+              format: 'letter',
+              orientation: 'portrait', // landscape o portrait
+            },
+          })
+          .from($elementoParaConvertir)
+          .save()
+          .catch((err) => console.log(err));
+      })()
+    </script>
+  </body>
+</html>

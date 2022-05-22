@@ -10,3 +10,15 @@
   padding: 0.5rem;
   top: 40%;
 }
+
+.good-text {
+  color: var(--colorv08);
+}
+
+.yellow-text {
+  color: var(--colorv05);
+}
+
+.bad-text {
+  color: var(--colorv07);
+}

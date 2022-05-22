@@ -1,8 +1,6 @@
-/* ? Colors */
-
 .tire__top,
 .tire__bottom {
-  background-color: gray;
+  background-color: var(--colorv17);
 }
 
 .btn-success {
@@ -10,19 +8,19 @@
 }
 
 .good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .purple {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
 }
 
 .config__container::-webkit-scrollbar,
@@ -35,14 +33,14 @@
 .absolute::-webkit-scrollbar-thumb,
 .form__container:nth-child(1)::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--colorv16);
 }
 
 .config__container::-webkit-scrollbar-track,
 .absolute::-webkit-scrollbar-track,
 .form__container:nth-child(1)::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: var(--colorv17);
 }
 
 .form__prof {
@@ -63,7 +61,7 @@
 
 .axle {
   display: flex;
-  background-color: white;
+  background-color: var(--colorv02);
   height: 1rem;
   opacity: 0.25;
 }
@@ -96,7 +94,7 @@
 
 .form__container,
 .absolute.form__container {
-  background-color: #202020;
+  background-color: var(--colorv27);
   display: flex;
   gap: 1rem;
   flex-flow: column nowrap;
@@ -198,7 +196,7 @@
 .dropdown__form {
   cursor: pointer;
   padding: 1rem;
-  border: thin solid var(--main-blue);
+  border: thin solid var(--colorv04);
 }
 
 .drop__list {
@@ -206,9 +204,9 @@
 }
 
 .drop__btn {
-  background-color: transparent;
-  border-bottom: thin solid #fff;
-  color: #fff;
+  background-color: var(--colorv18);
+  border-bottom: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-size: inherit;
   padding: 0.5rem;
   text-align: left;
@@ -225,7 +223,7 @@
 
 .input-check > i {
   font-size: 3rem;
-  border: thin solid #fff;
+  border: thin solid var(--colorv02);
   padding: 0.5rem;
 }
 
@@ -240,7 +238,7 @@
 }
 
 .observations__container div i {
-  border: thin solid #fff;
+  border: thin solid var(--colorv02);
   font-size: 3rem;
   padding: 0.5rem;
 }
@@ -282,7 +280,7 @@
 }
 
 .drop-options {
-  background-color: #202020;
+  background-color: var(--colorv27);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;

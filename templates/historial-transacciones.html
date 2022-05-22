@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/ordenes.css' %}">
+  <title>Historial de transacciones</title>
+{% endblock head %}
+
+{% block content %}
+
+  <div class="main__container">
+
+    <header>
+
+      <h1>Historial de transacciones</h1>
+
+      <nav>
+        <input type="search" placeholder="buscar...">
+
+        <label for="">
+          Desde
+          <input type="date" name="" id="">
+        </label>
+
+        <label for="">
+          Hasta
+          <input type="date" name="" id="">
+        </label>
+
+        <button>Aplicar</button>
+      </nav>
+
+    </header>
+
+    <div class="main__content">
+
+      <div class="table__container">
+        <h2>Historial</h2>
+
+        <nav>
+          <button class="prev">
+            &leftarrow;
+          </button>
+          <button class="next">
+            &rightarrow;
+          </button>
+        </nav>
+
+        <table class="orders__table">
+          <thead>
+            <tr>
+              <th>Folio</th>
+              <th>Fecha</th>
+              <th>Operación</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="created-orders"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <template id="order-template">
+    <tr>
+      <td class="folio"></td>
+      <td class="fecha"></td>
+      <td class="accion"></td>
+      <td>
+        <a href="">Ver</a>
+      </td>
+    </tr>
+  </template>
+
+  <script src="{% static 'js/historial/index.js' %}" type="module"></script>
+  
+{% endblock content %}

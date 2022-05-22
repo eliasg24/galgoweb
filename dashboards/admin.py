@@ -6,7 +6,7 @@ from django.contrib import admin
 # Models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import RelatedField
-from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller
+from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden
 
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
@@ -142,6 +142,12 @@ class RechazoAdmin(admin.ModelAdmin):
     search_fields = ('llanta',)
     list_filter = ('llanta',)
 
+@admin.register(Orden)
+class OrdenAdmin(admin.ModelAdmin):
+    #Admin de órdenes
+    list_display = ('status', 'datos')
+    search_fields = ('datos',)
+    list_filter = ('datos',)
 
 class ProfileInline(admin.StackedInline):
     # Alinear el admin del perfil con el de User de Django

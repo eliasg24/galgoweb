@@ -5,7 +5,6 @@ h2 {
 
 .config-nav h1 {
   font-size: 3rem;
-  color: white;
 }
 
 h3 {
@@ -32,7 +31,6 @@ h3 {
 }
 
 .btn-download {
-  background-color: #08a63f ;
   border-radius: 0.25rem;
   padding: 0.5rem;
 }
@@ -43,7 +41,7 @@ h3 {
 
 .config-nav {
   align-items: center;
-  background-color: #0a2a75;
+  background-color: var(--head-bg);
   display: flex;
   flex-flow: row nowrap;
   gap: 1rem;
@@ -59,7 +57,6 @@ h3 {
   flex-flow: column nowrap;
   gap: 1rem;
   margin: 1rem;
-  padding: 1rem;
 }
 
 .con.on-view {
@@ -74,7 +71,7 @@ h3 {
 }
 
 .con {
-  background-color: #cccccc;
+  background-color: var(--colorv01);
   border-radius: 0.25rem;
   display: none;
   flex-flow: column nowrap;
@@ -86,11 +83,11 @@ h3 {
 
 .con-title,
 .con-sec {
-  background-color: #fff;
+  background-color: var(--colorv37);
 }
 
 .con-title {
-  border-radius: 2rem;
+  border-radius: 0.25rem;
   padding: 0.5rem;
   text-align: center;
 }
@@ -114,38 +111,28 @@ h3 {
 }
 
 .number-input {
-  background: transparent;
+  background: var(--colorv18);
   border: none;
-  border-bottom: thin solid #fff;
-  color: #fff;
+  border-bottom: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-size: 1.25rem;
   font-weight: bold;
   outline: none;
 }
 
 .btn-redirect {
-  background-color: #cccccc;
-  border: thin solid #fff;
+  background-color: var(--colorv02);
+  border: thin solid var(--colorv02);
   border-radius: 0.5rem;
-  color: #000;
-  font-weight: bold;
-  padding: 1rem;
-  width: 100%;
-}
-
-.btn-redirect-download {
-  background-color: #ed2a3d;
-  border: thin solid #fff;
-  border-radius: 0.5rem;
-  color: #fff;
+  color: var(--colorv16);
   font-weight: bold;
   padding: 1rem;
   width: 100%;
 }
 
 .btn-redirect:hover {
-  background: #000;
-  color: #fff;
+  background: var(--colorv16);
+  color: var(--colorv02);
 }
 
 .w-100 {
@@ -157,7 +144,7 @@ h3 {
 }
 
 .con-sec {
-  border-radius: 1rem;
+  border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -173,12 +160,12 @@ h3 {
 
 .con-sec::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #0a2a75;
+  background-color: var(--colorv16);
 }
 
 .con-sec::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: #0a2a756e;
+  background-color: var(--colorv17);
 }
 
 .form-group {
@@ -201,7 +188,7 @@ h3 {
 
 .dias_inflado {
   text-align: center;
-  background: #646464;
+  background: var(--colorv38);
   margin: 1rem;
   border-radius: 10px;
 }
@@ -212,7 +199,7 @@ h3 {
 
 .presion {
   text-align: center;
-  background: #646464;
+  background: var(--colorv38);
   margin: 1rem;
   border-radius: 10px;
 }
@@ -223,21 +210,21 @@ h3 {
 
 .dias_visto {
   text-align: center;
-  background: #646464;
+  background: var(--colorv38);
   margin: 1rem;
   border-radius: 10px;
 }
 
 .retiro {
   text-align: center;
-  background: #646464;
+  background: var(--colorv38);
   margin: 1rem;
   border-radius: 10px;
 }
 
 .title_cont2 {
   display: flex;
-  background: #353535;
+  background: var(--colorv39);
   border-radius: 10px;
   align-items: center;
   justify-content: center;
@@ -258,9 +245,9 @@ h3 {
 }
 
 .form-control {
-  background: transparent;
-  border: thin solid #fff;
-  color: #fff;
+  background: var(--colorv18);
+  border: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-size: 16px;
   padding: 0.5rem;
   outline: none;
@@ -291,11 +278,11 @@ h3 {
   font-weight: bold;
   border: none;
   border-radius: 12px;
-  color: white;
+  color: var(--colorv02);
   cursor: pointer;
   text-align: center;
   vertical-align: middle;
-  background: #051026;
+  background: var(--colorv40);
 }
 
 .buttons .button2 {
@@ -304,13 +291,13 @@ h3 {
   margin: 0 auto;
   border-radius: 10px;
   cursor: pointer;
-  background: #2e8b57;
+  background: var(--colorv08);
   align-items: center;
 }
 
 .buttons .button2 .blue_btn-text {
   background: none;
-  color: white;
+  color: var(--colorv02);
 }
 
 .indicators {
@@ -318,8 +305,8 @@ h3 {
 }
 
 .btn.disabled {
-  background-color: gainsboro;
-  color: gray;
+  background-color: var(--colorv23);
+  color: var(--colorv17);
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -327,6 +314,7 @@ h3 {
 @media only screen and (min-width: 1024px) {
   .all-cont {
     display: flex;
+    padding: 1rem;
     height: 100vh;
   }
 
@@ -350,6 +338,7 @@ h3 {
     border-radius: 0.25rem;
     gap: 1rem;
     height: 100%;
+    padding: 1rem;
     width: 100%;
   }
 

@@ -1,19 +1,17 @@
-/* ? Colors */
-
 .good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .purple {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
 }
 
 .tire {
@@ -24,7 +22,7 @@
 
 .axle {
   display: flex;
-  background-color: white;
+  background-color: var(--colorv02);
   height: 1rem;
 }
 
@@ -33,7 +31,7 @@
 }
 
 .config__llantas {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   margin: 1rem;
   display: grid;
@@ -50,7 +48,7 @@
 }
 
 .tire-relative {
-  color: white;
+  color: var(--colorv02);
   text-decoration: none;
   position: relative;
 }
@@ -101,7 +99,7 @@
 
 .icon-central-axle,
 .icon-da {
-  background-color: #fff;
+  background-color: var(--colorv02);
   height: 1rem;
 }
 
@@ -130,7 +128,7 @@
 }
 
 .smart__container {
-  background-color: var(--head-bg);
+  background-color: var(--colorv01);
   margin: 1rem;
 }
 

@@ -78,6 +78,7 @@ class Taller(models.Model):
 
     nombre = models.CharField(max_length=200, null=True)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         # Retorna el nombre del taller
@@ -578,6 +579,23 @@ class TareasServicio(models.Model):
     vehiculo_2 = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, related_name="vehiculo_2")
     posicion_llanta_2 = models.CharField(max_length=200)
     llanta_2 = models.ForeignKey(Llanta, on_delete=models.CASCADE, related_name="llanta_2")
+    
+class Orden(models.Model):
+    opcion_status = (
+        ("PreOrden", "PreOrden"),
+        ("Orden", "Orden"),
+        ("AntesRenovar", "AntesRenovar"),
+            )
+    status= models.CharField(max_length=200, choices=opcion_status)
+    folio= models.CharField(max_length=200)
+    datos = models.CharField(max_length=100000)
+    taller = models.ForeignKey(Taller, on_delete=models.CASCADE, blank=True, null=True)
+    renovador = models.ForeignKey(Renovador, on_delete=models.CASCADE, blank=True, null=True)
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
+    fecha = models.DateField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Ordenes"
 """
 class Bitacora_Edicion(models.Model):
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)

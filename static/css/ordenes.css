@@ -1,0 +1,71 @@
+.main__container {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.orders__table {
+  border-collapse: collapse;
+  text-align: center;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.75rem;
+}
+
+th  {
+  background-color: var(--colorv04);
+}
+
+tr {
+  background-color: var(--colorv10);
+}
+
+tr:nth-child(even) {
+  background-color: var(--colorv15);
+}
+
+.main__content {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-control {
+  color: var(--colorv02);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  width: 80%;
+}
+
+nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+}
+
+button {
+  background: var(--colorv16);
+  border: 2px solid var(--colorv04);
+  color: var(--colorv02);
+  font-size: 1.2rem;
+  padding: 0.4rem;
+  transition: all 0.4s ease;
+}
+
+button:hover {
+  background: var(--colorv04);
+}
+
+input {
+  border: 2px solid var(--colorv04);
+  border-radius: 0.25rem;
+  background: var(--colorv10);
+  color: var(--colorv02);
+}

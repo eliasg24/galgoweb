@@ -1,3 +1,54 @@
+:root {
+  --colorv00: #363636;
+  --colorv01: #242424;
+  --colorv02: #fff;
+  --colorv03: #606060;
+  --colorv04: #026cf5;
+  --colorv05: #dbc002;
+  --colorv06: #8a2be2;
+  --colorv07: #f0412c;
+  --colorv08: #2e8b57;
+  --colorv09: #ff1493;
+  --colorv10: #23252b;
+  --colorv11: #2f5161;
+  --colorv12: #213944;
+  --colorv13: #f47521;
+  --colorv14: #00e5f3;
+  --colorv15: #222;
+  --colorv16: #000;
+  --colorv17: #808080;
+  --colorv18: transparent;
+  --colorv19: #eee;
+  --colorv20: #ccc;
+  --colorv21: #9b9b9b;
+  --colorv22: #ff0000;
+  --colorv23: #dcdcdc;
+  --colorv24: #90ee90;
+  --colorv25: #171717;
+  --colorv26: #111;
+  --colorv27: #202020;
+  --colorv28: #21664d;
+  --colorv29: #00558f;
+  --colorv30: #1f1f1f;
+  --colorv31: rgb(255, 255, 255, 0.7);
+  --colorv32: #4d4d4d;
+  --colorv33: #0071bc;
+  --colorv34: #ddd;
+  --colorv35: #9147ff;
+  --colorv36 :rgb(255, 255, 255, 0.25);
+  --colorv37: #333;
+  --colorv38: #646464;
+  --colorv39: #353535;
+  --colorv40: #6666d9;
+  --colorv41: #009245;
+  --colorv42: #4caf50;
+  --colorv43: #555;
+  --colorv44: #f1f1f1;
+  --font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  --font-size: 16px;
+  --font-size-button: 1.25rem;
+}
+
 *,
 *::after,
 *::before {
@@ -14,8 +65,8 @@ a {
 }
 
 body {
-  background-color: #111;
-  color: #fff;
+  background-color: var(--colorv26);
+  color: var(--colorv02);
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
@@ -34,7 +85,7 @@ img {
 }
 
 .link {
-  color: #026cf5;
+  color: var(--colorv04);
 }
 
 .log-container {
@@ -92,17 +143,17 @@ img {
   font-family: inherit;
   width: 100%;
   border: 0;
-  border-bottom: 2px solid #9b9b9b;
+  border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: #fff;
+  color: var(--colorv02);
   padding: 7px 0;
-  background: transparent;
+  background: var(--colorv18);
   transition: border-color 0.2s;
 }
 
 .form__field::placeholder {
-  color: transparent;
+  color: var(--colorv18);
 }
 
 .form__field:placeholder-shown ~ .form__label {
@@ -117,7 +168,7 @@ img {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: #9b9b9b;
+  color: var(--colorv21);
   pointer-events: none;
 }
 
@@ -158,9 +209,9 @@ img {
 }
 
 .btn-aeto {
-  background-color: #23252b;
+  background-color: var(--colorv10);
   border-radius: 0.25rem;
-  color: #fff;
+  color: var(--colorv02);
   padding: 0.75rem;
 }
 

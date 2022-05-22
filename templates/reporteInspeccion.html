@@ -67,7 +67,7 @@
 
               <div class="tire__content">
                 <div class="tire__economic-top">
-                  &downarrow; 123456
+                  &downarrow; {{eje.0.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}}
                 </div>
                 <div class="tire">
                   <div class="tire__tag pos {{eje.0.5}}">
@@ -78,7 +78,7 @@
                   </div>
                   <span class="icon-tire2"></span>
                   <div class="tire__tag down {{eje.0.1}}">
-                    prof
+                    {{eje.0.4}}
                   </div>
                 </div>
               </div>
@@ -86,12 +86,12 @@
               <div class="axle">
                 <span>{{eje.0.6}} - {{eje.0.7}}</span>
                 <div class="shaft"></div>
-                <span>dim</span>
+                <span>{{eje.1.0.llanta.producto.dimencion}}</span>
               </div>
 
               <div class="tire__content">
                 <div class="tire__economic-top">
-                  &downarrow; 123456
+                  &downarrow; {{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}}
                 </div>
                 <div class="tire">
                   <div class="tire__tag pos {{eje.1.5}}">
@@ -102,7 +102,7 @@
                   </div>
                   <span class="icon-tire2"></span>
                   <div class="tire__tag down {{eje.1.1}}">
-                    prof
+                    {{eje.1.4}}
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 
                 <div class="tire__content">
                   <div class="tire__economic-top">
-                    &downarrow; 123456
+                    &downarrow; {{eje.0.0.llanta.numero_economico}} | {{ eje.0.0.llanta.producto.marca }}
                   </div>
                   <div class="tire">
                     <div class="tire__tag pos {{eje.0.5}}">
@@ -127,7 +127,7 @@
                     </div>
                     <span class="icon-tire2"></span>
                     <div class="tire__tag down {{eje.0.1}}">
-                      prof
+                      {{eje.0.4}}
                     </div>
                   </div>
                 </div>
@@ -143,11 +143,11 @@
                     </div>
                     <span class="icon-tire2"></span>
                     <div class="tire__tag down {{eje.1.1}}">
-                      prof
+                      {{eje.1.4}}
                     </div>
                   </div>
                   <div class="tire__economic-bottom">
-                    &uparrow; 123456
+                    {{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}} &uparrow;
                   </div>
                 </div>
               </div>
@@ -155,13 +155,13 @@
               <div class="axle">
                 <span>{{eje.0.6}} - {{eje.0.7}}</span>
                 <div class="shaft"></div>
-                <span>dim</span>
+                <span>{{eje.1.0.llanta.producto.dimension}}</span>
               </div>
 
               <div class="double-tire">
                 <div class="tire__content">
                   <div class="tire__economic-top">
-                    &downarrow; 123456
+                    &downarrow; {{eje.2.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}}
                   </div>
 
                   <div class="tire__content">
@@ -174,7 +174,7 @@
                       </div>
                       <span class="icon-tire2"></span>
                       <div class="tire__tag down {{eje.2.1}}">
-                        prof
+                        {{eje.2.4}}
                       </div>
                     </div>
                   </div>
@@ -190,12 +190,12 @@
                     </div>
                     <span class="icon-tire2"></span>
                     <div class="tire__tag down {{eje.3.1}}">
-                      prof
+                      {{eje.3.4}}
                     </div>
                   </div>
                   
                   <div class="tire__economic-bottom">
-                    &uparrow; 123456
+                    {{eje.3.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}} &uparrow;
                   </div>
                 </div>
               </div>
@@ -204,49 +204,28 @@
         {% endfor %}
     </div>
     </main>
+    {% if problemas|length > 0 %}
 
-    <div class="config__list">
-      
-      <div class="list__cont">
-        <div class="title-list">
-          <h1>Lista de problemas</h1>
-        </div>
-        <div class="config__container-table">
-            <table class="config__table">
-                <thead>
-                    <tr>
-                        <th class="th-table">Pos</th>
-                        <th class="th-table">Icono</th>
-                        <th class="th-table">Incidencia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for problema in problemas %}
+      <div class="config__list">
+        
+        <div class="list__cont">
+          <div class="title-list">
+            <h1>Lista de problemas</h1>
+          </div>
+          <div class="config__container-table">
+              <table class="config__table">
+                  <thead>
+                      <tr>
+                          <th class="th-table">Pos</th>
+                          <th class="th-table">Icono</th>
+                          <th class="th-table">Incidencia</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for problema in problemas %}
 
 
-                    {% if forloop.counter|divisibleby:2  == False %}
-                    <tr>
-                        <td class="td-table" id="{{forloop.counter}}">{{problema.0}}</td>
-                        <td class="td-table"><span class="{{problema.1.icono}}"></span></td>
-                        <td class="td-table">{{problema.1.observacion}}</td>
-                    </tr>
-                    {% endif %}
-
-                  {% endfor %}
-                </tbody>
-            </table>
-            <table class="config__table">
-                <thead>
-                    <tr>
-                        <th class="th-table">Pos</th>
-                        <th class="th-table">Icono</th>
-                        <th class="th-table">Incidencia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for problema in problemas %}
-                  
-                      {% if forloop.counter|divisibleby:2  == True %}
+                      {% if forloop.counter|divisibleby:2  == False %}
                       <tr>
                           <td class="td-table" id="{{forloop.counter}}">{{problema.0}}</td>
                           <td class="td-table"><span class="{{problema.1.icono}}"></span></td>
@@ -254,13 +233,36 @@
                       </tr>
                       {% endif %}
 
-                  {% endfor %}
-                </tbody>
-            </table>
+                    {% endfor %}
+                  </tbody>
+              </table>
+              <table class="config__table">
+                  <thead>
+                      <tr>
+                          <th class="th-table">Pos</th>
+                          <th class="th-table">Icono</th>
+                          <th class="th-table">Incidencia</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for problema in problemas %}
+                    
+                        {% if forloop.counter|divisibleby:2  == True %}
+                        <tr>
+                            <td class="td-table" id="{{forloop.counter}}">{{problema.0}}</td>
+                            <td class="td-table"><span class="{{problema.1.icono}}"></span></td>
+                            <td class="td-table">{{problema.1.observacion}}</td>
+                        </tr>
+                        {% endif %}
+
+                    {% endfor %}
+                  </tbody>
+              </table>
+          </div>
         </div>
       </div>
-    </div>
-    
+
+    {% endif %}
 
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
@@ -269,32 +271,7 @@
       referrerpolicy="no-referrer"
     ></script>
     <script>
-      // (() => {
-      //   const $elementoParaConvertir = document.getElementById('report'); // <-- Aquí puedes elegir cualquier elemento del DOM
-      //   html2pdf()
-      //     .set({
-      //       margin: .5,
-      //       filename: 'inspeccion_vehiculo_{{vehiculo}}.pdf',
-      //       image: {
-      //         type: 'jpeg',
-      //         quality: 0.98,
-      //       },
-      //       html2canvas: {
-      //         scale: 3, // A mayor escala, mejores gráficos, pero más peso
-      //         letterRendering: true,
-      //       },
-      //       jsPDF: {
-      //         unit: 'in',
-      //         format: 'letter',
-      //         orientation: 'portrait', // landscape o portrait
-      //       },
-      //     })
-      //     .from($elementoParaConvertir)
-      //     .save()
-      //     .catch((err) => console.log(err));
-      // })()
-
-      function print() {
+      (() => {
         const $elementoParaConvertir = document.getElementById('report'); // <-- Aquí puedes elegir cualquier elemento del DOM
         html2pdf()
           .set({
@@ -317,7 +294,7 @@
           .from($elementoParaConvertir)
           .save()
           .catch((err) => console.log(err));
-      }
+      })()
     </script>
   </body>
 </html>

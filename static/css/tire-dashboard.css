@@ -1,13 +1,10 @@
 :root {
   --font: 'Poppins', Arial, Helvetica, sans-serif;
-  --black: #171717;
-  --gray: linear-gradient(#363636, #242424);
 }
 
 .head-menu {
   align-items: center;
-  background-color: var(--gray);
-  background: #202020;
+  background: var(--colorv27);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -25,7 +22,7 @@
 
 .head-item a {
   display: block;
-  color: white;
+  color: var(--colorv02);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -38,14 +35,14 @@
   justify-content: center;
 }
 .input-aeto {
-  color: #fff;
+  color: var(--colorv02);
 }
 
 #input-fecha {
   width: 11vw;
 }
 #btn-buscar {
-  background: #026cf5;
+  background: var(--colorv04);
 }
 
 .input-aeto {
@@ -61,7 +58,7 @@
   align-items: center;
   display: flex;
   background: none;
-  color: white;
+  color: var(--colorv02);
   border: none;
   /*border-bottom: white solid;*/
 }
@@ -69,7 +66,7 @@
 .btn-aeto > span,
 .input-aeto {
   font-size: 1.25rem;
-  color: white;
+  color: var(--colorv02);
   display: block;
 }
 
@@ -80,8 +77,8 @@
 }
 
 .menu_li--right select {
-  background: #9147ff;
-  color: white;
+  background: var(--colorv35);
+  color: var(--colorv02);
   font-weight: 700;
   font-family: inherit;
   margin-right: 10px;
@@ -106,10 +103,10 @@
 }
 
 .btn-head-item {
-  background: #9147ff;
+  background: var(--colorv35);
   border-radius: 5px;
   border: none;
-  color: white;
+  color: var(--colorv02);
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
@@ -135,9 +132,9 @@
 }
 
 .column {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
-  border: 1px #026cf5 solid;
+  border: 1px var(--colorv04); solid;
   display: grid;
   grid-template-columns: 1fr 1fr;
   position: relative;
@@ -153,7 +150,7 @@
 
 .popout-text {
   position: absolute;
-  background-color: #000;
+  background-color: var(--colorv16);
   border-radius: 0.25rem;
   display: none;
   margin-left: 3rem;
@@ -171,7 +168,7 @@
 
 .popout-text p {
   font-family: var(--font);
-  color: white;
+  color: var(--colorv02);
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }
@@ -233,7 +230,7 @@
 }
 
 .cont-left {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   grid-template-rows: auto 1fr 1fr;
@@ -310,13 +307,13 @@
 }
 
 .icon-fullscreen_exit {
-  color: white;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .btn.disable {
-  background-color: gainsboro;
-  color: gray;
+  background-color: var(--colorv23);
+  color: var(--colorv17);
 }
 
 #ocultarR1,
@@ -336,27 +333,27 @@
 }
 
 .icon-fullscreen {
-  color: white;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-fullscreen_exit {
-  color: white;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-question-circle-o {
-  color: white;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .comboChart {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
 }
 
 .donaChart {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -388,7 +385,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--colorv02);
   outline: none;
   text-align: center;
   transition: 0.4s ease;
@@ -398,7 +395,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--colorv02);
   outline: none;
   text-align: left;
   width: 100%;
@@ -427,7 +424,7 @@
 }
 
 .cont-right {
-  background-color: #202020;
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -440,9 +437,9 @@
 }
 
 .dropdown-content button {
-  background-color: var(--black);
+  background-color: var(--colorv25);
   border: none;
-  color: #fff;
+  color: var(--colorv02);
   cursor: pointer;
   display: block;
   padding: 1rem;
@@ -454,9 +451,9 @@
 .dropdown-content button.button-tabla {
   /* border: blueviolet solid 2px; */
   align-items: center;
-  background: #1f1f1f;
+  background: var(--colorv30);
   border-radius: 0;
-  color: white;
+  color: var(--colorv02);
   display: flex;
   font-size: 1.2rem;
   font-weight: 800;
@@ -479,7 +476,7 @@
 }
 
 .percent-bar {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
 }
 
@@ -495,7 +492,7 @@
 }
 
 .register-icons {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -536,7 +533,7 @@
 }
 
 #text-fail {
-  color: red;
+  color: var(--colorv22);
   font-size: 1.5rem;
 }
 
@@ -584,7 +581,7 @@
   display: none;
   box-sizing: border-box;
   letter-spacing: normal;
-  color: #fff;
+  color: var(--colorv02);
   font-family: 'Poppins', Arial, Helvetica, sans-serif;
   font-size: 12px;
   pointer-events: none;
@@ -592,7 +589,7 @@
   margin: 10px;
 }
 .icon-eye {
-  color: gray;
+  color: var(--colorv17);
   float: left;
   font-size: 2rem;
 }
@@ -602,17 +599,17 @@
 }
 
 .icon-warning {
-  color: red;
+  color: var(--colorv22);
   float: left;
   font-size: 2rem;
 }
 .icon-notification {
-  color: yellow;
+  color: var(--colorv05);
   float: left;
   font-size: 2rem;
 }
 .icon-question {
-  color: purple;
+  color: var(--colorv06);
   float: left;
   font-size: 2rem;
 }
@@ -647,7 +644,7 @@
   */
 
 .p-bullet {
-  color: gray;
+  color: var(--colorv17);
   font-size: 1.7rem;
   width: 100%;
   text-align: center;
@@ -656,7 +653,7 @@
 
 .col {
   align-items: center;
-  background-color: #202020;
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;

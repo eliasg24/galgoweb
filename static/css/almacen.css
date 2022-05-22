@@ -34,8 +34,8 @@
 }
 
 .btn-icon {
-  background-color: #fff;
-  fill: #000;
+  background-color: var(--colorv02);
+  fill: var(--colorv16);
   padding: 0.5rem 1rem;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .search-control {
-  border: thin solid #fff;
+  border: thin solid var(--colorv02);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: row nowrap;
@@ -62,10 +62,10 @@
 }
 
 .form-control {
-  background: #171717;
-  border: thin solid #fff;
+  background: var(--colorv25);
+  border: thin solid var(--colorv02);
   border-radius: 0.25rem;
-  color: #fff;
+  color: var(--colorv02);
   font-family: inherit;
   font-size: 1.5rem;
   padding: 0.75rem;
@@ -77,7 +77,7 @@
 .taller {
   border-radius: 10px;
   border: none;
-  color: white;
+  color: var(--colorv02);
   font-size: 1.75rem;
   outline: none;
   padding: 0.75vw;
@@ -85,20 +85,20 @@
 }
 
 .buscar {
-  background-color: #21664d;
-  border: thin solid #21664d;
+  background-color: var(--colorv28);
+  border: thin solid var(--colorv28);
   flex-basis: 70%;
 }
 
 .buscar::placeholder,
 .taller::placeholder {
-  color: rgb(255, 255, 255, 0.7);
+  color: var(--colorv31);
 }
 
 .taller,
 .taller label {
-  background-color: #00558f;
-  border: thin solid #00558f;
+  background-color: var(--colorv29);
+  border: thin solid var(--colorv29);
   cursor: pointer;
 }
 
@@ -109,9 +109,9 @@
 }
 
 .drop_list {
-  background-color: #171717;
+  background-color: var(--colorv25);
   border-radius: 0.5rem;
-  border: thin solid #00558f;
+  border: thin solid var(--colorv29);
   display: flex;
   flex-flow: column wrap;
   font-size: 1.25rem;
@@ -151,7 +151,7 @@
 }
 
 .select-all {
-  color: seagreen;
+  color: var(--colorv08);
 }
 
 .container {
@@ -163,7 +163,7 @@
 
 .a-card {
   text-decoration: none;
-  color: white;
+  color: var(--colorv02);
   height: min-content;
 }
 
@@ -176,7 +176,7 @@
 
 .card_title {
   display: flex;
-  background: #1f1f1f;
+  background: var(--colorv30);
   padding: 1rem;
   align-items: center;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -194,17 +194,18 @@
   font-size: 8vw;
   border-radius: 0 0 0.25rem 0.25rem;
   padding: 0.5rem;
-  background: #4d4d4d;
+  background: var(--colorv32);
   margin: 0;
 }
 
 .op__title {
   margin: auto;
   font-size: 10vw;
-  color: #0071bc;
+  color: var(--colorv33);
 }
 
 .operaciones {
+  align-items: center;
   display: grid;
   grid-template-rows: 1fr;
   padding: 1vh 1vw;
@@ -220,9 +221,10 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background: #0071bc;
+  background: var(--colorv33);
   border-radius: 2.25rem;
   margin: 0;
+  padding: 1rem;
 }
 
 .op_title {

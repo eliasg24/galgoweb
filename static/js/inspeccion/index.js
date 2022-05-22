@@ -4,13 +4,12 @@ import { profundidad } from './profundidad.js';
 document.addEventListener('DOMContentLoaded', (e) => {
   onSelectTire();
   profundidad();
-  confirmAlert();
   // handleForms();
   handleTire();
 
   // validateInputList('#llanta', 'llanta');
   validateInputList('#producto', 'producto');
-  noDoubleValues();
+  // noDoubleValues();
 
   manualObserver('data-check-id');
   vehiculoManual('data-vehiculo-item');
@@ -181,38 +180,6 @@ const validateInputList = (listItem = '', inputName = '') => {
   });
 };
 
-const noDoubleValues = (inputName = '') => {
-  const elements = document.querySelectorAll(`input[name="${inputName}"]`);
-  let values = [];
-
-  elements.forEach((value) => {
-    values.push(value.value);
-  });
-
-  const tempArray = [...values].sort();
-  let duplicate = [];
-
-  for (let i = 0; i < tempArray.length; i++) {
-    if (tempArray[i + 1] === tempArray[i]) {
-      duplicate.push(tempArray[i]);
-    }
-  }
-
-  if (duplicate.length > 0) {
-    const alert = Swal.fire({
-      title: 'Error',
-      text: 'No puede haber elementos duplicados',
-      icon: 'error',
-      backdrop: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    });
-    return true; // Si hay elementos duplicados retorna true para la validación con sweetalert
-  }
-
-  return false; // Si no hay elementos duplicados
-};
-
 const handleTire = () => {
   const buttons = document.querySelectorAll('.tire');
   const items = document.querySelectorAll('.form__wrapper');
@@ -229,81 +196,6 @@ const handleTire = () => {
           item.classList.add('select');
         }
       });
-    });
-  });
-};
-
-const handleForms = () => {
-  const forms = document.querySelectorAll('form');
-
-  forms[0].addEventListener('submit', (e) => {
-    if (forms[0].querySelector('input').value === '') {
-      e.preventDefault();
-      forms[0].querySelector('input').focus();
-    }
-  });
-};
-
-// ! Empty profs
-
-const emptyProfs = () => {
-  const inputs = document.querySelectorAll('.form__prof');
-  let counter = 0;
-
-  inputs.forEach((el) => {
-    let inputCounter = 0;
-    el.querySelectorAll('input').forEach((input) => {
-      if (input.value !== '') {
-        inputCounter++;
-      }
-    });
-    if (inputCounter >= 1) {
-      counter++;
-    }
-  });
-
-  console.log(counter);
-
-  if (counter >= inputs.length) {
-    return true;
-  }
-
-  return false;
-};
-
-const confirmAlert = () => {
-  const form = document.getElementById('tire-form');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const duplicate = noDoubleValues('llanta');
-    const empty = emptyProfs();
-
-    if (duplicate) return;
-
-    if (!empty) {
-      const alert = Swal.fire({
-        title: 'Error',
-        text: 'Todas las llantas al menos tienen que tener una profundidad',
-        icon: 'error',
-        backdrop: true,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-      });
-      return;
-    }
-
-    const alert = Swal.fire({
-      title: 'Confirmación',
-      text: '¿Seguro que desea continuar?',
-      icon: 'question',
-      confirmButtonText: 'Si',
-      backdrop: true,
-      showDenyButton: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    }).then((res) => {
-      res.value && form.submit();
     });
   });
 };

@@ -27,7 +27,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-menu">
     <div class="menu-li__left">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="" />
+      <img src="{% static 'images/aeto.svg' %}" alt="" />
     </div>
       
       <form class="form-head" method="GET">
@@ -297,11 +297,14 @@
         </div>
         <div class="title-icon">
           <div class="icons-score">
+            <h2 class="bullet-cont">
+              Llantas analizadas
+            </h2>
             <h3 class="h1-score">{{llantas_limpias}}</h3>
-            <span class="card_title_icon icon-tire"></span>
-            <div class="popout-text">
-              <p>Llantas analizados</p>
-            </div>
+              <div class="popout-text">
+                <p>Llantas analizados</p>
+              </div>
+            </span>
           </div>
         </div>
         <aside class="about-btn">
@@ -1100,7 +1103,7 @@
             }
         }
 
-  // Graph bubble-chart
+      // Graph bubble-chart
   anychart.onDocumentReady(function () {
     // The data used in this sample can be obtained from the CDN
     // https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json
@@ -1249,175 +1252,6 @@ function training_filter_constructor(val) {
         return fieldVal == val;
     }
 }
-  
-    // // heatMap
-    // anychart.onDocumentReady(function () {
-
-    //   // create data
-    //   var data = [
-    //     {x: "100", y: "A", heat: 15,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "A", heat: 17,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "A", heat: 21,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "400", y: "A", heat: 23,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "500", y: "A", heat: 28,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "100", y: "B", heat: 34,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "B", heat: 33,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "B", heat: 32,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "400", y: "B", heat: 30,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "500", y: "B", heat: 25,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "100", y: "C", heat: 43,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "C", heat: 42,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "C", heat: 40,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "C", heat: 38,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "500", y: "C", heat: 35,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "100", y: "D", heat: 8,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "D", heat: 12,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "300", y: "D", heat: 18,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "D", heat: 22,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "500", y: "D", heat: 29,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "100", y: "F", heat: 11,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "F", heat: 13,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "300", y: "F", heat: 14,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "F", heat: 15,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "500", y: "F", heat: 19,
-    //     normal:   {fill: "#A349A4", stroke: "#A349A4"},
-    //     hovered:  {fill: "#A349A4 0.3", stroke: "2 #A349A4"},
-    //     selected: {fill: "#A349A4 0.5",stroke: "4 #A349A4"}
-    //     }
-    //   ];
-
-    //   // create a chart and set the data
-    //   var chart = anychart.heatMap(data);
-
-    //   // configure chart grids
-    //   chart.xGrid(true);
-    //   chart.xGrid().stroke('black', 5);
-    //   chart.yGrid(true);
-    //   chart.yGrid().stroke('black', 5);
-
-
-    //   // set the chart title
-    //   chart.title("Costo por kilómetro de vehículo");
-    //   var title = chart.title();
-    //   title.fontColor('#fff');
-    //   title.fontSize(18);
-    //   title.fontWeight(600);
-
-    //   // set the container id
-    //   chart.container("column-chart");
-
-    //   //Set Background
-    //     var background = chart.background();
-    //     background.stroke('0 #000');
-    //     background.corners();
-    //     background.enabled(false);
-
-    //   //turn on chart animation
-    //   chart.animation(true);
-
-    //   // initiate drawing the chart
-    //   chart.draw();
-    //   // chart credits false
-    //   var credits = chart.credits();
-    //   credits.enabled(false);
-    // });
-
     // Histogram
     anychart.onDocumentReady(function () {
         // create data set on our
@@ -1848,6 +1682,7 @@ function training_filter_constructor(val) {
     credits.enabled(false);
 
     });
+
 
     // score gauge1
     anychart.onDocumentReady(function () {

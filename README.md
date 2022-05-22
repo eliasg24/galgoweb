@@ -41,10 +41,20 @@ pip install django-multi-form-view
 pip install djangorestframework
 ```
 
-<<<<<<< HEAD
+```bash
+pip install lxml
+```
 
-=======
->>>>>>> 6615d62c7c253b99efd1ae88642c66666df939df
+```bash
+pip install spyne
+```
+
+```bash
+pip install psycopg2
+```
+
+
+
 ## Para abrir el servidor en la carpeta del proyecto
 
 ```bash

@@ -32,7 +32,7 @@
             Nueva
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="nueva"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:antesRenovar' %}">
@@ -43,7 +43,7 @@
             Antes de renovar
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="antes_de_renovar"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
@@ -54,7 +54,7 @@
             ANTES DE DESECHAR
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="antes_de_desechar"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:renovada' %}">
@@ -65,7 +65,7 @@
             RENOVADA
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="renovada"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
@@ -78,7 +78,7 @@
             CON RENOVADOR
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="con_renovador"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:desechoFinal' %}">
@@ -89,7 +89,7 @@
             DESECHO FINAL
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="desecho_final"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:servicio' %}">
@@ -100,7 +100,7 @@
             SERVICIO
           </h2>
         </div>
-        <h2 class="card_number">0</h2>
+        <h2 class="card_number" id="servicio"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:rodante' %}">
@@ -111,7 +111,7 @@
             RODANTE
           </h2>
         </div>
-        <h2 class="card_number">26</h2>
+        <h2 class="card_number" id="rodante"></h2>
       </div>
     </a>
   </div>
@@ -119,16 +119,43 @@
   <div class="operaciones">
     <div class="operacion">
       <h2 class="op__title">Operaciones</h2>
-      <figure class="op">
-        <span class="icon-clipboard4"></span>
-        <figcaption class="op_title">Orden de llanta nueva</figcaption>
-      </figure>
+      <a href="{% url 'dashboards:formordennueva' %}">
+        <figure class="op">
+          <span class="icon-clipboard4"></span>
+          <figcaption class="op_title">
+            Orden de llanta nueva
+          </figcaption>
+        </figure>
+      </a>
 
-      <figure class="op">
-        <span class="icon-history2"></span>
-        <figcaption class="op_title">Historial de transacciones</figcaption>
-      </figure>
+      <a href="{% url 'dashboards:historialTransacciones' %}">
+        <figure class="op">
+          <span class="icon-history2"></span>
+          <figcaption class="op_title">Historial de transacciones</figcaption>
+        </figure>
+      </a>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', (e) => {
+    document.querySelectorAll('.card_number').forEach(card => {
+      card.innerHTML += `<div class="icon-spinner2"></div>`
+    });
+
+    fetch(`${ window.location.origin }/api/numtirestock`)
+      .then(resp => resp.json())
+      .then(({ result }) => {
+        result.forEach(({ almacen, total }) => {
+          document.querySelectorAll('.card_number').forEach(card => {
+            if (card.id === almacen) {
+              card.innerHTML = `<span>${ total }</span>`
+            }
+          });
+        })
+      })
+      .catch(error => console.error(error))
+  })
+</script>
 {% endblock content %}

@@ -14,34 +14,57 @@
 </head>
 	<body>
 		<header>
-			<h2 class="titulo">Formulario</h2>
+			<h2 class="titulo">WebService Principal</h2>
 		</header>
 		<main>
-			<p>Ingresar Formulario</p>
-			<form action="">
-				<input type="hidden">
+			<p>Insertar Inspección</p>
+			<form action="{% url 'dashboards:formulario' vehiculo.id %}" method="POST">
+			{% csrf_token %}
+			<aside>
+				<input class="form__field" type="hidden" autocomplete="off" value="{{vehiculo.id}}" name="vehiculo_id" required>
+				<input class="form__field" type="hidden" autocomplete="off" value="{{compania}}" name="compania" required>
+				<input class="form__field" type="hidden" autocomplete="off" value="Inspección Galgo" name="tipo_de_evento" required>
+				<input class="form__field" type="hidden" autocomplete="off" value="{{usuario}}" name="usuario" required>
+				<div class="form__group field">
+					<input class="form__field" placeholder="Km Vehiculo"  type="number" autocomplete="off" name="kilometraje" required>
+					<label for="kilometraje" class="form__label">Km Vehiculo</label>
+				</div>
+				<div class="form__group field">
+					<input class="form__field" placeholder=""  type="date" autocomplete="off" name="fecha_hora">
+					<label for="fecha_hora" class="form__label">Fecha</label>
+				</div>
+			</aside>
+			<input type="hidden">
+				{% for llanta in llantas %}
 				<aside>
+					<input class="form__field" type="hidden" autocomplete="off" value="{{llanta.id}}" name="ids" required>
+					<input class="form__field" type="hidden" autocomplete="off" value="{{llanta.producto}}" name="producto" required>
+					<input class="form__field" type="hidden" autocomplete="off" value="{{llanta.vida}}" name="vida" required>
+					
 					<div class="form__group field">
-						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
-						<label for="text1" class="form__label">text1</label>
+						<input class="form__field" placeholder="Llanta {{forloop.counter}}"  type="text" value="{{llanta}}" autocomplete="off" name="llanta" required readonly>
+						<label for="llanta" class="form__label">Llanta {{forloop.counter}}</label>
+					</div>
+
+
+					<div class="form__group field">
+						<input class="form__field" placeholder="Presión {{forloop.counter}}"  type="number" autocomplete="off" name="presion" required>
+						<label for="presion" class="form__label">Presión {{forloop.counter}}</label>
 					</div>
 					<div class="form__group field">
-						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
-						<label for="text1" class="form__label">text1</label>
+						<input class="form__field" placeholder="Profundidad izquierda {{forloop.counter}}" type="number" autocomplete="off" name="profundidad_izquierda" required>
+						<label for="profundidad_izquierda" class="form__label">Profundidad izquierda {{forloop.counter}}</label>
 					</div>
 					<div class="form__group field">
-						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
-						<label for="text1" class="form__label">text1</label>
+						<input class="form__field" placeholder="Profundidad central {{forloop.counter}}" type="number" autocomplete="off" name="profundidad_central" required>
+						<label for="profundidad_central" class="form__label">Profundidad central {{forloop.counter}}</label>
 					</div>
 					<div class="form__group field">
-						<input class="form__field" placeholder="text1"  type="text" autocomplete="off" value="text1" name="text1">
-						<label for="text1" class="form__label">text1</label>
-					</div>
-					<div class="form__group field">
-						<input class="form__field" placeholder=""  type="date" autocomplete="off" name="text1">
-						<label for="date1" class="form__label">date1</label>
+						<input class="form__field" placeholder="Profundidad derecha {{forloop.counter}}" type="number" autocomplete="off" name="profundidad_derecha" required>
+						<label for="profundidad_derecha" class="form__label">Profundidad derecha {{forloop.counter}}</label>
 					</div>
 				</aside>
+				{% endfor %}
 				<nav>
 					<button class="btn-green">
 						Enviar

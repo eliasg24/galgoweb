@@ -1,11 +1,3 @@
-:root {
-  --inputs-laterales: linear-gradient(#d76369, #f4aa74);
-  --red: #d76369;
-  --orange: #f6aa6f;
-  --black: #171717;
-  --gray: linear-gradient(#363636, #242424);
-}
-
 *,
 *::after,
 *::before {
@@ -15,8 +7,8 @@
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
-  background-color: #363636;
-  color: white;
+  background-color: var(--colorv00);
+  color: var(--colorv02);
 }
 
 label, input {
@@ -52,9 +44,9 @@ input {
 .btn {
   background: none;
   border: none;
-  background-color: #9147ff;
+  background-color: var(--colorv35);
   border-radius: 5px;
-  color: white;
+  color: var(--colorv02);
   cursor: pointer;
   font-size: 1rem;
   margin-right: 0.5vw;
@@ -70,9 +62,9 @@ input {
 .btn1 {
   background: none;
   border: none;
-  background-color: seagreen;
+  background-color: var(--colorv08);
   border-radius: 5px;
-  color: white;
+  color: var(--colorv02);
   cursor: pointer;
   font-size: 1rem;
   margin-right: 0.5vw;
@@ -98,7 +90,7 @@ input {
 }
 
 .cont-left {
-  background: #242424;
+  background: var(--colorv01);
   border-radius: 0.5rem;
   margin-top: 1.3rem;
 }
@@ -117,7 +109,7 @@ input {
 .table-cont {
   height: 100%;
   width: 100%;
-  background: #242424;
+  background: var(--colorv01);
   border-radius: 0.5rem;
 }
 
@@ -139,9 +131,9 @@ input {
 .drop-btn {
   background: none;
   border: none;
-  border-bottom: thin solid #fff;
+  border-bottom: thin solid var(--colorv02);
   cursor: pointer;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 1rem;
   outline: none;
   padding: 0.25rem 1rem;
@@ -159,7 +151,7 @@ input {
 }
 
 .dropdown-content a {
-  color: #fff;
+  color: var(--colorv02);
   display: block;
   padding: 0.5rem;
   text-decoration: none;
@@ -167,7 +159,7 @@ input {
 }
 
 .dropdown-content a:hover {
-  background-color: rgb(255, 255, 255, 0.25);
+  background-color: var(--colorv36);
 }
 
 /* Tabla de productos */
@@ -179,7 +171,7 @@ input {
 
 .products-table th,
 td {
-  border-bottom: solid 5px #ddd;
+  border-bottom: solid 5px var(--colorv34);
   padding: 0.25rem;
   text-align: center;
 }
@@ -190,10 +182,10 @@ td {
 }
 
 .label-form > input {
-  background: #171717;
-  border: thin solid #fff;
+  background: var(--colorv25);
+  border: thin solid var(--colorv02);
   border-radius: 5px;
-  color: #fff;
+  color: var(--colorv02);
 }
 
 .list{
@@ -206,10 +198,10 @@ td {
 
 .list::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--colorv16);
 }
 
 .list::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: var(--colorv17);
 }

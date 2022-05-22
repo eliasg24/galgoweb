@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?rmiuna');
-  src:  url('fonts/icomoon.eot?rmiuna#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?rmiuna') format('truetype'),
-    url('fonts/icomoon.woff?rmiuna') format('woff'),
-    url('fonts/icomoon.svg?rmiuna#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?a7stsf');
+  src:  url('fonts/icomoon.eot?a7stsf#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?a7stsf') format('truetype'),
+    url('fonts/icomoon.woff?a7stsf') format('woff'),
+    url('fonts/icomoon.svg?a7stsf#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-arrancamiento-de-costilla:before {
+  content: "\e93f";
+}
 .icon-autoinflado-fallando:before {
   content: "\e93b";
 }
@@ -423,4 +426,19 @@
 }
 .icon-ruler3:before {
   content: "\ff9d";
+}
+.icon-thumb_down:before {
+  content: "\e940";
+}
+.icon-thumb_up:before {
+  content: "\e941";
+}
+.icon-thumbs-down:before {
+  content: "\e942";
+}
+.icon-thumbs-up:before {
+  content: "\e943";
+}
+.icon-spinner2:before {
+  content: "\e97b";
 }

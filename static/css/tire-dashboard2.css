@@ -26,12 +26,12 @@
 
 /* On mouse-over, add a grey background color */
 .input-check-dual:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color: var(--colorv20);
 }
 
 /* When the checkbox is checked, add a blue background */
 .input-check-dual input:checked ~ .checkmark {
-  background-color: #ed2a3d;
+  background-color: var(--colorv09);
 }
 
 /* Show the checkmark when checked */
@@ -45,7 +45,7 @@
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid white;
+  border: solid var(--colorv02);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -71,7 +71,7 @@ ul {
 
 .head-menu {
   align-items: center;
-  background: #0a2a75;
+  background: var(--colorv27);
   flex-flow: row wrap;
   display: flex;
   justify-content: center;
@@ -88,7 +88,7 @@ ul {
 
 .head-item a {
   display: block;
-  color: white;
+  color: var(--colorv02);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -114,14 +114,14 @@ ul {
 }
 
 .input-aeto {
-  color: #fff;
+  color: var(--colorv02);
 }
 
 #input-fecha {
   width: 11vw;
 }
 #btn-buscar {
-  background: #026cf5;
+  background: var(--colorv04);
   display: none;
 }
 
@@ -137,7 +137,7 @@ ul {
   align-items: center;
   display: flex;
   background: none;
-  color: white;
+  color: var(--colorv02);
   border: none;
   /*border-bottom: white solid;*/
 }
@@ -145,15 +145,15 @@ ul {
 .btn-aeto > span,
 .input-aeto {
   font-size: 1.25rem;
-  color: white;
+  color: var(--colorv02);
   display: block;
 }
 
 .btn-wh {
   align-items: center;
-  background-color: #026cf5;
+  background-color: var(--colorv04);
   border-radius: 50%;
-  color: #fff;
+  color: var(--colorv02);
   display: flex;
   justify-content: center;
   padding: 0.75rem;
@@ -174,7 +174,7 @@ ul {
 }
 
 .cont-left {
-  background: var(--black);
+  background: var(--colorv25);
   border-radius: 5px;
   height: 100%;
 }
@@ -210,7 +210,7 @@ ul {
 }
 
 .cont-chart {
-  background: #fff;
+  background: var(--colorv16);
   border-radius: 5px;
   display: flex;
   flex-flow: column nowrap;
@@ -233,11 +233,11 @@ ul {
 }
 
 .total {
-  border-top: white;
+  border-top: var(--colorv02);
 }
 
 .popout-text {
-  background-color: #000;
+  background-color: var(--colorv16);
   border-radius: 0.25rem;
   display: none;
   font-size: 0.85rem;
@@ -251,7 +251,7 @@ ul {
 }
 
 .popout-text p {
-  color: white;
+  color: var(--colorv02);
   margin: 0;
 }
 
@@ -269,17 +269,17 @@ ul {
 }
 
 .icon-fullscreen {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-fullscreen_exit {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-question-circle-o {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
@@ -289,7 +289,7 @@ ul {
 }
 
 .column {
-  background: #fff;
+  background: var(--colorv25);
   border-radius: 0.25rem;
   padding: 0.5rem;
   width: 100%;
@@ -304,7 +304,7 @@ ul {
 }
 
 #column-total {
-  border: solid 2px #0096fb;
+  border: solid 2px var(--colorv04);
 }
 
 .horizontal {
@@ -333,7 +333,7 @@ th {
 }
 
 .bt2 {
-  border-top: solid 1px white;
+  border-top: solid 1px var(--colorv02);
 }
 
 @media screen and (min-width: 1024px) {
@@ -382,9 +382,9 @@ th {
   }
 
   .icon-checkmark {
-    color: white;
+    color: var(--colorv02);
     font-size: 20px;
-    background: #2196f3;
+    background: var(--colorv04);
     border-radius: 2px 5px 2px 2px;
   }
 
@@ -409,12 +409,12 @@ th {
 
   .table-score::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    background-color: black;
+    background-color: var(--colorv16);
   }
 
   .table-score::-webkit-scrollbar-track {
     border-radius: 5px;
-    background-color: gray;
+    background-color: var(--colorv17);
   }
 
   .td2 {

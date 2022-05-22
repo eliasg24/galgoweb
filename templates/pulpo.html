@@ -25,7 +25,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
     <header class="head-cont">
         <div class="logo">
-          <h1 class="title-galgo">GALGO</h1>
+          <img src="{% static 'images/aeto.svg' %}" alt="logo">
         </div>
     
         <form 
@@ -1682,7 +1682,7 @@ series.selected().stroke('#a349a4', 8);
 
 var background = chart.background();
 
-background.stroke('0 #ccc');
+background.stroke('0 #000');
 background.corners(12);            
 background.enabled(false);
 // chart credits false
@@ -1698,8 +1698,8 @@ chart.defaultSeriesType('area');
 chart.yScale().stackMode();
 
 // set yAxis settings
-chart.yAxis().stroke('#ccc');
-chart.yAxis().ticks().stroke('#ccc');
+chart.yAxis().stroke('#fff');
+chart.yAxis().ticks().stroke('#fff');
 
 // set xAxis settings
 var xlabels = chart.xAxis().labels();
@@ -1716,7 +1716,7 @@ function ocultarC() {
 }
 // set yAxis labels settings
 chart.yAxis().labels()
-        .fontColor('#555')
+        .fontColor('#fff')
         .format('{%Value}%');
 
 // set yScales 
@@ -1826,7 +1826,7 @@ var background = gauge.background();
 background.stroke('0 #000');
 background.corners(0); 
 background.enabled(true);
-background.fill('#fff');
+background.fill('#222');
 
 // turn on chart animation
 gauge.animation(true);

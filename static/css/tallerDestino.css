@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 16px;
 }
 
@@ -14,7 +14,7 @@ body {
   margin: 0;
   font-family: Arial;
   font-family: 'Montserrat', sans-serif;
-  background-color: #363636;
+  background-color: var(--colorv00);
   overflow-x: hidden;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -52,8 +52,8 @@ hr {
 }
 
 .btn.disabled {
-  background-color: gainsboro;
-  color: gray;
+  background-color: var(--colorv23);
+  color: var(--colorv17);
   cursor: not-allowed;
 }
 
@@ -64,13 +64,13 @@ hr {
 }
 
 .btn-success {
-  background-color: seagreen;
-  color: #fff;
+  background-color: var(--colorv08);
+  color: var(--colorv02);
 }
 
 .btn-danger {
-  background-color: red;
-  color: #fff;
+  background-color: var(--colorv22);
+  color: var(--colorv02);
 }
 
 .all-cont {
@@ -81,7 +81,7 @@ hr {
 }
 
 .taller-form {
-  background-color: #171717;
+  background-color: var(--colorv25);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -104,16 +104,16 @@ hr {
 }
 
 .fecha{
-  background: #383838;
+  background: var(--colorv00);
   font-size: 1.5rem;
   text-align: center;
-  color: #DCDCDC;
+  color: var(--colorv23);
   width: 50%;
 }
 
 .almohadilla{
   font-size: 1.5rem;
-  color: #DCDCDC;
+  color: var(--colorv23);
   width: 50%;
 }
 
@@ -121,5 +121,5 @@ hr {
   list-style: disc;
   margin-left: 1rem;
   font-size: 1.5rem;
-  color: #DCDCDC
+  color: var(--colorv23);
 }

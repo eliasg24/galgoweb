@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	{% load static %}
+	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static 'css/webservices.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+</head>
+	<body>
+		<header>
+			<h2 class="titulo">WebService Principal</h2>
+		</header>
+		<main>
+			<p>Lista de WebServices</p>
+			<nav>
+				<li>
+					<a href="https://www.aetoweb.com/rutasList/?wsdl">https://www.aetoweb.com/rutasList/?wsdl</a>
+				</li>
+			</nav>
+            <h1>SOAP</h1>
+            <code>
+                &lt;?xml version="1.0" encoding="utf-8"?&gt; <br>
+                &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt; <br>
+                &lt;soap:Body&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;list xmlns="django.soap.example"&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;user&gt;&lt;/user&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/list&gt; <br>
+                &lt;/soap:Body&gt; <br>
+                &lt;/soap:Envelope&gt; <br>
+            </code>
+		</main>
+	</body>
+</html>
+	

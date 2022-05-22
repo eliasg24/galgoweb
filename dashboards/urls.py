@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.generic.base import View
 
 # Views
-from dashboards import views
+from dashboards.views import views, views_rest
 
 urlpatterns = [
     path(
@@ -47,6 +47,11 @@ urlpatterns = [
         name="search"
     ),
     path(
+        route="api/vehicle_list/",
+        view=views_rest.SearchView.as_view(),
+        name="api_search"
+    ),
+    path(
         route="search_id/",
         view=views.search,
         name="search_id"
@@ -77,9 +82,9 @@ urlpatterns = [
         name="dashboardOperativo"
     ),
     path(
-        route="formulario",
-        view=views.formularioView.as_view(),
-        name="formulario"
+        route="vehiculosformulario",
+        view=views.vehiculosformularioView.as_view(),
+        name="vehiculosformulario"
     ),
     path(
         route="login/",
@@ -193,13 +198,53 @@ urlpatterns = [
     ),
     path(
         route="sucursalView",
-        view=views.sucursalView,
+        view=views.sucursalView.as_view(),
         name="sucursalView"
     ),
     path(
+        route="aplicacionesView",
+        view=views.aplicacionesView.as_view(),
+        name="aplicacionesView"
+    ),
+    path(
         route="vehiculosView",
-        view=views.vehiculosView,
+        view=views.vehiculosView.as_view(),
         name="vehiculosView"
+    ),
+    path(
+        route="llantasView",
+        view=views.llantasView.as_view(),
+        name="llantasView"
+    ),
+    path(
+        route="inpeccionesView",
+        view=views.inpeccionesView.as_view(),
+        name="inspeccionesView"
+    ),
+    path(
+        route="inspeccionesAdd/",
+        view=views.my_soap_inspeccion(),
+        name="inspeccionesAdd"
+    ),
+    path(
+        route="basesList/",
+        view=views.my_soap_base(),
+        name="basesList"
+    ),
+    path(
+        route="rutasList/",
+        view=views.my_soap_ruta(),
+        name="rutasList"
+    ),
+    path(
+        route="vehiculosList/",
+        view=views.my_soap_vehiculo(),
+        name="vehiculosList"
+    ),
+    path(
+        route="llantasList/",
+        view=views.my_soap_llanta(),
+        name="llantasList"
     ),
     path(
         route="tallerFormulario",
@@ -242,9 +287,14 @@ urlpatterns = [
         name="diagrama"
     ),
     path(
-        route="tireDiagrama",
+        route="tireDiagrama/<int:pk>",
         view=views.tireDiagramaView.as_view(),
         name="tireDiagrama"
+    ),
+    path(
+        route="inspeccionLlanta/<int:pk>/",
+        view=views.inspeccionLlantaView.as_view(),
+        name="inspeccionLlanta"
     ),
     path(
         route="inspeccion-vehiculo/<int:pk>/",
@@ -326,15 +376,35 @@ urlpatterns = [
         view=views.ordenSalidaRenView.as_view(),
         name="ordenSalidaRen"
     ),
+     path(
+        route= 'ordenSalidaRenDef/', 
+        view= views.ordenSalidaRenDef, 
+        name='ordenSalidaRenDef'
+    ),
     path(
         route="ordenEntrada",
         view=views.ordenEntradaView.as_view(),
         name="ordenEntrada"
     ),
     path(
-        route="ordenLlanta",
+        route="ordenLlanta/<int:pk>",
         view=views.ordenLlantaView.as_view(),
         name="ordenLlanta"
+    ),
+    path(
+        route= 'ordenLlantaDef/<int:id>', 
+        view= views.ordenLlantaDef, 
+        name='ordenLlantaDef'
+    ),
+    path(
+        route= 'ordenLlantaDeleteDef/<int:id>', 
+        view= views.ordenLlantaDeleteDef, 
+        name='ordenLlantaDeleteDef'
+    ),
+    path(
+        route= 'redireccionOrden/<int:id>', 
+        view= views.redireccionOrden, 
+        name='redireccionOrden'
     ),
     path(
         route="tallerDestino",
@@ -365,6 +435,16 @@ urlpatterns = [
         route="webservices",
         view=views.webservicesView.as_view(),
         name="webservices"
+    ),
+     path(
+        route="vistaordenes",
+        view=views.vistaordenesView.as_view(),
+        name="vistaordenes"
+    ),
+    path(
+        route="formordennueva",
+        view=views.formordennuevaView.as_view(),
+        name="formordennueva"
     ),
     path(
         route="download1",
@@ -397,13 +477,56 @@ urlpatterns = [
         name="reporteInspeccion"
     ),
     path(
+        route="reporteEdicionLlanta/<int:pk>/<str:tipo>",
+        view=views.reporteEdicionLlanta.as_view(),
+        name="reporteEdicionLlanta"
+    ),
+    path(
         route="reporteEdicion/<int:pk>/<str:tipo>",
         view=views.ReporteEdicion.as_view(),
         name="reporteEdicion"
+    ),
+    path(
+        route="historial-transacciones",
+        view=views.historialTransacciones.as_view(),
+        name="historialTransacciones"
     ),
     path(
         route="download_todo",
         view=views.download_todo,
         name="download_todo"
     ),
+    
+    #APIS
+     path(
+        route="api/numtirestock",
+        view=views_rest.NumTireStock.as_view(),
+        name="numtirestock"
+    ),
+      path(
+        route="api/tiresearch",
+        view=views_rest.TireSearch.as_view(),
+        name="tiresearch"
+    ),
+    path(
+        route="api/ordenllantanueva",
+        view=views_rest.OrdenLlantaNuevaView.as_view(),
+        name="ordenllantanueva"
+    ),
+    path(
+        route="api/generacionllantanueva",
+        view=views_rest.GeneracionLlantaNuevaView.as_view(),
+        name="generacionllantanueva"
+    ),
+    path(
+        route="api/ordersearch",
+        view=views_rest.OrderSearch.as_view(),
+        name="ordersearch"
+    )
+    ,
+    path(
+        route="api/historicodeorden",
+        view=views_rest.HistoricoDeOrdenApi.as_view(),
+        name="historicodeorden"
+    )
 ]

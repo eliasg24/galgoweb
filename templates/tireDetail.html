@@ -53,7 +53,7 @@
             <div class="pop-out">Smart View</div>
           </a>
           <a class="btn btn-download relative" 
-          href="{% url 'dashboards:tireDiagrama' %}">
+          href="{% url 'dashboards:tireDiagrama' llanta.id %}">
             <span class="icon-pencil"></span>
             <div class="pop-out">Edición Manual</div>
           </a>
@@ -66,7 +66,7 @@
                 <span class="tire__data">{{llanta_info.0.presion_actual}}</span>
               </div>
 
-              <div class="tire__medium {{llanta_info.4}}">
+              <div class="tire__medium {{color_observaciones}}">
                 <span class="tire__data">
                     {{llanta_info.0.posicion}}
                 </span>
@@ -107,8 +107,8 @@
                     <tr>
                       <td>{{llanta.numero_economico}}</td>
                       <td>{{llanta.producto}}</td>
-                      <td>{{llanta.km_actual}}</td>
-                      <td>{{llanta.producto.precio}}</td>
+                      <td class="km">{{llanta.km_actual}}</td>
+                      <td id="currency">{{llanta.producto.precio}}</td>
                       <td>{{llanta.vida}}</td>
                     </tr>
                   </tbody>
@@ -123,8 +123,17 @@
                     <th>Icono</th>
                   </tr>
                 </thead>
-                {% if problemas_abiertos %}
+                
+                
                 <tbody>
+                  {% for problema in problemas %}
+                    <tr>
+                        <td class="td-table2">{{problema.posicion}}</td>
+                        <td class="td-table2">{{problema.observacion.observacion}}</td>
+                        <td class="td-table2"><span class="{{problema.signo}}"></span>
+                    </tr>
+                  {% endfor %}
+
                   {% for llanta in problemas_abiertos %}
                     <tr>
                         <td class="td-table2">{{llanta.0.posicion}}</td>
@@ -133,7 +142,7 @@
                     </tr>
                   {% endfor %}
                 </tbody>
-                {% endif %}
+                
               </table>
             </div>
             <div class="config__cont-table" id="bitacora">
@@ -150,32 +159,73 @@
                       Encontrado
                     </th>
                     <th class="th-table3">
-                      Tiempo
-                    </th>
-                    <th class="th-table3">
                       Reporte
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for evento in eventos %}
+                  {% if evento.2 == 'pulpo' or evento.2 == 'pulpopro' %}
                     <tr id="paragraph {{evento.0.id}}">
                       <td class="td-table3">
                         <span class="icon-pulpo"></span>
                       </td>
                       <td class="td-table3">
-                        {{evento.0.fecha_de_inflado.day}}/{{evento.0.fecha_de_inflado.month}}/{{evento.0.fecha_de_inflado.year}}
+                        {{evento.1.fecha_de_inflado.day}}/{{evento.1.fecha_de_inflado.month}}/{{evento.1.fecha_de_inflado.year}}
                       </td>
                       <td class="td-table3">
-                        <span id="icon {{evento.0.id}}"></span>
+                        <span class="{{evento.3}}"></span>
                       </td>
-                      <td class="td-table3">{{evento.0.tiempo_de_inflado}}</td>
+                      
                       <td class="td-table3">
-                        <a href="{% url 'dashboards:reporteLlanta' evento.0.id llanta.id numero_eje_check numero_llanta_check evento.1 %}" rel="noopener" target="_blank">
+                        <a href="{% url 'dashboards:reporteLlanta' evento.1.id llanta.id numero_eje_check numero_llanta_check evento.2 %}" rel="noopener" target="_blank">
                           <span class="icon-file-pdf" ></span>
                         </a>
                       </td>
                     </tr>
+                  {% endif %}
+
+
+                  {% if evento.2 == 'inspeccion' %}
+                    <tr id="paragraph {{evento.0.id}}">
+                      <td class="td-table3">
+                        <span class="icon-magnifier"></span>
+                      </td>
+                      <td class="td-table3">
+                        {{evento.0.day}}/{{evento.0.month}}/{{evento.0.year}}
+                      </td>
+                      <td class="td-table3">
+                        <span class="{{evento.3}}"></span>
+                      </td>
+                      
+                      <td class="td-table3">
+                        <a href="{% url 'dashboards:inspeccionLlanta' evento.1.id %}" rel="noopener" target="_blank">
+                          <span class="icon-file-pdf" ></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endif %}
+
+                  {% if evento.2 == 'edicion' %}
+                    <tr id="paragraph {{evento.0.id}}">
+                      <td class="td-table3">
+                        <span class="icon-pencil"></span>
+                      </td>
+                      <td class="td-table3">
+                        {{evento.0.day}}/{{evento.0.month}}/{{evento.0.year}}
+                      </td>
+                      <td class="td-table3">
+                        <span class="{{evento.3}}"></span>
+                      </td>
+                      
+                      <td class="td-table3">
+                        <a href="{% url 'dashboards:reporteEdicionLlanta' evento.1.id evento.2 %}" rel="noopener" target="_blank">
+                          <span class="icon-file-pdf" ></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endif %}
+
                   {% endfor %}
                 </tbody>
               </table>
@@ -293,7 +343,39 @@
     } );    
   };
 
+  /* Convertido moneda */
 
+    const currencyTransform = (id = '') => {
+        const formatter = new Intl.NumberFormat('en-Us', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 3
+        })
+
+        const text = document.getElementById(id)
+
+        text.textContent = formatter.format(text.textContent)
+    };
+
+    currencyTransform('currency');
+
+  /* Convertir numeros con coma decimal */
+
+    const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('.km');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+
+    decimalConverter();
 
   //variables
   hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
@@ -570,6 +652,7 @@
 
     // create a spline series and set the data
     var series = chart.spline(data);
+    series.name("Desgaste");
     series.stroke({ keys: [{ color: '#A349A4' }], thickness: 4 });
 
     // adjust scales
@@ -596,8 +679,20 @@
     var yAxis = chart.yAxis();
     yAxis.title('');
 
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // set function to format y axis labels
+    var xLabels = chart.xAxis(0).labels();
+    xLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    //tooltip
+    series.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
     // set the container id
     chart.container('spline-chart');
+
 
     //Set Background
     var background = chart.background();

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	{% load static %}
+	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static 'css/webservices.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+</head>
+	<body>
+		<header>
+			<h2 class="titulo">WebService Principal</h2>
+		</header>
+		<main>
+			<p>Lista de WebServices</p>
+			<nav>
+				<li>
+					<a href="{% url 'dashboards:inspeccionesView' %}">
+						Insert Inspeccion
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'dashboards:sucursalView' %}">
+						Select Bases
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'dashboards:aplicacionesView' %}">
+						Select Rutas
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'dashboards:vehiculosView' %}">
+						Select Vehiculos
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'dashboards:llantasView' %}">
+						Select Llantas Rodantes
+					</a>
+				</li>
+			</nav>
+		</main>
+	</body>
+</html>
+	

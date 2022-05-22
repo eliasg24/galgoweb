@@ -34,12 +34,12 @@
 
 .absolute::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--colorv16);
 }
 
 .absolute::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: var(--colorv17);
 }
 
 .main__container {
@@ -48,28 +48,28 @@
 }
 
 .cards__container {
-  /* display: grid; */
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  /* display: flex;
+  flex-flow: row wrap; */
   gap: 1rem;
-  /* grid-template-columns: repeat(auto-fill, minmax(325px, 1fr)); */
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   padding: 1rem;
 }
 
 .card__wrapper {
   align-items: center;
-  background-color: #202020;
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   height: fit-content;
   flex: 1 1 400px;
-  gap: 1rem;
-  grid-template-columns: auto 1fr;
+  /* gap: 1rem; */
+  grid-template-rows: auto 1fr;
   padding: 1rem;
   position: relative;
   transition: all 0.3s ease-in-out;
   /* box-shadow: 1px 1px 6px rgba(255, 255, 255, 0.5); */
-  box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 1px 1px var(--colorv36);
 }
 
 .card__wrapper.filter {
@@ -77,6 +77,16 @@
   opacity: 0;
   pointer-events: none;
   order: 1;
+}
+
+.card__content {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto 1fr;
+}
+
+.economic {
+  text-align: center;
 }
 
 .card__img {
@@ -92,7 +102,7 @@
 }
 
 .card__body {
-  background-color: var(--main-background);
+  background-color: var(--colorv00);
   border-radius: 0.25rem;
   height: 100%;
   padding: 1rem;
@@ -104,7 +114,7 @@
 }
 
 .tire__status {
-  background-color: #fff;
+  background-color: var(--colorv02);
   border-radius: 50%;
   height: 1.25rem;
   position: absolute;
@@ -114,19 +124,19 @@
 }
 
 .tire__status.good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .tire__status.yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .tire__status.bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .tire__status.suspiciuos {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
 }
 
 /* ? Filter Menu */
@@ -142,7 +152,6 @@
   width: 100%;
   transition: all 0.4s ease;
   z-index: 1000;
-
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
@@ -155,13 +164,14 @@
 }
 
 .filter__content {
-  background-color: var(--main-background);
+  background-color: var(--colorv00);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
   padding: 2rem;
-  min-width: 300px;
+  /* min-width: 300px; */
+  max-width: 325px;
   position: relative;
 }
 
@@ -182,8 +192,21 @@
 }
 
 h1 {
-  background: #026cf5;
+  background: var(--colorv04);
   border-radius: 5px;
+}
+
+.check-tire {
+  display: none;
+}
+
+.tire-input input:checked ~ .card__wrapper {
+  box-shadow: 0 0 8px 1px var(--colorv04);
+}
+
+button:disabled {
+  background-color: var(--colorv17);
+  cursor: default;
 }
 
 @media screen and (min-width: 768px) {
@@ -197,6 +220,10 @@ h1 {
 
   .head-cont > * {
     flex: 1 1 auto;
+  }
+
+  .filter__content {
+    max-width: 350px;
   }
 }
 

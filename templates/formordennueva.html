@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formordennueva.css' %}">
+<title>Formulario de orden llanta nueva</title>
+
+{% endblock %}
+
+{% block content %}
+
+<section class="form__container">
+  {% if ordenes|length == 0 %}
+  
+  <form class="form" id="form">
+    {% csrf_token %}
+
+    <div class="col-2">
+      <header>
+        <img src="{% static 'images/logo-aeto.png' %}" alt="aeto">
+        <h2>ORDEN DE NUEVA LLANTA</h2>
+      </header>
+
+     <div class="input__group"> 
+        <div class="input__label">
+          <label class="label__item" for="">
+            Usuario
+            <input class="input__item" type="text" placeholder="Usuario" name="usuario" value="" id="user" readonly>
+          </label>
+        </div>
+        <div class="input__label">
+          <label class="label__item" for="">
+            Fecha
+            <input class="input__item" type="date" placeholder="" value="" id="date" readonly>
+          </label>
+        </div>
+        <div class="cont__select">
+          <label class="label__item" for="destino">
+            Destino
+            <select class="select__item" name="destino" id="destino" required>
+              <option value="" selected></option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <button class="add" type="button">Agregar producto</button>
+      <small>Antes de modificar un elemento, agregue los productos que necesita</small>
+
+      <div class="list__inputs"></div>
+
+    </div>
+
+    <aside class="aside">
+      <button class="btn btn-success" type="submit">
+        <i class="icon-checkmark"></i>
+      </button>
+    </aside>
+
+  </form>
+
+  {% else %}
+  Cierre la Pre Orden pendiete
+  {% endif %}
+</section>
+
+<script src="{% static 'js/orden-nueva/index.js' %}" type="module"></script>
+
+{% endblock %}

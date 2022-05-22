@@ -1,5 +1,6 @@
 # Django
 from django.core.files import File
+from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 
 # Utilities
@@ -960,6 +961,14 @@ def ftp_descarga2():
 
 def ftp1():
 
+    hoy = date.today()
+    year = hoy.year
+    month = hoy.month
+    day = hoy.day
+    if month < 10:
+        month = f"0{month}"
+    if day < 10:
+        day = f"0{day}"
     DIR = "D:/aetoweb/"
     DIR_PATH = os.listdir(DIR)
     ftp2 = fileTP("208.109.20.121")
@@ -974,7 +983,7 @@ def ftp1():
         file_type6 = FILE_PATH[0:13]
         file_type7 = FILE_PATH[0:8]
         #if file_type1 == "Vehicles20" or file_type2 == "Stock20" or file_type3 == "Services20" or file_type4 == "ScrappedTires20" or file_type5 == "RollingStock20" or file_type6 == "Inspections20" or file_type7 == "Casing20":
-        if file_type4 == "ScrappedTires20" or file_type6 == "Inspections20":
+        if file_type4 == f"ScrappedTires{year}_{month}_{day}" or file_type6 == f"Inspections20{year}_{month}_{day}":
             file = open(DIR + FILE_PATH, "r", encoding="utf-8-sig", newline='')
             reader = csv.reader(file, delimiter=",")
             file_write = open("TDR_" + FILE_PATH, "w", encoding="utf-8-sig", newline='')
@@ -1138,3 +1147,91 @@ def ftp2(user):
         os.remove(os.path.abspath(FILE_PATH))
     ftp2.quit()"""
 
+
+def ftp_diario():
+
+    hoy = date.today()
+    year = hoy.year
+    month = hoy.month
+    day = hoy.day
+    if month < 10:
+        month = f"0{month}"
+    if day < 10:
+        day = f"0{day}"
+    ftp1 = fileTP("208.109.20.121")
+    ftp1.login(user="tyrecheck@aeto.com", passwd="TyreDB!25")
+    for file_name in ftp1.nlst():
+        file_type1 = file_name[0:18]
+        file_type2 = file_name[0:15]
+        file_type3 = file_name[0:18]
+        file_type4 = file_name[0:23]
+        file_type5 = file_name[0:22]
+        file_type6 = file_name[0:21]
+        file_type7 = file_name[0:16]
+
+        if file_type1 == f"Vehicles{year}_{month}_{day}" or file_type1 == f"Products{year}_{month}_{day}" or file_type2 == f"Stock{year}_{month}_{day}" or file_type4 == f"ScrappedTires{year}_{month}_{day}" or file_type5 == f"RollingStock{year}_{month}_{day}" or file_type6 == f"Inspections{year}_{month}_{day}":
+            local_file = open(file_name, "wb")
+            ftp1.retrbinary("RETR " + file_name, local_file.write)
+            file = open(file_name, "r", encoding="utf-8-sig", newline='')
+            reader = csv.reader(file, delimiter=",")
+            file.close()
+            local_file.close()
+
+    ftp1.quit()
+
+    DIR = "D:/aeto"
+    DIR_PATH = os.listdir(DIR)
+
+    ftp2 = fileTP("208.109.20.121")
+    ftp2.login(user="tdr@aeto.com", passwd="486dbintegracion!")
+    for FILE_PATH in DIR_PATH:
+        file_type1 = FILE_PATH[0:18]
+        file_type2 = FILE_PATH[0:15]
+        file_type3 = FILE_PATH[0:18]
+        file_type4 = FILE_PATH[0:23]
+        file_type5 = FILE_PATH[0:22]
+        file_type6 = FILE_PATH[0:21]
+        file_type7 = FILE_PATH[0:16]
+        if file_type1 == f"Vehicles{year}_{month}_{day}" or file_type1 == f"Products{year}_{month}_{day}" or file_type2 == f"Stock{year}_{month}_{day}" or file_type4 == f"ScrappedTires{year}_{month}_{day}" or file_type5 == f"RollingStock{year}_{month}_{day}" or file_type6 == f"Inspections{year}_{month}_{day}":
+            file = open(FILE_PATH, "r", encoding="utf-8-sig", newline='')
+            reader = csv.reader(file, delimiter=",")
+            file_write = open("TDR_" + FILE_PATH, "w", encoding="utf-8-sig", newline='')
+            writer = csv.writer(file_write, delimiter=",")
+
+            csv_dict_reader = csv.DictReader(file)
+            column_names = csv_dict_reader.fieldnames
+            writer.writerow(column_names)
+
+
+            for row in reader:
+                try:
+                    if file_type1 == f"Vehicles{year}_{month}_{day}":
+                        company = row[3]
+                    elif file_type1 == f"Products{year}_{month}_{day}":
+                        company = row[1]
+                    elif file_type2 == f"Stock{year}_{month}_{day}":
+                        company = row[1]
+                    elif file_type4 == f"ScrappedTires{year}_{month}_{day}":
+                        company = row[0]
+                    elif file_type5 == f"RollingStock{year}_{month}_{day}":
+                        company = row[1]
+                    elif file_type6 == f"Inspections{year}_{month}_{day}":
+                        company = row[1]
+                except:
+                    break
+                if company == "MPV360" or company == "TDR":
+                    writer.writerow(row)
+
+            file.close()
+            file_write.close()
+
+            file_read = open("TDR_" + FILE_PATH, "rb")
+
+            ftp2.storbinary('STOR ' + "TDR_" + FILE_PATH, file_read)
+            file_read.close()
+
+            os.remove(os.path.abspath("TDR_" + FILE_PATH))
+
+            os.remove(os.path.abspath(FILE_PATH))
+
+    ftp2.quit()

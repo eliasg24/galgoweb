@@ -17,7 +17,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-menu">
     <div class="menu-li__left">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="" />
+      <img src="{% static 'images/aeto.svg' %}" alt="" />
     </div>
 
     <form
@@ -527,9 +527,8 @@
   		document.msExitFullscreen();
   	}
   }
+anychart.licenseKey("aeto.com.mx-16056097-34281685");
 
-
-  	anychart.licenseKey("aeto.com.mx-16056097-34281685");
   // Graph pronostico-consumo
   anychart.onDocumentReady(function () {
 
@@ -704,151 +703,9 @@
   credits.enabled(false);
 
   });
-  	// Graph pronostico-consumo F
-  // 		anychart.onDocumentReady(function () {
 
-  // 		// create a data set
-  // 		var data = anychart.data.set([
-  // 		    ["Hoy",   {% for eje, cantidad in pronostico_de_consumo.items %}{{cantidad}}, {% endfor %} 1150],
-  // 		    ["30 dias", 265, 3150],
-  // 		    ["60 dias", 165, 2150],
-  // 		    ["90 dias", 465, 4150]
-  // 		]);
 
-  // 		// map the data
-  // 		{% for eje in pronostico_de_consumo %}
-  // 		var seriesData_{{forloop.counter}} = data.mapAs({x: 0, value: {{forloop.counter}}});
-  // 		{% endfor %}
 
-  // 		var seriesData_{{pronostico_de_consumo_contar}} = data.mapAs({x: 0, value: 2});
-
-  // 		// create chart
-  // 		var chart = anychart.column();
-
-  // 		chart.yScale().ticks().interval(1000);
-
-  // 		{% for eje in pronostico_de_consumo %}
-  // 		// create the second series, set the data and name
-  // 		var series{{forloop.counter}} = chart.column(seriesData_{{forloop.counter}});
-  // 		series{{forloop.counter}}.name("{{eje|capfirst}}");
-
-  // 		// configure the visual settings of the second series
-  // 		series{{forloop.counter}}.normal().fill("#0097fc");
-  // 		series{{forloop.counter}}.hovered().fill("#0097fc", 0.1);
-  // 		series{{forloop.counter}}.selected().fill("#0097fc", 0.5);
-  // 		series{{forloop.counter}}.normal().stroke("#0097fc", 2);
-  // 		series{{forloop.counter}}.hovered().stroke("#0097fc", 4);
-  // 		series{{forloop.counter}}.selected().stroke("#0097fc", 6);
-  // 		{% endfor %}
-
-  // 		// create the second series, set the data and name
-  // 		var series{{pronostico_de_consumo_contar}} = chart.line(seriesData_{{pronostico_de_consumo_contar}});
-  // 		series{{pronostico_de_consumo_contar}}.name("Presupuesto");
-
-  // 		// configure the visual settings of the second series
-  // 	    series{{pronostico_de_consumo_contar}}.normal().stroke("#A349A4", 6);
-  // 	    series{{pronostico_de_consumo_contar}}.hovered().stroke("#A349A4", 4);
-  // 	    series{{pronostico_de_consumo_contar}}.selected().stroke("#A349A4", 8);
-
-  // 		// set chart title text settings
-  // 		chart.title('Pronostico de Consumo');
-  // 		var title = chart.title();
-  // 		title.fontColor('#fff');
-  // 		title.fontSize(18);
-  // 		title.fontWeight(600);
-
-  // 		// enable major grids
-  // 		chart.yGrid().enabled(true);
-
-  // 		// adjusting y axis title and setting additional axis
-  // 		chart.yAxis(0).labels().format("${%value}");
-  // 		chart.yAxis(1).orientation("right");
-
-  // 		chart.yAxis(1).labels().format(function() {
-  // 		var value = this.value;
-  // 		// scale USD and rouns the result
-  // 		value = Math.round(value/10);
-  // 		return "" + value;
-  // 		});
-
-  // 		// enable the legend
-  // 	    chart.legend(true);
-
-  // 	    // set the size of legend icons
-  // 	    chart.legend().iconSize(25);
-
-  // 		{% for eje in pronostico_de_consumo %}
-  // 		var legendItem{{forloop.counter}} = series{{forloop.counter}}.legendItem();
-  // 		{% endfor %}
-  // 		var legendItem{{pronostico_de_consumo_contar}} = series{{pronostico_de_consumo_contar}}.legendItem();
-
-  // 	    // set the types of legend icons
-  // 		{% for eje in pronostico_de_consumo %}
-  // 	    legendItem{{forloop.counter}}.iconType("");
-  // 		{% endfor %}
-  // 	    legendItem{{pronostico_de_consumo_contar}}.iconType("line");
-
-  // 		// display chart
-  // 		chart.container("pronostico-consumo");
-
-  // 		//Set Background
-  // 		var background = chart.background();
-  // 		    background.stroke('0 #000');
-  // 		    background.corners();
-  // 		    background.enabled(false);
-
-  // 		//turn on chart animation
-  // 		chart.animation(true);
-
-  // 		chart.draw();
-
-  // 		// chart credits false
-  // 		var credits = chart.credits();
-  // 		credits.enabled(false);
-
-  // });
-
-  	// anychart.onDocumentReady(function () {
-  	// 	// create a categorized chart
-  	// 	chart = anychart.cartesian();
-
-  	// 	// data
-  	// 	data = [
-  	// 		["2000", 1100, 1],
-  	// 		["2001", 880, 2],
-  	// 		["2002", 1100, 5],
-  	// 		["2003", 1500, 3],
-  	// 		["2004", 921, 3],
-  	// 		["2005", 1000, 2],
-  	// 		["2006", 1400, 1]
-  	// 	];
-
-  	// 	// add a marker seris
-  	// 	chart.bubble(data);
-
-  	// 	// set chart title
-  	// 	chart.title("Bubble Chart");
-
-  	// 	// set axes titles
-  	// 	chart.xAxis().title("Years");
-  	// 	chart.yAxis().title("Sales");
-
-  	//   	let background = chart.background();
-  	// 	background.fill({
-  	// 		keys: [
-  	// 			'#171717'
-  	// 		],
-  	// 	});
-
-  	// 	var credits = chart.credits();
-  //           credits.enabled(false);
-
-  	//   	// set container id for the chart
-  	//   	chart.container('cantidad-presupuesto');
-
-  	//   	// initiate chart drawing
-  	//   	chart.draw();
-  	// });
   // Graph Funnel Chart
   anychart.onDocumentReady(function () {
   // prepare data for the chart
@@ -938,6 +795,8 @@
   // initiate chart drawing
   chart.draw();
   });
+
+
 </script>
 
 {% endblock content %}

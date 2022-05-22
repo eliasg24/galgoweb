@@ -1,6 +1,5 @@
 body {
-  background: #fff;
-  background-color: #cccccc;
+  background-color: var(--colorv00);
 }
 
 ul {
@@ -8,19 +7,17 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: var(--gray);
 }
 
 .head-menu {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  background-color: var(--gray);
 }
 
 .head-menu {
   align-items: center;
-  background: #0a2a75;
+  background: var(--colorv27);
   flex-flow: row wrap;
   display: flex;
   justify-content: center;
@@ -37,7 +34,7 @@ ul {
 
 .head-item a {
   display: block;
-  color: white;
+  color: var(--colorv02);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -51,14 +48,14 @@ ul {
 }
 
 .input-aeto {
-  color: #fff;
+  color: var(--colorv02);
 }
 
 #input-fecha {
   width: 11vw;
 }
 #btn-buscar {
-  background: #026cf5;
+  background: var(--colorv04);
   display: none;
 }
 
@@ -75,7 +72,7 @@ ul {
   align-items: center;
   display: flex;
   background: none;
-  color: white;
+  color: var(--colorv02);
   border: none;
   /*border-bottom: white solid;*/
 }
@@ -83,7 +80,7 @@ ul {
 .btn-aeto > span,
 .input-aeto {
   font-size: 1.25rem;
-  color: white;
+  color: var(--colorv02);
   display: block;
 }
 
@@ -93,10 +90,10 @@ ul {
 }
 
 .btn-head-item {
-  background: #9147ff;
+  background: var(--colorv35);
   border-radius: 5px;
   border: none;
-  color: white;
+  color: var(--colorv02);
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
@@ -121,7 +118,7 @@ ul {
 
 .score-card {
   align-items: center;
-  background: #fff;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -131,7 +128,7 @@ ul {
 
 .btn-wh {
   align-items: center;
-  background-color: #026cf5;
+  background-color: var(--colorv04);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -142,7 +139,7 @@ ul {
 
 .card {
   align-items: center;
-  background-color: #fff;
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -156,25 +153,25 @@ ul {
 }
 
 .icon-eye {
-  color: #fff;
+  color: var(--colorv02);
   float: left;
   font-size: 2.4rem;
 }
 
 .icon-warning {
-  color: red;
+  color: var(--colorv07);
   float: left;
   font-size: 2.4rem;
 }
 
 .icon-notification {
-  color: yellow;
+  color: var(--colorv05);
   float: left;
   font-size: 2.4rem;
 }
 
 .icon-question {
-  color: purple;
+  color: var(--colorv06);
   float: left;
   font-size: 2.4rem;
 }
@@ -191,7 +188,7 @@ ul {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #303030;
+  color: var(--colorv02);
 }
 
 .icon-tire,
@@ -206,7 +203,7 @@ ul {
   align-items: center;
   display: flex;
   flex-direction: column;
-  background: #171717;
+  background: var(--colorv25);
   border-radius: 10px;
   height: 100%;
   justify-content: center;
@@ -215,7 +212,7 @@ ul {
 
 .bullet-cont {
   align-items: center;
-  color: #ed2a3d;
+  color: var(--colorv04);
   display: flex;
   font-size: 1.25rem;
   gap: 1rem;
@@ -227,7 +224,7 @@ ul {
 }
 
 .bullet-cont h1 {
-  color: #ed2a3d;
+  color: var(--colorv04);
   margin: 0;
 }
 
@@ -265,7 +262,7 @@ ul {
   display: none;
   box-sizing: border-box;
   letter-spacing: normal;
-  color: #fff;
+  color: var(--colorv02);
   font-family: 'Poppins', Arial, Helvetica, sans-serif;
   font-size: 12px;
   pointer-events: none;
@@ -282,11 +279,11 @@ ul {
 }
 
 .indicador {
-  color: blueviolet;
+  color: var(--colorv06);
 }
 
 .popout-text {
-  background-color: #000;
+  background-color: var(--colorv16);
   border-radius: 0.25rem;
   display: none;
   font-size: 0.85rem;
@@ -311,7 +308,7 @@ ul {
 }
 
 .popout-text p {
-  color: white;
+  color: var(--colorv02);
   margin: 0.25rem 0;
 }
 
@@ -335,17 +332,17 @@ ul {
 }
 
 .icon-fullscreen {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-fullscreen_exit {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-question-circle-o {
-  color: black;
+  color: var(--colorv02);
   font-size: 20px;
 }
 
@@ -367,7 +364,7 @@ ul {
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 2.5rem;
   outline: none;
   text-align: center;
@@ -380,7 +377,7 @@ ul {
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 1.25rem;
   outline: none;
   text-align: left;
@@ -404,9 +401,9 @@ ul {
 }
 
 .dropdown-content button {
-  background-color: #363636;
+  background-color: var(--colorv00);
   border: none;
-  color: #fff;
+  color: var(--colorv02);
   cursor: pointer;
   display: block;
   padding: 1rem;
@@ -417,9 +414,9 @@ ul {
 
 .dropdown-content button.button-box {
   text-decoration: none;
-  color: white;
+  color: var(--colorv02);
   background: none;
-  border: blueviolet solid 2px;
+  border: var(--colorv06); solid 2px;
   border-radius: 5px;
   height: 30px;
   display: flex;
@@ -476,7 +473,7 @@ ul {
 }
 
 .cont-left {
-  background: #fff;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   gap: 1rem;
@@ -533,7 +530,6 @@ ul {
 .column-chart,
 .bar-chart,
 .areaLine-chart {
-  background: #fff;
   display: none;
   grid-template-rows: auto 1fr;
   height: 100%;
@@ -579,7 +575,7 @@ ul {
 
 .cont-right {
   align-items: center;
-  background: #fff;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -590,16 +586,16 @@ ul {
 }
 
 .button-box {
-  background: transparent;
-  border: thin solid #fff;
+  background: var(--colorv18);
+  border: thin solid var(--colorv02);
   border-radius: 0.25rem;
-  color: #fff;
+  color: var(--colorv02);
   font-weight: bold;
 }
 
 .button-box:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--colorv02);
+  color: var(--colorv16);
 }
 
 .buttons-content.active {
@@ -659,7 +655,7 @@ ul {
   .title-column {
     display: flex;
     justify-content: center;
-    color: gray;
+    color: var(--colorv17);
     margin-bottom: -13px;
   }
 

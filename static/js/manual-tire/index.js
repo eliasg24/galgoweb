@@ -2,19 +2,18 @@ import { search } from './buscador.js';
 import { profundidad } from './profundidad.js';
 
 document.addEventListener('DOMContentLoaded', (e) => {
-  confirmAlert();
   handlePresion();
   profundidad();
   // handleForms();
 
   // validateInputList('#llanta', 'llanta');
-  // validateInputList('#producto', 'producto');
+  validateInputList('#producto', 'producto');
   // noDoubleValues();
 
-  // manualObserver('data-check-id');
-  // vehiculoManual('data-vehiculo-item');
+  manualObserver('data-check-id');
+  vehiculoManual('data-vehiculo-item');
 
-  // search('#vehiculo-search', '#vehiculo-observaciones', '.search-item');
+  search('#vehiculo-search', '#vehiculo-observaciones', '.search-item');
 });
 
 const handlePresion = () => {
@@ -42,7 +41,7 @@ const handlePresion = () => {
       tag.parentElement.classList.add('bad');
     }
 
-    let container = document.querySelector(`[data-container-id="${id}"]`);
+    let container = document.querySelector(`.observations__container`);
     if (parseFloat(tag.textContent) > maxPresion) {
       container
         .querySelector('[data-icon-presion="Alta presion"]')
@@ -95,9 +94,7 @@ const manualObserver = (item = '') => {
 
   observations.forEach((observation) => {
     observation.addEventListener('input', () => {
-      let container = document.querySelector(
-        `[data-container-id="${observation.getAttribute(item)}"]`
-      );
+      let container = document.querySelector(`.observations__container`);
       if (observation.checked) {
         container
           .querySelector(`[data-icon-type="${observation.value}"]`)
@@ -158,114 +155,6 @@ const validateInputList = (listItem = '', inputName = '') => {
       if (!isValid) {
         if (e.key === 'Enter') e.preventDefault();
       }
-    });
-  });
-};
-
-const noDoubleValues = (inputName = '') => {
-  const elements = document.querySelectorAll(`input[name="${inputName}"]`);
-  let values = [];
-
-  elements.forEach((value) => {
-    values.push(value.value);
-  });
-
-  const tempArray = [...values].sort();
-  let duplicate = [];
-
-  for (let i = 0; i < tempArray.length; i++) {
-    if (tempArray[i + 1] === tempArray[i]) {
-      duplicate.push(tempArray[i]);
-    }
-  }
-
-  if (duplicate.length > 0) {
-    const alert = Swal.fire({
-      title: 'Error',
-      text: 'No puede haber elementos duplicados',
-      icon: 'error',
-      backdrop: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    });
-    return true; // Si hay elementos duplicados retorna true para la validación con sweetalert
-  }
-
-  return false; // Si no hay elementos duplicados
-};
-
-const handleForms = () => {
-  const forms = document.querySelectorAll('form');
-
-  forms[0].addEventListener('submit', (e) => {
-    if (forms[0].querySelector('input').value === '') {
-      e.preventDefault();
-      alert('El campo no puede estar vacío');
-      forms[0].querySelector('input').focus();
-    }
-  });
-};
-
-// ! Empty profs
-
-const emptyProfs = () => {
-  const inputs = document.querySelectorAll('.form__prof');
-  let counter = 0;
-
-  inputs.forEach((el) => {
-    let inputCounter = 0;
-    el.querySelectorAll('input').forEach((input) => {
-      if (input.value !== '') {
-        inputCounter++;
-      }
-    });
-    if (inputCounter >= 1) {
-      counter++;
-    }
-  });
-
-  console.log(counter);
-
-  if (counter >= inputs.length) {
-    return true;
-  }
-
-  return false;
-};
-
-const confirmAlert = () => {
-  const form = document.getElementById('tire-form');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const duplicate = noDoubleValues('llanta');
-    const empty = emptyProfs();
-
-    if (duplicate) return;
-
-    if (!empty) {
-      const alert = Swal.fire({
-        title: 'Error',
-        text: 'Todas las llantas al menos tienen que tener una profundidad',
-        icon: 'error',
-        backdrop: true,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-      });
-      return;
-    }
-
-    const alert = Swal.fire({
-      title: 'Confirmación',
-      text: '¿Seguro que desea continuar?',
-      icon: 'question',
-      confirmButtonText: 'Si',
-      backdrop: true,
-      showDenyButton: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    }).then((res) => {
-      res.value && form.submit();
     });
   });
 };

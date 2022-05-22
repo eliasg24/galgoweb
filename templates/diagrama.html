@@ -41,7 +41,7 @@
                   <div class="par-llantas ejes__{{cant_ejes|safe}}">
                     <div class="tire" data-tire-id="{{eje.0.0.id}}">
                       <div class="tire__top {{eje.0.3}}">
-                        <span class="tire__data" data-tag-id="{{eje.0.3.id}}">
+                        <span class="tire__data" data-tag-id="{{eje.0.0.id}}">
                           {{eje.0.0.presion_actual}}
                         </span>
                       </div>
@@ -55,7 +55,7 @@
                       <span class="icon-tire2"></span>
                       
                       <div class="tire__bottom {{eje.0.1}}">
-                          <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.3.id }}">
+                          <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}">
 
                             {% if eje.0.4 == None %}
                                 N/A
@@ -527,7 +527,11 @@
                         <div class="observations__container" data-container-id="{{ ej.0.id }}">
                           
                           {% for observacion in observaciones_manuales %}
-                          <div data-icon-type="{{observacion.observacion}}">
+                          <div data-icon-type="{{observacion.observacion}}"
+                              {% if observacion in ej.6.observaciones_act %}
+                                class='visible'
+                              {% endif %}
+                          >
                             <i class="{{observacion.icono}}"></i>
                             Desgaste externo
                           </div>
@@ -547,6 +551,9 @@
                                 data-icon-profundidad="{{observacion.observacion}}"
                               {% else %}
                                 data-icon-desgaste="{{observacion.observacion}}"
+                              {% endif %}
+                              {% if observacion in ej.6.observaciones_act %}
+                                class='visible'
                               {% endif %}
                             >
                               <i class="{{observacion.icono}}"></i>
@@ -580,6 +587,142 @@
       <script src="{% static 'js/edicion/index.js' %}" type="module"></script>
 
       <script>
+        document.addEventListener('DOMContentLoaded', (e) => {
+          handlePresion();
+          confirmAlert()
+        })
+
+        const validateEconomic = () => {
+          const data = [{% for i in num_eco_comp %}'{{i}}',{% endfor %}];
+          let values = Array(...data)
+          const inputs = document.querySelectorAll('input[name="economico"]');
+          let duplicate = 0;
+
+          inputs.forEach((input) => {
+            if (values.find((value) => value == input.value)) {
+              const warn = Swal.fire({
+                title: 'Error',
+                text: `El numero ${ input.value } esta repetido`,
+                icon: 'error',
+                backdrop: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+              });
+              duplicate++;
+            }
+          }); 
+
+          console.log('Duplicado', duplicate)
+          
+          if ( duplicate > 0 ) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+
+        const noDoubleValues = (inputName = '') => {
+        const elements = document.querySelectorAll(`input[name="${inputName}"]`);
+        let values = [];
+
+        elements.forEach((value) => {
+          values.push(value.value);
+        });
+
+        const tempArray = [...values].sort();
+        let duplicate = [];
+
+        for (let i = 0; i < tempArray.length; i++) {
+          if (tempArray[i + 1] === tempArray[i]) {
+            duplicate.push(tempArray[i]);
+          }
+        }
+
+        if (duplicate.length > 0) {
+          const alert = Swal.fire({
+            title: 'Error',
+            text: 'No puede haber elementos duplicados',
+            icon: 'error',
+            backdrop: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          });
+          return true; // Si hay elementos duplicados retorna true para la validación con sweetalert
+        }
+
+        return false; // Si no hay elementos duplicados
+      };
+
+      // ! Empty profs
+
+      const emptyProfs = () => {
+        const inputs = document.querySelectorAll('.form__prof');
+        let counter = 0;
+
+        inputs.forEach((el) => {
+          let inputCounter = 0;
+          el.querySelectorAll('input').forEach((input) => {
+            if (input.value !== '') {
+              inputCounter++;
+            }
+          });
+          if (inputCounter >= 1) {
+            counter++;
+          }
+        });
+
+        console.log(counter);
+
+        if (counter >= inputs.length) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const confirmAlert = () => {
+        const form = document.getElementById('tire-form');
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const duplicate = noDoubleValues('llanta');
+          const empty = emptyProfs();
+          const economic = validateEconomic();
+          console.log('economic', economic)
+
+          if (duplicate) return;
+
+          if (!empty) {
+            const alertSw = Swal.fire({
+              title: 'Error',
+              text: 'Todas las llantas al menos tienen que tener una profundidad',
+              icon: 'error',
+              backdrop: true,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+            });
+            return;
+          }
+
+          if (!economic) {
+            return;
+          }
+
+          const alertSw = Swal.fire({
+            title: 'Confirmación',
+            text: '¿Seguro que desea continuar?',
+            icon: 'question',
+            confirmButtonText: 'Si',
+            backdrop: true,
+            showDenyButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          }).then((res) => {
+            res.value && form.submit();
+          });
+        });
+      };
+
         const handlePresion = () => {
           const inputs = document.querySelectorAll('input[name="presion"]');
           const tag = document.querySelectorAll('[data-tag-id]');
@@ -620,7 +763,5 @@
             })
           })
         }
-
-        handlePresion();
       </script>
 {% endblock %}

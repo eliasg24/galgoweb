@@ -23,23 +23,27 @@
     <label for="" class="form-label">
       FECHA
     </label>
-    <span class="fecha">21-02-2022</span>
+    <span class="fecha">{{fecha.day}}/{{fecha.month}}/{{fecha.year}}</span>
     <label for="" class="form-label">
       TALLER DE ORIGEN
     </label>
-    <span class="almohadilla">#</span>
+    <span class="almohadilla">{{origen}}</span>
     <label for="" class="form-label">
       TALLER DE DESTINO
     </label>
-    <span class="almohadilla">#</span>
+
+    <select name="" id="">
+      <option value=""></option>
+    </select>
+    
     <label for="" class="form-label">
       USUARIO
     </label>
-    <span class="almohadilla">USER</span>
+    <span class="almohadilla">{{perfil}}</span>
     <h3>LISTA DE # ECONÓMICOS</h3>
-      <li class="list">#123456789</li>
-      <li class="list">#123456789</li>
-      <li class="list">#123456789</li>
+    {% for llanta in llantas %}
+      <li class="list">{{llanta.numero_economico}}</li>
+      {% endfor %}
     <nav class="nav-form">
       <button class="btn btn-success">
         <span class="icon-checkmark"></span>

@@ -1,10 +1,6 @@
-:root {
-  --main-color: #242424;
-}
-
 .header {
   align-items: center;
-  background-color: var(--main-color);
+  background-color: var(--colorv01);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -17,7 +13,7 @@
 }
 
 .section-head {
-  background-color: var(--main-color);
+  background-color: var(--colorv01);
   padding: 0.5rem;
 }
 
@@ -49,7 +45,7 @@
 
 /* Agregar producto */
 .container {
-  background-color: var(--main-color);
+  background-color: var(--colorv01);
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
@@ -90,17 +86,17 @@
 .form-aeto::-webkit-scrollbar-thumb,
 .table-cont::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--colorv16);
 }
 
 .form-aeto::-webkit-scrollbar-track,
 .table-cont::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: var(--colorv17);
 }
 
 .main-table th {
-  border-bottom: 2px solid var(--border-alt-button);
+  border-bottom: 2px solid var(--colorv14);
   padding: 0.5rem;
   text-align: center;
 }
@@ -113,7 +109,7 @@
 /* Table */
 
 .table-cont {
-  background: var(--main-color);
+  background: var(--colorv01);
   height: 100vh; /* Define la altura minima */
   position: relative;
   overflow: auto;
@@ -127,11 +123,11 @@
 }
 
 .main-table thead {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 .main-table tbody tr:nth-child(even) {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 /* Desktop */

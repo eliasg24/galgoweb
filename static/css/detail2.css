@@ -1,5 +1,5 @@
 .btn-download {
-  background-color: var(--border-button);
+  background-color: var(--colorv13);
 }
 
 .eje {
@@ -7,7 +7,7 @@
 }
 
 .tire-relative {
-  color: white;
+  color: var(--colorv02);
   text-decoration: none;
   position: relative;
 }
@@ -45,13 +45,13 @@
 
 .tire__data {
   font-size: 1rem;
-  color: #fff;
-  text-shadow: 2px 2px #000;
+  color: var(--colorv02);
+  text-shadow: 2px 2px var(--colorv16);
 }
 
 .icon-central-axle,
 .icon-da {
-  background-color: #fff;
+  background-color: var(--colorv02);
   height: 1rem;
 }
 
@@ -116,7 +116,7 @@
 
 #nav-table .btn-aeto-crunch.active {
   border-top: none;
-  border-bottom: thin solid var(--border-alt-button);
+  border-bottom: thin solid var(--colorv14);
 }
 
 .tables__table {
@@ -143,7 +143,7 @@
 }
 
 .config__data {
-  background-color: #202020;
+  background-color: var(--colorv27);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -160,12 +160,12 @@
 
 .config__data::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--colorv16);
 }
 
 .config__data::-webkit-scrollbar-track {
   border-radius: 5px;
-  background-color: gray;
+  background-color: var(--colorv17);
 }
 
 .dash__data {
@@ -177,7 +177,7 @@
 
 .score-card {
   align-items: center;
-  background-color: var(--main-background);
+  background-color: var(--colorv00);
   border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -188,7 +188,7 @@
 }
 
 .chart__container {
-  background-color: #202020;
+  background-color: var(--colorv27);
   display: flex;
   flex-flow: column nowrap;
   padding: 0.5rem;
@@ -222,7 +222,7 @@
 }
 
 .config__container {
-  background-color: #202020;
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   grid-template-rows: auto auto auto 1fr;
@@ -235,7 +235,7 @@
 }
 
 .config__header {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
   /* border-bottom: thin solid #00f0ff; */
   text-align: center;
   padding: 0.25rem;
@@ -269,32 +269,32 @@
 }
 
 .good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .purple {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
 }
 
 
 .good-text {
-  color: seagreen;
+  color: var(--colorv08);
 }
 
 .yellow-text {
-  color: var(--yellow-color);
+  color: var(--colorv05);
 }
 
 .bad-text {
-  color: var(--red-color);
+  color: var(--colorv07);
 }
 
 .config__nav {
@@ -323,7 +323,7 @@
 } */
 
 .pop-out {
-  background-color: #111;
+  background-color: var(--colorv26);
   position: absolute;
   font-size: 1rem;
   width: max-content;
@@ -351,7 +351,7 @@
 }
 
 .config__table th {
-  border-bottom: 2px solid var(--border-alt-button);
+  border-bottom: 2px solid var(--colorv14);
   padding: 0.5rem;
   text-align: center;
 }
@@ -361,19 +361,19 @@
   text-align: center;
 }
 .config__table thead {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 .config__table tbody tr:nth-child(even) {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 .config__table .icon-cross {
-  color: var(--red-color);
+  color: var(--colorv07);
 }
 
 .config__table .icon-checkmark {
-  color: var(--green-color);
+  color: var(--colorv08);
 }
 
 .bitacora-title {
@@ -387,13 +387,13 @@
 }
 
 .bitacora {
-  background: #202020;
+  background: var(--colorv27);
   padding: 1rem;
   border-radius: 0.25rem;
 }
 
 .dash__container {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -435,9 +435,9 @@
 }
 
 .buttons button {
-  background: transparent;
+  background: var(--colorv18);
   border: none;
-  color: #fff;
+  color: var(--colorv02);
   cursor: pointer;
   outline: none;
 }
@@ -458,7 +458,7 @@
 }
 
 .print__content {
-  background-color: #202020;
+  background-color: var(--colorv27);
 }
 
 .par-llantas,
@@ -472,13 +472,13 @@
 
 .icon-central-axle,
 .icon-da {
-  background-color: #fff;
+  background-color: var(--colorv02);
   height: 1rem;
 }
 
 .axle {
   display: flex;
-  background-color: white;
+  background-color: var(--colorv02);
   height: 1rem;
 }
 
@@ -515,7 +515,7 @@
   }
 
   .icon-tire2 {
-    color: #fff;
+    color: var(--colorv02);
     font-size: 15vmin;
   }
 

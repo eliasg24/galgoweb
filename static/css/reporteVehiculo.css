@@ -1,5 +1,5 @@
 html {
-  background-color: #fff;
+  background-color: var(--colorv02);
   /* font-family: 'Montserrat', Arial, Helvetica, sans-serif; */
 }
 
@@ -9,15 +9,15 @@ body {
   grid-template-rows: auto 1fr;
   gap: 4rem;
   min-height: auto;
-  color: #000;
+  color: var(--colorv16);
   overflow-x: hidden;
   margin: auto;
   max-width: 950px;
 }
 
 thead {
-  background: black;
-  color: white;
+  background: var(--colorv16);
+  color: var(--colorv02);
   height: 30px;
 }
 
@@ -47,8 +47,8 @@ img {
   height: 90%;
   display: flex;
   align-items: center;
-  background: black;
-  color: white;
+  background: var(--colorv16);
+  color: var(--colorv02);
   width: 90%;
   padding-left: 1rem;
   border-radius: 0.25rem;
@@ -90,13 +90,13 @@ img {
 }
 
 .report__card-title {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--colorv16);
+  color: var(--colorv02);
 }
 
 .report__card-body {
   /* background-color: gray; */
-  color: #000;
+  color: var(--colorv16);
 }
 
 .main__container {
@@ -136,7 +136,7 @@ img {
 }
 
 .shaft {
-  background-color: #000;
+  background-color: var(--colorv16);
   height: 0.5rem;
   flex: 1 1 auto;
   width: 100%;
@@ -174,21 +174,23 @@ img {
 
 .tire__economic-top,
 .tire__economic-bottom {
-  font-size: 0.9rem;
+  font-size: 0.65rem;
   font-weight: 500;
-  left: 0;
   position: absolute;
-  right: 0;
 }
 
 .tire__economic-top {
-  margin-top: -28px;
+  margin-top: -38px;
   border-bottom: solid 1px;
+  left: 0;
+  right: 0;
 }
 
 .tire__economic-bottom {
   border-top: solid 1px;
-  bottom: -28px;
+  bottom: -38px;
+  right: 0;
+  left: 0px;
 }
 
 .ibottom {
@@ -203,7 +205,7 @@ img {
 
 .tire .tire__tag {
   border-radius: 0.25rem;
-  color: #fff;
+  color: var(--colorv02);
   font-size: 0.75rem;
   font-weight: bold;
   left: 0;
@@ -215,15 +217,15 @@ img {
 /* colors */
 
 .tire__tag.good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .tire__tag.yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .tire__tag.bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 /*  */
@@ -283,24 +285,24 @@ img {
 }
 
 .report__card_title {
-  color: white;
+  color: var(--colorv02);
   width: 100%;
   height: 50%;
   display: flex;
   justify-content: center;
-  background-color: black;
+  background-color: var(--colorv16);
   align-items: center;
   font-weight: 600;
 }
 
 .report__card_body {
   font-weight: 600;
-  color: black;
+  color: var(--colorv16);
   height: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: gray;
+  background: var(--colorv17);
 }
 
 .report__card-evaluacion {
@@ -311,7 +313,7 @@ img {
 }
 
 .report__card_rojo {
-  background: red;
+  background: var(--colorv22);
   height: 30px;
   width: 30px;
 }
@@ -321,7 +323,7 @@ img {
   width: 30px;
 }
 .report__card_azul {
-  background: var(--main-blue);
+  background: var(--colorv04);
   height: 30px;
   width: 30px;
 }
@@ -352,7 +354,7 @@ img {
 } */
 
 .ejes__2 .icon-tire2 {
-  font-size: 12rem;
+  font-size: 10.5rem;
 }
 
 .main__container-config.ejes__2 {
@@ -371,25 +373,46 @@ img {
   font-size: 6rem;
 }
 
+.ejes__3 .tire__economic-top,
+.ejes__3 .tire__economic-bottom,
 .ejes__4 .tire__economic-top,
-.ejes__4 .tire__economic-bottom {
-  font-size: 0.5rem;
+.ejes__4 .tire__economic-bottom,
+.ejes__5 .tire__economic-top,
+.ejes__5 .tire__economic-bottom
+.ejes__6 .tire__economic-top,
+.ejes__6 .tire__economic-bottom {
+  font-size: 0.65rem;
 }
 
-.ejes__4 .tire__tag {
+.ejes__5 .icon-tire2,
+.ejes__6 .icon-tire2 {
+  font-size: 6.75rem;
+}
+
+.ejes__4 .tire__tag,
+.ejes__5 .tire__tag,
+.ejes__6 .tire__tag {
   font-size: 0.75rem !important;
 }
 
-.ejes__4 .pos {
+.ejes__4 .pos,
+.ejes__5 .pos,
+.ejes__6 .pos {
   padding: 0.25rem !important;
 }
 
-.ejes__4 .tire__economic-top {
-  margin-top: -18px;
+.ejes__3 .tire__economic-top,
+.ejes__4 .tire__economic-top,
+.ejes__5 .tire__economic-top,
+.ejes__6 .tire__economic-top {
+  margin-top: -38px;
 }
 
-.ejes__4 .tire__economic-bottom {
-  bottom: -18px;
+.ejes__3 .tire__economic-bottom,
+.ejes__4 .tire__economic-bottom,
+.ejes__5 .tire__economic-bottom,
+.ejes__6 .tire__economic-bottom {
+  bottom: -38px;
 }
 
 .config__table {

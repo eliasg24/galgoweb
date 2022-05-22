@@ -2,8 +2,6 @@
 
 {% block head %}
 {% load static %}
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link
   rel="stylesheet"
   href="{% static 'css/ordenSalidaRen.css' %}"
@@ -13,151 +11,107 @@
 {% endblock %}
 
 {% block content %}
-<div class="all-cont" id="doc">
-  <header class="doc-head">
-    <div class="head-title">
-      <h2 class="doc-title">Orden de Salida a Renovador</h2>
-      <h2 class="doc-sub">Folio: SR</h2>
-    </div>
-    <div class="logo">
-      <img src="{% static 'images/pulpo.png' %}" alt="" />
-    </div>
-  </header>
+<form method="POST" class="orden-salida">
 
-  <div class="container">
-    <div class="cont-item">
-      <strong>Fecha:</strong>
-      <span class="italic">22/02/2022</span>
-    </div>
-    <div class="cont-item">
-      <strong>Usuario:</strong>
-      <span class="italic">pruebacal</span>
-    </div>
-    <div class="cont-item">
-      <label for="destino">
-        <strong>Renovador Destino:</strong>
-        <input
-          type="text"
-          list="destino"
-          placeholder="Destino..."
-          class="form-control"
-        />
-        <datalist id="destino">
-          <option value="Destino 1"></option>
-          <option value="Destino 2"></option>
-          <option value="Destino 3"></option>
-        </datalist>
-      </label>
-    </div>
-  </div>
+  <input name="ids" type="hidden" value="{{ids}}">
+  {% csrf_token %}
+  <div class="all-cont" id="doc">
+    <header class="doc-head">
+      <div class="head-title">
+        <h2 class="doc-title">Orden de Salida a Renovador</h2>
+        <h2 class="doc-sub">Folio: SR</h2>
+      </div>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" alt="" />
+      </div>
+    </header>
+  
+    <div class="container">
+      <div class="cont-item">
+        <strong>Fecha</strong>
+        <span class="italic">{{fecha.day}}/{{fecha.month}}/{{fecha.year}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Usuario</strong>
+        <span class="italic">{{perfil}}</span>
+      </div>
+      <div class="cont-item">
+        <label class="label-top" for="destino">
+          <strong>Renovador Destino</strong>
+         {% if historico == True %}
+        
+          {{renovador.nombre}}
 
-  <div class="main-cont">
-    <div class="top-row">
-      <div>
-        <label>Cantidad: </label>
-        <span>10</span>
+         {% else %}
+
+            <select name="destino" id="destino" required>
+              <option value="" selected></option>
+              {% for renovador in renovadores %}
+                <option value="{{renovador.id}}">
+                  {{renovador.nombre}}
+                </option>
+              {% endfor %}
+            </select>
+          
+          {% endif %}
+        </label>
       </div>
     </div>
-
-    <div class="table-cont">
-      <table>
-        <thead>
-          <tr>
-            <th>Económico</th>
-            <th>Casco</th>
-            <th>Producto</th>
-            <th>Vida</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-          </tr>
-        </tbody>
-      </table>
+  
+    <div class="main-cont">
+      <div class="top-row1">
+        <div class="top-table">
+          <label>Cantidad </label>
+          <span>{{llantas|length}}</span>
+        </div>
+      </div>
+  
+      <div class="table-cont">
+        <table>
+          <thead>
+            <tr>
+              <th>Económico</th>
+              <th>Casco</th>
+              <th>Producto</th>
+              <th>Vida</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for llanta in llantas %}
+              <tr>
+                <td>{{llanta.numero_economico}}</td>
+                <td>casco</td>
+                <td>{{llanta.producto}}</td>
+                <td>{{llanta.vida}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div class="firma">
+      <hr />
+      <h1>Firmas de Salida de llantas</h1>
     </div>
   </div>
+  
+  <div class="nav-buttons">
+    <button class="btn btn-info" type="button" role="button" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+    {% if historico == True %}
 
-  <div class="firma">
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/5/53/Miguel_D%C3%ADaz-Canel_firma.png"
-      alt=""
-  class="firma-img"
-    />
-    <hr />
-    <h1>Firmas de Salida de llantas</h1>
+    {% else %}
+
+      <button type="submit" id="submit" class="btn btn-success">
+        <span class="icon-checkmark"></span>
+      </buttonhref=>
+    
+    {% endif %}
   </div>
-</div>
 
-<div class="nav-buttons">
-  <button class="btn btn-info" id="btn-print">
-    <span class="icon-printer8"></span>
-  </button>
-  <button class="btn btn-primary">Subir firma</button>
-  <button class="btn btn-primary" type="submit">Guardar</button>
-  <button class="btn btn-success">
-    <a href="{% url 'dashboards:conRenovador' %}">
-      <span class="icon-checkmark"></span>
-    </a>
-  </button>
-</div>
+</form>
 
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
@@ -168,6 +122,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', (e) => {
     printBtn();
+    // taller();
   });
 
   const print = () => {
@@ -200,5 +155,18 @@
 
     button.addEventListener('click', print);
   };
+
+  const taller = () => {
+    const input = document.getElementById('destino');
+    const anchor = document.getElementById('submit');
+
+    input.addEventListener('input', (e) => {
+      anchor.href = '';
+      anchor.href += `&renovador=${input.value}`;
+      console.log(anchor.href)
+    })
+
+  }
+
 </script>
 {% endblock %}

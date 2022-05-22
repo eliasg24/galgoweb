@@ -91,7 +91,6 @@ const validaciones = (
       tag.textContent = rightValue;
 
       colorProf(tag, puntoRetiro, container);
-      console.log('Solo se modifico el derecho');
       return;
     }
     colorProf(tag, puntoRetiro, container);
@@ -270,8 +269,6 @@ export const profundidad = () => {
     let tag = document.querySelector(`.tire__bottom span`);
     let puntoRetiro = parseFloat(profundidad.getAttribute('data-punto-retiro'));
     let container = document.querySelector(`.observations__container`);
-
-    console.log(tag)
 
     document.addEventListener('input', ({ target }) =>
       validaciones(target, left, center, right, tag, puntoRetiro, container)

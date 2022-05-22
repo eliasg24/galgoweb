@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color: #363636;
+  background-color: var(--colorv00);
 }
 
 .container {
@@ -15,14 +15,14 @@ body {
 
 .top-nav {
   display: flex;
-  background: #171717;
+  background: var(--colorv25);
   flex-flow: column wrap;
   gap: 1rem;
   padding: 0.5rem 1rem;
 }
 
 hr {
-  border-top: thin solid #fff;
+  border-top: thin solid var(--colorv02);
   margin: auto;
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -44,7 +44,7 @@ hr {
 
 .dashboard,
 .informe {
-  background: #171717;
+  background: var(--colorv25);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -54,14 +54,14 @@ hr {
 }
 
 .reporte-link {
-  color: white;
+  color: var(--colorv02);
   font-weight: bold;
   text-decoration: none;
 }
 
 .dashboard-link {
   text-decoration: none;
-  color: white;
+  color: var(--colorv02);
 }
 
 @media screen and (min-width: 1024px) {
@@ -72,7 +72,7 @@ hr {
   .horizontal {
     width: 100%;
     margin: 0;
-    background: #363636;
+    background: var(--colorv00);
     display: grid;
     grid-template-rows: 2fr 16fr;
   }

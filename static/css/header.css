@@ -1,8 +1,4 @@
   :root{
-    --inputs-laterales:  linear-gradient(#D76369, #F4AA74);
-    --red: #D76369;
-    --orange: #F6AA6F;
-    --black: #171717;
     --gray: linear-gradient(#363636, #242424);
   }
   
@@ -12,8 +8,7 @@
   
   body {
     margin: 0;
-    font-family: Arial;
-    background: #f1f1f1;
+    background: var(--colorv42);
     font-family: 'Montserrat', sans-serif;
     background: var(--gray);
   }
@@ -22,7 +17,7 @@
   .header {
     padding: 30px;
     text-align: center;
-    background: gray;
+    background: var(--colorv17);
   }
   
   .header h1 {
@@ -32,14 +27,14 @@
   /* Style the top navigation bar */
   .topnav {
     overflow: hidden;
-    background-color: #333;
+    background-color: var(--colorv37);
   }
   
   /* Style the topnav links */
   .topnav a {
     float: left;
     display: block;
-    color: #f2f2f2;
+    color: var(--colorv44);
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -47,8 +42,8 @@
   
   /* Change color on hover */
   .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+    background-color: var(--colorv34);
+    color: var(--colorv16);
   }
   
   /* Create two unequal columns that floats next to each other */
@@ -75,7 +70,7 @@
   
   /* Add a card effect for articles */
   .card {
-    background-color: white;
+    background-color: var(--colorv02);
     padding: 20px;
     margin-top: 20px;
   }
@@ -91,7 +86,7 @@
   .footer {
     padding: 20px;
     text-align: center;
-    background: #ddd;
+    background: var(--colorv34);
     margin-top: 20px;
   }
   

@@ -11,18 +11,18 @@ html {
 
 a {
   text-decoration: none;
-  color: #fff;
+  color: var(--colorv02);
 }
 
-body {
+/* body {
   margin: 0;
   font-family: Arial;
   font-family: 'Poppins', Arial, Helvetica, sans-serif;
-  /* background-color: #363636; */
+  background-color: #363636;
   display: grid;
   height: 100vh;
   grid-template-columns: auto 1fr auto;
-}
+} */
 
 hr {
   width: 30%;
@@ -37,70 +37,64 @@ label {
   font-weight: bold;
 }
 
+.label-top {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
 table {
-  color: black;
-  border: 1px solid black;
+  color: var(--colorv16);
   border-collapse: collapse;
   width: 100%;
   text-align: center;
 }
 
 thead {
-  background-color: #303841;
-  color: #fff;
+  background-color: var(--colorv16);
+  color: var(--colorv02);
 }
 
 th,
 td {
-  border: 1px solid black;
   padding: 1rem;
 }
 
-.btn {
-  background: none;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  padding: 0.75rem;
-  outline: none;
-  transition: all 0.4s ease;
+.orden-salida {
+  display: flex;
+  flex-flow: row wrap;
 }
 
-.btn:hover {
-  opacity: 0.75;
-}
-
-.btn.disabled {
-  background-color: gainsboro;
-  color: gray;
-  cursor: not-allowed;
+.btn-danger {
+  font-size: 2rem;
 }
 
 .btn-success {
-  background-color: seagreen;
+  background-color: var(--colorv08);
   border-radius: 50%;
-  color: #fff;
-  font-size: 2vw;
+  color: var(--colorv02);
+  font-size: 2rem;
 }
 
 .btn-info {
-  background-color: #9147ff;
+  background-color: var(--colorv35);
   border-radius: 50%;
-  color: #fff;
-  font-size: 2vw;
+  color: var(--colorv02);
+  font-size: 2rem;
 }
 
 .btn-primary {
-  background-color: #026cf5;
-  color: #fff;
+  background-color: var(--colorv04);
+  color: var(--colorv02);
   font-size: 1.25rem;
 }
 
 .all-cont {
   display: grid;
   margin: 0 auto;
-  background: white;
-  color: black;
+  background: var(--colorv02);
+  color: var(--colorv16);
   padding: 1rem;
   grid-template-rows: auto auto 1fr;
   gap: 1rem;
@@ -110,40 +104,55 @@ td {
 }
 
 .doc-head {
-  border-bottom: 3px dashed #000;
   display: grid;
   grid-template-columns: 4fr 1fr;
   padding-bottom: 1rem;
 }
 
 .doc-title {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
+  border-bottom: solid;
+  width: max-content;
 }
 
 .doc-sub {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin: 0;
 }
 
 .cont-item {
-  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.cont-item strong {
+  font-size: 1rem;
 }
 
 .italic {
+  background: var(--colorv16);
+  color: var(--colorv02);
+  display: flex;
   font-style: italic;
+  font-weight: bold;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
 }
 
 .form-control {
   font-size: 1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   outline: none;
 }
 
 .table-control {
-  background: transparent;
+  background: var(--colorv18);
   border: none;
-  color: #fff;
+  color: var(--colorv02);
   text-align: center;
 }
 
@@ -158,16 +167,54 @@ td {
 }
 
 .container {
-  border: 2px solid black;
-  flex-basis: 80%;
   padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
 }
 
 .top-row {
   align-items: center;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
   margin: 1rem;
+}
+
+.top-row1 {
+  align-items: center;
+  display: grid;
+  margin: 1rem;
+}
+
+.top-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.top-table strong,
+.top-table label {
+  background: var(--colorv16);
+  color: var(--colorv02);
+  width: 70%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.top-table span {
+  background: var(--colorv34);
+  font-weight: bold;
+  width: 70%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+tbody {
+  background: var(--colorv34);
 }
 
 .main-cont {
@@ -190,7 +237,7 @@ td {
 
 .nav-buttons {
   align-items: center;
-  background-color: #363636;
+  background-color: var(--colorv00);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -209,9 +256,15 @@ td {
 }
 
 .ok {
-  color: #2e8b57;
+  color: var(--colorv08);
 }
 
 .bad {
-  color: #ff0000;
+  color: var(--colorv22);
+}
+
+@media screen and (min-width: 1024px) {
+  .orden-salida {
+    flex-flow: row nowrap;
+  }
 }

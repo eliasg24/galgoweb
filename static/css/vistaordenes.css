@@ -1,0 +1,9 @@
+.form-control {
+	background-color: transparent;
+    border: none;
+    border: thin solid #fff;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+}

@@ -9,68 +9,83 @@
 {% endblock %}
 
 {% block content %}
-<main class="main__container animate__animated animate__fadeIn">
+<form method="POST" class="main__container animate__animated animate__fadeIn">
+  {% csrf_token %}
   <header class="head-cont">
     <h1>Antes de renovar</h1>
 
     <div class="drop-search">
-      <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
+      <input type="search" name="economico" id="economico" placeholder="Buscar llanta..." class="drop-input">
       <i class="bx bx-search"></i>
     </div>
 
     <nav class="flex-row">
-      <a href="{% url 'dashboards:ordenSalidaRen' %}" class="btn btn-download">
+      <!-- <a href="{% url 'dashboards:ordenSalidaRen' %}" class="btn btn-download">
+      </a> -->
+      <button type="submit" name="form" value="antes-renovar" class="btn btn-download">
         <span class="icon-office"></span>
-      </a>
-      <a href="{% url 'dashboards:stockDestino' %}" class="btn btn-download">
+      </button>
+      
+      <button type="submit" name="form" value="stockDestino" class="btn btn-download">
         <span class="icon-money"></span>
-      </a>
-      <a href="{% url 'dashboards:tallerDestino' %}" class="btn btn-download">
+      </button>
+
+      <button type="submit" name="form" value="tallerDestino" class="btn btn-download">
         <span class="icon-truck"></span>
-      </a>
+      </button>
+
       <button class="btn btn-download" type="button" id="filter-btn">
         <span class="icon-filter"></span>
       </button>
+
+      <input type="hidden" name="origen" value="antesDeRenovar">
     </nav>
   </header>
 
-  
-  <div class="relative">
-    <div class="absolute cards__container">
-      {% for llanta in llantas_antes_de_renovar %}
-      <div class="card__wrapper" id="{{ llanta.numero_economico | lower }}">
-        
-        <div class="card__img">
-          <a class="tireDecoration" href="{% url 'dashboards:tireDetail' llanta.id %}">
-            <span class="icon-tire2"></span>
-          </a>
-          </div>
-          
-          <div class="card__body">
-            <div class="tire__status good"></div>
-            <div class="card__body-label">
-              <h3 id="tire-name">#{{llanta.numero_economico}}</h3>
-              <h4 class="card-title">Profunidad:</h4>
-              <p><i>{{ llanta.ultima_inspeccion.min_profundidad }}</i></p>
-            </div>
-            <div class="card__body-label">
-              <h4 class="card-title">Producto:</h4>
-              <p><i>{{ llanta.producto }}</i></p>
-            </div>
-            <div class="card__body-label">
-              <h4 class="card-title">Fecha:</h4>
-              <p>{{ llanta.ultima_inspeccion.fecha_hora }}</p>
-            </div>
-          </div>
-          
-        </div>
-        {% endfor %}
-      </div>
-  </div>    
-</main>
+  <div class="cards__container"></div>
+</form>
 
 {% include 'filter.html' %}
 
+<template id="card-template">
+  <label for="" class="tire-input">
+    <input type="checkbox" name="id" value="" id="" class="check-tire">
+    <div class="card__wrapper animate__animated animate__fadeIn" id="">
+      <h3 class="economic"></h3>
+          
+      <div class="card__content">
+        <div class="card__img">
+          <a class="tireDecoration" href="">
+            <span class="icon-tire2"></span>
+          </a>
+        </div>
+          
+        <div class="card__body">
+          <div class="tire__status"></div>
+          <div class="card__body-label">
+            <h4 class="card-title">Profundidad:</h4>
+            <p>
+              <em class="profundidad"></em>
+            </p>
+          </div>
+          <div class="card__body-label">
+            <h4 class="card-title">Producto:</h4>
+            <p>
+              <em class="product"></em>
+            </p>
+          </div>
+          <div class="card__body-label">
+            <h4 class="card-title">Fecha:</h4>
+            <p class="date"></p>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </label>
+</template>
+
 <script src="{% static './js/almacen/index.js' %}"></script>
+<script src="{% static './js/almacen/antes-renovar/index.js' %}" type="module"></script>
 
 {% endblock %}

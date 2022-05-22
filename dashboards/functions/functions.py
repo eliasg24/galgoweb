@@ -72,7 +72,10 @@ def actualizar_km_actual(llanta_actual, llanta_referencia, vehiculo, vehiculo_re
         km_viejo = float(vehiculo_referencia.km) - float(llanta_actual.km_montado)
         km_nuevo = float(vehiculo.km) - float(llanta_actual.km_montado)
         km_dif = km_nuevo - km_viejo
-        km = llanta_actual.km_actual + km_dif
+        if llanta_actual.km_actual!= None:
+            km = llanta_actual.km_actual + km_dif
+        else:
+            km = km_dif
         return km
     else:
         km_nuevo = float(vehiculo.km) - float(llanta_actual.km_montado)
@@ -98,71 +101,72 @@ def actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion):
     km_teorico = (profundidad_inicial - ultima_profundidad) * km_x_mm
     return km_teorico
     
-def all_num_eco_compania(compania):
+def all_num_eco_compania(compania, llantas_actuales):
     num_eco = []
     llantas = Llanta.objects.filter(compania = compania)
     for llanta in llantas:
-        num_eco.append(llanta.numero_economico)
+        if llanta not in llantas_actuales:
+            num_eco.append(llanta.numero_economico)
     return num_eco
 
 
-def cambio_de_vida(llanta):
+def cambio_de_vida(llanta, llanta_futuro):
     try:
         historico_llanta = HistoricoLlanta.objects.get(num_eco = llanta)
         if llanta.vida == 'Nueva':
             historico_llanta.casco_nuevo = llanta.producto
-            historico_llanta.km_recorrido_nuevo = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_nuevo = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
             
         elif llanta.vida == '1R':
             if historico_llanta.km_recorrido_nuevo == None:
                 historico_llanta.renovado_1 = llanta.producto
-                historico_llanta.km_recorrido_1 = llanta.km_actual
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_1 = llanta_futuro.km_actual
+                historico_llanta.km_total = llanta_futuro.km_actual
             else:
                 historico_llanta.renovado_1 = llanta.producto
-                historico_llanta.km_recorrido_1 = llanta.km_actual - historico_llanta.km_recorrido_nuevo
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_1 = llanta_futuro.km_actual - historico_llanta.km_total
+                historico_llanta.km_total = llanta_futuro.km_actual
                 
         elif llanta.vida == '2R':
             if historico_llanta.km_recorrido_1 == None:
                 historico_llanta.renovado_2 = llanta.producto
-                historico_llanta.km_recorrido_2 = llanta.km_actual
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_2 = llanta_futuro.km_actual
+                historico_llanta.km_total = llanta_futuro.km_actual
             else:
                 historico_llanta.renovado_2 = llanta.producto
-                historico_llanta.km_recorrido_2 = llanta.km_actual  - historico_llanta.km_recorrido_1
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_2 = llanta_futuro.km_actual  - historico_llanta.km_total
+                historico_llanta.km_total = llanta_futuro.km_actual
             
         elif llanta.vida == '3R':
             if historico_llanta.km_recorrido_2 == None:
                 historico_llanta.renovado_3 = llanta.producto
-                historico_llanta.km_recorrido_3 = llanta.km_actual
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_3 = llanta_futuro.km_actual
+                historico_llanta.km_total = llanta_futuro.km_actual
             else:
                 historico_llanta.renovado_3 = llanta.producto
-                historico_llanta.km_recorrido_3 = llanta.km_actual - historico_llanta.km_recorrido_2
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_3 = llanta_futuro.km_actual - historico_llanta.km_total
+                historico_llanta.km_total = llanta_futuro.km_actual
             
         elif llanta.vida == '4R':
             if historico_llanta.km_recorrido_3 == None:
                 historico_llanta.renovado_4 = llanta.producto
-                historico_llanta.km_recorrido_4 = llanta.km_actual
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_4 = llanta_futuro.km_actual
+                historico_llanta.km_total = llanta_futuro.km_actual
             else:
                 historico_llanta.renovado_4 = llanta.producto
-                historico_llanta.km_recorrido_4 = llanta.km_actual - historico_llanta.km_recorrido_3
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_4 = llanta_futuro.km_actual - historico_llanta.km_total
+                historico_llanta.km_total = llanta_futuro.km_actual
             
         elif llanta.vida == '5R':
             if historico_llanta.km_recorrido_4 == None:
                 historico_llanta.renovado_5 = llanta.producto
-                historico_llanta.km_recorrido_5 = llanta.km_actual
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_5 = llanta_futuro.km_actual
+                historico_llanta.km_total = llanta_futuro.km_actual
             else:
                 historico_llanta.renovado_5 = llanta.producto
-                historico_llanta.km_recorrido_5 = llanta.km_actual - historico_llanta.km_recorrido_4 
-                historico_llanta.km_total = llanta.km_actual
+                historico_llanta.km_recorrido_5 = llanta_futuro.km_actual - historico_llanta.km_total
+                historico_llanta.km_total = llanta_futuro.km_actual
         historico_llanta.save()
     except:
         historico_llanta = HistoricoLlanta.objects.create(num_eco = llanta)
@@ -170,28 +174,28 @@ def cambio_de_vida(llanta):
         print(llanta.vida)
         if llanta.vida == 'Nueva':
             historico_llanta.casco_nuevo = llanta.producto
-            historico_llanta.km_recorrido_nuevo = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_nuevo = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         elif llanta.vida == '1R':
             historico_llanta.renovado_1 = llanta.producto
-            historico_llanta.km_recorrido_1 = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_1 = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         elif llanta.vida == '2R':
             historico_llanta.renovado_2 = llanta.producto
-            historico_llanta.km_recorrido_2 = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_2 = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         elif llanta.vida == '3R':
             historico_llanta.renovado_3 = llanta.producto
-            historico_llanta.km_recorrido_3 = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_3 = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         elif llanta.vida == '4R':
             historico_llanta.renovado_4 = llanta.producto
-            historico_llanta.km_recorrido_4 = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_4 = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         elif llanta.vida == '5R':
             historico_llanta.renovado_5 = llanta.producto
-            historico_llanta.km_recorrido_5 = llanta.km_actual
-            historico_llanta.km_total = llanta.km_actual
+            historico_llanta.km_recorrido_5 = llanta_futuro.km_actual
+            historico_llanta.km_total = llanta_futuro.km_actual
         historico_llanta.save()
     
 def clases_mas_frecuentes(vehiculo_fecha, compania):
@@ -294,7 +298,19 @@ def comportamiento_de_desgaste(inspecciones):
     else:
         return None
 
-def color_profundiddad(profundidad, punto_de_retiro):
+
+def color_presion(presion, presion_minima, presion_maxima):
+    try:
+        if presion >= presion_minima and presion <= presion_maxima:
+            color_presion = 'good'
+        else:
+            color_presion = 'bad'
+    except: 
+        color_presion = 'bad'
+    return color_presion
+
+
+def color_profundidad(profundidad, punto_de_retiro):
     if profundidad != None:
         if profundidad <=  punto_de_retiro:
             color = 'bad'
@@ -330,6 +346,18 @@ def color_observaciones_all(inspeccion_vehiculo):
         
     for ins in inspecciones:
         colores.append(color_observaciones(ins.observaciones.all()))
+    if 'bad' in colores:
+        return 'bad'
+    elif 'yellow' in colores:
+        return 'yellow'
+    else:
+        return 'good'
+
+def color_observaciones_all_one(inspeccion):
+    colores = []
+    observaciones = inspeccion.observaciones.all()
+    for obs in observaciones:
+        colores.append(color_observaciones_one(obs))
     if 'bad' in colores:
         return 'bad'
     elif 'yellow' in colores:
@@ -650,11 +678,11 @@ def desgaste_mensual(inspecciones):
         if dias == 0:
             dias = 1
         #print(dias)
-        resta = sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").first().min_profundidad - sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").last().min_profundidad
+        resta = sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).first().min_profundidad - sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).last().min_profundidad
         #print(resta)
         diario = resta/dias
         #print(diario)
-        dias_30 = sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").last().min_profundidad - (diario * 30)
+        dias_30 = sin_regresion.filter(llanta=llanta[0]["llanta"]).order_by("fecha_hora").annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).last().min_profundidad - (diario * 30)
         return round(dias_30, 2)
 
 def distribucion_cantidad(cpks):
@@ -874,12 +902,40 @@ def doble_mala_entrada(bitacoras, vehiculos):
             if entradas[bitacora.numero_economico.id] >= 2:
                 dobles_entradas.append(bitacora.id)
 
+
     try:
         vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("numero_economico"))
         return vehiculos
     except:
         if len(entradas) >= 1:
             return []
+
+def doble_mala_entrada2(bitacoras, vehiculos):
+    bitacoras = bitacoras.order_by("id")
+    entradas = {}
+    dobles_entradas = []
+    for bitacora in bitacoras:
+        presion_de_entrada = bitacora.presion_de_entrada
+        presion_de_salida = bitacora.presion_de_salida
+        entrada_correcta = presion_de_entrada/presion_de_salida
+
+        if entrada_correcta < 0.9:
+            if bitacora.numero_economico.id in entradas:
+                entradas[bitacora.numero_economico.id] += 1
+            else:
+                entradas[bitacora.numero_economico.id] = 1
+
+        if bitacora.numero_economico.id in entradas:
+            if entradas[bitacora.numero_economico.id] >= 2:
+                dobles_entradas.append(bitacora.id)
+
+
+    try:
+        vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("numero_economico"))
+        return vehiculos
+    except:
+        if len(entradas) >= 1:
+            return vehiculos
 
 def doble_mala_entrada_pro(bitacoras, vehiculos):
     bitacoras = bitacoras.order_by("id")
@@ -1505,7 +1561,16 @@ def exist_edicion_manual(inspeccion_vehiculo):
             return True
     return False
 
+def exist_edicion_manual_one(inspeccion):
+    if inspeccion.edicion_manual == True:
+        return True
+    return False
 
+def get_product_list(productos):
+    list_temp = []
+    for producto in productos:
+        list_temp.append(producto['producto__producto'])
+    return list_temp
 def inflado_promedio(vehiculo):
     tiempo_promedio = 0
     promedio_contar = 0
@@ -1564,6 +1629,13 @@ def juntar_bitacoras(vehiculos, bitacora, bitacora_pro):
             print(True)
         else:
             print(False)
+
+
+def int_list_element(lista):
+    list_temp = []
+    for num in lista:
+        list_temp.append(int(float(num)))
+    return list_temp
 
 def km_actual(inspecciones):
     try:
@@ -1916,6 +1988,19 @@ def mes_anterior(fecha):
     primer_dia = fecha.replace(day=1)
     return primer_dia - timedelta(days=1)
 
+def min_presion(llanta):
+    presion_establecida_act = presion_establecida(llanta)
+    objetivo = llanta.vehiculo.compania.objetivo / 100
+    presion_minima = presion_establecida_act - (presion_establecida_act * objetivo)
+    return presion_minima
+
+def max_presion(llanta):
+    presion_establecida_act = presion_establecida(llanta)
+    objetivo = llanta.vehiculo.compania.objetivo / 100
+    presion_maxima = presion_establecida_act + (presion_establecida_act * objetivo)
+    return presion_maxima
+
+
 def min_profundidad(llanta):
     profundidad_derecha = llanta.profundidad_derecha
     profundidad_central = llanta.profundidad_central
@@ -1962,6 +2047,25 @@ def nunca_vistos(vehiculos):
     nunca_visto = vehiculos.filter(ultima_inspeccion__fecha_hora__isnull=True).count()
     return nunca_visto
 
+def origen_option(origen):
+    if origen == 'antesDeRenovar':
+        return 'Antes de Renovar'
+    else:
+        return ''
+    
+def pagination(page, pages):
+    pagination = {}
+        
+    if (page - 1) >= 1:
+        pagination['prev'] = f'/api/historicodeorden?page={page - 1}'
+    else:
+        pagination['prev'] = None
+    if (page + 1) <= pages:
+        pagination['next'] = f'/api/historicodeorden?page={page + 1}'
+    else:
+        pagination['next'] = None 
+        
+    return pagination
 
 def porcentaje(divisor, dividendo):
     try:
@@ -2150,7 +2254,7 @@ def send_mail(bitacora, tipo):
     thread.start()
 
 def mail(bitacora, tipo):
-    vehiculo = Vehiculo.objects.get(pk = bitacora.numero_economico.id)   
+    vehiculo = Vehiculo.objects.get(pk = bitacora.numero_economico.id)
     llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario="Rodante")
     objetivo = vehiculo.compania.objetivo
     ubicacion = vehiculo.ubicacion
@@ -2312,6 +2416,91 @@ def mail(bitacora, tipo):
 def sin_informacion(llantas):
     llantas_sin_informacion = llantas.filter(producto__isnull=True).count()
     return llantas_sin_informacion
+
+def signo_pulpo(bitacora, num_eje):
+    vehiculo = bitacora.numero_economico
+    objetivo = vehiculo.compania.objetivo
+    establecidas = [
+       vehiculo.presion_establecida_1, 
+       vehiculo.presion_establecida_2,
+       vehiculo.presion_establecida_3,
+       vehiculo.presion_establecida_4,
+       vehiculo.presion_establecida_5,
+       vehiculo.presion_establecida_6,
+       vehiculo.presion_establecida_7
+    ]
+    presion_establecida = establecidas[num_eje-1]
+    presion_minima = presion_establecida - (presion_establecida * (objetivo / 100))
+    presion_maxima = presion_establecida + (presion_establecida * (objetivo / 100))
+    presion_de_entrada = bitacora.presion_de_entrada
+    presion_de_salida = bitacora.presion_de_salida
+    
+    if (
+        (presion_de_entrada >= presion_minima and presion_de_entrada <= presion_maxima)
+        and
+        (presion_de_salida >= presion_minima and presion_de_salida <= presion_maxima)
+        ):
+        return 'icon-checkmark good-text'
+    else:
+        return 'icon-cross bad-text'
+
+def signo_pulpo_pro(bitacora, num_llanta, num_eje):
+    vehiculo = bitacora.numero_economico
+    objetivo = vehiculo.compania.objetivo
+    establecidas = [
+       vehiculo.presion_establecida_1, 
+       vehiculo.presion_establecida_2,
+       vehiculo.presion_establecida_3,
+       vehiculo.presion_establecida_4,
+       vehiculo.presion_establecida_5,
+       vehiculo.presion_establecida_6,
+       vehiculo.presion_establecida_7
+    ]
+    
+    
+    presiones_entrada =[
+        bitacora.presion_de_entrada_1,
+        bitacora.presion_de_entrada_2,
+        bitacora.presion_de_entrada_3,
+        bitacora.presion_de_entrada_4,
+        bitacora.presion_de_entrada_5,
+        bitacora.presion_de_entrada_6,
+        bitacora.presion_de_entrada_7,
+        bitacora.presion_de_entrada_8,
+        bitacora.presion_de_entrada_9,
+        bitacora.presion_de_entrada_10,
+        bitacora.presion_de_entrada_11,
+        bitacora.presion_de_entrada_12,
+    ]
+    
+    presiones_salidas =[
+        bitacora.presion_de_salida_1,
+        bitacora.presion_de_salida_2,
+        bitacora.presion_de_salida_3,
+        bitacora.presion_de_salida_4,
+        bitacora.presion_de_salida_5,
+        bitacora.presion_de_salida_6,
+        bitacora.presion_de_salida_7,
+        bitacora.presion_de_salida_8,
+        bitacora.presion_de_salida_9,
+        bitacora.presion_de_salida_10,
+        bitacora.presion_de_salida_11,
+        bitacora.presion_de_salida_12,
+    ]
+    presion_establecida = establecidas[num_eje-1]
+    presion_minima = presion_establecida - (presion_establecida * (objetivo / 100))
+    presion_maxima = presion_establecida + (presion_establecida * (objetivo / 100))
+    presion_de_entrada = presiones_entrada[num_llanta-1]
+    presion_de_salida = presiones_salidas[num_llanta-1]
+    
+    if (
+        (presion_de_salida >= presion_minima and presion_de_salida <= presion_maxima)
+        and
+        (presion_de_entrada >= presion_minima and presion_de_entrada <= presion_maxima)
+        ):
+        return 'icon-checkmark good-text'
+    else:
+        return 'icon-cross bad-text'
 
 def vehiculo_amarillo(llantas):
     vehiculos_amarillos = []

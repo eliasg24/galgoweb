@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	{% load static %}
+	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static 'css/webservices.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/icomoon/style.css' %}"
+    />
+</head>
+	<body>
+		<header>
+			<h2 class="titulo">WebService Principal</h2>
+		</header>
+		<main>
+			<p>Lista de WebServices</p>
+			<nav>
+				<li>
+					<a href="https://www.aetoweb.com/inspeccionesAdd/?wsdl">https://www.aetoweb.com/inspeccionesAdd/?wsdl</a>
+				</li>
+			</nav>
+            <h1>SOAP</h1>
+            <code>
+                &lt;?xml version="1.0" encoding="utf-8"?&gt; <br>
+                &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt; <br>
+                &lt;soap:Body&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;list xmlns="django.soap.example"&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;km_vehiculo&gt;&lt;/km_vehiculo&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fecha&gt;&lt;/fecha&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_1&gt;&lt;/id_llanta_1&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_1&gt;&lt;/presion_1&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_1&gt;&lt;/profundidad_izquierda_1&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_1&gt;&lt;/profundidad_central_1&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_1&gt;&lt;/profundidad_derecha_1&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_2&gt;&lt;/id_llanta_2&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_2&gt;&lt;/presion_2&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_2&gt;&lt;/profundidad_izquierda_2&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_2&gt;&lt;/profundidad_central_2&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_2&gt;&lt;/profundidad_derecha_2&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_3&gt;&lt;/id_llanta_3&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_3&gt;&lt;/presion_3&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_3&gt;&lt;/profundidad_izquierda_3&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_3&gt;&lt;/profundidad_central_3&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_3&gt;&lt;/profundidad_derecha_3&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_4&gt;&lt;/id_llanta_4&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_4&gt;&lt;/presion_4&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_4&gt;&lt;/profundidad_izquierda_4&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_4&gt;&lt;/profundidad_central_4&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_4&gt;&lt;/profundidad_derecha_4&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_5&gt;&lt;/id_llanta_5&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_5&gt;&lt;/presion_5&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_5&gt;&lt;/profundidad_izquierda_5&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_5&gt;&lt;/profundidad_central_5&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_5&gt;&lt;/profundidad_derecha_5&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_6&gt;&lt;/id_llanta_6&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_6&gt;&lt;/presion_6&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_6&gt;&lt;/profundidad_izquierda_6&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_6&gt;&lt;/profundidad_central_6&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_6&gt;&lt;/profundidad_derecha_6&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_7&gt;&lt;/id_llanta_7&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_7&gt;&lt;/presion_7&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_7&gt;&lt;/profundidad_izquierda_7&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_7&gt;&lt;/profundidad_central_7&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_7&gt;&lt;/profundidad_derecha_7&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_8&gt;&lt;/id_llanta_8&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_8&gt;&lt;/presion_8&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_8&gt;&lt;/profundidad_izquierda_8&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_8&gt;&lt;/profundidad_central_8&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_8&gt;&lt;/profundidad_derecha_8&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_9&gt;&lt;/id_llanta_9&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_9&gt;&lt;/presion_9&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_9&gt;&lt;/profundidad_izquierda_9&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_9&gt;&lt;/profundidad_central_9&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_9&gt;&lt;/profundidad_derecha_9&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_10&gt;&lt;/id_llanta_10&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_10&gt;&lt;/presion_10&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_10&gt;&lt;/profundidad_izquierda_10&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_10&gt;&lt;/profundidad_central_10&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_10&gt;&lt;/profundidad_derecha_10&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_11&gt;&lt;/id_llanta_11&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_11&gt;&lt;/presion_11&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_11&gt;&lt;/profundidad_izquierda_11&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_11&gt;&lt;/profundidad_central_11&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_11&gt;&lt;/profundidad_derecha_11&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_12&gt;&lt;/id_llanta_12&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_12&gt;&lt;/presion_12&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_12&gt;&lt;/profundidad_izquierda_12&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_12&gt;&lt;/profundidad_central_12&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_12&gt;&lt;/profundidad_derecha_12&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_13&gt;&lt;/id_llanta_13&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_13&gt;&lt;/presion_13&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_13&gt;&lt;/profundidad_izquierda_13&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_13&gt;&lt;/profundidad_central_13&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_13&gt;&lt;/profundidad_derecha_13&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_14&gt;&lt;/id_llanta_14&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_14&gt;&lt;/presion_14&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_14&gt;&lt;/profundidad_izquierda_14&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_14&gt;&lt;/profundidad_central_14&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_14&gt;&lt;/profundidad_derecha_14&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_15&gt;&lt;/id_llanta_15&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_15&gt;&lt;/presion_15&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_15&gt;&lt;/profundidad_izquierda_15&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_15&gt;&lt;/profundidad_central_15&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_15&gt;&lt;/profundidad_derecha_15&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_16&gt;&lt;/id_llanta_16&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_16&gt;&lt;/presion_16&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_16&gt;&lt;/profundidad_izquierda_16&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_16&gt;&lt;/profundidad_central_16&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_16&gt;&lt;/profundidad_derecha_16&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_17&gt;&lt;/id_llanta_17&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_17&gt;&lt;/presion_17&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_17&gt;&lt;/profundidad_izquierda_17&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_17&gt;&lt;/profundidad_central_17&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_17&gt;&lt;/profundidad_derecha_17&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id_llanta_18&gt;&lt;/id_llanta_18&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;presion_18&gt;&lt;/presion_18&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_izquierda_18&gt;&lt;/profundidad_izquierda_18&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_central_18&gt;&lt;/profundidad_central_18&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;profundidad_derecha_18&gt;&lt;/profundidad_derecha_18&gt; <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/list&gt; <br>
+                &lt;/soap:Body&gt; <br>
+                &lt;/soap:Envelope&gt; <br>
+            </code>
+		</main>
+	</body>
+</html>
+	

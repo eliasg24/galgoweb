@@ -1,17 +1,29 @@
 .good {
-  background-color: var(--main-blue);
+  background-color: var(--colorv04);
 }
 
 .yellow {
-  background-color: var(--yellow-color);
+  background-color: var(--colorv05);
 }
 
 .bad {
-  background-color: var(--red-color);
+  background-color: var(--colorv07);
 }
 
 .purple {
-  background-color: var(--purple-color);
+  background-color: var(--colorv06);
+}
+
+.good-text {
+  color: var(--colorv08);
+}
+
+.yellow-text {
+  color: var(--colorv05);
+}
+
+.bad-text {
+  color: var(--colorv07);
 }
 
 .head-cont {
@@ -19,11 +31,11 @@
 }
 
 .icon-cross {
-  color: red;
+  color: var(--colorv22);
 }
 
 .icon-checkmark {
-  color: green;
+  color: var(--colorv08);
 }
 
 .main-cont {
@@ -62,12 +74,12 @@
 }
 
 .card {
-  background: #202020;
+  background: var(--colorv27);
   border-radius: 0.25rem;
 }
 
 .card__circle {
-  background-color: var(--main-background);
+  background-color: var(--colorv00);
   margin: 1rem;
   display: grid;
   justify-items: center;
@@ -91,8 +103,8 @@
 }
 
 .config__header {
-  background-color: var(--main-blue);
-  border-bottom: thin solid #00f0ff;
+  background-color: var(--colorv04);
+  border-bottom: thin solid var(--colorv14);
   text-align: center;
   padding: 0.25rem;
   display: flex;
@@ -121,11 +133,11 @@
 }
 
 .btn-download {
-  background-color: var(--border-button);
+  background-color: var(--colorv13);
 }
 
 .pop-out {
-  background-color: #111;
+  background-color: var(--colorv26);
   position: absolute;
   font-size: 1rem;
   width: max-content;
@@ -165,7 +177,7 @@
     rgba(18, 188, 200, 1) 100%
   );
   border-radius: 50%;
-  box-shadow: 0 0.25rem 1rem rgb(255 255 255 / 25%);
+  box-shadow: 0 0.25rem 1rem var(--colorv36);
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -195,11 +207,11 @@
 }
 
 .config__table thead {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 thead {
-  border-bottom: thin solid var(--border-alt-button);
+  border-bottom: thin solid var(--colorv14);
 }
 
 .config__table {
@@ -214,7 +226,7 @@ td {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #213944;
+  background-color: var(--colorv12);
 }
 
 .tire__config {
@@ -268,8 +280,8 @@ tbody tr:nth-child(even) {
 
 .tire__data {
   font-size: 1.5rem;
-  color: #fff;
-  text-shadow: 2px 2px #000;
+  color: var(--colorv02);
+  text-shadow: 2px 2px var(--colorv16);
 }
 
 .tire__config > .icon-tire2 {

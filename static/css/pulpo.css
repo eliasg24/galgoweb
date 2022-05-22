@@ -1,14 +1,10 @@
-:root {
-  --primary-color: #242424;
-}
-
 .form__field {
   font-size: 1rem;
   width: auto;
 }
 
 .form__label {
-  color: #fff;
+  color: var(--colorv02);
 }
 
 input[type='date']::-webkit-inner-spin-button,
@@ -23,15 +19,15 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .input-aeto {
-  color: #fff;
+  color: var(--colorv02);
 }
 
 .icon-cross {
-  color: red;
+  color: var(--colorv22);
 }
 
 .icon-checkmark {
-  color: seagreen;
+  color: var(--colorv24);
 }
 
 #input-fecha {
@@ -39,7 +35,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 #btn-buscar {
-  background: #026cf5;
+  background: var(--colorv04);
   display: none;
 }
 
@@ -56,7 +52,7 @@ input[type='date']::-webkit-inner-spin-button,
   align-items: center;
   display: flex;
   background: none;
-  color: white;
+  color: var(--colorv02);
   border: none;
   /*border-bottom: white solid;*/
 }
@@ -64,14 +60,13 @@ input[type='date']::-webkit-inner-spin-button,
 .btn-aeto > span,
 .input-aeto {
   font-size: 1.25rem;
-  color: white;
+  color: var(--colorv02);
   display: block;
 }
 
 .head-menu {
   align-items: center;
-  background-color: var(--primary-color);
-  background: #202020;
+  background-color: var(--colorv27);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -89,7 +84,7 @@ input[type='date']::-webkit-inner-spin-button,
 
 .head-item a {
   display: block;
-  color: white;
+  color: var(--colorv02);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -113,7 +108,7 @@ input[type='date']::-webkit-inner-spin-button,
 .chart-container {
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: #fff;
+  background-color: var(--colorv15);
   border-radius: 0.25rem;
   height: 100%;
   position: relative;
@@ -129,7 +124,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .nav-btn .btn {
-  color: #000;
+  color: var(--colorv02);
   font-size: 1.25rem;
 }
 
@@ -199,9 +194,9 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .table {
-  background-color: #fff;
+  background-color: var(--colorv27);
   border-collapse: collapse;
-  border: thin solid #fff;
+  border: thin solid var(--colorv02);
   display: none;
   height: 100%;
   position: absolute;
@@ -211,13 +206,8 @@ input[type='date']::-webkit-inner-spin-button,
 
 td,
 th {
-  border: thin solid #404040;
+  border: thin solid var(--colorv02);
   padding: 0.5rem;
-  color: #3c3c3c;
-}
-
-.td-truck {
-  color: #3c3c3c;
 }
 
 .table.active {
@@ -271,7 +261,7 @@ th {
   align-items: center;
   display: flex;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .btn-aeto-crunch {

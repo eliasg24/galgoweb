@@ -21,7 +21,7 @@
 }
 
 .tire__box {
-  background-color: #202020;
+  background-color: var(--colorv27);
   height: 100%;
   padding: 1rem;
 }
@@ -36,6 +36,14 @@
 
 .forms__container {
   grid-template-rows: 1fr auto;
+}
+
+.config__container {
+  grid-template-rows: auto;
+}
+
+.absolute {
+  gap: 1rem;
 }
 
 @media screen and (min-width: 1024px) {
