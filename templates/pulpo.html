@@ -25,7 +25,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
     <header class="head-cont">
         <div class="logo">
-          <img src="{% static 'images/aeto.svg' %}" alt="logo">
+          <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
         </div>
     
         <form 
@@ -1698,8 +1698,8 @@ chart.defaultSeriesType('area');
 chart.yScale().stackMode();
 
 // set yAxis settings
-chart.yAxis().stroke('#fff');
-chart.yAxis().ticks().stroke('#fff');
+chart.yAxis().stroke('#000');
+chart.yAxis().ticks().stroke('#000');
 
 // set xAxis settings
 var xlabels = chart.xAxis().labels();
@@ -1716,7 +1716,7 @@ function ocultarC() {
 }
 // set yAxis labels settings
 chart.yAxis().labels()
-        .fontColor('#fff')
+        .fontColor('#000')
         .format('{%Value}%');
 
 // set yScales 
@@ -1726,7 +1726,7 @@ chart.yScale().minimum(0).maximum(100);
 chart.legend().enabled(false);
 
 //set title settings
-chart.title().fontColor('#fff');
+chart.title().fontColor('#000');
 
 // set container id for the chart
 chart.container('radar1');
@@ -1825,8 +1825,8 @@ var background = gauge.background();
 
 background.stroke('0 #000');
 background.corners(0); 
-background.enabled(true);
-background.fill('#222');
+background.enabled(false);
+background.fill('#000');
 
 // turn on chart animation
 gauge.animation(true);
@@ -1890,8 +1890,8 @@ chart_2.defaultSeriesType('area');
 chart_2.yScale().stackMode();
 
 // set yAxis settings
-chart_2.yAxis().stroke('#545f69');
-chart_2.yAxis().ticks().stroke('#545f69');
+chart_2.yAxis().stroke('#000');
+chart_2.yAxis().ticks().stroke('#000');
 
 // set xAxis settings
 var xlabels = chart_2.xAxis().labels();
@@ -1905,14 +1905,14 @@ if (chart_2.requestFullscreen) {
 
 // set yAxis labels settings
 chart_2.yAxis().labels()
-        .fontColor('#545f69')
+        .fontColor('#000')
         .format('{%Value}%');
 
 // set yScales 
 chart_2.yScale().minimum(0).maximum(100);
 
 //set title settings
-chart_2.title().fontColor('#fff');
+chart_2.title().fontColor('#000');
 
 // set container id for the chart
 chart_2.container(layer_2).draw();
