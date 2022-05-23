@@ -213,7 +213,7 @@ ul {
 
 .bullet-cont {
   align-items: center;
-  color: var(--colorv04);
+  color: var(--colorv46);
   display: flex;
   font-size: 1.25rem;
   gap: 1rem;
@@ -225,7 +225,7 @@ ul {
 }
 
 .bullet-cont h1 {
-  color: var(--colorv04);
+  color: var(--colorv46);
   margin: 0;
 }
 

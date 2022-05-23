@@ -1,11 +1,12 @@
 /* New colors */
 
 :root {
+
   --colorv00: #cccccc;
   --colorv01: #0a2a75;
   --colorv02: #fff;
   --colorv03: #606060;
-  --colorv04: #ed2a3d;
+  --colorv04: #026cf5;
   --colorv05: #dbc002;
   --colorv06: #8a2be2;
   --colorv07: #f0412c;
@@ -13,9 +14,9 @@
   --colorv09: #ff1493;
   --colorv10: #23252b;
   --colorv11: #2f5161;
-  --colorv12: #213944;
+  --colorv12: #565656;
   --colorv13: #f47521;
-  --colorv14: #00e5f3;
+  --colorv14: #4973f2;
   --colorv15: #fff;
   --colorv16: #000;
   --colorv17: #808080;
@@ -47,6 +48,7 @@
   --colorv43: #555;
   --colorv44: #f1f1f1;
   --colorv45: #08a63f;
+  --colorv46: #ed2a3d;
   --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
@@ -514,7 +516,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: var(--colorv21);
+  color: var(--colorv12);
   pointer-events: none;
 }
 
@@ -539,6 +541,7 @@ h6 {
 .form__field:required,
 .form__field:invalid {
   box-shadow: none;
+  color: var(--colorv16);
 }
 
 /* Chrome, Safari, Edge, Opera */
