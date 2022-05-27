@@ -1,3 +1,6 @@
+h2{
+  color: var(--colorv16);
+}
 .btn-download {
   background-color: var(--colorv13);
 }
@@ -51,7 +54,7 @@
 
 .icon-central-axle,
 .icon-da {
-  background-color: var(--colorv02);
+  background-color: var(--colorv03);
   height: 1rem;
 }
 
@@ -143,7 +146,8 @@
 }
 
 .config__data {
-  background-color: var(--colorv27);
+  color: var(--colorv16);
+  background-color: var(--colorv02);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -188,7 +192,7 @@
 }
 
 .chart__container {
-  background-color: var(--colorv27);
+  background-color: var(--colorv02);
   display: flex;
   flex-flow: column nowrap;
   padding: 0.5rem;
@@ -222,7 +226,7 @@
 }
 
 .config__container {
-  background-color: var(--colorv27);
+  background-color: var(--colorv02);
   border-radius: 0.25rem;
   display: grid;
   grid-template-rows: auto auto auto 1fr;
@@ -361,11 +365,11 @@
   text-align: center;
 }
 .config__table thead {
-  background-color: var(--colorv12);
+  background-color: var(--colorv00);
 }
 
 .config__table tbody tr:nth-child(even) {
-  background-color: var(--colorv12);
+  background-color: var(--colorv00);
 }
 
 .config__table .icon-cross {
@@ -393,7 +397,7 @@
 }
 
 .dash__container {
-  background: var(--colorv27);
+  background: var(--colorv02);
   border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -472,17 +476,18 @@
 
 .icon-central-axle,
 .icon-da {
-  background-color: var(--colorv02);
+  background-color: var(--colorv03);
   height: 1rem;
 }
 
 .axle {
   display: flex;
-  background-color: var(--colorv02);
+  background-color: var(--colorv03);
   height: 1rem;
 }
 
 .eje span {
+  color: var(--colorv16);
   font-weight: bold;
 }
 
@@ -515,7 +520,7 @@
   }
 
   .icon-tire2 {
-    color: var(--colorv02);
+    color: var(--colorv03);
     font-size: 15vmin;
   }
 

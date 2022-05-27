@@ -176,7 +176,8 @@
 
 .card_title {
   display: flex;
-  background: var(--colorv30);
+  color: var(--colorv16);
+  background: var(--colorv02);
   padding: 1rem;
   align-items: center;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -194,7 +195,7 @@
   font-size: 8vw;
   border-radius: 0 0 0.25rem 0.25rem;
   padding: 0.5rem;
-  background: var(--colorv32);
+  background: var(--colorv01);
   margin: 0;
 }
 
@@ -221,7 +222,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background: var(--colorv33);
+  background: var(--colorv40);
   border-radius: 2.25rem;
   margin: 0;
   padding: 1rem;

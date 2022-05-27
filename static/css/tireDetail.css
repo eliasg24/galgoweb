@@ -1,3 +1,6 @@
+h2{
+  color: var(--colorv16);
+}
 .good {
   background-color: var(--colorv04);
 }
@@ -74,7 +77,7 @@
 }
 
 .card {
-  background: var(--colorv27);
+  background: var(--colorv02);
   border-radius: 0.25rem;
 }
 
@@ -207,7 +210,7 @@
 }
 
 .config__table thead {
-  background-color: var(--colorv12);
+  background-color: var(--colorv00);
 }
 
 thead {
@@ -221,12 +224,13 @@ thead {
 
 th,
 td {
+  color: var(--colorv16);
   padding: 0.5rem;
   text-align: center;
 }
 
 tbody tr:nth-child(even) {
-  background-color: var(--colorv12);
+  background-color: var(--colorv00);
 }
 
 .tire__config {
@@ -285,7 +289,12 @@ tbody tr:nth-child(even) {
 }
 
 .tire__config > .icon-tire2 {
+  color: var(--colorv03);
   font-size: 11rem;
+}
+
+.icon-file-pdf{
+  color: var(--colorv16);
 }
 
 @media screen and (min-width: 1024px) {
@@ -300,6 +309,7 @@ tbody tr:nth-child(even) {
   }
 
   .tire__config > .icon-tire2 {
+    color: var(--colorv03);
     font-size: 21vmin;
   }
 
