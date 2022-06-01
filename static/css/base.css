@@ -142,6 +142,7 @@ h6 {
 
 .badge-btn {
   border: thin solid var(--colorv02);
+  color: var(--colorv02);
   border-radius: 0.25rem;
   margin: 0.5rem 0;
   padding: 0.5rem;
@@ -269,7 +270,7 @@ h6 {
 }
 
 .drop-input {
-  background: var(--colorv18);
+  background: var(--colorv02);
   border: thin solid var(--colorv16);
   color: var(--colorv16);
   font-family: inherit;

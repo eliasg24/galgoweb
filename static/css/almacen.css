@@ -5,6 +5,7 @@
 
 .drop-search i {
   font-size: 1.25rem;
+  color: var(--colorv16);
 }
 
 .drop-input {
