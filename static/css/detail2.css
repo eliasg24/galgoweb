@@ -68,6 +68,10 @@ h2{
   font-size: 6rem;
 }
 
+.icon-file-pdf{
+  color: var(--colorv16);
+}
+
 .flex-row {
   flex-flow: row wrap;
 }

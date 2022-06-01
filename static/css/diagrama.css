@@ -95,6 +95,7 @@
 .form__container,
 .absolute.form__container {
   background-color: var(--colorv02);
+  color: var(--colorv16);
   display: flex;
   gap: 1rem;
   flex-flow: column nowrap;

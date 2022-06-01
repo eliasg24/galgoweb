@@ -169,8 +169,8 @@ summary::marker {
 
 .vehicle-card {
   align-items: center;
-  background-color: var(--colorv01);
-  color: var(--colorv02);
+  background-color: var(--colorv02);
+  color: var(--colorv16);
   display: flex;
   flex-flow: column nowrap;
   height: 100%;

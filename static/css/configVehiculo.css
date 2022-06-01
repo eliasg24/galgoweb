@@ -22,7 +22,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv02);
+  background-color: var(--colorv03);
   height: 1rem;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .config__llantas {
-  background: var(--colorv27);
+  background: var(--colorv02);
   border-radius: 0.25rem;
   margin: 1rem;
   display: grid;
@@ -99,7 +99,7 @@
 
 .icon-central-axle,
 .icon-da {
-  background-color: var(--colorv02);
+  background-color: var(--colorv03);
   height: 1rem;
 }
 

@@ -270,8 +270,8 @@ h6 {
 
 .drop-input {
   background: var(--colorv18);
-  border: thin solid var(--colorv02);
-  color: var(--colorv02);
+  border: thin solid var(--colorv16);
+  color: var(--colorv16);
   font-family: inherit;
   outline: none;
   padding: 0.5rem;
@@ -494,7 +494,7 @@ h6 {
   border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: var(--colorv02);
+  color: var(--colorv16);
   padding: 7px 0;
   background: var(--colorv18);
   transition: border-color 0.2s;

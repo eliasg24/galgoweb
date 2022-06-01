@@ -116,5 +116,6 @@
   content: "\ea14";
 }
 .icon-filter:before {
+  color: var(--colorv16);
   content: "\ea5b";
 }
