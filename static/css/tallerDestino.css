@@ -81,7 +81,8 @@ hr {
 }
 
 .taller-form {
-  background-color: var(--colorv25);
+  background-color: var(--colorv02);
+  color: var(--colorv16);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -107,13 +108,13 @@ hr {
   background: var(--colorv00);
   font-size: 1.5rem;
   text-align: center;
-  color: var(--colorv23);
+  color: var(--colorv16);
   width: 50%;
 }
 
 .almohadilla{
   font-size: 1.5rem;
-  color: var(--colorv23);
+  color: var(--colorv16);
   width: 50%;
 }
 
@@ -121,5 +122,5 @@ hr {
   list-style: disc;
   margin-left: 1rem;
   font-size: 1.5rem;
-  color: var(--colorv23);
+  color: var(--colorv16);
 }

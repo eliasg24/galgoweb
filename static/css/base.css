@@ -263,6 +263,7 @@ h6 {
 }
 
 .drop-search i {
+  color: var(--colorv16);
   position: absolute;
   right: 12px;
   top: 30%;
