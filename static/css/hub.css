@@ -16,6 +16,7 @@ body {
 .top-nav {
   display: flex;
   background: var(--colorv01);
+  color: #fff; /*No cambia*/
   flex-flow: column wrap;
   gap: 1rem;
   padding: 0.5rem 1rem;

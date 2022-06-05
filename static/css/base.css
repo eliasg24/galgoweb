@@ -1,23 +1,23 @@
 /* New colors */
 
 :root {
-  --colorv00: #363636;
-  --colorv01: #242424;
-  --colorv02: #fff;
+  --colorv00: #cccccc;
+  --colorv01: #0a2a75;
+  --colorv02: #333;
   --colorv03: #606060;
-  --colorv04: #026cf5;
+  --colorv04: #ed2a3d;
   --colorv05: #dbc002;
   --colorv06: #8a2be2;
   --colorv07: #f0412c;
   --colorv08: #009345;
-  --colorv09: #ff1493;
-  --colorv10: #23252b;
-  --colorv11: #2f5161;
-  --colorv12: #213944;
+  --colorv09: #ed2a3d;
+  --colorv10: #fff;
+  --colorv11: #4973f2;
+  --colorv12: #0a2a75;
   --colorv13: #f47521;
   --colorv14: #00e5f3;
-  --colorv15: #222;
-  --colorv16: #000;
+  --colorv15: #fff;
+  --colorv16: #929292;
   --colorv17: #808080;
   --colorv18: transparent;
   --colorv19: #eee;
@@ -26,9 +26,9 @@
   --colorv22: #ff0000;
   --colorv23: #dcdcdc;
   --colorv24: #90ee90;
-  --colorv25: #171717;
-  --colorv26: #111;
-  --colorv27: #202020;
+  --colorv25: #fff;
+  --colorv26: #05112c;
+  --colorv27: #fff;
   --colorv28: #21664d;
   --colorv29: #00558f;
   --colorv30: #1f1f1f;
@@ -177,6 +177,7 @@ h6 {
 .head-cont {
   align-items: center;
   background-color: var(--colorv01);
+  color: var(--colorv10);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -205,10 +206,9 @@ h6 {
 
 .drop-btn {
   align-items: center;
-  background-color: var(--colorv15);
   background: none;
   border: none;
-  color: var(--colorv02);
+  color: var(--colorv10);
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
@@ -378,8 +378,8 @@ h6 {
 }
 
 .btn-aeto-crunch {
-  background-color: var(--colorv10);
-  color: var(--colorv02);
+  background-color: var(--colorv03);
+  color: var(--colorv10);
   padding: 0.75rem;
   transition: background-color 0.2s ease;
 }
@@ -391,6 +391,7 @@ h6 {
 .btn-aeto-crunch.active {
   border-top: thin solid var(--colorv13);
   background-color: var(--colorv12);
+  color: var(--colorv10);
   font-weight: bold;
 }
 
@@ -491,7 +492,7 @@ h6 {
   border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: var(--colorv02);
+  color: var(--colorv10);
   padding: 7px 0;
   background: var(--colorv18);
   transition: border-color 0.2s;
@@ -579,7 +580,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text p {
   font-family: var(--font);
-  color: var(--colorv02);
+  color: var(--colorv10);
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }

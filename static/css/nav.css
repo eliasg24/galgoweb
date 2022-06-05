@@ -1,5 +1,5 @@
 a {
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   text-decoration: none;
 }
 
@@ -32,7 +32,7 @@ img {
   align-items: center;
   display: flex;
   justify-content: center;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 2rem;
 }
 

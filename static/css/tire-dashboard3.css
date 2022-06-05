@@ -17,7 +17,7 @@ ul {
 
 .head-menu {
   align-items: center;
-  background: var(--colorv27);
+  background: var(--colorv01);
   flex-flow: row wrap;
   display: flex;
   justify-content: center;
@@ -377,7 +377,7 @@ ul {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 1.25rem;
   outline: none;
   text-align: left;
