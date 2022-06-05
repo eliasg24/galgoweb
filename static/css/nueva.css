@@ -18,7 +18,7 @@
 select {
   border-radius: .25rem;
   background-color: var(--colorv01);
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 1rem;
   border: none;
   padding: .25rem;
@@ -89,8 +89,8 @@ select {
 }
 
 .card__header {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--colorv02);
+  color: var(--colorv10);
   padding: 0.25rem;
 }
 
@@ -107,6 +107,7 @@ select {
 
 .card__img .icon-tire2 {
   /* font-size: 18vmin; */
+  color: var(--colorv02);
   font-size: 10rem;
 }
 
@@ -133,19 +134,19 @@ select {
 }
 
 .tire__status.good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .tire__status.yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .tire__status.bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .tire__status.suspiciuos {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 /* ? Filter Menu */
@@ -173,7 +174,7 @@ select {
 }
 
 .filter__content {
-  background-color: var(--colorv00);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;

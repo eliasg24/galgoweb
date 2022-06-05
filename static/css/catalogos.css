@@ -1,6 +1,7 @@
 .header {
   align-items: center;
   background-color: var(--colorv01);
+  color: #fff; /*No cambia*/
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -13,7 +14,7 @@
 }
 
 .section-head {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   padding: 0.5rem;
 }
 
@@ -45,7 +46,7 @@
 
 /* Agregar producto */
 .container {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
@@ -96,12 +97,14 @@
 }
 
 .main-table th {
+  color: #fff; /*No se cambia*/
   border-bottom: 2px solid var(--colorv14);
   padding: 0.5rem;
   text-align: center;
 }
 
 .main-table td {
+  color: #a5a5a5; /*No se cambia*/
   padding: 0.5rem;
   text-align: center;
 }
@@ -109,7 +112,7 @@
 /* Table */
 
 .table-cont {
-  background: var(--colorv01);
+  background: var(--colorv45);
   height: 100vh; /* Define la altura minima */
   position: relative;
   overflow: auto;

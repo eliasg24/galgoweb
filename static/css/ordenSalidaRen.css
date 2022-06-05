@@ -93,8 +93,8 @@ td {
 .all-cont {
   display: grid;
   margin: 0 auto;
-  background: var(--colorv02);
-  color: var(--colorv16);
+  background: #fff; /*No cambia*/
+  color: #000; /*No cambia*/
   padding: 1rem;
   grid-template-rows: auto auto 1fr;
   gap: 1rem;

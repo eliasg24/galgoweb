@@ -7,7 +7,7 @@
   --colorv03: #606060;
   --colorv04: #ed2a3d;
   --colorv05: #dbc002;
-  --colorv06: #8a2be2;
+  --colorv06: #2c72ff;
   --colorv07: #f0412c;
   --colorv08: #009345;
   --colorv09: #ed2a3d;
@@ -15,7 +15,7 @@
   --colorv11: #4973f2;
   --colorv12: #0a2a75;
   --colorv13: #f47521;
-  --colorv14: #00e5f3;
+  --colorv14: #2254eb;
   --colorv15: #fff;
   --colorv16: #929292;
   --colorv17: #808080;
@@ -33,7 +33,7 @@
   --colorv29: #00558f;
   --colorv30: #1f1f1f;
   --colorv31: rgb(255, 255, 255, 0.7);
-  --colorv32: #4d4d4d;
+  --colorv32: #0a2a75;
   --colorv33: #0071bc;
   --colorv34: #ddd;
   --colorv35: #9147ff;
@@ -46,6 +46,7 @@
   --colorv42: #4caf50;
   --colorv43: #555;
   --colorv44: #f1f1f1;
+  --colorv45: #fff;
   --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
@@ -267,8 +268,8 @@ h6 {
 
 .drop-input {
   background: var(--colorv18);
-  border: thin solid var(--colorv02);
-  color: var(--colorv02);
+  border: thin solid #a5a5a5; /*No cambia*/
+  color: #a5a5a5; /*No cambia*/
   font-family: inherit;
   outline: none;
   padding: 0.5rem;
@@ -421,7 +422,7 @@ h6 {
 .btn-danger {
   align-items: center;
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /* No cambia*/
   display: flex;
   font-size: 1.25rem;
   justify-content: center;
@@ -492,7 +493,7 @@ h6 {
   border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: var(--colorv10);
+  color: #a5a5a5; /*No cambia*/
   padding: 7px 0;
   background: var(--colorv18);
   transition: border-color 0.2s;
@@ -704,4 +705,8 @@ input[type='date']::-webkit-inner-spin-button,
   .circle span {
     font-size: 2rem;
   }
+}
+
+.icon-file-pdf {
+  color: var(--colorv02);
 }

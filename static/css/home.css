@@ -47,7 +47,7 @@
 }
 
 .context__wrapper {
-  background-color: #2d2d2d;
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.25);
   display: flex;

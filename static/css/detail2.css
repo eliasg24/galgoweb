@@ -237,6 +237,7 @@
 
 .config__header {
   background-color: var(--colorv04);
+  color: #fff; /*No cambia*/
   /* border-bottom: thin solid #00f0ff; */
   text-align: center;
   padding: 0.25rem;
@@ -363,10 +364,12 @@
 }
 .config__table thead {
   background-color: var(--colorv12);
+  color: #fff; /*No cambia*/
 }
 
 .config__table tbody tr:nth-child(even) {
   background-color: var(--colorv12);
+  color: #fff; /*No cambia*/
 }
 
 .config__table .icon-cross {

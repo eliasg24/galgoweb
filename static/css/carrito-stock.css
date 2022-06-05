@@ -84,7 +84,7 @@
   border: thin solid var(--colorv02);
   border-collapse: collapse;
   text-align: center;
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
 }
 
 .cart__container thead {
@@ -156,6 +156,7 @@ select {
 
 .options__wrapper tfoot {
   background-color: var(--colorv37);
+  color: #fff; /*No cambia*/
   font-weight: bold;
 }
 

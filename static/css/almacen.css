@@ -4,7 +4,7 @@
 }
 
 .btn.btn-config {
-  background-color: var(--colorv02);
+  background-color: #fff; /*No cambia*/
   border: thin solid var(--colorv02);
   border-radius: 0.25rem;
   color: var(--colorv16);
@@ -183,7 +183,7 @@
 
 .card_title {
   display: flex;
-  background: var(--colorv30);
+  background: var(--colorv45);
   padding: 1rem;
   align-items: center;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -197,6 +197,7 @@
 
 .card_number {
   align-items: center;
+  color: #fff; /*No cambia*/
   background: var(--colorv32);
   border-radius: 0 0 0.25rem 0.25rem;
   display: flex;
@@ -298,7 +299,7 @@
 }
 
 .search__form {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -327,6 +328,7 @@
 .tire__card {
   align-items: center;
   background-color: var(--colorv00);
+  color: var(--colorv02);
   display: grid;
   gap: 2rem;
   grid-template-columns: auto 1fr;
@@ -346,7 +348,7 @@
 }
 
 .card__row span {
-  color: lightgray;
+  color: var(--colorv02);
 }
 
 @media screen and (min-width: 1024px) {

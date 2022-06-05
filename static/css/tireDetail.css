@@ -103,6 +103,7 @@
 }
 
 .config__header {
+  color: #fff; /*No cambia*/
   background-color: var(--colorv04);
   border-bottom: thin solid var(--colorv14);
   text-align: center;
@@ -212,6 +213,7 @@
 
 thead {
   border-bottom: thin solid var(--colorv14);
+  color: #fff; /*No cambia*/
 }
 
 .config__table {
@@ -227,6 +229,7 @@ td {
 
 tbody tr:nth-child(even) {
   background-color: var(--colorv12);
+  color: #fff; /*No cambia*/
 }
 
 .tire__config {

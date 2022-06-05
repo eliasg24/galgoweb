@@ -45,7 +45,7 @@ fieldset {
 }
 
 .form-content {
-  background-color: var(--colorv43);
+  background-color: var(--colorv45);
   display: grid;
   grid-template-rows: auto 1fr;
   height: inherit;

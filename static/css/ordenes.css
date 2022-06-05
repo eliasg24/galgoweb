@@ -37,6 +37,10 @@ tr:nth-child(even) {
   background-color: var(--colorv15);
 }
 
+a {
+  color: var(--colorv02);
+}
+
 .main__content {
   display: grid;
   gap: 1rem;
