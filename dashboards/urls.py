@@ -327,6 +327,11 @@ urlpatterns = [
         name="almacen"
     ),
     path(
+        route="carrito-stock",
+        view=views.carritoStockView.as_view(),
+        name="carritoStock"
+    ),
+    path(
         route="antesDesechar",
         view=views.antesDesecharView.as_view(),
         name="antesDesechar"
@@ -387,6 +392,16 @@ urlpatterns = [
         name="ordenEntrada"
     ),
     path(
+        route="orden-entrada-taller/<int:pk>",
+        view=views.ordenEntradaTallerView.as_view(),
+        name="ordenEntradaTaller"
+    ),
+    path(
+        route="orden-entrada-stock/<int:pk>",
+        view=views.ordenEntradaStockView.as_view(),
+        name="ordenEntradaStock"
+    ),
+    path(
         route="ordenLlanta/<int:pk>",
         view=views.ordenLlantaView.as_view(),
         name="ordenLlanta"
@@ -422,9 +437,9 @@ urlpatterns = [
         name="procesoRenovado"
     ),
     path(
-        route="planTrabajo",
-        view=views.planTrabajoView.as_view(),
-        name="planTrabajo"
+        route="vehicleList",
+        view=views.vehicleListView.as_view(),
+        name="vehicleList"
     ),
     path(
         route="calendario",
@@ -492,41 +507,150 @@ urlpatterns = [
         name="historialTransacciones"
     ),
     path(
+        route="orden-desecho",
+        view=views.reporteDesechoView.as_view(),
+        name="ordenDesechoTemplete"
+    ),
+    path(
+        route="historial-desecho",
+        view=views.historialDesechoView.as_view(),
+        name="ordenDesecho"
+    ),
+    path(
         route="download_todo",
         view=views.download_todo,
         name="download_todo"
     ),
     
-    #APIS
+    #----------------------APIS---------------------
+    
+    #-----------------------A-----------------------
+    
+    #-----------------------B-----------------------
+    
+    #-----------------------C-----------------------
+    
+    path(
+        route="api/contextoapi",
+        view=views_rest.ContextoApi.as_view(),
+        name="contextoapi"
+    ),
+
+    path(
+        route="api/carritollantasapi",
+        view=views_rest.CarritoLlantasApi.as_view(),
+        name="carritollantasapi"
+    ),
+    
+    path(
+        route="api/carritocountapi",
+        view=views_rest.CarritoCountApi.as_view(),
+        name="carritocountapi"
+    ),
+    
+    #-----------------------D-----------------------
+    
+    #-----------------------E-----------------------
+    
+    #-----------------------F-----------------------
+    
+    #-----------------------G-----------------------
+    
+    path(
+        route="api/generacionllantanueva",
+        view=views_rest.GeneracionLlantaNuevaView.as_view(),
+        name="generacionllantanueva"
+    ),
+    
+    #-----------------------H-----------------------
+    
+    path(
+        route="api/historicodeorden",
+        view=views_rest.HistoricoDeOrdenApi.as_view(),
+        name="historicodeorden"
+    ),
+    
+    #-----------------------I-----------------------
+    
+    #-----------------------J-----------------------
+    
+    #-----------------------K-----------------------
+    
+    #-----------------------L-----------------------
+    
+    #-----------------------M-----------------------
+    
+    #-----------------------N-----------------------
+    
      path(
         route="api/numtirestock",
         view=views_rest.NumTireStock.as_view(),
         name="numtirestock"
     ),
-      path(
-        route="api/tiresearch",
-        view=views_rest.TireSearch.as_view(),
-        name="tiresearch"
-    ),
+     
+    #-----------------------Ñ-----------------------
+    
+    #-----------------------O-----------------------
+    
     path(
         route="api/ordenllantanueva",
         view=views_rest.OrdenLlantaNuevaView.as_view(),
         name="ordenllantanueva"
     ),
     path(
-        route="api/generacionllantanueva",
-        view=views_rest.GeneracionLlantaNuevaView.as_view(),
-        name="generacionllantanueva"
-    ),
-    path(
         route="api/ordersearch",
         view=views_rest.OrderSearch.as_view(),
         name="ordersearch"
-    )
-    ,
+    ),
+        path(
+        route="api/opcionesdesecho",
+        view=views_rest.OpcionesDesechoApi.as_view(),
+        name="opcionesdesecho"
+    ),
+    #-----------------------P-----------------------
+
     path(
-        route="api/historicodeorden",
-        view=views_rest.HistoricoDeOrdenApi.as_view(),
-        name="historicodeorden"
-    )
+        route="api/panelrenovado",
+        view=views_rest.PanelRenovadoApi.as_view(),
+        name="panelrenovado"
+    ),
+
+    path(
+        route="api/procesodesecho",
+        view=views_rest.ProcesoDesechoApi.as_view(),
+        name="procesodesecho"
+    ),
+    #-----------------------Q-----------------------
+
+    #-----------------------R-----------------------
+
+    #-----------------------S-----------------------
+
+    #-----------------------T-----------------------
+
+      path(
+        route="api/tiresearch",
+        view=views_rest.TireSearch.as_view(),
+        name="tiresearch"
+    ),
+
+    #-----------------------U-----------------------
+
+    #-----------------------V-----------------------
+    
+    path(
+        route="api/vaciadocarrito",
+        view=views_rest.VaciadoCarrito.as_view(),
+        name="vaciadocarrito"
+    ),
+
+    #-----------------------W-----------------------
+
+    #-----------------------X-----------------------
+
+    #-----------------------Y-----------------------
+
+    #-----------------------Z-----------------------
+
+
 ]

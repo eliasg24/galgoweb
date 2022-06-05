@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/vehicleList.css' %}">
+  <title>Lista de Vehiculos</title>
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="main__container">
+    <header class="head-cont">
+      <h1 style="text-align: left;">Lista de Vehiculos</h1>
+    
+      <div class="drop-search">
+        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
+        <i class="bx bx-search"></i>
+      </div>
+    
+      <nav class="flex-row">
+        <button type="button" role="button" class="btn next">Resumen</button>
+        <button class="btn btn-download" type="button" id="filter-btn">
+          <span class="icon-filter"></span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="main__content">
+
+      <nav class="nav__pages">
+
+        {% include 'vehicleList/navegacion.html' %}
+
+      </nav>
+
+      <section class="vehicle__list">
+
+        {% for vehiculo in llantas_acomodadas %}
+
+          {% include 'vehicleList/vehicle__card.html' %}
+
+        {% endfor %}
+
+      </section>
+
+    </main>
+  </div>
+
+  <div class="filter__bg">
+    <form action="" class="form__filter">
+
+      <header class="filter__header">
+        <h2>Filtros</h2>
+  
+        <nav class="flex-row">
+          <button type="button" role="button" class="btn btn-info">
+            <span class="icon-trash"></span>
+          </button>
+          <button type="button" role="button" class="btn btn-danger" id="close-filter">
+            <span class="icon-cross"></span>
+          </button>
+        </nav>
+      </header>
+
+      <div class="filter__body">
+        <div class="filter__row">
+          <div class="filter__row-header">
+            <h3>PRESIONES</h3>
+          </div>
+  
+          <div class="filter__nav">
+            <label for="baja-presion" class="label-check">
+              <input type="checkbox" name="baja-presion" id="baja-presion">
+              <div class="btn-filter">
+                Baja presión
+              </div>
+            </label>
+            <label for="alta-presion" class="label-check">
+              <input type="checkbox" name="alta-presion" id="alta-presion">
+              <div class="btn-filter">
+                Alta presión
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div class="filter__row">
+          <div class="filter__row-header">
+            <h3>PROFUNDIDADES</h3>
+          </div>
+  
+          <div class="filter__nav">
+            <label for="p-libre" class="label-check">
+              <input type="checkbox" name="p-libre" id="p-libre">
+              <div class="btn-filter">
+                Libre
+              </div>
+            </label>
+
+            <label for="p-direccion" class="label-check">
+              <input type="checkbox" name="p-direccion" id="p-direccion">
+              <div class="btn-filter">
+                Direccion
+              </div>
+            </label>
+
+            <label for="p-traccion" class="label-check">
+              <input type="checkbox" name="p-traccion" id="p-traccion">
+              <div class="btn-filter">
+                Tracción
+              </div>
+            </label>
+
+            <label for="p-retractil" class="label-check">
+              <input type="checkbox" name="p-retractil" id="p-retractil">
+              <div class="btn-filter">
+                Retractil
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="filter__row">
+          <div class="filter__row-header">
+            <h3>ROTACIÓN</h3>
+          </div>
+  
+          <div class="filter__nav">
+            <label for="r-libre" class="label-check">
+              <input type="checkbox" name="r-libre" id="r-libre">
+              <div class="btn-filter">
+                Libre
+              </div>
+            </label>
+
+            <label for="r-direccion" class="label-check">
+              <input type="checkbox" name="r-direccion" id="r-direccion">
+              <div class="btn-filter">
+                Direccion
+              </div>
+            </label>
+
+            <label for="r-traccion" class="label-check">
+              <input type="checkbox" name="r-traccion" id="r-traccion">
+              <div class="btn-filter">
+                Tracción
+              </div>
+            </label>
+
+            <label for="r-retractil" class="label-check">
+              <input type="checkbox" name="r-retractil" id="r-retractil">
+              <div class="btn-filter">
+                Retractil
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="filter__row">
+          <div class="filter__row-header">
+            <h3>DUALIZACIÓN</h3>
+          </div>
+  
+          <div class="filter__nav">
+            <label for="d-libre" class="label-check">
+              <input type="checkbox" name="d-libre" id="d-libre">
+              <div class="btn-filter">
+                Libre
+              </div>
+            </label>
+
+            <label for="d-direccion" class="label-check">
+              <input type="checkbox" name="d-direccion" id="d-direccion">
+              <div class="btn-filter">
+                Direccion
+              </div>
+            </label>
+
+            <label for="d-traccion" class="label-check">
+              <input type="checkbox" name="d-traccion" id="d-traccion">
+              <div class="btn-filter">
+                Tracción
+              </div>
+            </label>
+
+            <label for="d-retractil" class="label-check">
+              <input type="checkbox" name="d-retractil" id="d-retractil">
+              <div class="btn-filter">
+                Retractil
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter__footer">
+        <button type="submit">
+          Filtrar
+        </button>
+      </div>
+  
+    </form>
+  </div>
+
+  <script>
+
+    /* Activar funciones */
+
+    document.addEventListener('DOMContentLoaded', (e) => {
+      filter();
+    })
+
+    function filter() {
+      const filterBtn = document.getElementById('filter-btn'),
+            closeFilter = document.getElementById('close-filter'),
+            filterBg = document.querySelector('.filter__bg');
+
+      /* Activar filtro */
+      filterBtn.addEventListener('click', () => filterBg.classList.toggle('active'));
+      /* Desactivar filtro */
+      closeFilter.addEventListener('click', () => filterBg.classList.remove('active'));
+    }
+
+  </script>
+
+{% endblock %}

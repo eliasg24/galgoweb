@@ -28,7 +28,7 @@ from psycopg2 import IntegrityError
 # Rest Framework
 
 # Functions
-from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
+from dashboards.functions import functions, functions_ftp, functions_create, functions_excel, functions_api
 from aeto import settings
 
 # Forms
@@ -36,7 +36,7 @@ from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, Lla
 
 # Models
 from django.contrib.auth.models import User, Group
-from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, Producto, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion, Orden, Taller
+from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Producto, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion, Orden, Taller
 
 # Utilities
 from multi_form_view import MultiModelFormView
@@ -64,6 +64,48 @@ from spyne.server.wsgi import WsgiApplication
 from spyne.service import ServiceBase
 import statistics
 import xlwt
+
+
+class ContextoApi(LoginRequiredMixin, View):
+    # Vista del dashboard buscar_vehiculos
+
+    def get(self, request):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        #Compañia
+        companias = list(perfil.companias.all())
+        companias_list = functions_api.companias_list(companias)
+        
+        #Select
+        compania_select = request.GET.get('compania_select', None)
+        ubicaciones_select = functions_api.list_select(request.GET.get('ubicaciones_select', None))
+        aplicaciones_select = functions_api.list_select(request.GET.get('aplicaciones_select', None))
+        talleres_select = functions_api.list_select(request.GET.get('talleres_select', None))
+
+        #Ubicaciones
+        ubicaciones = perfil.ubicaciones.all().filter(compania__compania = compania_select)
+        ubicaciones_list = functions_api.ubicaciones_list(ubicaciones)
+        
+        #Aplicacion
+        aplicaciones = perfil.aplicaciones.all().filter(ubicacion__nombre__in = ubicaciones_select)
+        aplicaciones_list = functions_api.aplicaciones_list(aplicaciones, ubicaciones_select)
+        
+        #Taller
+        taller = perfil.talleres.all().filter(compania__compania = compania_select)
+        talleres = functions_api.taller_list(taller)
+        dict_context = {
+            'companias': companias_list,
+            'ubicaciones': ubicaciones_list,
+            'aplicaciones': aplicaciones_list,
+            'talleres': talleres
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+
+        return HttpResponse(json_context, content_type='application/json')
+
 
 class SearchView(LoginRequiredMixin, View):
     # Vista del dashboard buscar_vehiculos
@@ -166,18 +208,20 @@ class NumTireStock(LoginRequiredMixin, View):
        
         usuario = self.request.user
         perfil = Perfil.objects.get(user = usuario)
+        talleres = perfil.taller.all()
         compania = perfil.compania
-        llantas = Llanta.objects.filter(compania = compania)
+        llantas = Llanta.objects.select_related().filter(compania = compania, taller__in = talleres)
+        llantas_rodantes = Llanta.objects.select_related().filter(compania = compania, inventario = "Rodante")
         total_llantas = llantas.count()
-        nueva = llantas.filter(compania = compania, inventario = "Nueva").count()
-        antes_de_renovar = llantas.filter(compania = compania, inventario = "Antes de Renovar").count()
-        antes_de_desechar =llantas.filter(compania = compania, inventario = "Antes de Desechar").count()
-        renovada = llantas.filter(compania = compania, inventario = "Renovada").count()
-        con_renovador = llantas.filter(compania = compania, inventario = "Con renovador").count()
-        desecho_final = llantas.filter(compania = compania, inventario = "Desecho final").count()
-        servicio = llantas.filter(compania = compania, inventario = "Servicio").count()
-        rodante = llantas.filter(compania = compania, inventario = "Rodante").count()
-        archivado = llantas.filter(compania = compania, inventario = "Archivado").count()
+        nueva = llantas.filter(inventario = "Nueva").count()
+        antes_de_renovar = llantas.filter(inventario = "Antes de Renovar").count()
+        antes_de_desechar =llantas.filter(inventario = "Antes de Desechar").count()
+        renovada = llantas.filter(inventario = "Renovada").count()
+        con_renovador = llantas.filter(inventario = "Con renovador").count()
+        desecho_final = llantas.filter(inventario = "Desecho final").count()
+        servicio = llantas.filter(inventario = "Servicio").count()
+        rodante = llantas_rodantes.count()
+        archivado = llantas.filter(inventario = "Archivado").count()
         
         stock_list = [
             {
@@ -251,6 +295,14 @@ class TireSearch(LoginRequiredMixin, View):
         
         inventario = (request.GET['inventario'] if 'inventario' in request.GET else None)
         inventario_query = ({'inventario': inventario} if  inventario != None else {})
+        llantas_excluidas = []
+        if inventario != None:
+            llantas_excluidas = LlantasSeleccionadas.objects.get(perfil=perfil, inventario=inventario).llantas.all().values('numero_economico')
+        
+        if inventario != 'Rodante':
+            taller_query = ({'taller__in': perfil.taller.all()} if  inventario != None else {})
+        else:
+            taller_query = ({})
         
         producto = (request.GET['producto'].split(',') if 'producto' in request.GET else None)
         producto_query = ({'producto__producto__in': producto} if  producto != None else {})
@@ -261,38 +313,41 @@ class TireSearch(LoginRequiredMixin, View):
         max_prof = (request.GET['max_prof'] if 'max_prof' in request.GET else None)
         max_prof_query = ({'min_profundidad__lte': max_prof} if  max_prof != None else {})
         
-        start_date = ((request.GET['start_date']).split('/') if 'start_date' in request.GET else None)
+        start_date = ((request.GET['start_date']).split('-') if 'start_date' in request.GET else None)
         start_date_query = ({
             'fecha_de_entrada_inventario__gte': datetime.date(
-                int(start_date[2]), int(start_date[1]), int(start_date[0])
+                int(start_date[0]), int(start_date[1]), int(start_date[2])
                 )} if  start_date != None else {})
         
-        end_date = ((request.GET['end_date']).split('/') if 'end_date' in request.GET else None)
+        end_date = ((request.GET['end_date']).split('-') if 'end_date' in request.GET else None)
         end_date_query = ({
             'fecha_de_entrada_inventario__lte': datetime.date(
-                int(end_date[2]), int(end_date[1]), int(end_date[0])
+                int(end_date[0]), int(end_date[1]), int(end_date[2])
                 )} if  end_date != None else {})
 
+        
+        renovador = (Renovador.objects.get(nombre=request.GET['renovador']) if 'renovador' in request.GET else None)
+        renovador_query = ({'renovador': renovador} if  renovador != None else {})
+        
         #Color de llanta
         rojos = []
         amarillos = []
         azules = []
         
         for llanta in llantas:
-            if llanta.ultima_inspeccion != None:
-                color = functions.color_observaciones_all_one(llanta.ultima_inspeccion)
-                if color == 'bad':
-                    rojos.append(llanta.id)
-                elif color == 'yellow':
-                    amarillos.append(llanta.id)
-                else:
-                    azules.append(llanta.id)
+            color = functions.color_observaciones_all_one(llanta)            
+            if color == 'bad':
+                rojos.append(llanta.id)
+            elif color == 'yellow':
+                amarillos.append(llanta.id)
             else:
-               azules.append(llanta.id) 
-                    
+                azules.append(llanta.id)
+                
         #Resultado final
-        search = llantas.filter(
-            **eco_query).annotate(
+        search_first = llantas.filter(
+            **eco_query,
+            **taller_query
+            ).annotate(
                 min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha"), 
                 max_profundidad=Greatest("profundidad_izquierda", "profundidad_central", "profundidad_derecha"),
                 color=Case(
@@ -301,13 +356,14 @@ class TireSearch(LoginRequiredMixin, View):
                     When(id__in=azules, then=Value("good"))
                     )).filter(
                     **inventario_query,
-                    **producto_query,
                     **min_prof_query, 
                     **max_prof_query, 
                     **start_date_query,
-                    **end_date_query
-                    )
+                    **end_date_query,
+                    **renovador_query
+                    ).exclude(numero_economico__in = llantas_excluidas)
         
+        search = search_first.filter(**producto_query)
         
         #Paginacion
         
@@ -317,12 +373,17 @@ class TireSearch(LoginRequiredMixin, View):
         limit = page * size
         offset = limit - size
         
+        print(f'datos: {datos}')
+        print(f'size: {size}')
+        print(f'pages: {pages}')
+        print(f'page: {page}')
+        
         pagination = functions.pagination(page, pages)
         
         #Serializar data
         search_list = list(search[offset:limit].values( "numero_economico","color", "id", 'producto__producto','min_profundidad', 'fecha_de_entrada_inventario'))
         
-        productos = list(search.values(product=F('producto__producto')).distinct())
+        productos = list(search_first.values(product=F('producto__producto')).distinct())
         
         dict_context = {
             'pagination': pagination,
@@ -514,11 +575,31 @@ class HistoricoDeOrdenApi(LoginRequiredMixin, View):
         usuario = self.request.user
         perfil = Perfil.objects.get(user = usuario)
         compania = perfil.compania
-        ordenes = Orden.objects.filter(compania = compania).order_by('-pk')
         
         #search_list = list(ordenes.values("id", "datos"))
         size = (int(request.GET['size']) if 'size' in request.GET else 10)
         page = (int(request.GET['page']) if 'page' in request.GET else 1)
+        folio = request.GET.get('folio', None)
+        folio_query = ({'folio__icontains': folio} if  folio != None else {})
+        
+        start_date = ((request.GET['start_date']).split('-') if 'start_date' in request.GET else None)
+        start_date_query = ({
+            'fecha__gte': datetime.date(
+                int(start_date[0]), int(start_date[1]), int(start_date[2])
+                )} if  start_date != None else {})
+        
+        end_date = ((request.GET['end_date']).split('-') if 'end_date' in request.GET else None)
+        end_date_query = ({
+            'fecha__lte': datetime.date(
+                int(end_date[0]), int(end_date[1]), int(end_date[2])
+                )} if  end_date != None else {})
+        
+        ordenes = Orden.objects.filter(
+            compania = compania,
+            **folio_query,
+            **start_date_query,**end_date_query
+            ).order_by('-pk')
+        
         
         datos = ordenes.count()  
         pages = (math.ceil(datos/size))
@@ -539,6 +620,205 @@ class HistoricoDeOrdenApi(LoginRequiredMixin, View):
         dict_context = {
             'pagination': pagination,
             'datos': datos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+class CarritoLlantasApi(LoginRequiredMixin, View):
+        # Vista del dashboard buscar_vehiculos
+
+    def get(self, request , *args, **kwargs):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        try:
+            llanta = int(self.request.GET.get('llanta'))
+            inventario = (self.request.GET.get('inventario', None))
+            functions_api.inventario_none(inventario)
+            llanta = Llanta.objects.get(pk=llanta)
+            status:str
+            try:
+                LlantasSeleccionadas.objects.get(perfil=perfil, inventario=inventario).llantas.add(llanta)
+                status = 'Llanta Agregada'
+            except:
+                status = 'Inventario no especificado'
+        except:
+            status = 'Llanta no encontrada'
+        
+        dict_context = {
+            'status': status
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+    
+class CarritoCountApi(LoginRequiredMixin, View):
+        # Vista del dashboard buscar_vehiculos
+
+    def get(self, request , *args, **kwargs):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        inventario = (self.request.GET.get('inventario', None))
+        print(inventario)
+        try:
+            num_llantas = LlantasSeleccionadas.objects.get(perfil=perfil, inventario=inventario).llantas.all().count()
+            status = 'Llanta Agregada'
+        except:
+            status = 'Inventario no encontrado'
+            json_context = json.dumps({'numm_llantas': status}, indent=None, sort_keys=False, default=str)
+
+            return HttpResponse(json_context, content_type='application/json')
+        
+        dict_context = {
+            'numm_llantas': num_llantas
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class PanelRenovadoApi(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+
+        ids = self.request.GET.get('ids', [])
+        ids = str(ids).replace("[", "")
+        ids = str(ids).replace("]", "")
+        ids_list = ids
+        ids = str(ids).split(',')
+        print(ids)
+        ids = functions.int_list_element(ids)
+        llantas = Llanta.objects.filter(id__in=ids)
+
+        try:
+            llantas_json = list(llantas.annotate(status=Value("No enviado")).values("id", "numero_economico", "producto__producto", "status"))
+        except:
+            llantas_json = []
+
+        try:
+            productos = list(Producto.objects.filter(compania=self.request.user.perfil.compania).values("producto"))
+        except:
+            productos = []
+        try:
+            razones = list(Rechazo.objects.all().values("razon"))
+        except:
+            razones = []
+        try:
+            talleres = list(Taller.objects.filter(compania=self.request.user.perfil.compania).values("nombre"))
+        except:
+            talleres = []
+
+        dict_context = {
+            'llantas': llantas_json,
+            'productos': productos,
+            'razones': razones,
+            'talleres': talleres
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+
+    
+class ProcesoDesechoApi(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        
+        size = (int(request.GET['size']) if 'size' in request.GET else 10)
+        page = (int(request.GET['page']) if 'page' in request.GET else 1)
+        
+        eco = self.request.GET.get('eco', None)
+        eco_query = ({'numero_economico__icontains': eco} if  eco != None else {})
+        
+        perfil = self.request.GET.get('perfil', [])
+        perfil = Perfil.objects.get(pk = int(perfil))
+        
+        llantas = LlantasSeleccionadas.objects.get(
+                perfil = perfil, inventario='Antes de Desechar').llantas.all().annotate(
+                    min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
+                        ).filter(
+                            **eco_query).values(
+                            'id',
+                            'numero_economico',
+                            'min_profundidad',
+                            product=F('producto__producto')
+                        )
+            
+
+
+        datos = llantas.count()  
+        pages = (math.ceil(datos/size))
+        limit = page * size
+        offset = limit - size
+        pagination = functions.pagination(page, pages)
+        
+        llantas_list = list(llantas[offset:limit])
+        
+        dict_context = {
+            'pagination': pagination,
+            'llantas':llantas_list
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+class OpcionesDesechoApi(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        condicion = self.request.GET.get('condicion', None)
+        zona = self.request.GET.get('zona', None)
+        
+        
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        compania = perfil.compania
+        #Trae todos el catalogo
+        opciones_desecho = Desecho.objects.filter(compania = compania)
+        condiciones = list(opciones_desecho.values('condicion').distinct())
+        zonas = list(opciones_desecho.filter(condicion = condicion).values('zona_de_llanta').distinct())
+        razones = list(opciones_desecho.filter(condicion = condicion, zona_de_llanta = zona).values('razon').distinct())
+        dict_context = {
+            'condiciones': condiciones,
+            'zonas': zonas,
+            'razones': razones
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+class VaciadoCarrito(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        inventario = self.request.GET.get('inventario', None)
+        
+        
+        
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        #Trae todos el catalogo
+        try:
+            carrito = LlantasSeleccionadas.objects.get(perfil = perfil, inventario = inventario)
+            carrito.llantas.clear()
+            carrito.save()
+            status = 'Borrado'
+        except:
+            status = 'Inventario no encontrado'
+        dict_context = {
+            'status': status 
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

@@ -3,9 +3,24 @@
   gap: 1rem;
 }
 
+.btn.btn-config {
+  background-color: var(--colorv02);
+  border: thin solid var(--colorv02);
+  border-radius: 0.25rem;
+  color: var(--colorv16);
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.flex-center {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  flex-flow: row nowrap;
+}
+
 .drop-search i {
   font-size: 1.25rem;
-  color: var(--colorv16);
 }
 
 .drop-input {
@@ -23,15 +38,6 @@
 .main__title {
   font-size: 4.2rem;
   margin: 0;
-}
-
-.btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  padding: 0.5rem;
-  transition: all 0.4s ease;
 }
 
 .btn-icon {
@@ -165,7 +171,7 @@
 .a-card {
   text-decoration: none;
   color: var(--colorv02);
-  height: min-content;
+  height: 100%;
 }
 
 .card {
@@ -177,8 +183,7 @@
 
 .card_title {
   display: flex;
-  color: var(--colorv16);
-  background: var(--colorv02);
+  background: var(--colorv30);
   padding: 1rem;
   align-items: center;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -191,13 +196,15 @@
 }
 
 .card_number {
-  display: flex;
-  justify-content: center;
-  font-size: 8vw;
+  align-items: center;
+  background: var(--colorv32);
   border-radius: 0 0 0.25rem 0.25rem;
-  padding: 0.5rem;
-  background: var(--colorv01);
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 8vw;
+  justify-content: center;
   margin: 0;
+  padding: 0.5rem;
 }
 
 .op__title {
@@ -223,7 +230,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background: var(--colorv40);
+  background: var(--colorv33);
   border-radius: 2.25rem;
   margin: 0;
   padding: 1rem;
@@ -256,10 +263,6 @@
 
   .head-cont {
     flex-flow: row nowrap;
-  }
-
-  .head-cont > * {
-    flex: 1 1 auto;
   }
 
   .container {

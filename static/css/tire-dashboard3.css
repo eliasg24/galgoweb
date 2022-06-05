@@ -1,5 +1,4 @@
 body {
-  background: var(--colorv00);
   background-color: var(--colorv00);
 }
 
@@ -18,7 +17,7 @@ ul {
 
 .head-menu {
   align-items: center;
-  background: var(--colorv01);
+  background: var(--colorv27);
   flex-flow: row wrap;
   display: flex;
   justify-content: center;
@@ -119,7 +118,7 @@ ul {
 
 .score-card {
   align-items: center;
-  background: var(--colorv02);
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -140,7 +139,7 @@ ul {
 
 .card {
   align-items: center;
-  background-color: var(--colorv02);
+  background-color: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -154,7 +153,7 @@ ul {
 }
 
 .icon-eye {
-  color: var(--colorv16);
+  color: var(--colorv02);
   float: left;
   font-size: 2.4rem;
 }
@@ -189,7 +188,7 @@ ul {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--colorv16);
+  color: var(--colorv02);
 }
 
 .icon-tire,
@@ -213,7 +212,7 @@ ul {
 
 .bullet-cont {
   align-items: center;
-  color: var(--colorv46);
+  color: var(--colorv04);
   display: flex;
   font-size: 1.25rem;
   gap: 1rem;
@@ -225,7 +224,7 @@ ul {
 }
 
 .bullet-cont h1 {
-  color: var(--colorv46);
+  color: var(--colorv04);
   margin: 0;
 }
 
@@ -333,17 +332,17 @@ ul {
 }
 
 .icon-fullscreen {
-  color: var(--colorv16);
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-fullscreen_exit {
-  color: var(--colorv16);
+  color: var(--colorv02);
   font-size: 20px;
 }
 
 .icon-question-circle-o {
-  color: var(--colorv16);
+  color: var(--colorv02);
   font-size: 20px;
 }
 
@@ -474,7 +473,7 @@ ul {
 }
 
 .cont-left {
-  background: var(--colorv02);
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: grid;
   gap: 1rem;
@@ -531,7 +530,6 @@ ul {
 .column-chart,
 .bar-chart,
 .areaLine-chart {
-  background: var(--colorv02);
   display: none;
   grid-template-rows: auto 1fr;
   height: 100%;
@@ -577,7 +575,7 @@ ul {
 
 .cont-right {
   align-items: center;
-  background: var(--colorv02);
+  background: var(--colorv27);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;

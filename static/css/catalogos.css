@@ -13,9 +13,8 @@
 }
 
 .section-head {
-  background-color: var(--colorv02);
+  background-color: var(--colorv01);
   padding: 0.5rem;
-  border-radius: 2rem;
 }
 
 .section-title {
@@ -42,13 +41,11 @@
   flex-flow: column nowrap;
   gap: 1rem;
   padding: 1rem;
-  color: var(--colorv16);
 }
 
 /* Agregar producto */
 .container {
-  border-radius: 1rem;
-  background-color: var(--colorv02);
+  background-color: var(--colorv01);
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
@@ -112,7 +109,7 @@
 /* Table */
 
 .table-cont {
-  background: var(--colorv02);
+  background: var(--colorv01);
   height: 100vh; /* Define la altura minima */
   position: relative;
   overflow: auto;
@@ -127,12 +124,10 @@
 
 .main-table thead {
   background-color: var(--colorv12);
-  color: var(--colorv02);
 }
 
 .main-table tbody tr:nth-child(even) {
   background-color: var(--colorv12);
-  color: var(--colorv02);
 }
 
 /* Desktop */

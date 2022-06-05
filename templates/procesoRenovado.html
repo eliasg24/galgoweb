@@ -14,28 +14,230 @@
 {% block content %}
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-cont">
+    <a href="{% url 'dashboards:conRenovador' %}">
+      <span class="icon-arrow-left2"></span>
+    </a>
+    
     <div class="logo">
       <img src="{% static 'images/aeto.svg' %}" alt="">
     </div>
   </header>
-  <section class="container">
-    <div class="nav__top">
-      <div class="card__item">
-        <h2>Aprobado (5)</h2>
+
+  <form class="container" action="{% url 'dashboards:procesoRenovado' %}" method="POST">
+  {% csrf_token %}
+    <aside class="renovado__form">
+
+      <header class="top__list">
+        <h2>Renovado</h2>
+      </header>
+
+      <div class="renovado__form-body">
+
+        <div class="form__row">
+          <label for="aprobado">
+            Aprobado
+            <input type="radio" name="status" id="aprobado" value="aprobado" checked>
+          </label>
+
+          <label for="rechazado">
+            Rechazado
+            <input type="radio" name="status" id="rechazado" value="rechazado">
+          </label>
+        </div>
+        
+        <div class="input__destino">
+          <label for="producto">
+            Producto
+          </label>
+          <select name="producto" id="producto" required>
+            <option value="">Seleccione un producto</option>
+          </select>
+        </div>
+
+        <label for="">
+          Taller Destino
+        </label>
+        <select name="taller" id="taller"></select>
+
+        <button type="submit" class="btn btn-config">Enviar</button>
+
       </div>
-      <div class="card__item">
-        <h2>Rechazado (3)</h2>
-      </div>
-      <div class="card__item">
-        <h2>Taller Destino</h2>
-      </div>
-    </div>
+
+    </aside>
+
     <div class="list__items">
       <div class="top__list">
         <h2>LISTA DE LLANTAS</h2>
+
+        <div class="drop-search">
+          <input type="search" name="" id="search" class="drop-input" placeholder="Buscar...">
+          <i class="bx bx-search"></i>
+        </div>
+
+        <button type="button" class="btn btn-config">Seleccionar todas</button>
+
       </div>
-      <div></div>
+      <div class="list__cont">
+        <div class="tire__list"></div>
+        <div class="icon-spinner2"></div>
+      </div>
     </div>
-  </section>  
+
+  </form>  
+
 </div>
+
+<template id="template">
+  <label class="tire__card">
+    <input type="checkbox" name="tire-id" class="tire__input">
+    <div class="tire__item">
+      <div class="tire__cont">
+        <span class="icon-tire2"></span>
+      </div>
+      <div class="tire__data">
+        <div class="economico">
+          <h3>Numero:</h3>
+          <p></p>
+        </div>
+        <div class="producto">
+          <h3>Producto:</h2>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </label>
+</template>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', () => {
+    getData();
+    getProductos();
+    getTaller();
+  });
+
+  const ids = '{{ ids }}';
+  const container = document.querySelector('.tire__list'),
+        loader = document.querySelector('.icon-spinner2');
+  const template = document.getElementById('template').content,
+        fragment = document.createDocumentFragment();
+        
+  const getProductos = () => {
+    const productosInput = document.getElementById('producto');
+    console.log('getProductos');
+    fetch(`${ location.origin }/api/panelrenovado?ids=${ ids }`)
+      .then(res => res.json())
+      .then(json => {
+        let options = `<option value="">Seleccione un producto</option>`;
+        json.productos.forEach(producto => {
+          options += `<option value="${ producto.producto }">${ producto.producto }</option>`;
+        })
+        console.log(productosInput.innerHTML)
+        productosInput.innerHTML = options;
+      })
+      .catch(err => console.log(err));
+  }
+  
+  const getTaller = () => {
+    const talleresInput = document.getElementById('taller');
+    fetch(`${ location.origin }/api/panelrenovado?ids=${ ids }`)
+      .then(res => res.json())
+      .then(json => {
+        let options = `<option value="">Seleccione un taller</option>`;
+
+        json.talleres.forEach(taller => {
+          options += `<option value="${ taller.nombre }">${ taller.nombre }</option>`;
+        });
+
+        talleresInput.innerHTML = options;
+      })
+      .catch(err => console.log(err));
+  }
+
+  const getRechazo = () => {
+    const razonInput = document.getElementById('razon');
+    fetch(`${ location.origin }/api/panelrenovado?ids=${ ids }`)
+      .then(res => res.json())
+      .then(json => {
+
+        let options = `<option value="">Seleccione una razón</option>`;
+        
+        json.razones.forEach(razon => {
+          options += `<option value="${ razon.razon }">${ razon.razon }</option>`;
+        });
+
+        razonInput.innerHTML = options;
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('input[name="status"]')) {
+      switch (e.target.value) {
+        case 'aprobado':
+          e.target.parentElement.parentElement.nextElementSibling.innerHTML = `
+            <label for="producto">
+              Producto
+            </label>
+            <select name="producto" id="producto" required>
+              <option value="">Seleccione un producto...</option>
+            </select>
+          `
+          getProductos();
+          break;
+        case 'rechazado':
+          e.target.parentElement.parentElement.nextElementSibling.innerHTML = `
+            <label for="razon">
+              Razón
+            </label>
+            <select name="razon" id="razon" required>
+              <option value="">Seleccione...</option>
+            </select>
+          `
+          getRechazo();
+          break;
+      }
+    }
+  });
+
+  const getData = () => {
+    fetch(`${ location.origin }/api/panelrenovado?ids=${ ids }`)
+      .then(resp => resp.ok ? resp.json() : Promise.reject(resp) )
+      .then(data => {
+        loader.style.display = 'block'
+        data.llantas.forEach( item => {
+          template.querySelector('label').setAttribute('for', item.id);
+          template.querySelector('input').setAttribute('id', item.id);
+          template.querySelector('input').setAttribute('value', item.id);
+          template.querySelector('.economico p').textContent = item.numero_economico;
+          template.querySelector('.producto p').textContent = item.producto__producto;
+
+          let clone = document.importNode(template, true);
+
+          fragment.appendChild(clone);
+        } );
+
+        loader.style.display = 'none'
+        container.appendChild(fragment);
+      })
+      .catch(err => console.log(err));
+  }  
+
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('#search')) {
+      if (e.key === 'Esc') e.target.value = '';
+
+      document
+        .querySelectorAll(`.tire__list .economico p`)
+        .forEach((item) =>
+          item.textContent.toLowerCase().includes(e.target.value.toLowerCase())
+            ? item.parentElement.parentElement.parentElement.parentElement.classList.remove('filter')
+            : item.parentElement.parentElement.parentElement.parentElement.classList.add('filter')
+        );
+    }
+  });
+
+</script>
+
 {% endblock %}

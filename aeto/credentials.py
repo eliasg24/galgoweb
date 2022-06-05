@@ -33,3 +33,14 @@ def modoDB(modo=config('MODO')):
         'HOST': '127.0.0.1',
         'PORT': '1025',
     }
+
+    if modo == 'digitalocean':
+        return{
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'defaultdb',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_DLiNO-kKhTvSv-I',
+        'HOST': 'galgowebservices-do-user-11664977-0.b.db.ondigitalocean.com',
+        'PORT': '25060',
+    }
+        

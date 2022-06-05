@@ -1,0 +1,90 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/ordenes.css' %}" />
+<title>Historial de desechos</title>
+{% endblock head %} {% block content %}
+
+<div class="main__container">
+  <header>
+    <h1>Historial de desechos</h1>
+
+    <nav class="filter__nav">
+      <div class="drop-search">
+        <input
+          type="search"
+          name=""
+          id=""
+          placeholder="Buscar llanta..."
+          class="drop-input"
+        />
+        <i class="bx bx-search"></i>
+      </div>
+
+      <div class="drop-search">
+        <input
+          type="date"
+          name=""
+          id=""
+          placeholder="Desde..."
+          class="drop-input"
+        />
+      </div>
+
+      <div class="drop-search">
+        <input
+          type="date"
+          name=""
+          id=""
+          placeholder="Hasta..."
+          class="drop-input"
+        />
+      </div>
+
+      <button type="button">Aplicar</button>
+    </nav>
+  </header>
+
+  <div class="main__content">
+    <div class="table__container">
+      <h2>Historial</h2>
+
+      <nav>
+        <button class="btn prev">Anterior</button>
+        <button class="btn next">Siguiente</button>
+      </nav>
+
+      <table class="orders__table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cantidad de llantas</th>
+            <th>Reporte</th>
+          </tr>
+        </thead>
+        <tbody id="created-orders">
+          {% for orden in ordenes_list %}
+          <tr>
+            <td>
+              {{orden.fecha.day}}/{{orden.fecha.month}}/{{orden.fecha.year}}
+            </td>
+            <td>{{orden.ids|length}}</td>
+            <td> <a href="{% url 'dashboards:ordenDesechoTemplete' %}?ids={{orden.ids}}&fecha={{orden.fecha.day}}/{{orden.fecha.month}}/{{orden.fecha.year}}"> Ver Reporte </a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<template id="order-template">
+  <tr>
+    <td class="folio"></td>
+    <td class="fecha"></td>
+    <td class="accion"></td>
+    <td>
+      <a href="">Ver</a>
+    </td>
+  </tr>
+</template>
+
+{% endblock content %}

@@ -24,15 +24,15 @@ export const getDocs = async (url) => {
       );
 
     if (json.pagination.next === null) {
-      document.querySelector('.next').style.display = 'none';
+      document.querySelector('.next').disabled = true;
     } else {
-      document.querySelector('.next').style.display = 'block';
+      document.querySelector('.next').disabled = false;
     }
 
     if (json.pagination.prev === null) {
-      document.querySelector('.prev').style.display = 'none';
+      document.querySelector('.prev').disabled = true;
     } else {
-      document.querySelector('.prev').style.display = 'block';
+      document.querySelector('.prev').disabled = false;
     }
 
     json.datos.forEach((item) => {

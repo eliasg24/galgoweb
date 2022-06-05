@@ -1,73 +1,77 @@
-.head-cont {
-  gap: 1rem;
-}
-
-.input-check input:checked ~ .checkmark {
-  background-color: var(--colorv14);
-}
-
-.btn-success {
-  margin-left: auto;
-  width: fit-content;
-}
-
 .main__container {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  height: 100%;
-}
-
-.head__title {
-  font-size: 2.25rem;
-  text-transform: uppercase;
-}
-
-.context__container {
-  color: var(--colorv16);
-  background-color: var(--colorv00);
-  border-radius: 0.25rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-rows: 1fr auto;
-  margin: 1rem;
-  padding: 1rem;
-}
-
-.context__card-container {
+  align-items: center;
   display: flex;
-  flex-flow: column wrap;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.btn-next {
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--colorv04);
+  width: fit-content;
+  margin-left: auto;
+}
+
+.btn-prev {
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: gray;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.context__form {
+  display: flex;
+  flex-flow: column nowrap;
   gap: 1rem;
+  margin: auto;
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
 }
 
-.context__card {
-  border: thin solid var(--colorv14);
-  display: grid;
-  flex: 1 1 auto;
-  grid-template-rows: auto 1fr;
+.context__form legend {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
-.card__header,
-.card__body {
-  background-color: var(--colorv02);
-  padding: 0.75rem;
+.context__form input,
+.context__form select {
+  margin-top: 0.25rem;
+  outline: none;
+  padding: 0.25rem;
+  /* width: 100%; */
 }
 
-.card__header h2 {
-  border-bottom: thin solid var(--colorv14);
-  padding-bottom: 0.5rem;
+.context__wrapper {
+  background-color: #2d2d2d;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  margin: 0.5rem;
+  opacity: 0;
+  padding: 1rem;
+  position: fixed;
+  transform: translateX(200%);
+  transition: 500ms ease-in-out;
 }
 
-.card__body-item {
-  margin-bottom: 1rem;
+.context__wrapper.active {
+  position: static;
+  transform: translateX(0);
+  opacity: 1;
 }
 
-.relative {
-  position: relative;
-}
-
-@media screen and (min-width: 1024px) {
-  .context__card-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
+.context__error {
+  background-color: rgb(255, 215, 0, 0.75);
+  border-radius: 0.25rem;
+  border: thin solid gold;
+  color: #fff;
+  padding: 0.5rem;
+  font-weight: 500;
 }

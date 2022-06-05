@@ -14,12 +14,10 @@
   <header class="head-cont">
     <h1>Almacenes</h1>
 
-    <form action="">
-      <div class="drop-search">
-        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
-        <i class="bx bx-search"></i>
-      </div>
-    </form>
+    <button class="btn btn-config flex-center">
+      Buscar
+      <i class="bx bx-search"></i>
+    </button>
   </header>
 
   <div class="container">
@@ -46,15 +44,17 @@
         <h2 class="card_number" id="antes_de_renovar"></h2>
       </div>
     </a>
-    <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
+    <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
       <div class="card">
         <div class="card_title">
           <h2>
-            <span class="card_title_icon icon-spin1"></span>
-            ANTES DE DESECHAR
+            <span
+              class="card_title_icon icon-published_with_changes"
+            ></span>
+            CON RENOVADOR
           </h2>
         </div>
-        <h2 class="card_number" id="antes_de_desechar"></h2>
+        <h2 class="card_number" id="con_renovador"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:renovada' %}">
@@ -68,17 +68,15 @@
         <h2 class="card_number" id="renovada"></h2>
       </div>
     </a>
-    <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
+    <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
       <div class="card">
         <div class="card_title">
           <h2>
-            <span
-              class="card_title_icon icon-published_with_changes"
-            ></span>
-            CON RENOVADOR
+            <span class="card_title_icon icon-spin1"></span>
+            ANTES DE DESECHAR
           </h2>
         </div>
-        <h2 class="card_number" id="con_renovador"></h2>
+        <h2 class="card_number" id="antes_de_desechar"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:desechoFinal' %}">

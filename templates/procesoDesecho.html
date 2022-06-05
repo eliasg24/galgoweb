@@ -13,370 +13,388 @@
 <title>Proceso de desecho</title>
 {% endblock %}
 
-
 {% block content %}
 <div class="all-cont">
-  <div class="top-nav">
-    <a href="{% url 'dashboards:antesDesechar' %}">
-      <span class="icon-arrow-left2"></span>
-    </a>
-
-    <h1 class="title-panel">Panel de Desecho</h1>
-
-    <button type="submit" class="btn ok disabled mr-1">
-      <span class="icon-checkmark"></span>
-    </button>
+  <div class="head-cont">
+    <span class="icon-arrow-left2"></span>
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="">
+    </div>
   </div>
   <div class="container">
-    <div class="left-column">
-      <h2>Pendientes de Dictamen</h2>
+    <div class="cont__left">
+      <div class="top__search">
+        <h2>Lista de Llantas</h2>
+        <div class="search">
+          <input type="search" id="search" placeholder="Buscar número económico...">
+          <span class="icon-search"></span>
+        </div>
+      </div>
 
-      <div class="column">
-        <aside class="list-container">
-          <input
-            type="search"
-            name=""
-            id=""
-            placeholder="Buscar..."
-            class="form-control"
-          />
+      <div class="tires__container">
+        <nav>
+          <button class="prev">Prev</button>
+          <button class="next">Next</button>
+        </nav>
+        <div class="tire__list"></div>
+        <div class="icon-spinner2"></div>
+      </div>
 
-          <div class="grid-items drop-zone">
-            <!-- Drag item -->
-
-            <div class="card" id="1">
-              <div class="card-img">
-                <span class="tag good" id="profundidad"></span>
-                <span class="icon-tire2"></span>
-              </div>
-
-              <div class="card-info">
-                <p id="random"></p>
-                <p id="product">Michellin</p>
-              </div>
-            </div>
-
-            <!-- Drag Item  -->
-
-            <div class="card" id="2">
-              <div class="card-img">
-                <span class="tag yellow" id="profundidad"></span>
-                <span class="icon-tire2"></span>
-              </div>
-
-              <div class="card-info">
-                <p id="random"></p>
-                <p id="product">Michellin</p>
-              </div>
-            </div>
-
-            <div class="card" id="3">
-              <div class="card-img">
-                <span class="tag bad" id="profundidad"></span>
-                <span class="icon-tire2"></span>
-              </div>
-
-              <div class="card-info">
-                <p id="random"></p>
-                <p id="product">Michellin</p>
-              </div>
-            </div>
+    </div>
+    <form class="cont__right" form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h2 class="form__header">Seleccione una llanta</h2>
+      <div class="form__tire">
+        <div class="damage">
+          <div class="damage__svg">
+            <img src="{% static './images/tireIns.svg' %}" alt="">
           </div>
-        </aside>
-      </div>
-    </div>
-    <div class="main-cont">
-      <div class="main-top">
-        <h2>Donde esta el daño</h2>
+        </div>
+        <div class="select__group">
 
-        <main class="two-columns">
-          <section class="column">
-            <div class="scratch">
-              <img src="{% static './images/tireIns.svg' %}" alt="">
-            </div>
-          </section>
-          <section class="column">
-            <div class="list-container">
-              
-              <div class="grid-items drop-zone damage">
-                <div class="card" id="4">
-                  <div class="card-img">
-                    <span class="tag bad" id="profundidad"></span>
-                    <span class="icon-tire2"></span>
-                  </div>
-
-                  <div class="card-info">
-                    <p id="random"></p>
-                    <p>Michellin</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </section>
-        </main>
-      </div>
-      <div class="main-bottom">
-        <h2>Dictamen de llanta</h2>
-
-        <section class="column">
-          <form class="dictamen-form" id="dictamen-form">
-            
-            <div class="input-group">
-
-              <div class="form-list">
-                <input
-                  type="text"
-                  placeholder="razón"
-                  class="form-control"
-                  list="razon"
-                />
-
-                <datalist id="razon">
-                  <option value="option 1"></option>
-                  <option value="option 2"></option>
-                  <option value="option 3"></option>
-                  <option value="option 4"></option>
-                  <option value="option 5"></option>
-                  <option value="option 6"></option>
-                  <option value="option 7"></option>
-                  <option value="option 8"></option>
-                  <option value="option 9"></option>
-                  <option value="option 10"></option>
-                </datalist>
-              </div>
-
-              <div class="form-list">
-                <input
-                  type="text"
-                  placeholder="condición"
-                  class="form-control"
-                  list="condicion"
-                />
-
-                <datalist id="condicion">
-                  <option value="option 1"></option>
-                  <option value="option 2"></option>
-                  <option value="option 3"></option>
-                  <option value="option 4"></option>
-                  <option value="option 5"></option>
-                  <option value="option 6"></option>
-                  <option value="option 7"></option>
-                  <option value="option 8"></option>
-                  <option value="option 9"></option>
-                  <option value="option 10"></option>
-                </datalist>
-              </div>
-
-              <div class="form-list">
-                <input
-                type="number"
-                placeholder="profundidad"
-                class="form-control"
-                />
-              </div>
-              
-            </div>
-
-            <div class="input-group file">
-              <span class="icon-camera1"></span>
-              <input
-                type="file"
-                name="photo"
-                id="photo"
-                placeholder="Photo"
-              />
-            </div>
-
-            <nav class="options-nav">
-              <button type="submit" class="btn ok disabled">
-                <span class="icon-checkmark"></span>
-              </button>
-              <button type="reset" class="btn danger disabled">
-                <span class="icon-cross"></span>
-              </button>
-            </nav>
-
-          </form>
-        </section>
-      </div>
-    </div>
-    <div class="right-column">
-      <h2>Dictamen Hecho</h2>
-
-      <div class="column">
-        <aside class="list-container ok-items">
-          <input
-            type="search"
-            name=""
-            id=""
-            placeholder="Buscar..."
-            class="form-control"
-          />
-
-          <div class="grid-items">
-            <div class="card" id="5">
-              <!-- El data-delete-id es obligatorio para eliminar el elemento con ese ID que tienen que ser el mismo -->
-              <button class="btn delete" data-delete-id="5">
-                <span class="icon-cross danger"></span>
-              </button>
-
-              <div class="card-img">
-                <span class="tag good" id="profundidad"></span
-                ><span class="icon-tire2"></span>
-              </div>
-              <div class="card-info">
-                <p id="random"></p>
-                <p>Michellin</p>
-              </div>
-            </div>
-
-            <div class="card" id="6">
-              <button class="btn delete" data-delete-id="6">
-                <span class="icon-cross danger"></span>
-              </button>
-
-              <div class="card-img">
-                <span class="tag good" id="profundidad"></span
-                ><span class="icon-tire2"></span>
-              </div>
-              <div class="card-info">
-                <p id="random"></p>
-                <p>Michellin</p>
-              </div>
-            </div>
+          <div class="select__group__item">
+            <label for="">
+              Condición
+            </label>
+            <select name="condicion" id="" disabled required>
+              <option value=""></option>
+              <option value="">Condición 1</option>
+              <option value="">Condición 2</option>
+              <option value="">Condición 3</option>
+            </select>
           </div>
 
-        </aside>
+          <div class="select__group__item">
+            <label for="">
+              Zona de daño
+            </label>
+            <select name="zona" id="" disabled required>
+              <option value=""></option>
+              <option value="">zona 1</option>
+              <option value="">zona 2</option>
+              <option value="">zona 3</option>
+              <option value="">zona 4</option>
+              <option value="">zona 5</option>
+            </select>
+          </div>
+
+          <div class="select__group__item">
+            <label for="">
+              Razón
+            </label>
+            <select name="razon" id="" disabled required>
+              <option value=""></option>
+              <option value="">Razón 1</option>
+              <option value="">Razón 2</option>
+              <option value="">Razón 3</option>
+            </select>
+          </div>
+
+          <div class="input__group__item">
+            <label for="">
+              Profundidad
+            </label>
+            <input type="number" name="profundidad" placeholder="Profundidad" disabled required>
+          </div>
+
+          <input type="hidden" name="id">
+        
+        </div>
+        <div class="drag__drop">
+          <input type="file" name="image" id="" accept=".jpg, .png, .jpeg, gif" disabled>
+        </div>
+
+        <div class="image__prev"></div>
+
+        <div class="button__group">
+          <button class="btn btn-danger" type="button" disabled>
+            <span class="icon-cross"></span>
+          </button>
+          <button class="btn btn-success" disabled>
+            <span class="icon-checkmark"></span>
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
+<template id="template">
+  <div class="tire__item">
+    <span class="icon-tire2"></span>
+    <div class="data">
+      <div class="economico">
+        <h3>Numero económico:</h3>
+        <p></p>
+      </div>
+      <div class="producto">
+        <h3>Producto:</h3>
+        <p></p>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
+
   document.addEventListener('DOMContentLoaded', (e) => {
-    randomNumber();
-    dragElements();
-    dropZones();
-    onInputChange();
-    handleForm();
+    getData();
+    image();
   });
 
-  const numbers = document.querySelectorAll('#random');
-  const profundidad = document.querySelectorAll('#profundidad');
-  const products = document.querySelectorAll('#product');
-  //Info de relleno
-  const randomNumber = (numbers = [], limit = 100, symbols = '') => {
-    numbers.forEach(
-      (number) =>
-        (number.textContent = `${ symbols }${Math.floor(Math.random() * limit)}`)
-    );
+  const template = document.getElementById('template').content,
+        fragment = document.createDocumentFragment(),
+        form = document.querySelector('form'),
+        tireList = document.querySelector('.tire__list'),
+        loader   = document.querySelector('.icon-spinner2');
+        
+  let currentPage = 1,
+  size = 4;
+        
+  let isSelect = false;
+
+  const getData = async () => {
+    loader.style.display = 'block';
+    try {
+      const resp = await fetch(`${location.origin}/api/procesodesecho?perfil={{ perfil }}&page=${currentPage}&size=${size}`);
+      const json = await resp.json();
+
+      if (!resp.ok) throw new Error('Error en la petición');
+
+      tireList.innerHTML = '';
+
+      if (json.pagination.next === null) {
+       document.querySelector('.next').style.display = 'none'; 
+      } else {
+        document.querySelector('.next').style.display = 'inline-block'; 
+      }
+
+      if (json.pagination.prev === null) {
+       document.querySelector('.prev').style.display = 'none'; 
+      } else {
+        document.querySelector('.prev').style.display = 'inline-block'; 
+      }
+      
+      json.llantas.forEach(tire => {
+        template.querySelector('.tire__item').dataset.id = tire.id;
+        template.querySelector('.tire__item').dataset.profundidad = tire.min_profundidad;
+        template.querySelector('.economico p').textContent = tire.numero_economico;
+        template.querySelector('.producto p').textContent = tire.product;
+
+        let clone = document.importNode(template, true);
+        fragment.appendChild(clone);
+      })
+
+      loader.style.display = 'none';
+      tireList.appendChild(fragment);
+      setTire();
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const setCondition = () => {
+    const selectCondition = document.querySelector('select[name="condicion"]');
+
+    fetch(`${location.origin}/api/opcionesdesecho`)
+    .then(resp => resp.json())
+    .then(json => {
+      let option = `<option>Seleccione una condición</option>`;
+
+      json.condiciones.forEach(condition => {
+        option += `<option value="${condition.condicion}">${condition.condicion}</option>`;
+      });
+
+      selectCondition.innerHTML = option;
+    })
+    .catch(error => console.error(error))
   };
 
-  randomNumber(numbers, 1000000, '#');
-  randomNumber(profundidad, 100);
+  const loadZone = (condition) => {
+    const selectZona = document.querySelector('select[name="zona"]');
 
-  // Creando elementos drag and drop
+    fetch(`${location.origin}/api/opcionesdesecho?condicion=${condition}`)
+      .then(resp => resp.ok ? resp.json() : Promise.reject(resp))
+      .then(json => {
+        let option = `<option>Seleccione una condición</option>`;
 
-  const dragElements = () => {
-    const cards = document.querySelectorAll('.card');
-    const noDragCards = document.querySelectorAll('.ok-items > .card');
+        json.zonas.forEach(zonas => {
+          option += `<option value="${zonas.zona_de_llanta}">${zonas.zona_de_llanta}</option>`;
+        });
 
-    cards.forEach((item) => {
-      item.setAttribute('draggable', true); // create drag element
+        selectZona.innerHTML = option;
+      })
+      .catch(error => console.error(error));
+  }
 
-      item.addEventListener('dragstart', (e) => {
-        // Cuando el elemento empieza a ser el evento drag
-        e.dataTransfer.setData('text/plain', e.target.id);
-        setTimeout(() => {
-          e.target.classList.add('drag-active');
-        }, 0);
+  const loadRazones = (condicion, zona) => {
+    const selectRazon = document.querySelector('select[name="razon"]');
+
+    fetch(`${location.origin}/api/opcionesdesecho?condicion=${condicion}&zona=${zona}`)
+      .then(resp => resp.ok ? resp.json() : Promise.reject(resp))
+      .then(json => {
+        let option = `<option>Seleccione una condición</option>`;
+
+        json.razones.forEach(razon => {
+          option += `<option value="${razon.razon}">${razon.razon}</option>`;
+        });
+
+        selectRazon.innerHTML = option;
+      })
+      .catch(error => console.error(error));
+  }
+
+  document.addEventListener('change', (e) => {
+    const condicion = document.querySelector('select[name="condicion"]').value;
+    const zona = document.querySelector('select[name="zona"]').value;
+
+    if (e.target.name === 'condicion') {
+      loadZone(condicion);
+    }
+
+    if (e.target.name === 'zona') {
+      loadRazones( condicion, zona );
+    }
+  })
+
+  const cancelTire = (tires) => {
+    const cancel = document.querySelector('.btn-danger');
+    cancel.addEventListener('click', (e) => {
+      tires.forEach(tire => {
+        tire.classList.remove('disabled');
+        form.querySelectorAll('input, select, button').forEach(input => {
+          input.disabled = true;
+        });
+
+        document.querySelector('.form__header').textContent = 'Seleccione una llanta';
+        // document.querySelector('input[name="id"]').value = '';
+        document.querySelectorAll('form input, form select').forEach(input => input.value = '')
+        document.querySelector('input[name="image"]').value = '';
+        document.querySelector('.image__prev').innerHTML = '';
       });
 
-      item.addEventListener('dragend', (e) => {
-        // Cuando acaba el evento drag
-        e.target.classList.remove('drag-active');
+      isSelect = false;
+    });
+  }
+
+  const setTire = () => {
+    const tires = tireList.querySelectorAll('.tire__item');
+
+    if (isSelect) {
+      cancelTire(tires);
+    }
+
+    tires.forEach(tire => {
+      tire.addEventListener('click', (e) => {
+        setCondition();
+        const id = tire.dataset.id;
+
+        tires.forEach(tire => {
+          if (tire.dataset.id !== id) tire.classList.add('disabled');
+        });
+
+        form.querySelectorAll('input, select, button').forEach(input => {
+            input.disabled = false;
+        });
+        document.querySelector('.form__header').textContent = tire.querySelector('.economico p').textContent;
+        document.querySelector('input[name="id"]').value = id;
+        document.querySelector('input[name="profundidad"]').value = tire.dataset.profundidad;
+        
+        isSelect = true;
       });
     });
+    
+    cancelTire(tires);
+  }
 
-    noDragCards.forEach((item) => {
-      item.removeAttribute('draggable');
-    });
-  };
+  // Manejar la paginación
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.prev')) {
+      currentPage--;
+      tireList.innerHTML = '';
+      getData();
+    }
 
-  const dropZones = () => {
-    const dropZones = document.querySelectorAll('.drop-zone');
+    if (e.target.matches('.next')) {
+      currentPage++;
+      tireList.innerHTML = '';
+      getData();
+    }
+  });
 
-    document
-      .querySelector('.damage')
-      .querySelectorAll('.card')
-      .forEach(
-        (card) =>
-          (card.innerHTML += `
-    <button class="btn delete">
-      <span class="icon-cross danger"></span>
-    </button>
-    `)
-      );
+  // Buscador
 
-    dropZones.forEach((zone) => {
-      zone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.target.classList.add('active');
-      });
-
-      zone.addEventListener('dragenter', (e) => {
-        e.preventDefault();
-        e.target.classList.add('active');
-      });
-
-      zone.addEventListener('dragleave', (e) => {
-        e.target.classList.remove('active');
-      });
-
-      zone.addEventListener('drop', (e) => {
-        e.target.classList.remove('active');
-
-        const id = e.dataTransfer.getData('text/plain');
-        const draggable = document.getElementById(id);
-
-        if (e.target.classList.contains('drop-zone')) {
-          // Solo inserta el elemento en la zona indicada
-          // Insertando element
-
-          draggable.classList.remove('drag-active');
-          e.target.appendChild(draggable);
-
-          document
-            .querySelector('.damage')
-            .querySelectorAll('.card')
-            .forEach(
-              (card) =>
-                (card.innerHTML += `
-        <button class="btn delete">
-          <span class="icon-cross danger"></span>
-        </button>
+  document.addEventListener('input', (e) => {
+    let pageSearch = 1;
+    if (e.target.matches('#search')) {
+      if (e.target.value === '') {
+        getData();
+      } else {
+        fetch(`
+          ${location.origin}/api/procesodesecho?perfil={{ perfil }}&page=${pageSearch}&size=${size}&eco=${ e.target.value }
         `)
-            );
-        }
+          .then(resp => resp.json())
+          .then(json => {
+            tireList.innerHTML = '';
+            loader.style.display = 'block';
+
+            if (json.llantas.length === 0) {
+              tireList.innerHTML = `
+                <div>No hay llantas con ese número económico</div>
+              `;
+              loader.style.display = 'none';
+            } else {
+              tireList.innerHTML = '';
+              if (json.pagination.next === null) {
+                document.querySelector('.next').style.display = 'none'; 
+              } else {
+                document.querySelector('.next').style.display = 'inline-block'; 
+              }
+    
+              if (json.pagination.prev === null) {
+                document.querySelector('.prev').style.display = 'none'; 
+              } else {
+                document.querySelector('.prev').style.display = 'inline-block'; 
+              }
+              
+              json.llantas.forEach(tire => {
+                template.querySelector('.tire__item').dataset.id = tire.id;
+                template.querySelector('.tire__item').dataset.profundidad = tire.min_profundidad;
+                template.querySelector('.economico p').textContent = tire.numero_economico;
+                template.querySelector('.producto p').textContent = tire.product;
+    
+                let clone = document.importNode(template, true);
+                fragment.appendChild(clone);
+              })
+    
+              loader.style.display = 'none';
+              tireList.appendChild(fragment);
+              setTire();
+            }
+  
+          })
+          .catch(error => console.error(error));
+      }
+
+    }
+  });
+
+  const image = () => {
+    const input = document.querySelector('input[name="image"]');
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.addEventListener('load', (e) => {
+        const img = document.createElement('img');
+        img.src = `${e.target.result}`;
+        input.parentElement.nextElementSibling.appendChild(img);
       });
-    });
-  };
 
-  const onInputChange = () => {
-    document.addEventListener('change', (e) => {
-      document
-        .querySelectorAll('.btn.disabled')
-        .forEach((item) => item.classList.remove('disabled'));
+      reader.readAsDataURL(file);
     });
-  };
+  }
 
-  const handleForm = () => {
-    const form = document.getElementById('dictamen-form');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-    });
-  };
 </script>
+
 {% endblock %}

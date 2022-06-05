@@ -22,7 +22,7 @@ fieldset {
 }
 
 .form__label {
-  color: var(--colorv12);
+  color: var(--colorv20);
 }
 
 .form__field {
@@ -45,8 +45,7 @@ fieldset {
 }
 
 .form-content {
-  color: var(--colorv16);
-  background-color: var(--colorv02);
+  background-color: var(--colorv43);
   display: grid;
   grid-template-rows: auto 1fr;
   height: inherit;

@@ -6,7 +6,7 @@ from django.contrib import admin
 # Models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import RelatedField
-from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden
+from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden
 
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
@@ -138,16 +138,25 @@ class HistoricoLlantaAdmin(admin.ModelAdmin):
 @admin.register(Rechazo)
 class RechazoAdmin(admin.ModelAdmin):
     #Admin de rechazos
-    list_display = ('llanta', 'razon')
-    search_fields = ('llanta',)
-    list_filter = ('llanta',)
+    list_display = ('razon',)
 
 @admin.register(Orden)
 class OrdenAdmin(admin.ModelAdmin):
     #Admin de órdenes
-    list_display = ('status', 'datos')
+    list_display = ('status', 'taller', 'datos')
     search_fields = ('datos',)
     list_filter = ('datos',)
+    
+@admin.register(OrdenDesecho)
+class OrdenDesechoAdmin(admin.ModelAdmin):
+    #Admin de órdenes
+    list_display = ('folio', 'compania')
+    
+@admin.register(LlantasSeleccionadas)
+class LlantasSeleccionadasAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('id', 'perfil', 'inventario')
+    search_fields= ('id', 'perfil', 'inventario')
 
 class ProfileInline(admin.StackedInline):
     # Alinear el admin del perfil con el de User de Django

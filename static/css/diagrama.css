@@ -61,7 +61,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv16);
+  background-color: var(--colorv02);
   height: 1rem;
   opacity: 0.25;
 }
@@ -94,8 +94,7 @@
 
 .form__container,
 .absolute.form__container {
-  background-color: var(--colorv02);
-  color: var(--colorv16);
+  background-color: var(--colorv27);
   display: flex;
   gap: 1rem;
   flex-flow: column nowrap;
@@ -224,7 +223,7 @@
 
 .input-check > i {
   font-size: 3rem;
-  border: thin solid var(--colorv16);
+  border: thin solid var(--colorv02);
   padding: 0.5rem;
 }
 
@@ -239,8 +238,7 @@
 }
 
 .observations__container div i {
-  color: var(--colorv16);
-  border: thin solid var(--colorv16);
+  border: thin solid var(--colorv02);
   font-size: 3rem;
   padding: 0.5rem;
 }
@@ -282,8 +280,7 @@
 }
 
 .drop-options {
-  color: var(--colorv16);
-  background-color: var(--colorv02);
+  background-color: var(--colorv27);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;

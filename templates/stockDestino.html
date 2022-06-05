@@ -15,7 +15,11 @@
 
 {% block content %}
 <div class="all-cont">
-  <form class="taller-form">
+  <form class="taller-form" method='POST'>
+    {% csrf_token %}
+    <input type="hidden" name="inventario" value="{{stock}}">
+    <input type="hidden" name="ids" value="{{ids_list}}">
+    <input type="hidden" name="">
     <legend>
       <h2>STOCK DESTINO</h2>
     </legend>
@@ -25,28 +29,41 @@
     </label>
     <span class="fecha">21-02-2022</span>
     <label for="" class="form-label">
-      TALLER DE ORIGEN
+      STOCK DE ORIGEN
     </label>
-     <span class="almohadilla">#</span>
+     <span class="almohadilla">{{stock}}</span>
     <label for="" class="form-label">
-      TALLER DE DESTINO
+      STOCK DE DESTINO
     </label>
-     <span class="almohadilla">#</span>
+     <span class="almohadilla">
+       <select name="inventario_destino" id="">
+         <option value="" disabled selected>Elige un destino</option>
+         {% for inventario in inventarios %}
+          <option value="{{inventario}}">{{inventario}}</option>
+         {% endfor %}
+       </select>
+     </span>
     <label for="" class="form-label">
       USUARIO
     </label>
     <span class="almohadilla">USER</span>
     <h3>LISTA DE # ECONÓMICOS</h3>
-      <li class="list">#123456789</li>
-      <li class="list">#123456789</li>
-      <li class="list">#123456789</li>
+
+    {% for llanta in llantas %}
+
+      <li class="list">{{llanta.numero_economico}}</li>
+
+    {% endfor %}
+
     <nav class="nav-form">
-      <button class="btn btn-success">
+      <button type="submit" class="btn btn-success">
         <span class="icon-checkmark"></span>
       </button>
-      <button class="btn btn-danger">
+      <a class="btn btn-danger" href="{% url 'dashboards:carritoStock' %}?inventario={{stock}}">
+      
         <span class="icon-cross"></span>
-      </button>
+      
+    </a>
     </nav>
   </form>
 </div>

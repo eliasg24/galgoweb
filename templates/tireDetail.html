@@ -24,7 +24,7 @@
 <main class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}">
+      <img src="{% static 'images/aeto.svg' %}">
     </div>
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
       <h1>{{vehiculo.numero_economico}}</h1>
@@ -418,22 +418,7 @@
         {% endif %}
     {% endif %}
   {% endfor %}
-  {% for id, entrada in entradas_pro.items %}
-    console.log("{{entrada}}")
-    {% if entrada %}
-        {% if entrada == "Doble" %}    
-            document.getElementById("icon {{id}}").className = "icon-cross";
-            document.getElementById("icon2 {{id}}").className = "icon-cross";
-        {% else %}
-            document.getElementById("icon {{id}}").className = "icon-checkmark";
-        {% endif %}
-    {% else %}
-        document.getElementById("icon {{id}}").className = "icon-cross";
-        {% if id in .0 %}
-            document.getElementById("icon2 {{id}}").className = "icon-cross";
-        {% endif %}
-    {% endif %}
-  {% endfor %}
+
 
   //licencia de anyChart
   anychart.licenseKey('aeto.com.mx-16056097-34281685');

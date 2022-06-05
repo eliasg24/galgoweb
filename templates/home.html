@@ -3,97 +3,83 @@
 {% block head %} 
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/home.css' %}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+  <script src="{% static 'js/contexto/index.js' %}" defer></script>
   <title>Home</title>
 {% endblock %} 
 
 {% block content %}
 
 <main class="main__container">
-  <header class="head-cont animate__animated animate__fadeIn">
-    <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
-    </div>
-    <h1 class="head__title">Contexto</h1>
-  </header> 
+  <form class="context__form" method='POST'>
+    {% csrf_token %}
+    <div class="context__wrapper">
+      <legend>Seleccionar compañia</legend>
 
-  <section class="context__container">
-    <div class="context__card-container">
-      <article class="context__card">
-        <header class="card__header">
-          <h2>Compañia</h2>
-        </header>
-        
-        <div class="card__body">
-          <div class="card__body-item">
-            <label for="{{user.perfil.compania}}" class="input-check">
-              {{user.perfil.compania}}
-              <input type="checkbox" name="company" value="{{user.perfil.compania}}" id="{{user.perfil.compania}}"/>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </div>
-      </article>
-  
-      <article class="context__card">
-        <header class="card__header">
-          <h2>Flota</h2>
-        </header>
-        
-        <div class="card__body">
-          {% for flota in flotas %}
-          <div class="card__body-item">
-            <label for="{{flota}}" class="input-check">
-              {{flota}}
-              <input type="checkbox" name="company" value="{{flota}}" id="{{flota}}"/>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          {% endfor %}
-        </div>
-      </article>
-  
-      <article class="context__card">
-        <header class="card__header">
-          <h2>Aplicación</h2>
-        </header>
-        
-        <div class="card__body">
-          {% for aplicacion in aplicaciones %}
-          <div class="card__body-item">
-            <label for="{{aplicacion}}" class="input-check">
-              {{aplicacion}}
-              <input type="checkbox" name="company" value="{{aplicacion}}" id="{{aplicacion}}"/>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          {% endfor %}
-        </div>
-      </article>
-  
-      <article class="context__card">
-        <header class="card__header">
-          <h2>Taller</h2>
-        </header>
-        
-        <div class="card__body">
-          <div class="card__body-item"></div>
-        </div>
-      </article>
+      <label for="company">
+        Compañias
+      </label>
+
+      <select name="company" id="company" required>
+        <option value="" selected>Seleccione una compañia</option>
+      </select>
+
+      <nav>
+        <button type="button" class="btn btn-next">Siguiente</button>
+      </nav>
+    </div>
+
+    <div class="context__wrapper">
+      <legend>Seleccionar sucursales</legend>
+
+      <div class="context__options"></div>
+
+      <nav>
+        <button type="button" class="btn btn-prev">Anterior</button>
+        <button type="button" class="btn btn-next">Siguiente</button>
+      </nav>
+    </div>
+
+    <div class="context__wrapper">
+      <legend>Seleccionar aplicación</legend>
+
+      <div class="context__options"></div>
+
+      <nav>
+        <button type="button" class="btn btn-prev">Anterior</button>
+        <button type="button" class="btn btn-next">Siguiente</button>
+      </nav>
+    </div>
+
+    <div class="context__wrapper">
+      <legend>Seleccionar taller</legend>
+
+      <div class="context__options"></div>
+
+      <nav>
+        <button type="button" class="btn btn-prev">Anterior</button>
+        <button type="button" class="btn btn-next">Siguiente</button>
+      </nav>
+    </div>
+
+    <div class="context__wrapper">
+      <legend>¿Esta seguro?</legend>
+
+      <div class="context__options"></div>
+
+      <nav>
+        <button type="button" class="btn btn-prev">Regresar</button>
+        <button type="submit" class="btn btn-next">Enviar</button>
+      </nav>
     </div>
     
-    <div class="relative">
-      <a href="{% url 'dashboards:hub' %}" class="btn btn-success">
-        <span class="icon-floppy1"></span>
-      </a>
-    </div>
-  </section>
+  </form>
 </main>
+
+<template id="check-temp">
+  <input type="checkbox" value="" name="" id="">
+  <label for=""></label>
+</template>
+
+<script src="{% static 'js/contexto/getData.js' %}" defer></script>
 
 {% endblock %}

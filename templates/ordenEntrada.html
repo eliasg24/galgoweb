@@ -1,149 +1,146 @@
 {% extends 'base.html' %}
 
 {% block head %}
-{% load static %}
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="{% static 'css/ordenSalidaRen.css' %}" />
-<title>Orden de entrada a Taller</title>
-{% load static %}
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/ordenSalidaRen.css' %}" />
+  <title>Orden de Renovado Final</title>
+  {% load static %}
+
 {% endblock %}
 
 {% block content %}
-<div class="all-cont" id="doc">
-  <link
-    rel="stylesheet"
-    href="{% static 'css/ordenSalidaRen.css' %}"
-    media="all"
-  />
-  <header class="doc-head">
-    <div class="head-title">
-      <h2 class="doc-title">Orden de Entrada a Taller</h2>
-      <h2 class="doc-sub">Folio: SR</h2>
-    </div>
-    <div class="logo">
-      <img src="{% static 'images/aeto-logo.svg' %}" />
-    </div>
-  </header>
 
-  <div class="container">
-    <div class="cont-item">
-      <strong>Fecha</strong>
-      <span class="italic">22/02/2022</span>
-    </div>
-    <div class="cont-item">
-      <strong>Usuario</strong>
-      <span class="italic">pruebacal</span>
-    </div>
-    <div class="cont-item">
-      <label class="label-top" for="destino">
-        <strong>Renovador Destino</strong>
-        <input
-          type="text"
-          list="destino"
-          placeholder="Destino..."
-          class="form-control"
-          required
-        />
-        <datalist id="destino">
-          <option value="Destino 1"></option>
-          <option value="Destino 2"></option>
-          <option value="Destino 3"></option>
-        </datalist>
-      </label>
-    </div>
-  </div>
-
-  <div class="main-cont">
-    <div class="top-row">
-      <div class="top-table">
-        <label>Cantidad </label>
-        <span>10</span>
-      </div>
-
-      <div class="top-table">
-        <strong>
-          Rechazadas
-        </strong>
-        <span>1</span>
-      </div>
-      <div class="top-table">
-        <strong>
-          Aprobadas
-        </strong>
-        <span>2</span>
-      </div>
-    </div>
-
-    <div class="table-cont">
-      <table>
-        <thead>
-          <tr>
-            <th>Económico</th>
-            <th>Casco</th>
-            <th>Producto</th>
-            <th>Vida</th>
-            <th>Días fuera</th>
-            <th>Estatus</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-            <td>1 día</td>
-            <td class="ok">
-              <span class="icon-checkmark"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-            <td>1 día</td>
-            <td class="ok">
-              <span class="icon-checkmark"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>5454454</td>
-            <td>casco</td>
-            <td>fw32345</td>
-            <td>100</td>
-            <td>1 día</td>
-            <td class="bad">
-              <span class="icon-cross"></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="firma">
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/5/53/Miguel_D%C3%ADaz-Canel_firma.png"
-      alt=""
-      class="firma-img"
+<div class="orden-salida">
+  <div class="all-cont" id="doc">
+    <link
+      rel="stylesheet"
+      href="{% static 'css/ordenSalidaRen.css' %}"
+      media="all"
     />
-    <hr />
-    <h1>Firmas de Salida de llantas</h1>
+    <header class="doc-head">
+      <div class="head-title">
+        <h2 class="doc-title">Orden de Renovado Final</h2>
+        <h2 class="doc-sub">Folio: {{folio}}</h2>
+      </div>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" />
+      </div>
+    </header>
+  
+    <div class="container">
+      <div class="cont-item">
+        <strong>Fecha</strong>
+        <span class="italic">{{hoy}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Usuario</strong>
+        <span class="italic">{{user}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Renovado</strong>
+        <span class="italic">{{renovador.nombre}}</span>
+      </div>
+    </div>
+  
+    <div class="main-cont">
+      <div class="top-row">
+        <div class="top-table">
+          <label>Cantidad </label>
+          <span>{{total}}</span>
+        </div>
+  
+        <div class="top-table">
+          {% if status == "aprobado" %}
+            <strong>
+              Producto
+            </strong>
+            <span>{{producto}}</span>
+          {% else %}
+            <strong>
+              Razon
+            </strong>
+            <span>{{razon}}</span>
+          {% endif %}
+        </div>
+        <div class="top-table">
+          <strong>
+            Estado
+          </strong>
+            {% if status == "aprobado" %}
+              <span class="icon-checkmark ok"></span>
+            {% elif status == "rechazado" %}
+              <span class="icon-cross bad"></span>
+            {% endif %}
+        </div>
+      </div>
+  
+      <div class="table-cont">
+        <table>
+          <thead>
+            <tr>
+              <th>Económico</th>
+              <th>Casco</th>
+              <th>Vida</th>
+              <th>Días fuera</th>
+              <th>Taller origen</th>
+              <th>Taller destino</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for llanta in llantas_list %}
+            <tr>
+              <td>{{llanta.numero_economico}}</td>
+              <td>{{llanta.producto__producto}}</td>
+              <td>{{llanta.vida}}</td>
+              <td>{{llanta.dias_fuera}}</td>
+              <td>{{llanta.taller__nombre}}</td>
+              <td>{{taller}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div class="firma">
+      <hr />
+      <h1>Firmas de Salida de llantas</h1>
+    </div>
   </div>
-</div>
+  
+  <div class="nav-buttons">
+    
+    <button class="btn btn-info" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+    {% if solovista == True %}
+    
+    {% else %}
+    
+      <form action="" method='POST'>
+        {% csrf_token %}
+        <input type="hidden" name="ids" value='{{ids}}'>
+        {% if status == "aprobado" %}
+          <input type="hidden" name="producto" value='{{producto}}'>
+        {% else %}
+        <input type="hidden" name="razon" value='{{razon}}'>
+        {% endif %}
+        <input type="hidden" name="taller" value='{{taller}}'>
+        <input type="hidden" name="status" value='{{status}}'>
 
-<div class="nav-buttons">
-  <button class="btn btn-info" id="btn-print">
-    <span class="icon-printer8"></span>
-  </button>
-  <button class="btn btn-primary" type="submit">Guardar</button>
-  <button class="btn btn-success">
-    <a href="{% url 'dashboards:conRenovador' %}">
-      <span class="icon-checkmark"></span>
-    </a>
-  </button>
+        <a href="{% url 'dashboards:carritoStock' %}?inventario=Con renovador" class="btn btn-danger">
+          <span class="icon-cross"></span>
+        </a>
+        <br>
+        <button type="submit" class="btn btn-success">
+          <span class="icon-checkmark"></span>
+        </button>
+
+      </form>
+    {% endif %}
+  </div>
+  
 </div>
 
 <script

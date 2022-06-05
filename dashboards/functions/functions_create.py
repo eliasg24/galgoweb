@@ -16,6 +16,749 @@ def borrar_ubicaciones():
         ids = ubicaciones.values_list('pk', flat=True)[:100]
         Ubicacion.objects.filter(pk__in = ids, compania=Compania.objects.get(compania="Tramo")).delete()
 
+def asignar_ubicaciones():
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="GDL NEWPICK", compania=Compania.objects.get(compania="New Pick"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+    ubicaciones = Ubicacion.objects.filter(nombre="GDL NEWPICK", compania=Compania.objects.get(compania="New Pick"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="GDL NEWPICK", compania=Compania.objects.get(compania="New Pick"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="SLP", compania=Compania.objects.get(compania="Tramo"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+    ubicaciones = Ubicacion.objects.filter(nombre="SLP", compania=Compania.objects.get(compania="Tramo"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="SLP", compania=Compania.objects.get(compania="Tramo"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Apazapan", compania=Compania.objects.get(compania="Tramo"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+    ubicaciones = Ubicacion.objects.filter(nombre="Apazapan", compania=Compania.objects.get(compania="Tramo"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Apazapan", compania=Compania.objects.get(compania="Tramo"))
+    print(list_vehiculos_ubicacion)
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Sayer QRO", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+    ubicaciones = Ubicacion.objects.filter(nombre="Sayer QRO", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Sayer QRO", compania=Compania.objects.get(compania="TDR"))
+    print(list_vehiculos_ubicacion)
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Mexico", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="Mexico", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Mexico", compania=Compania.objects.get(compania="TDR"))
+    print(list_vehiculos_ubicacion)
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    print(list_vehiculos_ubicacion)
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Externo", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="Externo", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Externo", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="CSI", compania=Compania.objects.get(compania="CSI"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="CSI", compania=Compania.objects.get(compania="CSI"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="CSI", compania=Compania.objects.get(compania="CSI"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="QUERETARO", compania=Compania.objects.get(compania="SOLAQRO"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="QUERETARO", compania=Compania.objects.get(compania="SOLAQRO"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="QUERETARO", compania=Compania.objects.get(compania="SOLAQRO"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Monterrey", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="Monterrey", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Monterrey", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+    vehiculos_ubicacion = Vehiculo.objects.filter(ubicacion__nombre="Queretaro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_ubicacion = list(vehiculos_ubicacion)
+    print(list_vehiculos_ubicacion)
+    for vehiculo in vehiculos_ubicacion:
+        if vehiculo.ubicacion:
+            vehiculo.ubicacion = None
+            vehiculo.save()
+
+    ubicaciones = Ubicacion.objects.filter(nombre="Queretaro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in ubicaciones:
+        i += 1
+        if i < ubicaciones.count():
+            u.delete()
+        
+    ubicacion = Ubicacion.objects.get(nombre="Queretaro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_ubicacion:
+        vehiculo.ubicacion = ubicacion
+        vehiculo.save()
+
+def asignar_aplicaciones():
+    
+    """vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Abierto3Qro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Abierto3Qro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Abierto3Qro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="SayerQro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="SayerQro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="SayerQro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="ON HOLD", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Abierto2Mex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Abierto2Mex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Abierto2Mex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="TolvasQro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="TolvasQro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="TolvasQro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="BMWLocalSlp", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="BMWLocalSlp", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="BMWLocalSlp", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Almacen Villahermosa", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Almacen Villahermosa", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Almacen Villahermosa", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Abierto1Qro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Abierto1Qro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Abierto1Qro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="FullLiverMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Novo Cargo", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Novo Cargo", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Novo Cargo", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="PenafielTehuacanPue", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="PenafielTehuacanPue", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="PenafielTehuacanPue", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="PenafielTecamacMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="PenafielTecamacMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="PenafielTecamacMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="FULLSMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="FULLSMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="FULLSMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Vh", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Vh", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Vh", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="WMVHTab", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="WMVHTab", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="WMVHTab", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="PilgrimsHgo", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="PilgrimsHgo", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="PilgrimsHgo", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="CombustiblePue", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="CombustiblePue", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="CombustiblePue", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="BMWForaneoSlp", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="BMWForaneoSlp", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="BMWForaneoSlp", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Pilgrims Tepo", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Pilgrims Tepo", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Pilgrims Tepo", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="EucomexMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="EucomexMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="EucomexMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="LivLocalMex", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="LivLocalMex", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="LivLocalMex", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Pipas", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Pipas", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Pipas", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="PilgrimsTorreonDur", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="PilgrimsTorreonDur", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="PilgrimsTorreonDur", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="Suburbia", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="Suburbia", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="Suburbia", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()
+
+    vehiculos_aplicacion = Vehiculo.objects.filter(aplicacion__nombre="MPV360Qro", compania=Compania.objects.get(compania="TDR"))
+    list_vehiculos_aplicacion = list(vehiculos_aplicacion)
+    print(list_vehiculos_aplicacion)
+    for vehiculo in vehiculos_aplicacion:
+        if vehiculo.aplicacion:
+            vehiculo.aplicacion = None
+            vehiculo.save()
+
+    aplicaciones = Aplicacion.objects.filter(nombre="MPV360Qro", compania=Compania.objects.get(compania="TDR"))
+    i = 0
+    for u in aplicaciones:
+        i += 1
+        if i < aplicaciones.count():
+            u.delete()
+        
+    aplicacion = Aplicacion.objects.get(nombre="MPV360Qro", compania=Compania.objects.get(compania="TDR"))
+    for vehiculo in list_vehiculos_aplicacion:
+        vehiculo.aplicacion = aplicacion
+        vehiculo.save()"""
+
 def borrar_llantas():
     llantas = Llanta.objects.filter(compania=Compania.objects.get(compania="Tramo"))
     while llantas.count():
