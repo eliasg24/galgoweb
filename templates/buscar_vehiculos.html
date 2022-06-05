@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'js/daterangepicker.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/vehiculos2.css' %}">
+<title>Buscar vehiculo</title>
+{% endblock %}
+{% block content %}
+
+<main class="all-cont animate__animated animate__fadeIn">
+    <header class="head-cont">
+        <div class="logo">
+            <img src="{% static 'images/aeto.svg' %}" alt="logo">
+        </div>
+        <h1>Vehiculos</h1>
+    </header>
+
+    <section class="main__cont">
+        <header class="vehicle__head">
+            <div class="search__wrapper">
+                <input type="search" name="numero_economico" id="economico" placeholder="buscar">
+                <button type="submit">
+                    <i class="bx bx-search"></i>
+                </button>
+            </div>
+
+            <button class="btn btn-filter" type="button" role="button">
+                Filtros
+            </button>
+        </header>
+
+        <article class="list__container">
+            <aside class="filter__container">
+                <button class="btn btn-close" type="button" role="button">
+                    <i class="bx bx-x"></i>
+                </button>
+
+                <h2>Filtros</h3>
+                <details class="form-group">
+                    <summary class="group-title">Fecha</summary>
+                    <label for="desde" class="label-form">
+                        Desde
+                        <input type="date" name="desde" id="desde" class="form-control">
+                    </label>
+    
+                    <label for="hasta" class="label-form">
+                        Hasta
+                        <input type="date" name="hasta" id="hasta" class="form-control">
+                    </label>
+                </details>
+
+                <details class="form-group">
+                    <summary class="group-title">Por status</summary>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Azul
+                    </button>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Amarillo
+                    </button>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Rojo
+                    </button>
+                    <button class="btn badge-btn" type="button" role="search">
+                        Sospechoso
+                    </button>
+                </details>
+            </aside>
+            <div class="vehicle__list">
+                <span class="icon-spinner2"></span>
+            </div>
+        </article>
+    </section>
+</main>
+
+<template id="card-template">
+    <a href="" class="card__item">
+        <figure class="vehicle-card">
+            <div class="status"></div>
+            <div class="vehicle-card__img">
+                <span class="icon-truck vehicle-card__icon"></span>
+                <h3 class="card__economic"></h3>
+            </div>
+            <figcaption class="vehicle-card__info">
+                <span class="card__date"></span>
+                /
+                <span id="icon"></span>
+                /
+                <span class="icon-pulpo"></span>
+            </figcaption>
+        </figure>
+    </a>
+</template>
+
+<script src="{% static './js/buscador/index.js' %}"></script>
+<script src="{% static './js/vehicle-list/index.js' %}" type="module"></script>
+    
+{% endblock content %}

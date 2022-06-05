@@ -1,23 +1,22 @@
 /* New colors */
 
 :root {
-
-  --colorv00: #cccccc;
-  --colorv01: #0a2a75;
+  --colorv00: #363636;
+  --colorv01: #242424;
   --colorv02: #fff;
   --colorv03: #606060;
   --colorv04: #026cf5;
   --colorv05: #dbc002;
   --colorv06: #8a2be2;
   --colorv07: #f0412c;
-  --colorv08: #2e8b57;
+  --colorv08: #009345;
   --colorv09: #ff1493;
   --colorv10: #23252b;
   --colorv11: #2f5161;
-  --colorv12: #565656;
+  --colorv12: #213944;
   --colorv13: #f47521;
-  --colorv14: #4973f2;
-  --colorv15: #fff;
+  --colorv14: #00e5f3;
+  --colorv15: #222;
   --colorv16: #000;
   --colorv17: #808080;
   --colorv18: transparent;
@@ -42,13 +41,11 @@
   --colorv37: #333;
   --colorv38: #646464;
   --colorv39: #353535;
-  --colorv40: #051026;
+  --colorv40: #6666d9;
   --colorv41: #009245;
   --colorv42: #4caf50;
   --colorv43: #555;
   --colorv44: #f1f1f1;
-  --colorv45: #08a63f;
-  --colorv46: #ed2a3d;
   --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
@@ -142,7 +139,6 @@ h6 {
 
 .badge-btn {
   border: thin solid var(--colorv02);
-  color: var(--colorv02);
   border-radius: 0.25rem;
   margin: 0.5rem 0;
   padding: 0.5rem;
@@ -150,12 +146,12 @@ h6 {
 
 .icon-spinner2 {
   animation: spinner 1s linear infinite;
-  display: block;
+  display: none;
   font-size: 3rem;
   height: fit-content;
   margin: auto;
   width: fit-content;
-  grid-column: span 4;
+  /* grid-column: span 4; */
 }
 
 @keyframes spinner {
@@ -263,7 +259,6 @@ h6 {
 }
 
 .drop-search i {
-  color: var(--colorv16);
   position: absolute;
   right: 12px;
   top: 30%;
@@ -271,9 +266,9 @@ h6 {
 }
 
 .drop-input {
-  background: var(--colorv02);
-  border: thin solid var(--colorv16);
-  color: var(--colorv16);
+  background: var(--colorv18);
+  border: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-family: inherit;
   outline: none;
   padding: 0.5rem;
@@ -383,8 +378,8 @@ h6 {
 }
 
 .btn-aeto-crunch {
-  background-color: var(--colorv00);
-  color: var(--colorv16);
+  background-color: var(--colorv10);
+  color: var(--colorv02);
   padding: 0.75rem;
   transition: background-color 0.2s ease;
 }
@@ -395,7 +390,7 @@ h6 {
 
 .btn-aeto-crunch.active {
   border-top: thin solid var(--colorv13);
-  background-color: var(--colorv02);
+  background-color: var(--colorv12);
   font-weight: bold;
 }
 
@@ -408,7 +403,7 @@ h6 {
   align-items: center;
   background-color: var(--colorv09);
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   display: flex;
   justify-content: center;
   padding: 0.75rem;
@@ -496,7 +491,7 @@ h6 {
   border-bottom: 2px solid var(--colorv21);
   outline: 0;
   font-size: 1.3rem;
-  color: var(--colorv16);
+  color: var(--colorv02);
   padding: 7px 0;
   background: var(--colorv18);
   transition: border-color 0.2s;
@@ -518,7 +513,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: var(--colorv12);
+  color: var(--colorv21);
   pointer-events: none;
 }
 
@@ -543,7 +538,6 @@ h6 {
 .form__field:required,
 .form__field:invalid {
   box-shadow: none;
-  color: var(--colorv16);
 }
 
 /* Chrome, Safari, Edge, Opera */

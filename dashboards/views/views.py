@@ -2200,7 +2200,7 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
             
         ejes = functions.acomodo_ejes(ejes_no_ordenados)
             
-        color = functions.entrada_correcta(vehiculo_actual)
+        color = functions.entrada_correcta(vehiculo_actual, None)
         #print(color)
         if color == 'good':
             style = 'good'
@@ -3731,7 +3731,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
         llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario="Rodante")
         
         objetivo = vehiculo.compania.objetivo
-        color1 = functions.entrada_correcta(bitacora)
+        color1 = functions.entrada_correcta(bitacora, None)
         color2 = functions.salida_correcta(bitacora)
         if color1 == "good":
             signo1 = "icon-checkmark"
@@ -3897,21 +3897,20 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
         #functions.send_mail(bitacora, tipo_bit)
         return context   
  
-class reporteLlantaView(LoginRequiredMixin, DetailView):
+class reporteLlantaView(LoginRequiredMixin, TemplateView):
     # Vista de reporteLlantaView
           
     template_name = "reporteLlanta.html"
-    slug_field = "bitacora"
-    slug_url_kwarg = "bitacora"
-    queryset = Bitacora.objects.all()
     context_object_name = "bitacora"
 
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
         if self.kwargs['pulpo'] == 'pulpo':
+            print("hola")
             bitacora = Bitacora.objects.get(pk=self.kwargs['pk'])
         elif self.kwargs['pulpo'] == 'pulpopro':
+            print("hola2")
             bitacora = Bitacora_Pro.objects.get(pk=self.kwargs['pk'])
         #bitacora = Bitacora.objects.get(id=self.kwargs['pk'])
         llanta = Llanta.objects.get(id=self.kwargs['llanta'])
@@ -4113,7 +4112,7 @@ class configuracionVehiculoView(LoginRequiredMixin, TemplateView):
                 print('00---00')
             
             
-        color = functions.entrada_correcta(vehiculo_actual)
+        color = functions.entrada_correcta(vehiculo_actual, None)
         #print(color)
         if color == 'good':
             style = 'good'
@@ -5301,6 +5300,10 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         context['llantas_acomodadas'] = vehiculos
         return context
 
+    def post(self, request):
+        print(request.POST)
+    
+    
 class dashboardOperativoView(LoginRequiredMixin, TemplateView):
 # Vista de dashboardOperativoView
 
@@ -5560,11 +5563,9 @@ class PulpoView(LoginRequiredMixin, ListView):
         entrada_correcta_contar_barras_mes4 = functions.contar_entrada_correcta(vehiculo_fecha_barras_4)
         entrada_correcta_contar_barras_mes5 = functions.contar_entrada_correcta(vehiculo_fecha_barras_5)
 
-
-        doble_entrada = functions.doble_entrada(bitacora) 
+        doble_entrada = functions.doble_entrada(bitacora, bitacora_pro) 
         doble_mala_entrada = functions.doble_mala_entrada(bitacora, vehiculo)
 
-        doble_entrada_pro = functions.doble_entrada_pro(bitacora_pro)
         doble_mala_entrada_pro = functions.doble_mala_entrada_pro(bitacora_pro, vehiculo)
 
         vehiculo_periodo = vehiculo.filter(fecha_de_inflado__lte=ultimo_mes).filter(ultima_bitacora_pro=None) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro=None) | vehiculo.filter(fecha_de_inflado__lte=ultimo_mes).filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes)
@@ -5637,7 +5638,6 @@ class PulpoView(LoginRequiredMixin, ListView):
         context["clases_mas_frecuentes_infladas"] = functions.clases_mas_frecuentes(vehiculo_fecha_total, self.request.user.perfil.compania)
         context["compania"] = self.request.user.perfil.compania
         context["doble_entrada"] = doble_entrada
-        context["doble_entrada_pro"] = doble_entrada_pro
         context["flotas"] = Ubicacion.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         context["hoy"] = hoy
         context["mes_1"] = mes_1
@@ -5769,14 +5769,12 @@ def buscar(request):
     entrada_correcta_contar_barras_mes4 = functions.contar_entrada_correcta(vehiculo_fecha_barras_4)
     entrada_correcta_contar_barras_mes5 = functions.contar_entrada_correcta(vehiculo_fecha_barras_5)
 
-
-    doble_entrada = functions.doble_entrada(bitacora)
+    doble_entrada = functions.doble_entrada(bitacora, bitacora_pro)
     doble_mala_entrada = functions.doble_mala_entrada(bitacora, vehiculo)
 
-    doble_entrada_pro = functions.doble_entrada_pro(bitacora_pro) 
     doble_mala_entrada_pro = functions.doble_mala_entrada_pro(bitacora_pro, vehiculo)
 
-    vehiculo_periodo = vehiculo.filter(fecha_de_inflado__lte=ultimo_mes) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro=None) | vehiculo.filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes)
+    vehiculo_periodo = vehiculo.filter(fecha_de_inflado__lte=ultimo_mes).filter(ultima_bitacora_pro=None) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes) | vehiculo.filter(fecha_de_inflado=None).filter(ultima_bitacora_pro=None) | vehiculo.filter(fecha_de_inflado__lte=ultimo_mes).filter(ultima_bitacora_pro__fecha_de_inflado__lte=ultimo_mes)
     vehiculo_periodo_status = {}
     mala_entrada_periodo = functions.mala_entrada(vehiculo_periodo) | functions.mala_entrada_pro(vehiculo_periodo)
     for v in vehiculo_periodo:
@@ -5792,7 +5790,6 @@ def buscar(request):
 
     vehiculo_malos_status = {}
     mala_entrada = functions.mala_entrada(vehiculo) | functions.mala_entrada_pro(vehiculo)
-    print(doble_entrada_pro)
     print(doble_mala_entrada_pro)
     for v in vehiculo:
         try:
@@ -5838,7 +5835,6 @@ def buscar(request):
                                         "clases_mas_frecuentes_infladas": functions.clases_mas_frecuentes(vehiculo_fecha_total, request.user.perfil.compania),
                                         "compania": request.user.perfil.compania,
                                         "doble_entrada": doble_entrada,
-                                        "doble_entrada_pro": doble_entrada_pro,
                                         "fecha1":fecha1,
                                         "fecha2":fecha2,
                                         "fecha_con_formato1":fecha_con_formato1,
@@ -6343,7 +6339,6 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         hoy7 = mes_7.strftime("%m")
         hoy8 = mes_8.strftime("%m")
 
-
         color = functions.entrada_correcta_actual(vehiculo)
 
         vehiculo_mes1 = bitacora.filter(fecha_de_inflado__month=hoy1)
@@ -6382,10 +6377,9 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         mala_entrada_contar_mes7 += functions.contar_mala_entrada_pro(vehiculo_pro_mes7)
         mala_entrada_contar_mes8 += functions.contar_mala_entrada_pro(vehiculo_pro_mes8)
 
-        doble_entrada = functions.doble_entrada(bitacora)
+        doble_entrada = functions.doble_entrada(bitacora, bitacora_pro)
         doble_mala_entrada = functions.doble_mala_entrada(bitacora, vehiculo)
 
-        doble_entrada_pro = functions.doble_entrada_pro(bitacora_pro)
         doble_mala_entrada_pro = functions.doble_mala_entrada_pro(bitacora_pro, vehiculo)
 
         filtro_sospechoso = functions.vehiculo_sospechoso_llanta(inspecciones)
@@ -6448,14 +6442,14 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         desgaste_mensual = functions.desgaste_mensual(inspecciones_llanta)
 
         context["bitacoras"] = bitacora
-        context["cantidad_doble_entrada_mes1"] = doble_entrada[1]["mes1"] + doble_entrada_pro[1]["mes1"]
-        context["cantidad_doble_entrada_mes2"] = doble_entrada[1]["mes2"] + doble_entrada_pro[1]["mes2"]
-        context["cantidad_doble_entrada_mes3"] = doble_entrada[1]["mes3"] + doble_entrada_pro[1]["mes3"]
-        context["cantidad_doble_entrada_mes4"] = doble_entrada[1]["mes4"] + doble_entrada_pro[1]["mes4"]
-        context["cantidad_doble_entrada_mes5"] = doble_entrada[1]["mes5"] + doble_entrada_pro[1]["mes5"]
-        context["cantidad_doble_entrada_mes6"] = doble_entrada[1]["mes6"] + doble_entrada_pro[1]["mes6"]
-        context["cantidad_doble_entrada_mes7"] = doble_entrada[1]["mes7"] + doble_entrada_pro[1]["mes7"]
-        context["cantidad_doble_entrada_mes8"] = doble_entrada[1]["mes8"] + doble_entrada_pro[1]["mes8"]
+        context["cantidad_doble_entrada_mes1"] = doble_entrada[2]["mes1"] + doble_entrada[3]["mes1"]
+        context["cantidad_doble_entrada_mes2"] = doble_entrada[2]["mes2"] + doble_entrada[3]["mes2"]
+        context["cantidad_doble_entrada_mes3"] = doble_entrada[2]["mes3"] + doble_entrada[3]["mes3"]
+        context["cantidad_doble_entrada_mes4"] = doble_entrada[2]["mes4"] + doble_entrada[3]["mes4"]
+        context["cantidad_doble_entrada_mes5"] = doble_entrada[2]["mes5"] + doble_entrada[3]["mes5"]
+        context["cantidad_doble_entrada_mes6"] = doble_entrada[2]["mes6"] + doble_entrada[3]["mes6"]
+        context["cantidad_doble_entrada_mes7"] = doble_entrada[2]["mes7"] + doble_entrada[3]["mes7"]
+        context["cantidad_doble_entrada_mes8"] = doble_entrada[2]["mes8"] + doble_entrada[3]["mes8"]
         context["cantidad_entrada_mes1"] = mala_entrada_contar_mes1
         context["cantidad_entrada_mes2"] = mala_entrada_contar_mes2
         context["cantidad_entrada_mes3"] = mala_entrada_contar_mes3
@@ -6798,10 +6792,9 @@ class DetailView(LoginRequiredMixin, DetailView):
             mala_entrada_contar_mes7 += functions.contar_mala_entrada_pro(vehiculo_pro_mes7)
             mala_entrada_contar_mes8 += functions.contar_mala_entrada_pro(vehiculo_pro_mes8)
 
-            doble_entrada = functions.doble_entrada(bitacora)
+            doble_entrada = functions.doble_entrada(bitacora, bitacora_pro)
             doble_mala_entrada = functions.doble_mala_entrada2(bitacora, vehiculo)
 
-            doble_entrada_pro = functions.doble_entrada_pro(bitacora_pro)
             doble_mala_entrada_pro = functions.doble_mala_entrada_pro(bitacora_pro, vehiculo)
             try:
                 if doble_mala_entrada:
@@ -6815,12 +6808,10 @@ class DetailView(LoginRequiredMixin, DetailView):
                 pass
 
             print("doble_entrada", doble_entrada)
-            print("doble_entrada_pro", doble_entrada_pro)
             print("doble_mala_entrada", doble_mala_entrada)
 
             print("message_pro", message_pro)
             print("message", message)
-
 
             configuracion = vehiculo.configuracion
             cantidad_llantas = functions.cantidad_llantas(configuracion)
@@ -6867,14 +6858,14 @@ class DetailView(LoginRequiredMixin, DetailView):
             reemplazo_actual_ejes = {k: v for k, v in reemplazo_actual.items() if v != 0}
 
             context["bitacoras"] = bitacora
-            context["cantidad_doble_entrada_mes1"] = doble_entrada[1]["mes1"] + doble_entrada_pro[1]["mes1"]
-            context["cantidad_doble_entrada_mes2"] = doble_entrada[1]["mes2"] + doble_entrada_pro[1]["mes2"]
-            context["cantidad_doble_entrada_mes3"] = doble_entrada[1]["mes3"] + doble_entrada_pro[1]["mes3"]
-            context["cantidad_doble_entrada_mes4"] = doble_entrada[1]["mes4"] + doble_entrada_pro[1]["mes4"]
-            context["cantidad_doble_entrada_mes5"] = doble_entrada[1]["mes5"] + doble_entrada_pro[1]["mes5"]
-            context["cantidad_doble_entrada_mes6"] = doble_entrada[1]["mes6"] + doble_entrada_pro[1]["mes6"]
-            context["cantidad_doble_entrada_mes7"] = doble_entrada[1]["mes7"] + doble_entrada_pro[1]["mes7"]
-            context["cantidad_doble_entrada_mes8"] = doble_entrada[1]["mes8"] + doble_entrada_pro[1]["mes8"]
+            context["cantidad_doble_entrada_mes1"] = doble_entrada[2]["mes1"] + doble_entrada[3]["mes1"]
+            context["cantidad_doble_entrada_mes2"] = doble_entrada[2]["mes2"] + doble_entrada[3]["mes2"]
+            context["cantidad_doble_entrada_mes3"] = doble_entrada[2]["mes3"] + doble_entrada[3]["mes3"]
+            context["cantidad_doble_entrada_mes4"] = doble_entrada[2]["mes4"] + doble_entrada[3]["mes4"]
+            context["cantidad_doble_entrada_mes5"] = doble_entrada[2]["mes5"] + doble_entrada[3]["mes5"]
+            context["cantidad_doble_entrada_mes6"] = doble_entrada[2]["mes6"] + doble_entrada[3]["mes6"]
+            context["cantidad_doble_entrada_mes7"] = doble_entrada[2]["mes7"] + doble_entrada[3]["mes7"]
+            context["cantidad_doble_entrada_mes8"] = doble_entrada[2]["mes8"] + doble_entrada[3]["mes8"]
             context["cantidad_entrada_mes1"] = mala_entrada_contar_mes1
             context["cantidad_entrada_mes2"] = mala_entrada_contar_mes2
             context["cantidad_entrada_mes3"] = mala_entrada_contar_mes3
@@ -6894,6 +6885,7 @@ class DetailView(LoginRequiredMixin, DetailView):
             context["entradas"] = entradas_correctas
             context["fecha"] = fecha
             context["hoy"] = hoy
+            context["llantas"] = llantas
             context["mes_1"] = mes_1
             context["mes_2"] = mes_2.strftime("%b")
             context["mes_3"] = mes_3.strftime("%b")

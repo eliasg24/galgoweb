@@ -117,6 +117,11 @@ class SearchView(LoginRequiredMixin, View):
         fecha2 = self.request.GET.get("fecha_final")
         color = self.request.GET.getlist("color")
 
+        size = (int(request.GET['size']) if 'size' in request.GET else 10)
+        
+        page = (int(request.GET['page']) if 'page' in request.GET else 1)
+        
+
         vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania), tirecheck=False)
         if numero_economico:
             vehiculos = vehiculos.filter(numero_economico__icontains=numero_economico)
