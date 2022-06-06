@@ -24,8 +24,8 @@ select {
 }
 
 .btn-config {
-  background-color: var(--colorv02);
-  border: thin solid var(--colorv02);
+  background-color: #fff; /*No cambia*/
+  border: thin solid #a5a5a5; /*No cambia*/
   border-radius: 0.25rem;
   color: var(--colorv16);
   font-weight: 500;

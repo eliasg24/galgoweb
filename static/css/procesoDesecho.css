@@ -34,7 +34,7 @@ p {
 .top__search {
   display: flex;
   flex-direction: column;
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   text-align: center;
   border-radius: 0.25rem;
 }
@@ -55,7 +55,7 @@ input[type='search'] {
 }
 
 .tires__container {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -100,7 +100,7 @@ input[type='search'] {
 .cont__right {
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
 }
 
@@ -113,6 +113,7 @@ input[type='search'] {
 }
 
 .damage {
+  background-color: var(--colorv00);
   display: flex;
   gap: 1rem;
   flex-direction: column;

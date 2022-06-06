@@ -1,6 +1,7 @@
 /* New colors */
 
 :root {
+
   --colorv00: #cccccc;
   --colorv01: #0a2a75;
   --colorv02: #333;
@@ -24,7 +25,7 @@
   --colorv20: #ccc;
   --colorv21: #9b9b9b;
   --colorv22: #ff0000;
-  --colorv23: #dcdcdc;
+  --colorv23: #353535;
   --colorv24: #90ee90;
   --colorv25: #fff;
   --colorv26: #05112c;

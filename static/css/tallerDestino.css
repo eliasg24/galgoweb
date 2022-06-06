@@ -64,13 +64,13 @@ hr {
 }
 
 .btn-success {
-  background-color: var(--colorv08);
-  color: var(--colorv02);
+  background-color: #009345; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 .btn-danger {
-  background-color: var(--colorv22);
-  color: var(--colorv02);
+  background-color: #ff0000; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 .all-cont {
