@@ -25,7 +25,7 @@
   justify-content: flex-end;
 }
 
-.btn.next, 
+.btn.next,
 .btn.prev {
   background-color: var(--colorv04);
   border-radius: 0.25rem;
@@ -216,7 +216,7 @@
   left: 0;
   place-content: center;
   position: fixed;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   top: 0;
   width: 100%;
   z-index: 999;
@@ -235,8 +235,8 @@
 .form__filter {
   background-color: var(--colorv00);
   border-radius: 0.25rem;
-  min-width: 500px;
-  overflow: hidden;
+  /* min-width: 600px; */
+  overflow: auto;
 }
 
 .filter__header {
@@ -247,7 +247,6 @@
   padding: 0.5rem;
   background: var(--colorv01);
   color: #fff; /*No cambia*/
-
   align-items: center;
 }
 
@@ -267,21 +266,26 @@
 
 .filter__nav {
   display: flex;
+  flex-flow: row wrap;
   gap: 1rem;
   margin: 0.5rem 0 0;
 }
 
 .btn-filter {
+  align-items: center;
   background-color: var(--colorv17);
   border-radius: 0.25rem;
   border: none;
   color: var(--colorv02);
   cursor: pointer;
+  display: flex;
   font-weight: 500;
+  height: 100%;
+  justify-content: center;
   padding: 0.5rem;
-  transition: all .3s ease;
-  width: 100%;
   position: relative;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
 .label-check input {
@@ -336,4 +340,12 @@
 }
 
 @media screen and (min-width: 1024px) {
+  .form__filter {
+    min-width: 600px;
+    overflow: hidden;
+  }
+
+  .filter__nav {
+    flex-flow: row nowrap;
+  }
 }

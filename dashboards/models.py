@@ -240,6 +240,7 @@ class Vehiculo(models.Model):
     km_diario_maximo = models.IntegerField(blank=True, null=True, default=1000)
     ultima_bitacora_pro = models.ForeignKey("Bitacora_Pro", null=True, blank=True, on_delete=models.CASCADE, related_name="bitacoras_pro")
     observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Vehiculo"})
+    observaciones_llanta = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Llanta"}, related_name='observaciones_llanta')
     estatus_activo = models.BooleanField(default=True)
     tirecheck = models.BooleanField(default=False)
     nuevo = models.BooleanField(default=False)

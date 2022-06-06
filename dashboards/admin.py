@@ -128,7 +128,7 @@ class DesechoAdmin(admin.ModelAdmin):
 @admin.register(Observacion)
 class ObservacionAdmin(admin.ModelAdmin):
     #Admin de observaciones
-    list_display = ( 'observacion', 'icono', 'color', "nivel", "automatico")
+    list_display = ( 'id', 'observacion', 'icono', 'color', "nivel", "automatico")
     
 @admin.register(HistoricoLlanta)
 class HistoricoLlantaAdmin(admin.ModelAdmin):

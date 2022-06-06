@@ -1,6 +1,8 @@
 # Django
 from ctypes import alignment
+from functools import reduce
 from math import prod
+import operator
 from operator import or_
 from http.client import HTTPResponse
 import re
@@ -5226,6 +5228,8 @@ class calendarView(LoginRequiredMixin, TemplateView):
 
     template_name = "calendar/calendar.html"
 
+
+
 class vehicleListView(LoginRequiredMixin, TemplateView):
 # Vista de vehicleListView
 
@@ -5236,24 +5240,54 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        #Obtencion de los parametros iniciales de la paginación
-        size = (int(self.request.GET['size']) if 'size' in self.request.GET else 10)
-        page = (int(self.request.GET['page']) if 'page' in self.request.GET else 1)
+        
+        #Obtencion de los filtros
+        filtro = self.request.GET.get('filtro', None)
+        filtro_query = ({'observaciones_llanta__id__in': filtro.split(',')} if filtro != '' and  filtro != None else {})
+        exclude = self.request.GET.get('exclude', None)
+        exclude_query = ({'observaciones_llanta__id__in': exclude.split(',')} if exclude != '' and  exclude != None else {})
+        ejes = self.request.GET.get('ejes', None)
+        print(filtro)
+        
         #Se obtienen los vehiculos de la compañia
-        vehiculos = Vehiculo.objects.select_related().filter(compania = compania).values('id').order_by('id')
+        vehiculos = Vehiculo.objects.select_related().filter(
+            compania = compania,
+            **filtro_query,
+            ).exclude(
+                **exclude_query
+                ).values('id').order_by('id')
+        if ejes != None:
+            clauses = (Q(configuracion__icontains=p) for p in ejes.split(','))
+            query = reduce(operator.or_, clauses)
+            vehiculos = vehiculos.filter(query)
+        print(vehiculos)
+        #vehiculos = functions.ordenar_por_status(vehiculos)
         ids_vehiculo = functions.list_vehicle_id(vehiculos)
+        
+        #Obtencion de los parametros iniciales de la paginación
+        size = (int(self.request.GET['size']) if 'size' in self.request.GET else 12)
+        page = (int(self.request.GET['page']) if 'page' in self.request.GET else 1)
         #Se ejecuta la paguinacion para poder trabajar solo en el fragmento que se mostrara
         datos = vehiculos.count()  
         pages = (math.ceil(datos/size))
         limit = page * size
         offset = limit - size
+        
+        
+        print(f'datos: {datos}')
+        print(f'pages: {pages}')
+        print(f'page: {page}')
+        print(f'limit: {limit}')
+        print(f'offset: {offset}')
+        
+        
         #Se verifica que el page se encuentre dentro de un rango valido
-        if page < 1:
-            url = f"%s?page=1" % reverse('dashboards:vehicleList')
-            return redirect(url)
-        if page > pages:
-            url = f"%s?page={pages}" % reverse('dashboards:vehicleList')
-            return redirect(url)
+        #if page < 1:
+        #    url = f"%s?page=1" % reverse('dashboards:vehicleList')
+        #    return redirect(url)
+        #if page > pages:
+        #    url = f"%s?page={pages}" % reverse('dashboards:vehicleList')
+        #    return redirect(url)
         
         #pagination = functions.pagination(page, pages)
         prev = functions.pagination_prev(page, pages)
@@ -5268,11 +5302,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         
         print(f'prev: {prev}')
         print(f'next: {next}')
-        print(f'datos: {datos}')
-        print(f'pages: {pages}')
-        print(f'page: {page}')
-        print(f'limit: {limit}')
-        print(f'offset: {offset}')
+        
         return super().get(*args, **kwargs)
     
     def get_context_data(self, **kwargs):
@@ -5287,13 +5317,10 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
         vehiculos = acomodo_posicion_ejes_vehicle
         
-        for vehiculo in acomodo_posicion_ejes_vehicle:
-            for eje in vehiculo['ejes']:
-                print(eje)
-            print('---------------')
+
         
-        print(llantas.count())
-        print(len(current_vehiculos))
+        """print(llantas.count())
+        print(len(current_vehiculos))"""
 
         context['prev'] = self.prev
         context['next'] = self.next
@@ -5302,6 +5329,12 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
 
     def post(self, request):
         print(request.POST)
+        lista_observaciones = functions.lista_de_id_observaciones(request.POST)
+        lista_observaciones_exclude = functions.lista_de_id_observaciones_exclude(request.POST)
+        lista_ejes = functions.lista_de_ejes(request.POST)
+        #vehiculos = Vehiculo.objects.filter(observaciones_llanta__id__in = lista_observaciones)
+        url = f'%s?filtro={lista_observaciones}&exclude={lista_observaciones_exclude}&ejes={lista_ejes}' % reverse('dashboards:vehicleList')
+        return redirect(url)
     
     
 class dashboardOperativoView(LoginRequiredMixin, TemplateView):

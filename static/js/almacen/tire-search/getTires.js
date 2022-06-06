@@ -2,47 +2,97 @@ const template = document.getElementById('tire-template').content,
   fragment = document.createDocumentFragment(),
   container = document.querySelector('.search__list'),
   loader = document.getElementById('loader');
-  
-  document.addEventListener('input', async (e) => {
-    if (e.target.matches('#search')) {
-    loader.style.display = 'block';
 
-    try {
-      const resp = await fetch(
-        `${location.origin}/api/tiresearch?eco=${e.target.value.toLowerCase()}&size=3`
-      );
-      const { pagination, result } = await resp.json();
+let currentPage = 1,
+  size = 3;
 
-      if (!resp.ok) throw new Error('Algo salió mal');
+const input = document.getElementById('search');
 
-      if (pagination.next === null) {
-        document.querySelector('.btn-next').disabled = true;
-      } else {
-        document.querySelector('.btn-next').disabled = false;
-      }
-  
-      if (pagination.prev === null) {
-        document.querySelector('.btn-prev').disabled = true;
-      } else {
-        document.querySelector('.btn-prev').disabled = false;
-      }
+const getTires = async (query) => {
+  const origin = window.location.origin,
+    api = `${origin}/api`,
+    tires = `${api}/tiresearchalmacen`,
+    apiSearch = `${ tires }${ query || '?' }&size=${size}&page=${currentPage}`;
 
-      result.forEach(tire => {
-        template.querySelector('.economico').textContent = tire.numero_economico;
-        template.querySelector('.producto').textContent = tire.producto__producto;
-        template.querySelector('.fecha').textContent = tire.fecha_de_entrada_inventario;
+  loader.style.display = 'block';    
+  try {
+    const resp = await fetch(apiSearch);
+    const { pagination, result } = await resp.json();
 
-        let clone = document.importNode(template, true);
+    if (!resp.ok) throw new Error('Algo salió mal');
 
-        fragment.appendChild(clone);
-      });
-
+    if (result.length === 0) {
       loader.style.display = 'none';
-      container.innerHTML = '';
-      container.appendChild(fragment);
-    
-    } catch (error) {
-      console.error(error);
+      container.innerHTML = `
+        <p>No hay resultados</p>
+      `
+      return;
     }
+
+    if (pagination.next === null) {
+      document.querySelector('.btn-next').disabled = true;
+    } else {
+      document.querySelector('.btn-next').disabled = false;
+    }
+
+    if (pagination.prev === null) {
+      document.querySelector('.btn-prev').disabled = true;
+    } else {
+      document.querySelector('.btn-prev').disabled = false;
+    }
+
+    result.forEach((tire) => {
+      template.querySelector('a').href = tire.url;
+      template.querySelector('.economico').textContent =
+        tire.numero_economico;
+      template.querySelector('.producto').textContent =
+        tire.producto__producto;
+      template.querySelector('.fecha').textContent =
+        tire.fecha_de_entrada_inventario;
+
+      let clone = document.importNode(template, true);
+
+      fragment.appendChild(clone);
+    });
+
+    loader.style.display = 'none';
+    container.innerHTML = '';
+    container.appendChild(fragment);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+document.addEventListener('input', async (e) => {
+  if (e.target.matches('#search')) {
+    const params = new URLSearchParams(window.location.search);
+    params.set(e.target.name, e.target.value.toLowerCase());
+
+    if (e.target.value == '') {
+      params.delete(e.target.name);
+      let newPath = window.location.pathname + params.toString();
+      history.pushState(null, '', newPath);
+      getTires(window.location.search);
+    }
+
+    let newPath = window.location.pathname + '?' + params.toString();
+
+    history.pushState(null, '', newPath);
+
+    console.log(location.search)
+
+    getTires(location.search);
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.btn-next')) {
+    currentPage += 1;
+    getTires(location.search);
+  }
+
+  if (e.target.matches('.btn-prev')) {
+    currentPage -= 1;
+    getTires(location.search);
   }
 });

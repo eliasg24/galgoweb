@@ -120,7 +120,6 @@ class SearchView(LoginRequiredMixin, View):
         size = (int(request.GET['size']) if 'size' in request.GET else 10)
         
         page = (int(request.GET['page']) if 'page' in request.GET else 1)
-        
 
         vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania), tirecheck=False)
         if numero_economico:
@@ -394,6 +393,90 @@ class TireSearch(LoginRequiredMixin, View):
             'pagination': pagination,
             'result': search_list,
             'productos': productos
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+    
+class TireSearchAlmacen(LoginRequiredMixin, View):
+    # Vista del dashboard buscar_vehiculos
+
+    def get(self, request , *args, **kwargs):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        compania = perfil.compania
+        llantas = Llanta.objects.filter(compania = compania)
+        
+        #Queryparams
+        size = (int(request.GET['size']) if 'size' in request.GET else 10)
+        page = (int(request.GET['page']) if 'page' in request.GET else 1)
+        
+        eco = (request.GET['eco'] if 'eco' in request.GET else None)
+        eco_query = ({'numero_economico__icontains': eco} if  eco != None else {})
+        
+        #Color de llanta
+        rojos = []
+        amarillos = []
+        azules = []
+        
+        for llanta in llantas:
+            color = functions.color_observaciones_all_one(llanta)            
+            if color == 'bad':
+                rojos.append(llanta.id)
+            elif color == 'yellow':
+                amarillos.append(llanta.id)
+            else:
+                azules.append(llanta.id)
+                
+        #Resultado final
+        search_first = llantas.filter(
+            **eco_query,
+            ).annotate(
+                min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha"), 
+                max_profundidad=Greatest("profundidad_izquierda", "profundidad_central", "profundidad_derecha"),
+                color=Case(
+                    When(id__in=rojos, then=Value("bad")), 
+                    When(id__in=amarillos, then=Value("yellow")), 
+                    When(id__in=azules, then=Value("good"))
+                    ),
+                url=Case(
+                    When(inventario="Nueva", then=Value("/nueva")),
+                    When(inventario="Antes de Renovar", then=Value("/antesRenovar")), 
+                    When(inventario="Antes de Desechar", then=Value("/antesDesechar")),
+                    When(inventario="Renovada", then=Value("/renovada")),
+                    When(inventario="Con renovador", then=Value("/conRenovador")),
+                    When(inventario="Desecho final", then=Value("/desechoFinal")),
+                    When(inventario="Servicio", then=Value("/servicio")),
+                    When(inventario="Rodante", then=Value("/rodante")),
+                    When(inventario="Archivado", then=Value("/archivado")),                    
+                    )
+                )
+        
+        search = search_first
+        
+        #Paginacion
+        datos = search.count()  
+        pages = (math.ceil(datos/size))
+        limit = page * size
+        offset = limit - size
+        
+        print(f'datos: {datos}')
+        print(f'size: {size}')
+        print(f'pages: {pages}')
+        print(f'page: {page}')
+        
+        pagination = functions.pagination(page, pages)
+        
+        #Serializar data
+        search_list = list(search[offset:limit].values( "numero_economico","color", "id", 'producto__producto','min_profundidad', 'fecha_de_entrada_inventario', 'url'))
+
+        
+        dict_context = {
+            'pagination': pagination,
+            'result': search_list,
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

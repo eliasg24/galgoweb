@@ -633,6 +633,11 @@ urlpatterns = [
         view=views_rest.TireSearch.as_view(),
         name="tiresearch"
     ),
+      path(
+        route="api/tiresearchalmacen",
+        view=views_rest.TireSearchAlmacen.as_view(),
+        name="tiresearchalmacen"
+    ),
 
     #-----------------------U-----------------------
 

@@ -140,22 +140,33 @@
   <form class="search__form">
     <header class="search__header">
       <div class="drop-search">
-        <input type="search" name="" id="search" class="drop-input" placeholder="Buscar llanta...">
+        <input type="search" name="eco" id="search" class="drop-input" placeholder="Buscar llanta..." autocomplete="off">
         <i class="bx bx-search"></i>
       </div>
 
-      <button type="button" id="close-search">
+      <button type="button" class="btn btn-cancel" id="close-search">
         Cancel
       </button>
     </header>
 
-    <nav class="nav__pag">
+    <nav class="flex-row">
       <button class="btn btn-prev" type="button" disabled>Anterior</button>
       <button class="btn btn-next" type="button" disabled>Siguiente</button>
     </nav>
 
-    <section class="search__list"></section>
+    <section class="search__list">
+      <p>Sin busquedas</p>
+    </section>
     <div class="icon-spinner2" id="loader"></div>
+
+    <footer class="search__footer">
+      <div class="footer__item">
+        <small>
+          Esc
+        </small>
+        <strong>Cerrar</strong>
+      </div>
+    </footer>
 
   </form>
 </div>
@@ -167,15 +178,12 @@
 
       <figcaption class="tire__body">
         <div class="card__row">
-          <h4>Económico:</h4>
-          <span class="economico"></span>
+          <h4>Número económico: <span class="economico"></span></h4>
         </div>
         <div class="card__row">
-          <h4>Producto:</h4>
           <span class="producto"></span>
         </div>
         <div class="card__row">
-          <h4>Fecha:</h4>
           <span class="fecha"></span>
         </div>
       </figcaption>
@@ -209,7 +217,8 @@
   const searchView = () => {
     const searchBtn = document.getElementById('open-search'),
           closeBtn = document.getElementById('close-search'),
-          searchContainer = document.querySelector('.search__container');
+          searchContainer = document.querySelector('.search__container'),
+          searchForm = document.querySelector('.search__form');
 
     document.addEventListener('click', (e) => {
       if (e.target === searchBtn) {
@@ -221,6 +230,14 @@
       }
     });
     
+    document.addEventListener('keyup', (e) => {
+      if (e.keyCode === 27) {
+        if (searchContainer.classList.contains('active')) {
+          searchContainer.classList.remove('active');
+        }
+      }
+    });
+
   };
 
 </script>

@@ -124,7 +124,7 @@ h3 {
 
 .btn-redirect {
   background-color: #fff; /*No cambia*/
-  border: thin solid #fff; /*No cambia*/;
+  border: thin solid #fff; /*No cambia*/
   border-radius: 0.5rem;
   color: var(--colorv16);
   font-weight: bold;

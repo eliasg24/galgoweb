@@ -25,6 +25,11 @@
 
 .drop-input {
   font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.drop-input:focus {
+  border-color: var(--colorv08);
 }
 
 .all-cont {
@@ -266,7 +271,7 @@
   left: 0;
   /* place-content: center; */
   position: fixed;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   top: 0;
   width: 100%;
   z-index: 999;
@@ -290,6 +295,12 @@
   color: #fff;
   font-weight: 500;
   padding: 0.5rem;
+}
+
+.btn.btn-next:disabled,
+.btn.btn-prev:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .search__container.active {
@@ -325,6 +336,12 @@
   gap: 1rem;
 }
 
+.search__list > p {
+  color: gray;
+  font-weight: 500;
+  text-align: center;
+}
+
 .tire__card {
   align-items: center;
   background-color: var(--colorv00);
@@ -351,9 +368,39 @@
   color: var(--colorv02);
 }
 
+.footer__item small {
+  border: thin solid gray;
+  border-radius: 0.25rem;
+  color: gray;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+.footer__item strong {
+  color: lightgray;
+}
+
+.search__footer {
+  display: none;
+}
+
+.btn-cancel {
+  font-size: inherit;
+  font-weight: 500;
+  color: var(--colorv07);
+}
+
+.flex-row > * {
+  flex: 1 1 auto;
+}
+
 @media screen and (min-width: 1024px) {
   .flex-row {
     justify-content: flex-end;
+  }
+
+  .flex-row > * {
+    flex: 0 1 auto;
   }
 
   .head-cont {
@@ -374,5 +421,32 @@
 
   .operacion {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .search__container {
+    place-content: center;
+  }
+
+  .search__form {
+    border-radius: 0.25rem;
+    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.5);
+    min-width: 500px;
+  }
+
+  .search__header {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  .search__header div {
+    flex: 1 1 auto;
+  }
+
+  .btn-cancel {
+    display: none;
+  }
+
+  .search__footer {
+    display: flex;
   }
 }

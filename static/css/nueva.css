@@ -16,12 +16,12 @@
 }
 
 select {
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background-color: var(--colorv01);
   color: #fff; /*No cambia*/
   font-size: 1rem;
   border: none;
-  padding: .25rem;
+  padding: 0.25rem;
 }
 
 .relative {

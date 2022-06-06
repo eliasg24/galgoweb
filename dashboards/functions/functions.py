@@ -147,10 +147,10 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
             color_dias_alinear = 'good'
             hoy = date.today()
             if vehiculo_actual.fecha_ultima_inspeccion != None:
-                print(vehiculo_actual.fecha_ultima_inspeccion)
+                #print(vehiculo_actual.fecha_ultima_inspeccion)
                 dias_sin_inspeccion = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days
             if vehiculo_actual.dias_inspeccion != 0:
-                print(vehiculo_actual.dias_inspeccion)
+                #print(vehiculo_actual.dias_inspeccion)
                 try:
                     if dias_sin_inspeccion >= (vehiculo_actual.dias_inspeccion * 2):
                         color_dias_inspenccion = 'bad'
@@ -160,11 +160,11 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                     pass
                 
             if vehiculo_actual.fecha_ultima_alineacion != None:
-                print(vehiculo_actual.fecha_ultima_inspeccion)
+                #print(vehiculo_actual.fecha_ultima_inspeccion)
                 dias_sin_alinear = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days   
             
             if vehiculo_actual.dias_alinear != 0:
-                print(vehiculo_actual.dias_alinear)
+                #print(vehiculo_actual.dias_alinear)
                 try:
                     if dias_sin_alinear >= (vehiculo_actual.dias_alinear * 2):
                         color_dias_alinear = 'bad'
@@ -2830,10 +2830,74 @@ def list_vehicle_id(vehiculos):
         vehicle (list): Lista con los ids de los vehiculos
     """
     vehicle = []
-    for vehiculo in vehiculos:
-        vehicle.append(vehiculo['id'])
+    try:
+        for vehiculo in vehiculos:
+            vehicle.append(vehiculo['id'])
+    except:
+        for vehiculo in vehiculos:
+            vehicle.append(vehiculo['vehiculo__id'])
     return vehicle
+
+def lista_de_id_observaciones(POST):
+    #? Lista de ids
+    alta_presion = 5
+    baja_presion = 4
+    baja_profundidad = 7
+    en_punto_retiro = 8
+    d_alta_presion = 13
+    d_costilla_interna = 12
+    d_inclinado_derecha = 11
+    d_inclinado_izquierda = 10
+    dualizacion = 9
+    list_obs = []
+    if 'alta-presion' in POST:
+        list_obs.append(alta_presion)
+    if 'baja-presion' in POST:
+        list_obs.append(baja_presion)
+    if 'profundidad-baja' in POST:
+        list_obs.append(baja_profundidad)
+    if 'profundidad-punto-retiro' in POST:
+        list_obs.append(en_punto_retiro)
+    if 'profundidad-desgaste-irregular' in POST:
+        list_obs.append(d_alta_presion)
+        list_obs.append(d_costilla_interna)
+        list_obs.append(d_inclinado_derecha)
+        list_obs.append(d_inclinado_izquierda)
+    if 'dualizacion' in POST:
+        dua = POST['dualizacion']
+        if dua == 'con-dualizacion':
+            list_obs.append(dualizacion)
+    list_obs.sort()
+    list_obs = str(list_obs).replace('[', '').replace(']', '').replace(' ', '')
+    return list_obs
+
+def lista_de_id_observaciones_exclude(POST):
+    #? Lista de ids
+    dualizacion = 9
+    list_obs = []
+    if 'dualizacion' in POST:
+        dua = POST['dualizacion']
+        if dua == 'sin-dualizacion':
+            list_obs.append(dualizacion)
+    list_obs = str(list_obs).replace('[', '').replace(']', '').replace(' ', '')
+    return list_obs
+        
+def lista_de_ejes(POST):
+    ejes = []
     
+    if 'r-libre' in POST:
+        ejes.append('C')
+    if 'r-direccion' in POST:
+        ejes.append('S')
+    if 'r-traccion' in POST:
+        ejes.append('D')
+    if 'r-retractil' in POST:
+        ejes.append('L')
+    if 'r-arrastre' in POST:
+        ejes.append('T')
+    ejes = str(ejes).replace('[', '').replace(']', '').replace(' ', '').replace('\'', '')
+    return(ejes)
+
 def mala_entrada(vehiculos):
     entradas = {}
     for vehiculo in vehiculos:
@@ -3183,7 +3247,50 @@ def opciones_redireccion(inventario:str):
             'Stock Destino'
         ]
 
+def ordenar_por_status(vehiculos):
+    bitacora = Bitacora.objects.filter(numero_economico__in=vehiculos)
+    bitacora_pro = Bitacora_Pro.objects.filter(numero_economico__in=vehiculos)
+    llantas = Llanta.objects.filter(vehiculo__in=vehiculos, tirecheck=False)
+    inspecciones = Inspeccion.objects.filter(llanta__in=llantas , llanta__tirecheck=False)
+
+    filtro_sospechoso = vehiculo_sospechoso(inspecciones)
+    vehiculos_sospechosos = vehiculos.filter(id__in=filtro_sospechoso)
+    vehiculos_sospechosos_list = list(vehiculos_sospechosos.values_list("id", flat=True))
+    print(vehiculos_sospechosos_list)
+
+    doble_entrada = doble_mala_entrada(bitacora, vehiculos)
+    #filtro_rojo = vehiculo_rojo(llantas, doble_entrada, vehiculos)
+    doble_entrada_pro = doble_mala_entrada_pro(bitacora_pro, vehiculos)
+    filtro_rojo = vehiculo_rojo_ordenamiento(llantas, vehiculos, doble_entrada, doble_entrada_pro)
+    vehiculos_rojos = filtro_rojo.exclude(id__in=vehiculos_sospechosos)
+    vehiculos_rojos_list = list(vehiculos_rojos.values_list("id", flat=True))
+    print(vehiculos_rojos_list)
+
+    filtro_amarillo = vehiculo_amarillo_ordenamiento(llantas, vehiculos)
+    vehiculos_amarillos = filtro_amarillo.exclude(id__in=vehiculos_rojos).exclude(id__in=vehiculos_sospechosos)
+    vehiculos_amarillos_list = list(vehiculos_amarillos.values_list("id", flat=True))
+    print(vehiculos_amarillos_list)
+
+    vehiculos_verdes = vehiculos.exclude(id__in=vehiculos_rojos).exclude(id__in=vehiculos_sospechosos).exclude(id__in=vehiculos_amarillos)
+    vehiculos_verdes_list = list(vehiculos_verdes.values_list("id", flat=True))
+    print(vehiculos_verdes_list)
+
+    vehiculos_list = []
+    vehiculos_list.extend(vehiculos_sospechosos_list)
+    vehiculos_list.extend(vehiculos_rojos_list)
+    vehiculos_list.extend(vehiculos_amarillos_list)
+    vehiculos_list.extend(vehiculos_verdes_list)
+    print(vehiculos_list)
+
+    q_list = ordenar_queryset(vehiculos_list)
+    vehiculos = vehiculos.filter(id__in=vehiculos_list).order_by(q_list)
+    print(vehiculos)
+    return vehiculos
    
+def ordenar_queryset(queryset_list):
+    q_list = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(queryset_list)])
+    return q_list
+
 def pagination(page, pages):
     pagination = {}
         
@@ -3662,6 +3769,12 @@ def vehiculo_amarillo(llantas):
     except:
         return []
 
+def vehiculo_amarillo_ordenamiento(llantas, vehiculo):
+    observaciones = llantas.filter(observaciones__isnull=False).filter(observaciones__color="Amarillo").values("numero_economico", "observaciones__observacion").distinct().values("vehiculo").annotate(cantidad=Count("observaciones__observacion")).order_by("-cantidad")
+    q_list = ordenar_queryset(observaciones.values_list("vehiculo__id", flat=True))
+    vehiculos = vehiculo.filter(id__in=observaciones.values("vehiculo__id")).order_by(q_list)
+    return vehiculos
+
 def vehiculo_amarillo_llanta(llantas):
     llantas_amarillas = []
     try:
@@ -3698,12 +3811,30 @@ def vehiculos_por_clase_sin_inspeccionar(vehiculos, hoy1, hoy2, hoy3):
     return vehiculos_clase
 
 def vehiculo_rojo(llantas, doble_entrada, vehiculo):
-    llantas = llantas.select_related("ultima_inspeccion","vehiculo__compania").annotate(llanta_eje=Substr(F("tipo_de_eje"),1,1)).annotate(punto_de_retiro=Case(When(llanta_eje="S", then=F("vehiculo__compania__punto_retiro_eje_direccion")),When(llanta_eje="D", then=F("vehiculo__compania__punto_retiro_eje_traccion")),When(llanta_eje="T", then=F("vehiculo__compania__punto_retiro_eje_arrastre")),When(llanta_eje="C", then=F("vehiculo__compania__punto_retiro_eje_loco")),When(llanta_eje="L", then=F("vehiculo__compania__punto_retiro_eje_retractil")))).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__lte=F("punto_de_retiro") - 1).values("min_profundidad").distinct()
-    vehiculos = vehiculo.filter(id__in=llantas)
+    llantas = llantas.select_related("ultima_inspeccion","vehiculo__compania").annotate(llanta_eje=Substr(F("tipo_de_eje"),1,1)).annotate(punto_de_retiro=Case(When(llanta_eje="S", then=F("vehiculo__compania__punto_retiro_eje_direccion")),When(llanta_eje="D", then=F("vehiculo__compania__punto_retiro_eje_traccion")),When(llanta_eje="T", then=F("vehiculo__compania__punto_retiro_eje_arrastre")),When(llanta_eje="C", then=F("vehiculo__compania__punto_retiro_eje_loco")),When(llanta_eje="L", then=F("vehiculo__compania__punto_retiro_eje_retractil")))).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__lte=F("punto_de_retiro") - 1).values("vehiculo").annotate(num=Count("vehiculo")).order_by("-num")
+    q_list = ordenar_queryset(llantas.values_list("vehiculo__id", flat=True))
+    vehiculos = vehiculo.filter(id__in=llantas.values("vehiculo__id")).order_by(q_list)
     try:
         union = vehiculos | doble_entrada
     except:
         union = vehiculos
+    return union
+
+def vehiculo_rojo_ordenamiento(llantas, vehiculo, doble_entrada, doble_entrada_pro):
+    observaciones = llantas.filter(observaciones__isnull=False).filter(observaciones__color="Rojo").values("numero_economico", "observaciones__observacion").distinct().values("vehiculo").annotate(cantidad=Count("observaciones__observacion")).order_by("-cantidad")
+    q_list = ordenar_queryset(observaciones.values_list("vehiculo__id", flat=True))
+    vehiculos = vehiculo.filter(id__in=observaciones.values("vehiculo__id")).order_by(q_list)
+    try:
+        union = doble_entrada | vehiculos
+        try:
+            union = doble_entrada_pro | union
+        except:
+            pass
+    except:
+        try:
+            union = doble_entrada_pro | vehiculos
+        except:
+            union = vehiculos
     return union
 
 def vehiculo_rojo_llanta(llantas):
