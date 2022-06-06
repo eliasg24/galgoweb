@@ -530,6 +530,7 @@ ul {
 .column-chart,
 .bar-chart,
 .areaLine-chart {
+  background: var(--colorv45);
   display: none;
   grid-template-rows: auto 1fr;
   height: 100%;
