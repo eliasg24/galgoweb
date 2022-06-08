@@ -46,6 +46,7 @@ p {
 }
 
 .grid-row2 {
+  background: var(--colorv45);
   border-radius: 0.25rem; 
   position: relative;
   display: grid;
@@ -61,7 +62,7 @@ p {
 }
 
 .item-card {
-  background-color: var(--colorv30);
+  background-color: var(--colorv00);
   border-radius: 0.25rem;
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -78,7 +79,7 @@ p {
 }
 
 .item-info {
-  background-color: var(--colorv00);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   display: flex;
   height: -webkit-fill-available;
@@ -136,6 +137,7 @@ p {
 
 .card.active {
   background-color: var(--colorv41);
+  color: #fff; /* No cambia */ 
 }
 
 .cont__charts {
