@@ -14,6 +14,8 @@
 }
 
 .drop-input {
+  color: #fff; /*No cambia*/
+  border:  thin solid #fff; /*No cambia*/
   font-size: 1rem;
 }
 
@@ -130,32 +132,32 @@
 }
 
 .tag.good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /*No cambia*/
   opacity: 1;
 }
 
 .footer__row.good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /*No cambia*/
   opacity: 1;
 }
 
 .tag.bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /*No cambia*/
   opacity: 1;
 }
 
 .footer__row.bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /*No cambia*/
 }
 
 .tag.yellow {
-  background-color: var(--colorv05);
-  color: var(--colorv02);
+  background-color: #dbc002; /*No cambia*/
+  color: #000; /* No cambia */
 }
 
 .footer__row.yellow {
-  background-color: var(--colorv05);
-  color: var(--colorv02);
+  background-color: #dbc002; /*No cambia*/
+  color: #000; /* No cambia */
 }
 
 .config__row .double__tire {

@@ -46,8 +46,8 @@
 
 .tire__data {
   font-size: 1rem;
-  color: var(--colorv02);
-  text-shadow: 2px 2px var(--colorv16);
+  color: #fff; /* No cambia */
+  text-shadow: 2px 2px #000 /* No cambia */;
 }
 
 .icon-central-axle,
@@ -236,7 +236,7 @@
 }
 
 .config__header {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /*No cambia*/
   color: #fff; /*No cambia*/
   /* border-bottom: thin solid #00f0ff; */
   text-align: center;
@@ -271,31 +271,31 @@
 }
 
 .good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .purple {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 .good-text {
-  color: var(--colorv08);
+  color: #009345; /*No cambia*/
 }
 
 .yellow-text {
-  color: var(--colorv05);
+  color: #dbc002; /*No cambia*/
 }
 
 .bad-text {
-  color: var(--colorv07);
+  color: #f0412c; /*No cambia*/
 }
 
 .config__nav {
@@ -367,8 +367,7 @@
 }
 
 .config__table tbody tr:nth-child(even) {
-  background-color: var(--colorv12);
-  color: #fff; /*No cambia*/
+  background-color: var(--colorv47);
 }
 
 .config__table .icon-cross {
@@ -489,7 +488,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv02);
+  background-color: var(--colorv46);
   height: 1rem;
 }
 
@@ -526,7 +525,7 @@
   }
 
   .icon-tire2 {
-    color: var(--colorv02);
+    color: var(--colorv46);
     font-size: 15vmin;
   }
 

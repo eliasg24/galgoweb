@@ -1,29 +1,29 @@
 .good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .purple {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 .good-text {
-  color: var(--colorv08);
+  color: #009345; /*No cambia*/
 }
 
 .yellow-text {
-  color: var(--colorv05);
+  color: #dbc002; /*No cambia*/
 }
 
 .bad-text {
-  color: var(--colorv07);
+  color: #f0412c; /*No cambia*/
 }
 
 .head-cont {
@@ -104,7 +104,7 @@
 
 .config__header {
   color: #fff; /*No cambia*/
-  background-color: var(--colorv04);
+  background-color: #026cf5; /*No cambia*/
   border-bottom: thin solid var(--colorv14);
   text-align: center;
   padding: 0.25rem;
@@ -172,6 +172,7 @@
 
 .circle1 {
   align-items: center;
+  color: #fff;/*  No cambia */
   background: linear-gradient(
     135deg,
     rgba(0, 151, 240, 1) 0%,
@@ -228,8 +229,7 @@ td {
 }
 
 tbody tr:nth-child(even) {
-  background-color: var(--colorv12);
-  color: #fff; /*No cambia*/
+  background-color: var(--colorv47);
 }
 
 .tire__config {
@@ -283,8 +283,8 @@ tbody tr:nth-child(even) {
 
 .tire__data {
   font-size: 1.5rem;
-  color: var(--colorv02);
-  text-shadow: 2px 2px var(--colorv16);
+  color: #fff; /*No cambia*/
+  text-shadow: 2px 2px #000; /*No cambia*/
 }
 
 .tire__config > .icon-tire2 {
@@ -303,6 +303,7 @@ tbody tr:nth-child(even) {
   }
 
   .tire__config > .icon-tire2 {
+    color: var(--colorv46);
     font-size: 21vmin;
   }
 

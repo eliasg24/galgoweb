@@ -1,5 +1,6 @@
 html {
-  background-color: var(--colorv02);
+  background-color: #fff; /* No cambia */
+  color: #000; /*No cambia*/
   /* font-family: 'Montserrat', Arial, Helvetica, sans-serif; */
 }
 
@@ -47,8 +48,8 @@ img {
   height: 90%;
   display: flex;
   align-items: center;
-  background: var(--colorv16);
-  color: var(--colorv02);
+  background: #000; /*No cambia*/
+  color: #fff; /*No cambia*/
   width: 90%;
   padding-left: 1rem;
   border-radius: 0.25rem;
@@ -90,13 +91,13 @@ img {
 }
 
 .report__card-title {
-  background-color: var(--colorv16);
-  color: var(--colorv02);
+  background-color: #000; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 .report__card-body {
   /* background-color: gray; */
-  color: var(--colorv16);
+  color: #000; /*No cambia*/
 }
 
 .main__container {
@@ -132,11 +133,12 @@ img {
 }
 
 .tire .icon-tire2 {
+  color: #000; /*No cambia*/
   font-size: 5rem;
 }
 
 .shaft {
-  background-color: var(--colorv16);
+  background-color: #000; /*No cambia*/
   height: 0.5rem;
   flex: 1 1 auto;
   width: 100%;
@@ -151,6 +153,7 @@ img {
 }
 
 .axle span {
+  color: #000; /*No cambia*/
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -205,7 +208,7 @@ img {
 
 .tire .tire__tag {
   border-radius: 0.25rem;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 0.75rem;
   font-weight: bold;
   left: 0;
@@ -217,15 +220,15 @@ img {
 /* colors */
 
 .tire__tag.good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .tire__tag.yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .tire__tag.bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 /*  */
