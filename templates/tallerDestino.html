@@ -15,7 +15,8 @@
 {% block content %}
 
 <div class="all-cont">
-  <form class="taller-form">
+  <form class="taller-form" method='POST'>
+    {% csrf_token %}
     <legend>
       <h2>TALLER DESTINO DE LA LLANTA</h2>
     </legend>
@@ -24,33 +25,46 @@
       FECHA
     </label>
     <span class="fecha">{{fecha.day}}/{{fecha.month}}/{{fecha.year}}</span>
-    <label for="" class="form-label">
-      TALLER DE ORIGEN
-    </label>
-    <span class="almohadilla">{{origen}}</span>
+    
     <label for="" class="form-label">
       TALLER DE DESTINO
     </label>
 
-    <select name="" id="">
-      <option value=""></option>
+    <select name="taller" id="" required>
+      <option value="" selected disabled>Elige un taller</option>
+      {% for select in talleres_select %}
+        <option value="{{select.nombre}}">{{select.nombre}}</option>
+      {% endfor %}
     </select>
     
     <label for="" class="form-label">
       USUARIO
     </label>
     <span class="almohadilla">{{perfil}}</span>
-    <h3>LISTA DE # ECONÓMICOS</h3>
-    {% for llanta in llantas %}
-      <li class="list">{{llanta.numero_economico}}</li>
-      {% endfor %}
+    {% for taller in llantas_list %}
+      <label for="" class="form-label">
+        TALLER DE ORIGEN
+      </label>
+      <span class="almohadilla">{{taller.taller}}</span>
+      <h3>LISTA DE # ECONÓMICOS</h3>
+      
+        {% for llanta in taller.ecos %}
+
+          <li class="list">{{llanta}}</li>
+
+        {% endfor %}
+    {% endfor %}
+    <input type="hidden" name="ids" value="{{ids_list}}">
+    <input type="hidden" name="inventario" value="{{inventario}}">
     <nav class="nav-form">
       <button class="btn btn-success">
         <span class="icon-checkmark"></span>
       </button>
-      <button class="btn btn-danger">
+      <a class="btn btn-danger" href="{% url 'dashboards:carritoStock' %}?inventario={{inventario}}">
+      
         <span class="icon-cross"></span>
-      </button>
+      
+    </a>
     </nav>
   </form>
 </div>

@@ -1,6 +1,7 @@
 .header {
   align-items: center;
   background-color: var(--colorv01);
+  color: #fff; /*No cambia*/
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -13,9 +14,8 @@
 }
 
 .section-head {
-  background-color: var(--colorv02);
+  background-color: var(--colorv45);
   padding: 0.5rem;
-  border-radius: 2rem;
 }
 
 .section-title {
@@ -42,13 +42,11 @@
   flex-flow: column nowrap;
   gap: 1rem;
   padding: 1rem;
-  color: var(--colorv16);
 }
 
 /* Agregar producto */
 .container {
-  border-radius: 1rem;
-  background-color: var(--colorv02);
+  background-color: var(--colorv45);
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
@@ -99,12 +97,14 @@
 }
 
 .main-table th {
+  color: #fff; /*No se cambia*/
   border-bottom: 2px solid var(--colorv14);
   padding: 0.5rem;
   text-align: center;
 }
 
 .main-table td {
+  color: #a5a5a5; /*No se cambia*/
   padding: 0.5rem;
   text-align: center;
 }
@@ -112,7 +112,7 @@
 /* Table */
 
 .table-cont {
-  background: var(--colorv02);
+  background: var(--colorv45);
   height: 100vh; /* Define la altura minima */
   position: relative;
   overflow: auto;
@@ -127,12 +127,10 @@
 
 .main-table thead {
   background-color: var(--colorv12);
-  color: var(--colorv02);
 }
 
 .main-table tbody tr:nth-child(even) {
   background-color: var(--colorv12);
-  color: var(--colorv02);
 }
 
 /* Desktop */

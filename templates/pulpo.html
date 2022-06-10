@@ -1535,10 +1535,10 @@ chart.legend().itemsLayout('horizontal');
 
 function getData() {
 return [
-    ['{{mes_4}}', mes_4, {{cantidad_entrada_mes4}}, {{doble_entrada.1.mes4}} + {{doble_entrada_pro.1.mes4}}],
-    ['{{mes_3}}', mes_3, {{cantidad_entrada_mes3}}, {{doble_entrada.1.mes3}} + {{doble_entrada_pro.1.mes3}}],
-    ['{{mes_2}}', mes_2, {{cantidad_entrada_mes2}}, {{doble_entrada.1.mes2}} + {{doble_entrada_pro.1.mes2}}],
-    ['{{mes_1}}', mes_1, {{cantidad_entrada_mes1}}, {{doble_entrada.1.mes1}} + {{doble_entrada_pro.1.mes1}}],
+    ['{{mes_4}}', mes_4, {{cantidad_entrada_mes4}}, {{doble_entrada.1.mes4}} + {{doble_entrada.3.mes4}}],
+    ['{{mes_3}}', mes_3, {{cantidad_entrada_mes3}}, {{doble_entrada.1.mes3}} + {{doble_entrada.3.mes3}}],
+    ['{{mes_2}}', mes_2, {{cantidad_entrada_mes2}}, {{doble_entrada.1.mes2}} + {{doble_entrada.3.mes2}}],
+    ['{{mes_1}}', mes_1, {{cantidad_entrada_mes1}}, {{doble_entrada.1.mes1}} + {{doble_entrada.3.mes1}}],
 ]
 }
 
@@ -1823,10 +1823,10 @@ axis.scale()
 
 var background = gauge.background();
 
-background.stroke('0 #000');
+background.stroke('0 #fff');
 background.corners(0); 
-background.enabled(false);
-background.fill('#000');
+background.enabled(true);
+background.fill('#fff');
 
 // turn on chart animation
 gauge.animation(true);

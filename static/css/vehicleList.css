@@ -1,0 +1,353 @@
+.main__content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  position: relative;
+}
+
+.main__container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.drop-search i {
+  font-size: 1.25rem;
+}
+
+.drop-input {
+  color: #fff; /*No cambia*/
+  border:  thin solid #fff; /*No cambia*/
+  font-size: 1rem;
+}
+
+.head-cont > * {
+  flex: 1 1 auto;
+}
+
+.flex-row {
+  justify-content: flex-end;
+}
+
+.btn.next,
+.btn.prev {
+  background-color: var(--colorv04);
+  border-radius: 0.25rem;
+  color: #fff; /* No cambia*/
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.nav__pages {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  position: sticky;
+  align-items: center;
+  top: 1vh;
+}
+
+.vehicle__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-rows: 1fr 1fr;
+  padding: 0 1rem 1rem 1rem;
+  gap: 1rem;
+}
+
+.vehicle__card {
+  background-color: var(--colorv45);
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+  text-align: center;
+  justify-content: space-between;
+  border-radius: 0.25rem;
+}
+
+.vehicle__card > * {
+  padding: 0.5rem;
+}
+
+.card__header {
+  background-color: var(--colorv08);
+  border-radius: 0.25rem 0.25rem 0 0;
+  display: flex;
+}
+
+.card__config {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1.5rem;
+}
+
+.config__row {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  flex-flow: row nowrap;
+  position: relative;
+}
+
+.config__row .icon-llanta-outline {
+  font-size: 4rem;
+}
+
+.icon-llanta-outline.opacity-0 {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.config__row .shaft {
+  width: 2rem;
+  height: 0.5rem;
+  border: 2px solid var(--colorv02);
+}
+
+.shaft.xl {
+  width: 6.25rem;
+}
+
+.tire {
+  border-radius: 0.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.tire .tag {
+  height: 1rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+}
+
+.tag.top {
+  top: 0;
+}
+
+.tag.bottom {
+  bottom: 0;
+}
+
+.tag.good {
+  background-color: #026cf5; /*No cambia*/
+  opacity: 1;
+}
+
+.footer__row.good {
+  background-color: #026cf5; /*No cambia*/
+  opacity: 1;
+}
+
+.tag.bad {
+  background-color: #f0412c; /*No cambia*/
+  opacity: 1;
+}
+
+.footer__row.bad {
+  background-color: #f0412c; /*No cambia*/
+}
+
+.tag.yellow {
+  background-color: #dbc002; /*No cambia*/
+  color: #000; /* No cambia */
+}
+
+.footer__row.yellow {
+  background-color: #dbc002; /*No cambia*/
+  color: #000; /* No cambia */
+}
+
+.config__row .double__tire {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.config__row .icon-cross,
+.tire .icon-cross {
+  position: absolute;
+  top: -1rem;
+  left: -1rem;
+  color: var(--colorv07);
+}
+
+.card__footer {
+  padding: 0;
+  display: flex;
+}
+
+.footer__row {
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: 0 0 0 0.25rem;
+  color: #fff; /*No cambia*/
+}
+
+.fbottom {
+  border-radius: 0 0 0.25rem 0;
+}
+
+.rotate {
+  display: none;
+  height: 100%;
+  place-content: center;
+  position: absolute;
+  width: 100%;
+}
+
+.rotate.active {
+  display: grid;
+}
+
+.rotate .icon-reload {
+  background-color: var(--colorv06);
+  padding: 0.25rem;
+  border-radius: 50%;
+}
+
+/* Filter */
+
+.filter__bg {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: grid;
+  height: 100vh;
+  left: 0;
+  place-content: center;
+  position: fixed;
+  transition: all 0.3s ease-in-out;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.filter__bg.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.form__filter {
+  background-color: var(--colorv00);
+  border-radius: 0.25rem;
+  /* min-width: 600px; */
+  overflow: auto;
+}
+
+.filter__header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: var(--colorv01);
+  color: #fff; /*No cambia*/
+  align-items: center;
+}
+
+.filter__body {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 1rem;
+}
+
+.filter__row {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+.filter__nav {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.btn-filter {
+  align-items: center;
+  background-color: var(--colorv17);
+  border-radius: 0.25rem;
+  border: none;
+  color: var(--colorv02);
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  height: 100%;
+  justify-content: center;
+  padding: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.label-check input {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+.label-check {
+  position: relative;
+  width: 100%;
+}
+
+.label-check input:checked ~ .btn-filter {
+  background-color: var(--colorv02);
+  color: var(--colorv00);
+}
+
+.btn-filter:hover {
+  background-color: var(--colorv02);
+  color: var(--colorv00);
+}
+
+.filter__footer {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+.filter__footer button {
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--colorv06);
+  border: none;
+  width: 100%;
+  color: var(--colorv02);
+  font-weight: bold;
+}
+
+.filter__row-header {
+  background: var(--colorv45);
+  color: var(--colorv02);
+  width: 100%;
+  margin: auto;
+  display: flex;
+  border-radius: 0.25rem;
+  justify-content: center;
+  letter-spacing: 2px;
+  padding: 0.5rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .form__filter {
+    min-width: 600px;
+    overflow: hidden;
+  }
+
+  .filter__nav {
+    flex-flow: row nowrap;
+  }
+}

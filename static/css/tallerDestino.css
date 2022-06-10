@@ -64,13 +64,13 @@ hr {
 }
 
 .btn-success {
-  background-color: var(--colorv08);
-  color: var(--colorv02);
+  background-color: #009345; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 .btn-danger {
-  background-color: var(--colorv22);
-  color: var(--colorv02);
+  background-color: #ff0000; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 .all-cont {
@@ -104,9 +104,7 @@ hr {
 }
 
 .fecha{
-  background: var(--colorv00);
   font-size: 1.5rem;
-  text-align: center;
   color: var(--colorv23);
   width: 50%;
 }
@@ -122,4 +120,13 @@ hr {
   margin-left: 1rem;
   font-size: 1.5rem;
   color: var(--colorv23);
+}
+
+select {
+  border-radius: .25rem;
+  background-color: var(--colorv00);
+  color: var(--colorv02);
+  font-size: 1rem;
+  border: none;
+  padding: .25rem;
 }

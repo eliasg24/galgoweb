@@ -1,17 +1,17 @@
 .good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .purple {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 .tire {
@@ -22,7 +22,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv02);
+  background-color: var(--colorv46);
   height: 1rem;
 }
 

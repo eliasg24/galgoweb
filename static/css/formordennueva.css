@@ -58,7 +58,7 @@ img {
 .input__label, .cont__select {
   display: grid;
   text-align: center;
-  background: var(--colorv04);
+  background: var(--colorv08);
   height: 84px;
 }
 
@@ -90,32 +90,36 @@ button.btn.btn-success {
 }
 
 .add {
-  background: var(--colorv16);
-  border: 2px solid var(--colorv04);
+  background: var(--colorv08);
+  border: none;
   color: var(--colorv02);
   font-size: 1.5rem;
   padding: 0.5rem;
   margin: 1rem 0;
   transition: all 0.4s ease;
+  border-radius: .25rem;
+  cursor: pointer;
 }
 
 .add:hover {
-  background: var(--colorv04);
+  opacity: .85;
 }
 
 .delete {
-  background: var(--colorv16);
-  border: 2px solid var(--colorv07);
+  background: var(--colorv07);
+  border: none;
+  border-radius: .25rem;
   color: var(--colorv02);
   font-size: 1.5rem;
   padding: 0.5rem;
   transition: all 0.4s ease;
   width: fit-content;
   height: fit-content;
+  cursor: pointer;
 }
 
 .delete:hover {
-  background: var(--colorv07);
+  opacity: .85;
 }
 
 small {

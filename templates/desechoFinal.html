@@ -12,24 +12,90 @@
     <h1>Desecho final</h1>
     
     <div class="drop-search">
-      <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
+      <input 
+      type="search" 
+      name="eco" 
+      id="economico" 
+      placeholder="Buscar llanta..." 
+      class="drop-input">
       <i class="bx bx-search"></i>
     </div>
 
     <nav class="flex-row">
-      <button class="btn btn-download">
+      <a href="{% url 'dashboards:ordenDesecho' %}" class="btn btn-download">
         <span class="icon-file-text-o"></span>
-      </button>
+    </a>
+
+      <a href="{% url 'dashboards:carritoStock' %}?inventario=Desecho final" class="btn btn-download cart">
+        <span class="icon-cart-plus"></span>
+        <span class="cart__counter"></span>
+      </a>
+
       <button class="btn btn-download" type="button" id="filter-btn">
         <span class="icon-filter"></span>
       </button>
     </nav>
   </header>
+
+  <nav class="nav__pages">
+    <div class="flex-row">
+      <button type="button" role="button" class="btn prev">Anterior</button>
+      <button type="button" role="button" class="btn next">Siguiente</button>
+    </div>
+  </nav>
   
   <div class="cards__container"></div>
+  <div class="icon-spinner2"></div>
+
+  <div class="alert__success">
+    Item agregado con exito
+  </div>
 </form>
 
 {% include 'filter.html' %}
 
+<template id="card-template">
+  <div class="card__wrapper animate__animated animate__fadeIn" id="">
+    <div class="card__header">
+      <h3 class="economic"></h3>
+    </div>
+        
+    <div class="card__content">
+      <div class="card__img">
+        <a class="tireDecoration" href="">
+          <span class="icon-tire2"></span>
+        </a>
+      </div>
+        
+      <div class="card__body">
+        <div class="tire__status"></div>
+        <div class="card__body-label">
+          <h4 class="card-title">Profundidad:</h4>
+          <p>
+            <em class="profundidad"></em>
+          </p>
+        </div>
+        <div class="card__body-label">
+          <h4 class="card-title">Producto:</h4>
+          <p>
+            <em class="product"></em>
+          </p>
+        </div>
+
+        <div class="card__body-label">
+          <h4 class="card-title">Fecha:</h4>
+          <p class="date"></p>
+        </div>
+
+        <button type="button" class="btn add-item" title="Agregar llanta">
+          <span class="icon-plus6"></span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</template>
+
 <script src="{% static './js/almacen/index.js' %}"></script>
+<script src="{% static './js/almacen/desecho-final/index.js' %}" type="module"></script>
 {% endblock %}

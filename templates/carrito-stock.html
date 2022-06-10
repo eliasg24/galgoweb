@@ -1,0 +1,168 @@
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/carrito-stock.css' %}" />
+<title>Carrito</title>
+{% endblock head %} {% block content %}
+
+<div class="main__content">
+  <div class="cart__container">
+    <header class="cart__header">
+      <div class="drop-search">
+        <input
+          type="search"
+          name=""
+          id=""
+          placeholder="Buscar llanta..."
+          class="drop-input"
+        />
+        <i class="bx bx-search"></i>
+      </div>
+
+      <h2>
+        Carrito de
+        <span></span><span></span>
+        {{inventario}}
+        <span></span><span></span>
+      </h2>
+
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="inventario" value="{{inventario}}" />
+        <button class="form__button" type="submit" name="vaciar" value="si">
+          Vaciar carrito
+        </button>
+      </form>
+    </header>
+
+    <div class="relative">
+      <div class="absolute">
+        <table class="desktop__cart">
+          <thead>
+            <tr>
+              <th>Numero ecónomico</th>
+              <th>Producto</th>
+              <th>Fecha</th>
+              <th>Status</th>
+              <th>Eliminar</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <form method="POST">
+              {% csrf_token %} {% for llanta in llantas_dict %}
+
+              <tr>
+                <td>{{llanta.eco}}</td>
+                <td>{{llanta.producto}}</td>
+                <td>{{llanta.fecha}}</td>
+                <td>{{llanta.status}}</td>
+                <td>
+                  <button
+                    class="delete__item"
+                    type="submit"
+                    name="eliminar"
+                    value="{{llanta.id}}"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+
+              {% endfor %}
+              <input type="hidden" name="inventario" value="{{inventario}}" />
+            </form>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <table class="mobile__cart">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="inventario" value="{{inventario}}" />
+        <tbody>
+          {% for llanta in llantas_dict %}
+          <tr>
+            <td>
+              <ul>
+                <li>{{llanta.eco}}</li>
+                <li>{{llanta.producto}}</li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li>{{llanta.fecha}}</li>
+                <li>{{llanta.status}}</li>
+                <li class="li__item">
+                  <button
+                    class="delete__item mt-1"
+                    type="submit"
+                    name="eliminar"
+                    value="{{llanta.id}}"
+                  >
+                    Eliminar
+                  </button>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </form>
+    </table>
+
+    <nav class="cart__options">
+      <div class="options__wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Azul</td>
+              <td>{{azul}}</td>
+            </tr>
+            <tr>
+              <td>Amarillo</td>
+              <td>{{amarillo}}</td>
+            </tr>
+            <tr>
+              <td>Rojo</td>
+              <td>{{rojo}}</td>
+            </tr>
+            <!-- <tr>
+              <td>Sospechoso</td>
+              <td>{{morado}}</td>
+            </tr> -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>{{total}}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="options__wrapper">
+        <form method="POST" class="cart__form">
+          <select name="destino" id="" required>
+            <option value="" disabled selected>Seleccione el destino</option>
+            {% for opcion in opciones %}
+
+            <option value="{{opcion}}">{{opcion}}</option>
+
+            {% endfor %}
+          </select>
+          <input type="hidden" name="inventario" value="{{inventario}}" />
+          {% csrf_token %}
+          <button class="submit__button" type="submit">Enviar</button>
+        </form>
+      </div>
+    </nav>
+  </div>
+</div>
+
+{% endblock content %}

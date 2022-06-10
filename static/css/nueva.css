@@ -15,6 +15,15 @@
   font-size: 1rem;
 }
 
+select {
+  border-radius: 0.25rem;
+  background-color: var(--colorv01);
+  color: #fff; /*No cambia*/
+  font-size: 1rem;
+  border: none;
+  padding: 0.25rem;
+}
+
 .relative {
   height: 100%;
   position: relative;
@@ -43,8 +52,8 @@
 }
 
 .main__container {
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .cards__container {
@@ -65,24 +74,24 @@
   flex: 1 1 400px;
   /* gap: 1rem; */
   grid-template-rows: auto 1fr;
-  padding: 1rem;
+  /* padding: 1rem; */
   position: relative;
   transition: all 0.3s ease-in-out;
   /* box-shadow: 1px 1px 6px rgba(255, 255, 255, 0.5); */
   box-shadow: 0 0 1px 1px var(--colorv36);
 }
 
-.card__wrapper.filter {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-  order: 1;
-}
-
 .card__content {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: auto 1fr;
+  padding: 1rem;
+}
+
+.card__header {
+  background-color: var(--colorv02);
+  color: var(--colorv10);
+  padding: 0.25rem;
 }
 
 .economic {
@@ -98,6 +107,7 @@
 
 .card__img .icon-tire2 {
   /* font-size: 18vmin; */
+  color: var(--colorv02);
   font-size: 10rem;
 }
 
@@ -124,19 +134,19 @@
 }
 
 .tire__status.good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .tire__status.yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .tire__status.bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .tire__status.suspiciuos {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 /* ? Filter Menu */
@@ -147,7 +157,7 @@
   display: flex;
   height: 100vh;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   right: 0;
   width: 100%;
   transition: all 0.4s ease;
@@ -164,7 +174,7 @@
 }
 
 .filter__content {
-  background-color: var(--colorv00);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   display: flex;
   flex-flow: column nowrap;
@@ -179,6 +189,51 @@
   top: -25px;
   right: -25px;
   position: absolute;
+}
+
+.select__field {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.btn-select {
+  background-color: lightgray;
+  border-radius: 0.25rem;
+  display: flex;
+  font-family: inherit;
+  font-size: inherit;
+  color: #000;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.list__items {
+  background-color: lightgray;
+  border-radius: 0.25rem;
+  color: #000;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+  position: absolute;
+  max-height: 325px;
+  top: 50px;
+  width: 100%;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.list__items.active {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
 }
 
 .form__wrapper {
@@ -204,9 +259,104 @@ h1 {
   box-shadow: 0 0 8px 1px var(--colorv04);
 }
 
+.nav__pages {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart {
+  position: relative;
+}
+
+.cart__counter {
+  align-items: center;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  font-size: 0.75rem;
+  height: 1.75rem;
+  justify-content: center;
+  padding: 0.5rem;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 1.75rem;
+}
+
+.btn.prev {
+  background-color: gray;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.btn.next {
+  background-color: #026cf5;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.add-item {
+  align-items: center;
+  background-color: gray;
+  border-radius: 0.25rem;
+  color: #fff;
+  display: flex;
+  font-size: 1.25rem;
+  height: 35px;
+  justify-content: center;
+  margin-left: auto;
+  transition: all 0.3s ease;
+  width: 35px;
+}
+
+.add-item:hover {
+  background-color: cornflowerblue;
+}
+
+.alert__success {
+  background-color: seagreen;
+  border-radius: 0.25rem;
+  bottom: 2vh;
+  color: #fff;
+  padding: 0.75rem;
+  position: fixed;
+  right: 2vw;
+  transition: all ease-in-out 0.2s;
+  transform: translateY(300%);
+}
+
+.alert__success.active {
+  transform: translateY(0);
+}
+
 button:disabled {
   background-color: var(--colorv17);
   cursor: default;
+}
+
+.btn-filter {
+  background-color: var(--colorv06);
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.select-control {
+  border-radius: 0.25rem;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.5rem;
+  width: 100%;
 }
 
 @media screen and (min-width: 768px) {

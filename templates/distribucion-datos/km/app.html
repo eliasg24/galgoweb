@@ -20,8 +20,8 @@
   var chart = anychart.box(data);
   chart.isVertical(true)
   chart.yScale().ticks().interval();
-
-      // set chart axes settings
+  
+    // set chart axes settings
     // adjust x axis
     chart.xAxis()
             .title('')
@@ -36,15 +36,15 @@
             .stroke("#000")
             .labels().fontColor("#000");
 
-  // set function to format y axis labels
-  var yLabels = chart.yAxis(0).labels();
-  yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-chart.tooltip()
-      .useHtml(true)
-      .fontColor('#fff')
-      .positionMode("point")
-      .format("Lowest: {%low}{groupsSeparator:\\,, decimalsCount:3}<br>Q1: {%q1}{groupsSeparator:\\,, decimalsCount:3}<br>Median: {%median}{groupsSeparator:\\,, decimalsCount:3}<br>Q3: {%q3}{groupsSeparator:\\,, decimalsCount:3}<br>Highes: {%high}{groupsSeparator:\\,, decimalsCount:3}");
+    chart.tooltip()
+          .useHtml(true)
+          .fontColor('#fff')
+          .positionMode("point")
+          .format("Lowest: {%low}{groupsSeparator:\\,, decimalsCount:3}<br>Q1: {%q1}{groupsSeparator:\\,, decimalsCount:3}<br>Median: {%median}{groupsSeparator:\\,, decimalsCount:3}<br>Q3: {%q3}{groupsSeparator:\\,, decimalsCount:3}<br>Highes: {%high}{groupsSeparator:\\,, decimalsCount:3}");
 
   // set the chart title
   chart.title("Distribución de Datos");

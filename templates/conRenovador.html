@@ -7,66 +7,102 @@
 {% endblock %}
 
 {% block content %}
-<form class="main__container animate__animated animate__fadeIn">
+<main class="main__container animate__animated animate__fadeIn">
   <header class="head-cont">
     <h1>Con renovador</h1>
 
     <div class="drop-search">
-      <input type="search" name="" id="economico" placeholder="Buscar llanta..." class="drop-input">
+      <input 
+      type="search" 
+      name="eco" 
+      id="economico" 
+      placeholder="Buscar llanta..." 
+      class="drop-input">
       <i class="bx bx-search"></i>
     </div>
 
     <nav class="flex-row">
-      <a href="{% url 'dashboards:procesoRenovado' %}" class="btn btn-download">
-        <span class="icon-cog5"></span>
+      <a href="{% url 'dashboards:carritoStock' %}?inventario=Con renovador" class="btn btn-download cart">
+        <span class="icon-cart-plus"></span>
+        <span class="cart__counter"></span>
       </a>
+
       <button class="btn btn-download" type="button" id="filter-btn">
         <span class="icon-filter"></span>
       </button>
     </nav>
   </header>
 
+  <nav class="nav__pages">
+    <div class="nav__select">
+      <label for="renovador">
+        Renovador
+        <select name="renovador" id="renovador" class="select-control">
+          <option value="" selected>Elige un renovador</option>
+          {% for renovador in renovadores %}
+            <option value="{{renovador.nombre}}">{{renovador.nombre}}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="nav__pag">
+      <button type="button" role="button" class="btn prev">Anterior</button>
+      <button type="button" role="button" class="btn next">Siguiente</button>
+    </div>
+  </nav>
+
   <div class="cards__container"></div>
-</form>
+  <div class="icon-spinner2"></div>
+
+  <div class="alert__success">
+    Item agregado con exito
+  </div>
+</ma>
 
 {% include 'filter.html' %}
 
 <template id="card-template">
-  <label for="" class="tire-input">
-    <input type="checkbox" name="id" value="" id="" class="check-tire">
-    <div class="card__wrapper animate__animated animate__fadeIn" id="">
+  <div class="card__wrapper animate__animated animate__fadeIn" id="">
+    <div class="card__header">
       <h3 class="economic"></h3>
-          
-      <div class="card__content">
-        <div class="card__img">
-          <a class="tireDecoration" href="">
-            <span class="icon-tire2"></span>
-          </a>
-        </div>
-          
-        <div class="card__body">
-          <div class="tire__status"></div>
-          <div class="card__body-label">
-            <h4 class="card-title">Profundidad:</h4>
-            <p>
-              <em class="profundidad"></em>
-            </p>
-          </div>
-          <div class="card__body-label">
-            <h4 class="card-title">Producto:</h4>
-            <p>
-              <em class="product"></em>
-            </p>
-          </div>
-          <div class="card__body-label">
-            <h4 class="card-title">Fecha:</h4>
-            <p class="date"></p>
-          </div>
-        </div>
-      </div>
-  
     </div>
-  </label>
+        
+    <div class="card__content">
+      <div class="card__img">
+        <a class="tireDecoration" href="">
+          <span class="icon-tire2"></span>
+        </a>
+      </div>
+        
+      <div class="card__body">
+
+        <div class="tire__status"></div>
+        <div class="card__body-label">
+          <h4 class="card-title">Profundidad:</h4>
+          <p>
+            <em class="profundidad"></em>
+          </p>
+        </div>
+        <div class="card__body-label">
+          <h4 class="card-title">Producto:</h4>
+          <p>
+            <em class="product"></em>
+          </p>
+        </div>
+
+        <div class="card__body-label">
+          <h4 class="card-title">Fecha:</h4>
+          <p class="date"></p>
+        </div>
+
+        <button type="button" class="btn add-item" title="Agregar llanta">
+          <span class="icon-plus6"></span>
+        </button>
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script src="{% static './js/almacen/index.js' %}"></script>

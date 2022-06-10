@@ -1,73 +1,75 @@
 <div id="dd-cpk-flota" class="dd-cpk-graph active"></div>
 
 <script>
-// Graph box-chart
+    // Graph box-chart
 
-anychart.onDocumentReady(function () {
+    anychart.onDocumentReady(function () {
 
-//create data set on our data
-var data = [
-{% for flota, valores in cpk_flotas.items %}
-{x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
-normal:   {fill: "#4973f2", stroke: "#12bcc8", medianStroke: "4 #000", whiskerWidth: 30},
-hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2",medianStroke: "2 #4973f2", whiskerWidth: 10},
-selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}
-},
-{% endfor %}
-];
+  //create data set on our data
+  var data = [
+  {% for flota, valores in cpk_flotas.items %}
+  {x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
+  normal:   {fill: "#4973f2", stroke: "#4973f2", medianStroke: "4 #000", whiskerWidth: 30},
+  hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2",medianStroke: "2 #4973f2", whiskerWidth: 10},
+  selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}
+  },
+  {% endfor %}
+  ];
 
-//create area chart
-var chart = anychart.box(data);
-chart.isVertical(true)
-chart.yScale().ticks().interval();
+  //create area chart
+  var chart = anychart.box(data);
+  chart.isVertical(true)
+  chart.yScale().ticks().interval();
 
-// set chart axes settings
-// adjust x axis
-chart.xAxis()
-        .title('')
-        .minorTicks(false)
-        .stroke("#000")
-        .labels().fontColor("#000");
+  // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
 
-// adjust y axis
-chart.yAxis()
-        .title('')
-        .minorTicks(false)
-        .stroke("#000")
-        .labels().fontColor("#000");
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
 
-// set function to format y axis labels
-var yLabels = chart.yAxis(0).labels();
-yLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-chart.tooltip()
-      .useHtml(true)
-      .fontColor('#fff')
-      .positionMode("point")
-      .format("Lowest: ${%low}{groupsSeparator:\\,, decimalsCount:3}<br>Q1: ${%q1}{groupsSeparator:\\,, decimalsCount:3}<br>Median: ${%median}{groupsSeparator:\\,, decimalsCount:3}<br>Q3: ${%q3}{groupsSeparator:\\,, decimalsCount:3}<br>Highes: ${%high}{groupsSeparator:\\,, decimalsCount:3}");
+    chart.tooltip()
+          .useHtml(true)
+          .fontColor('#fff')
+          .positionMode("point")
+          .format("Lowest: ${%low}{groupsSeparator:\\,, decimalsCount:3}<br>Q1: ${%q1}{groupsSeparator:\\,, decimalsCount:3}<br>Median: ${%median}{groupsSeparator:\\,, decimalsCount:3}<br>Q3: ${%q3}{groupsSeparator:\\,, decimalsCount:3}<br>Highes: ${%high}{groupsSeparator:\\,, decimalsCount:3}");
 
-// set the chart title
-chart.title("Distribución de Datos");
-var title = chart.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
 
-//set container id for the chart
-chart.container('dd-cpk-flota');
 
-//Set Background
-var background = chart.background();
-background.stroke('0 #000');
-background.corners();
-background.enabled(false);
+  // set the chart title
+  chart.title("Distribución de Datos");
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
 
-//initiate chart drawing
-chart.draw();
+  //set container id for the chart
+  chart.container('dd-cpk-flota');
 
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
 
-});
+  //initiate chart drawing
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  });
 </script>

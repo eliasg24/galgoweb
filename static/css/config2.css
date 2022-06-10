@@ -4,8 +4,8 @@ h2 {
 }
 
 .config-nav h1 {
+  color: #fff; /*NO cambia*/
   font-size: 3rem;
-  color: var(--colorv02);
 }
 
 h3 {
@@ -32,7 +32,6 @@ h3 {
 }
 
 .btn-download {
-  background-color: var(--colorv45);
   border-radius: 0.25rem;
   padding: 0.5rem;
 }
@@ -74,7 +73,7 @@ h3 {
 }
 
 .con {
-  background-color: var(--colorv00);
+  background-color: var(--colorv45);
   border-radius: 0.25rem;
   display: none;
   flex-flow: column nowrap;
@@ -86,7 +85,7 @@ h3 {
 
 .con-title,
 .con-sec {
-  background-color: var(--colorv02);
+  background-color: var(--colorv00);
 }
 
 .con-title {
@@ -124,25 +123,14 @@ h3 {
 }
 
 .btn-redirect {
-  background-color: var(--colorv00);
-  border: thin solid var(--colorv02);
+  background-color: #fff; /*No cambia*/
+  border: thin solid #fff; /*No cambia*/
   border-radius: 0.5rem;
   color: var(--colorv16);
   font-weight: bold;
   padding: 1rem;
   width: 100%;
 }
-
-.btn-redirect-download {
-  background-color: var(--colorv46);
-  border: thin solid var(--colorv02);
-  border-radius: 0.5rem;
-  color: var(--colorv02);
-  font-weight: bold;
-  padding: 1rem;
-  width: 100%;
-}
-
 
 .btn-redirect:hover {
   background: var(--colorv16);
@@ -361,7 +349,6 @@ h3 {
   }
 
   .grid {
-    color: var(--colorv16);
     margin: 0;
   }
 

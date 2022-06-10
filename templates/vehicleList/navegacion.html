@@ -1,0 +1,15 @@
+<div class="flex-row">
+    
+    {% if prev %}
+        <a href="{% url 'dashboards:vehicleList' %}?page={{prev}}" class="btn prev">Anterior</a>
+    {% else %}
+        
+    {% endif %}
+
+    {% if next %}
+        <a href="{% url 'dashboards:vehicleList' %}?page={{next}}" class="btn next">Siguiente</a>
+    {% else %}
+        
+    {% endif %}
+    
+  </div>

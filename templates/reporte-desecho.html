@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/ordenSalidaRen.css' %}" />
+<title>Reporte de Desecho</title>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="orden-salida">
+  <div class="all-cont" id="doc">
+    <link
+      rel="stylesheet"
+      href="{% static 'css/ordenSalidaRen.css' %}"
+      media="all"
+    />
+    <header class="doc-head">
+      <div class="head-title">
+        <h2 class="doc-title">Reporte de Desecho</h2>
+        <h2 class="doc-sub">Folio: {{folio}}</h2>
+      </div>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" />
+      </div>
+    </header>
+  
+    <div class="container">
+      <div class="cont-item">
+        <strong>Fecha</strong>
+        <!-- <span class="italic">{{hoy}}</span> -->
+        <span class="italic">{{fecha}}</span>
+      </div>
+
+
+      
+      <div class="cont-item">
+        <strong>Cantidad</strong>
+        <span class="italic">{{total}}</span>
+      </div>
+
+    </div>
+  
+    <div class="main-cont">
+  
+      <div class="table-cont">
+        <table>
+          <thead>
+            <tr>
+              <th>Económico</th>
+              <th>Producto</th>
+              <th>Condición</th>
+              <th>Zona</th>
+              <th>Razón</th>
+              <th>Profundidad</th>
+              <th>Taller origen</th>
+              <th>Usuario</th>
+              <th>Imagen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for orden in ordenes %}
+            <tr>
+              <td>{{orden.llanta.numero_economico}}</td>
+              <td>{{orden.llanta.producto.producto}}</td>
+              <td>{{orden.desecho.condicion}}</td>
+              <td>{{orden.desecho.zona_de_llanta}}</td>
+              <td>{{orden.desecho.razon}}</td>
+              <td>{{orden.min_profundidad}}</td>
+              <td>{{orden.llanta.taller.nombre}}</td>
+              <td>{{orden.usuario}}</td>
+              <td><a href="{{orden.imagen.url}}" target="_blank">Imagen</a></td>
+
+              
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div class="firma">
+      <hr />
+      <h1>Firmas de Salida de llantas</h1>
+    </div>
+  </div>
+  
+  <div class="nav-buttons">
+    
+    <button class="btn btn-info" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+
+    <a href="" class="btn btn-danger">
+      <span class="icon-cross"></span>
+    </a>
+    <a href="" class="btn btn-success">
+      <span class="icon-checkmark"></span>
+    </a>
+  
+  </div>
+  
+</div>
+
+<script>
+
+</script>
+
+{% endblock %}

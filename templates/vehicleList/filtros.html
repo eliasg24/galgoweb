@@ -1,0 +1,150 @@
+<div class="filter__bg">
+  <form action="" class="form__filter" method="POST">
+    {% csrf_token %}
+
+    <header class="filter__header">
+      <h2>Filtros</h2>
+
+      <nav class="flex-row">
+        <button type="button" role="button" class="btn btn-info">
+          <span class="icon-trash"></span>
+        </button>
+        <button
+          type="button"
+          role="button"
+          class="btn btn-danger"
+          id="close-filter"
+        >
+          <span class="icon-cross"></span>
+        </button>
+      </nav>
+    </header>
+
+    <div class="filter__body">
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>TIPO DE EJE</h3>
+        </div>
+
+        <div class="filter__nav">
+          <label for="r-libre" class="label-check">
+            <input type="checkbox" name="r-libre" id="r-libre" />
+            <div class="btn-filter">Libre</div>
+          </label>
+
+          <label for="r-direccion" class="label-check">
+            <input type="checkbox" name="r-direccion" id="r-direccion" />
+            <div class="btn-filter">Direccion</div>
+          </label>
+
+          <label for="r-traccion" class="label-check">
+            <input type="checkbox" name="r-traccion" id="r-traccion" />
+            <div class="btn-filter">Tracción</div>
+          </label>
+
+          <label for="r-retractil" class="label-check">
+            <input type="checkbox" name="r-retractil" id="r-retractil" />
+            <div class="btn-filter">Retractil</div>
+          </label>
+
+          <label for="r-arrastre" class="label-check">
+            <input type="checkbox" name="r-arrastre" id="r-arrastre" />
+            <div class="btn-filter">Arrastre</div>
+          </label>
+        </div>
+      </div>
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>PRESIONES</h3>
+        </div>
+
+        <div class="filter__nav">
+          <label for="baja-presion" class="label-check">
+            <input type="checkbox" name="baja-presion" id="baja-presion" />
+            <div class="btn-filter">Baja presión</div>
+          </label>
+          <label for="alta-presion" class="label-check">
+            <input type="checkbox" name="alta-presion" id="alta-presion" />
+            <div class="btn-filter">Alta presión</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>PROFUNDIDADES</h3>
+        </div>
+
+        <div class="filter__nav">
+          <label for="profundidad-baja" class="label-check">
+            <input
+              type="checkbox"
+              name="profundidad-baja"
+              id="profundidad-baja"
+            />
+            <div class="btn-filter">Baja</div>
+          </label>
+
+          <label for="profundidad-punto-retiro" class="label-check">
+            <input
+              type="checkbox"
+              name="profundidad-punto-retiro"
+              id="profundidad-punto-retiro"
+            />
+            <div class="btn-filter">En punto de retiro</div>
+          </label>
+
+          <label for="profundidad-desgaste-irregular" class="label-check">
+            <input
+              type="checkbox"
+              name="profundidad-desgaste-irregular"
+              id="profundidad-desgaste-irregular"
+            />
+            <div class="btn-filter">Rotación</div>
+          </label>
+        </div>
+      </div>
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>DUALIZACIÓN</h3>
+        </div>
+
+        <div class="filter__nav">
+          <label for="con-dualizacion" class="label-check">
+            <input
+              type="radio"
+              name="dualizacion"
+              value="con-dualizacion"
+              id="con-dualizacion"
+            />
+            <div class="btn-filter">Si</div>
+          </label>
+
+          <label for="sin-dualizacion" class="label-check">
+            <input
+              type="radio"
+              name="dualizacion"
+              value="sin-dualizacion"
+              id="sin-dualizacion"
+            />
+            <div class="btn-filter">No</div>
+          </label>
+
+          <label for="ambas" class="label-check">
+            <input
+              type="radio"
+              name="dualizacion"
+              value="ambas"
+              id="ambas"
+            />
+            <div class="btn-filter">Ambas</div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter__footer">
+      <button type="submit">Filtrar</button>
+    </div>
+  </form>
+</div>

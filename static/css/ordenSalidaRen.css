@@ -11,7 +11,6 @@ html {
 
 a {
   text-decoration: none;
-  color: var(--colorv02);
 }
 
 /* body {
@@ -45,15 +44,15 @@ label {
 }
 
 table {
-  color: var(--colorv16);
+  color: #000; /*No cambia*/
   border-collapse: collapse;
   width: 100%;
   text-align: center;
 }
 
 thead {
-  background-color: var(--colorv16);
-  color: var(--colorv02);
+  background-color: #000; /*No cambia*/
+  color: #fff; /*No cambia*/
 }
 
 th,
@@ -73,28 +72,28 @@ td {
 .btn-success {
   background-color: var(--colorv08);
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 2rem;
 }
 
 .btn-info {
   background-color: var(--colorv35);
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 2rem;
 }
 
 .btn-primary {
   background-color: var(--colorv04);
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   font-size: 1.25rem;
 }
 
 .all-cont {
   display: grid;
   margin: 0 auto;
-  background: var(--colorv02);
-  color: var(--colorv16);
+  background: #fff; /*No cambia*/
+  color: #000; /*No cambia*/
   padding: 1rem;
   grid-template-rows: auto auto 1fr;
   gap: 1rem;
@@ -104,9 +103,9 @@ td {
 }
 
 .doc-head {
-  display: grid;
-  grid-template-columns: 4fr 1fr;
-  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row nowrap;
 }
 
 .doc-title {
@@ -133,8 +132,8 @@ td {
 }
 
 .italic {
-  background: var(--colorv16);
-  color: var(--colorv02);
+  background: #000; /*No cambia*/
+  color: #fff; /*No cambia*/
   display: flex;
   font-style: italic;
   font-weight: bold;
@@ -167,7 +166,7 @@ td {
 }
 
 .container {
-  padding: 1rem;
+  padding: 1rem 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100%;
@@ -196,8 +195,8 @@ td {
 
 .top-table strong,
 .top-table label {
-  background: var(--colorv16);
-  color: var(--colorv02);
+  background: #000; /*No cambia*/
+  color: #fff; /*No cambia*/
   width: 70%;
   padding: 1rem;
   font-size: 1.5rem;
@@ -205,7 +204,7 @@ td {
 }
 
 .top-table span {
-  background: var(--colorv34);
+  background: #ddd; /*No cambia*/
   font-weight: bold;
   width: 70%;
   padding: 1rem;
@@ -237,7 +236,7 @@ tbody {
 
 .nav-buttons {
   align-items: center;
-  background-color: var(--colorv00);
+  background-color: var(--colorv01);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -249,10 +248,11 @@ tbody {
   display: flex;
   justify-content: center;
   flex-flow: column nowrap;
+  margin-top: 5rem;
 }
 
 .firma-img {
-  width: 20%;
+  width: 40%;
 }
 
 .ok {

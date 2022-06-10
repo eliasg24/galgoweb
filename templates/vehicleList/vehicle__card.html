@@ -1,0 +1,113 @@
+<div class="vehicle__card">
+  <header class="card__header">
+    <h2>
+      <a href="{% url 'dashboards:detail' vehiculo.vehiculo.id %}">
+        {{vehiculo.vehiculo.numero_economico}}
+      </a>
+    </h2>
+  </header>
+
+  <div class="card__config">
+
+    {% for eje in vehiculo.ejes %}
+      <!--Si el eje es de 2-->
+      {% if eje|length == 2 %}
+        
+        <!--Tire-->
+        <div class="config__row">
+          <div class="tire">
+            
+            <span class="tag top {{eje.0.color_presion}}"></span>
+
+            <div class="rotate {{eje.0.ico_desgaste}}">
+              <span class="icon-reload"></span>
+            </div>
+
+            <div class="icon-llanta-outline"></div>
+            <span class="tag bottom {{eje.0.color_profundidad}}"></span>
+          </div>
+
+          <div class="shaft xl"></div>
+
+          <div class="tire">
+            <span class="tag top {{eje.1.color_presion}}"></span>
+
+            <div class="rotate {{eje.1.ico_desgaste}}">
+              <span class="icon-reload"></span>
+            </div>
+
+            <div class="icon-llanta-outline"></div>
+            <span class="tag bottom {{eje.1.color_profundidad}}"></span>
+          </div>
+        </div>
+
+      {% endif %}
+      
+      <!--Si el eje es de 4-->
+      {% if eje|length == 4 %}
+        
+        <!--Double Tire-->
+        <div class="config__row">
+          <div class="double__tire">
+            <span class="{{eje.0.ico_desdualizacion}}"></span>
+            <div class="tire">
+
+              <div class="rotate {{eje.0.ico_desgaste}}">
+                <span class="icon-reload"></span>
+              </div>
+
+              <span class="tag top {{eje.0.color_presion}}"></span>
+              <div class="icon-llanta-outline"></div>
+              <span class="tag bottom {{eje.0.color_profundidad}}"></span>
+            </div>
+
+            <div class="tire">
+
+              <div class="rotate {{eje.1.ico_desgaste}}">
+                <span class="icon-reload"></span>
+              </div>
+
+              <span class="tag top {{eje.1.color_presion}}"></span>
+              <div class="icon-llanta-outline"></div>
+              <span class="tag bottom {{eje.1.color_profundidad}}"></span>
+            </div>
+          </div>
+
+          <div class="shaft"></div>
+
+          <div class="double__tire">
+            <span class="{{eje.2.ico_desdualizacion}"></span>
+            <div class="tire">
+
+              <div class="rotate {{eje.2.ico_desgaste}}">
+                <span class="icon-reload"></span>
+              </div>
+              
+              <span class="tag top {{eje.2.color_presion}}"></span>
+              <div class="icon-llanta-outline"></div>
+              <span class="tag bottom {{eje.2.color_profundidad}}"></span>
+            </div>
+            <div class="tire">
+
+              <div class="rotate {{eje.3.ico_desgaste}}">
+                <span class="icon-reload"></span>
+              </div>
+              
+              <span class="tag top {{eje.3.color_presion}}"></span>
+              <div class="icon-llanta-outline"></div>
+              <span class="tag bottom {{eje.3.color_profundidad}}"></span>
+            </div>
+          </div>
+        </div>
+
+      {% endif %}
+
+    {% endfor %}
+
+  </div>
+
+  <footer class="card__footer">
+    <div class="footer__row {{vehiculo.color_dias_inspenccion}}">Días sin inspeccionar: {{vehiculo.dias_sin_inspeccion}}</div>
+    <div class="footer__row fbottom {{vehiculo.color_dias_alinear}}">Días sin alinear: {{vehiculo.dias_sin_alinear}}</div>
+  </footer>
+</div>

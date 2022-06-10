@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="{% static 'css/ordenSalidaRen.css' %}" />
+<title>Orden de Entrada a Taller</title>
+{% load static %}
+{% endblock %}
+
+{% block content %}
+
+<div class="orden-salida">
+  <div class="all-cont" id="doc">
+    <link
+      rel="stylesheet"
+      href="{% static 'css/ordenSalidaRen.css' %}"
+      media="all"
+    />
+    <header class="doc-head">
+      <div class="head-title">
+        <h2 class="doc-title">Orden de Entrada a Stock</h2>
+        <h2 class="doc-sub">Folio: {{folio}}</h2>
+      </div>
+      <div class="logo">
+        <img src="{% static 'images/aeto-logo.svg' %}" />
+      </div>
+    </header>
+  
+    <div class="container">
+      <div class="cont-item">
+        <strong>Fecha</strong>
+        <span class="italic">{{fecha}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Usuario</strong>
+        <span class="italic">{{usuario}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Stock Destino</strong>
+        <span class="italic">{{stock_destino}}</span>
+      </div>
+      <div class="cont-item">
+        <strong>Total de llantas</strong>
+        <span class="italic">{{total_llantas}}</span>
+      </div>
+    </div>
+  
+    <div class="main-cont">
+      <div class="table-cont">
+        <table>
+          <thead>
+            <tr>
+              <th>Económico</th>
+              <th>Producto</th>
+              <th>Taller origen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dat in data %}
+              <tr>
+                <td>{{dat.num_eco}}</td>
+                <td>{{dat.producto}}</td>
+                <td>{{dat.stock_origen}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div class="firma">
+      <hr />
+      <h1>Firmas de Salida de llantas</h1>
+    </div>
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn btn-info" id="btn-print">
+      <span class="icon-printer8"></span>
+    </button>
+  </div>
+  
+</div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+  integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (e) => {
+    printBtn();
+  });
+
+  const print = () => {
+    const $elementoParaConvertir = document.getElementById('doc'); // <-- Aquí puedes elegir cualquier elemento del DOM
+    html2pdf()
+      .set({
+        margin: .5,
+        filename: 'orden_entrada_taller.pdf',
+        image: {
+          type: 'jpeg',
+          quality: 0.98,
+        },
+        html2canvas: {
+          scale: 3, // A mayor escala, mejores gráficos, pero más peso
+          letterRendering: true,
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'letter',
+          orientation: 'portrait', // landscape o portrait
+        },
+      })
+      .from($elementoParaConvertir)
+      .save()
+      .catch((err) => console.log(err));
+  };
+
+  const printBtn = () => {
+    const button = document.getElementById('btn-print');
+
+    button.addEventListener('click', print);
+  };
+</script>
+{% endblock %}

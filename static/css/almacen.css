@@ -3,12 +3,33 @@
   gap: 1rem;
 }
 
+.btn.btn-config {
+  background-color: #fff; /*No cambia*/
+  border: thin solid var(--colorv02);
+  border-radius: 0.25rem;
+  color: var(--colorv16);
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.flex-center {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  flex-flow: row nowrap;
+}
+
 .drop-search i {
   font-size: 1.25rem;
 }
 
 .drop-input {
   font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.drop-input:focus {
+  border-color: var(--colorv08);
 }
 
 .all-cont {
@@ -22,15 +43,6 @@
 .main__title {
   font-size: 4.2rem;
   margin: 0;
-}
-
-.btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  padding: 0.5rem;
-  transition: all 0.4s ease;
 }
 
 .btn-icon {
@@ -164,7 +176,7 @@
 .a-card {
   text-decoration: none;
   color: var(--colorv02);
-  height: min-content;
+  height: 100%;
 }
 
 .card {
@@ -176,8 +188,7 @@
 
 .card_title {
   display: flex;
-  color: var(--colorv16);
-  background: var(--colorv02);
+  background: var(--colorv45);
   padding: 1rem;
   align-items: center;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -190,13 +201,16 @@
 }
 
 .card_number {
-  display: flex;
-  justify-content: center;
-  font-size: 8vw;
+  align-items: center;
+  color: #fff; /*No cambia*/
+  background: var(--colorv32);
   border-radius: 0 0 0.25rem 0.25rem;
-  padding: 0.5rem;
-  background: var(--colorv01);
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 8vw;
+  justify-content: center;
   margin: 0;
+  padding: 0.5rem;
 }
 
 .op__title {
@@ -222,7 +236,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background: var(--colorv40);
+  background: var(--colorv33);
   border-radius: 2.25rem;
   margin: 0;
   padding: 1rem;
@@ -248,17 +262,149 @@
   font-size: 1.5rem;
 }
 
+/* Search */
+
+.search__container {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: grid;
+  height: 100vh;
+  left: 0;
+  /* place-content: center; */
+  position: fixed;
+  transition: all 0.2s ease-in-out;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.btn.btn-prev {
+  background-color: gray;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.btn.btn-next {
+  background-color: #026cf5;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.btn.btn-next:disabled,
+.btn.btn-prev:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search__container.active {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.search__form {
+  background-color: var(--colorv45);
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  padding: 1rem;
+  min-width: 350px;
+  width: 100%;
+  overflow: auto;
+}
+
+.search__header {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr auto;
+}
+
+.drop-search input {
+  border-radius: 0.25rem;
+}
+
+.search__list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+}
+
+.search__list > p {
+  color: gray;
+  font-weight: 500;
+  text-align: center;
+}
+
+.tire__card {
+  align-items: center;
+  background-color: var(--colorv00);
+  color: var(--colorv02);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  word-wrap: break-word;
+}
+
+.tire__card .icon-llanta-outline {
+  font-size: 6rem;
+}
+
+.tire__card .tire__body {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.card__row span {
+  color: var(--colorv02);
+}
+
+.footer__item small {
+  border: thin solid gray;
+  border-radius: 0.25rem;
+  color: gray;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+.footer__item strong {
+  color: lightgray;
+}
+
+.search__footer {
+  display: none;
+}
+
+.btn-cancel {
+  font-size: inherit;
+  font-weight: 500;
+  color: var(--colorv07);
+}
+
+.flex-row > * {
+  flex: 1 1 auto;
+}
+
 @media screen and (min-width: 1024px) {
   .flex-row {
     justify-content: flex-end;
   }
 
-  .head-cont {
-    flex-flow: row nowrap;
+  .flex-row > * {
+    flex: 0 1 auto;
   }
 
-  .head-cont > * {
-    flex: 1 1 auto;
+  .head-cont {
+    flex-flow: row nowrap;
   }
 
   .container {
@@ -275,5 +421,32 @@
 
   .operacion {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .search__container {
+    place-content: center;
+  }
+
+  .search__form {
+    border-radius: 0.25rem;
+    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.5);
+    min-width: 500px;
+  }
+
+  .search__header {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  .search__header div {
+    flex: 1 1 auto;
+  }
+
+  .btn-cancel {
+    display: none;
+  }
+
+  .search__footer {
+    display: flex;
   }
 }

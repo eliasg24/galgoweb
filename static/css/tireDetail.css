@@ -1,32 +1,29 @@
-h2{
-  color: var(--colorv16);
-}
 .good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .purple {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 .good-text {
-  color: var(--colorv08);
+  color: #009345; /*No cambia*/
 }
 
 .yellow-text {
-  color: var(--colorv05);
+  color: #dbc002; /*No cambia*/
 }
 
 .bad-text {
-  color: var(--colorv07);
+  color: #f0412c; /*No cambia*/
 }
 
 .head-cont {
@@ -77,7 +74,7 @@ h2{
 }
 
 .card {
-  background: var(--colorv02);
+  background: var(--colorv27);
   border-radius: 0.25rem;
 }
 
@@ -106,7 +103,8 @@ h2{
 }
 
 .config__header {
-  background-color: var(--colorv04);
+  color: #fff; /*No cambia*/
+  background-color: #026cf5; /*No cambia*/
   border-bottom: thin solid var(--colorv14);
   text-align: center;
   padding: 0.25rem;
@@ -174,6 +172,7 @@ h2{
 
 .circle1 {
   align-items: center;
+  color: #fff;/*  No cambia */
   background: linear-gradient(
     135deg,
     rgba(0, 151, 240, 1) 0%,
@@ -210,11 +209,12 @@ h2{
 }
 
 .config__table thead {
-  background-color: var(--colorv00);
+  background-color: var(--colorv12);
 }
 
 thead {
   border-bottom: thin solid var(--colorv14);
+  color: #fff; /*No cambia*/
 }
 
 .config__table {
@@ -224,13 +224,12 @@ thead {
 
 th,
 td {
-  color: var(--colorv16);
   padding: 0.5rem;
   text-align: center;
 }
 
 tbody tr:nth-child(even) {
-  background-color: var(--colorv00);
+  background-color: var(--colorv47);
 }
 
 .tire__config {
@@ -284,23 +283,18 @@ tbody tr:nth-child(even) {
 
 .tire__data {
   font-size: 1.5rem;
-  color: var(--colorv02);
-  text-shadow: 2px 2px var(--colorv16);
+  color: #fff; /*No cambia*/
+  text-shadow: 2px 2px #000; /*No cambia*/
 }
 
 .tire__config > .icon-tire2 {
-  color: var(--colorv03);
   font-size: 11rem;
-}
-
-.icon-file-pdf{
-  color: var(--colorv16);
 }
 
 @media screen and (min-width: 1024px) {
   .circle1 {
     height: 40px;
-    width:  40px;
+    width: 40px;
     padding: 1rem;
   }
 
@@ -309,7 +303,7 @@ tbody tr:nth-child(even) {
   }
 
   .tire__config > .icon-tire2 {
-    color: var(--colorv03);
+    color: var(--colorv46);
     font-size: 21vmin;
   }
 

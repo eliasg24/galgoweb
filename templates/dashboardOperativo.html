@@ -325,7 +325,7 @@
       // set chart title text settings
       chart.title("TENDENCIA");
       var title = chart.title();
-      title.fontColor('#fff');
+      title.fontColor('#000');
       title.fontSize(18);
       title.fontWeight(600);
 
@@ -684,19 +684,19 @@
     // create data
     var data = [
       {x: "TRACTOR", value: 25,
-      normal:   {fill: "#0097fc", stroke: "#0097fc"},
-      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      normal:   {fill: "#051026", stroke: "#051026"},
+      hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
+      selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
       },
       {x: "REMOLQUE", value: 40,
-      normal:   {fill: "#0097fc", stroke: "#0097fc"},
-      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      normal:   {fill: "#051026", stroke: "#051026"},
+      hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
+      selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
       },
       {x: "DOLLY", value: 68,
-      normal:   {fill: "#0097fc", stroke: "#0097fc"},
-      hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-      selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"} 
+      normal:   {fill: "#051026", stroke: "#051026"},
+      hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
+      selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
       }
     ];
 
@@ -719,23 +719,28 @@
     // set the chart title
     chart.title("CANTIDAD DE VEHÍCULOS VENCIDOS");
     var title = chart.title();
-    title.fontColor('#fff');
+    title.fontColor('#000');
     title.fontSize(18);
     title.fontWeight(600);
 
     // set y axis title
     chart.yAxis().title('CANTIDAD');
     var titley = chart.yAxis().title();
-    titley.fontColor('#fff');
+    titley.fontColor('#000');
     titley.fontSize(12);
     titley.fontWeight(500);
   
     // set y axis title
     chart.xAxis().title('CLASE');
     var titlex = chart.xAxis().title();
-    titlex.fontColor('#fff');
+    titlex.fontColor('#000');
     titlex.fontSize(12);
     titlex.fontWeight(800);
+
+    // set grid stroke appearance
+    chart.xGrid().stroke({color: "#000"});
+    // set grid stroke appearance
+    chart.yGrid().stroke({color: "#000"});
   
     // enable major grids
     chart.xGrid().enabled(false);
@@ -751,13 +756,13 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#DCDCDC");
+    chart.yAxis().stroke("#000");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#DCDCDC");
+    chart.yAxis().labels().fontColor("#000");
 
     // adjust x axis
-    chart.xAxis().stroke("#DCDCDC");
-    chart.xAxis().labels().fontColor("#DCDCDC");
+    chart.xAxis().stroke("#000");
+    chart.xAxis().labels().fontColor("#000");
 
     // set the container id
     chart.container("column-chart");
@@ -784,21 +789,21 @@
         // set chart title text settings
         var title = chart.title();
         chart.title('CANTIDAD DE VEHÍCULOS VENCIDOS');
-        title.fontColor('#fff');
+        title.fontColor('#000');
         title.fontSize(18);
         title.fontWeight(600);
 
         // set y axis title
         chart.yAxis().title('PORCENTAJE');
         var titley = chart.yAxis().title();
-        titley.fontColor('#fff');
+        titley.fontColor('#000');
         titley.fontSize(12);
         titley.fontWeight(500);
       
         // set y axis title
         chart.xAxis().title('MES');
         var titlex = chart.xAxis().title();
-        titlex.fontColor('#fff');
+        titlex.fontColor('#000');
         titlex.fontSize(12);
         titlex.fontWeight(800);
       
@@ -807,6 +812,11 @@
         yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
       
         chart.tooltip().format("PORCENTAJE: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+        // set grid stroke appearance
+        chart.xGrid().stroke({color: "#000"});
+        // set grid stroke appearance
+        chart.yGrid().stroke({color: "#000"});
       
         // enable major grids
         chart.xGrid().enabled(true);
@@ -849,11 +859,18 @@
         // setup first series
         series = chart.line(seriesData_1);
         series.name('Review about the product');
+
+        // configure the visual settings of the second series
+        series.normal().stroke("#4973f2", 2);
+        series.hovered().stroke("#4973f2", 4);
+        series.selected().stroke("#4973f2", 6);
+
         // enable series data labels
         series.labels()
                 .enabled(false)
                 .anchor('left-bottom')
                 .padding(5);
+
         // enable series markers
         series.markers(true);
 
@@ -872,13 +889,13 @@
         background.enabled(false);
 
         // adjust y axis
-        chart.yAxis().stroke("#DCDCDC");
+        chart.yAxis().stroke("#000");
         chart.yAxis().ticks(false);
-        chart.yAxis().labels().fontColor("#DCDCDC");
+        chart.yAxis().labels().fontColor("#000");
 
         // adjust x axis
-        chart.xAxis().stroke("#DCDCDC");
-        chart.xAxis().labels().fontColor("#DCDCDC");
+        chart.xAxis().stroke("#000");
+        chart.xAxis().labels().fontColor("#000");
 
         // set container for the chart and define padding
         chart.container('line-chart');

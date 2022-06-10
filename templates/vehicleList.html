@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/vehicleList.css' %}">
+  <title>Lista de Vehiculos</title>
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="main__container">
+    <header class="head-cont">
+      <h1 style="text-align: left;">Lista de Vehiculos</h1>
+    
+      <div class="drop-search">
+        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
+        <i class="bx bx-search"></i>
+      </div>
+    
+      <nav class="flex-row">
+        <button type="button" role="button" class="btn next">Resumen</button>
+        <button class="btn btn-download" type="button" id="filter-btn">
+          <span class="icon-filter"></span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="main__content">
+
+      <nav class="nav__pages">
+
+        {% include 'vehicleList/navegacion.html' %}
+
+      </nav>
+
+      <section class="vehicle__list">
+
+        {% for vehiculo in llantas_acomodadas %}
+
+          {% include 'vehicleList/vehicle__card.html' %}
+
+        {% endfor %}
+
+      </section>
+
+    </main>
+  </div>
+
+  {% include 'vehicleList/filtros.html' %}
+
+  <script>
+
+    /* Activar funciones */
+
+    document.addEventListener('DOMContentLoaded', (e) => {
+      filter();
+    })
+
+    function filter() {
+      const filterBtn = document.getElementById('filter-btn'),
+            closeFilter = document.getElementById('close-filter'),
+            filterBg = document.querySelector('.filter__bg');
+
+      /* Activar filtro */
+      filterBtn.addEventListener('click', () => filterBg.classList.toggle('active'));
+      /* Desactivar filtro */
+      closeFilter.addEventListener('click', () => filterBg.classList.remove('active'));
+    }
+
+  </script>
+
+{% endblock %}

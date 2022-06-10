@@ -11,7 +11,7 @@
   {x: '{{producto}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
   normal:   {fill: "#4973f2", stroke: "#4973f2", medianStroke: "4 #000", whiskerWidth: 30},
   hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2",medianStroke: "2 #4973f2", whiskerWidth: 10},
-  selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}
+  selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}  
   },
   {% endfor %}
   ];
@@ -21,7 +21,7 @@
   chart.isVertical(true)
   chart.yScale().ticks().interval();
 
-    // set chart axes settings
+  // set chart axes settings
     // adjust x axis
     chart.xAxis()
             .title('')

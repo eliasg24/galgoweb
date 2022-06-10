@@ -4,37 +4,37 @@
 
   --colorv00: #cccccc;
   --colorv01: #0a2a75;
-  --colorv02: #fff;
+  --colorv02: #333;
   --colorv03: #606060;
-  --colorv04: #026cf5;
+  --colorv04: #ed2a3d;
   --colorv05: #dbc002;
-  --colorv06: #8a2be2;
+  --colorv06: #2c72ff;
   --colorv07: #f0412c;
-  --colorv08: #2e8b57;
-  --colorv09: #ff1493;
-  --colorv10: #23252b;
-  --colorv11: #2f5161;
-  --colorv12: #565656;
+  --colorv08: #009345;
+  --colorv09: #ed2a3d;
+  --colorv10: #fff;
+  --colorv11: #4973f2;
+  --colorv12: #0a2a75;
   --colorv13: #f47521;
-  --colorv14: #4973f2;
+  --colorv14: #2254eb;
   --colorv15: #fff;
-  --colorv16: #000;
+  --colorv16: #929292;
   --colorv17: #808080;
   --colorv18: transparent;
   --colorv19: #eee;
   --colorv20: #ccc;
   --colorv21: #9b9b9b;
   --colorv22: #ff0000;
-  --colorv23: #dcdcdc;
+  --colorv23: #353535;
   --colorv24: #90ee90;
-  --colorv25: #171717;
-  --colorv26: #111;
-  --colorv27: #202020;
+  --colorv25: #fff;
+  --colorv26: #05112c;
+  --colorv27: #fff;
   --colorv28: #21664d;
   --colorv29: #00558f;
-  --colorv30: #1f1f1f;
+  --colorv30: #cccccc;
   --colorv31: rgb(255, 255, 255, 0.7);
-  --colorv32: #4d4d4d;
+  --colorv32: #0a2a75;
   --colorv33: #0071bc;
   --colorv34: #ddd;
   --colorv35: #9147ff;
@@ -42,13 +42,14 @@
   --colorv37: #333;
   --colorv38: #646464;
   --colorv39: #353535;
-  --colorv40: #051026;
+  --colorv40: #6666d9;
   --colorv41: #009245;
   --colorv42: #4caf50;
   --colorv43: #555;
   --colorv44: #f1f1f1;
-  --colorv45: #08a63f;
-  --colorv46: #ed2a3d;
+  --colorv45: #fff;
+  --colorv46: #707070;
+  --colorv47: #bdd1ff; 
   --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
@@ -149,12 +150,12 @@ h6 {
 
 .icon-spinner2 {
   animation: spinner 1s linear infinite;
-  display: block;
+  display: none;
   font-size: 3rem;
   height: fit-content;
   margin: auto;
   width: fit-content;
-  grid-column: span 4;
+  /* grid-column: span 4; */
 }
 
 @keyframes spinner {
@@ -180,6 +181,7 @@ h6 {
 .head-cont {
   align-items: center;
   background-color: var(--colorv01);
+  color: var(--colorv10);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -208,10 +210,9 @@ h6 {
 
 .drop-btn {
   align-items: center;
-  background-color: var(--colorv15);
   background: none;
   border: none;
-  color: var(--colorv02);
+  color: var(--colorv10);
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
@@ -270,7 +271,7 @@ h6 {
 
 .drop-input {
   background: var(--colorv18);
-  border: thin solid var(--colorv02);
+  border: thin solid var(--colorv02); 
   color: var(--colorv02);
   font-family: inherit;
   outline: none;
@@ -381,8 +382,8 @@ h6 {
 }
 
 .btn-aeto-crunch {
-  background-color: var(--colorv00);
-  color: var(--colorv16);
+  background-color: var(--colorv03);
+  color: var(--colorv10);
   padding: 0.75rem;
   transition: background-color 0.2s ease;
 }
@@ -393,7 +394,8 @@ h6 {
 
 .btn-aeto-crunch.active {
   border-top: thin solid var(--colorv13);
-  background-color: var(--colorv02);
+  background-color: var(--colorv12);
+  color: var(--colorv10);
   font-weight: bold;
 }
 
@@ -406,7 +408,7 @@ h6 {
   align-items: center;
   background-color: var(--colorv09);
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /*No cambia*/
   display: flex;
   justify-content: center;
   padding: 0.75rem;
@@ -423,7 +425,7 @@ h6 {
 .btn-danger {
   align-items: center;
   border-radius: 50%;
-  color: var(--colorv02);
+  color: #fff; /* No cambia*/
   display: flex;
   font-size: 1.25rem;
   justify-content: center;
@@ -516,7 +518,7 @@ h6 {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: var(--colorv12);
+  color: var(--colorv21);
   pointer-events: none;
 }
 
@@ -541,7 +543,6 @@ h6 {
 .form__field:required,
 .form__field:invalid {
   box-shadow: none;
-  color: var(--colorv16);
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -583,7 +584,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .popout-text p {
   font-family: var(--font);
-  color: var(--colorv02);
+  color: var(--colorv10);
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }
@@ -631,6 +632,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .circle span {
   font-size: 1.5rem;
+  color: #fff; /*No cambia*/
 }
 
 .alert__container {
@@ -707,4 +709,8 @@ input[type='date']::-webkit-inner-spin-button,
   .circle span {
     font-size: 2rem;
   }
+}
+
+.icon-file-pdf {
+  color: var(--colorv02);
 }

@@ -6,28 +6,17 @@
 
     <h2>Filtros</h2>
     
-    <div class="form__group field">
-      <input
-        class="form__field"
-        type="text"
-        placeholder="producto"
-        name="producto"
-        list="producto"
-        autocomplete="off"
-        value = ""
-      />
-      <label for="producto" class="form__label">
-        Producto
+    <div>
+      <label for="producto">
+        <h3>
+          Producto
+        </h3>
       </label>
-      <div class="alert__error">
-        El valor no se encuentra en la lista de llantas, por favor seleccione opción una valida.
-      </div>
-      <div class="alert__warn">
-        El campo no puede estar vacio 
-      </div>
-      <datalist id="producto">
-        <option value="Option 1"></option>
-      </datalist>
+      <select 
+        name="producto" 
+        id="producto"
+        class="select-control"
+      ></select>
     </div>
 
     <h3>Profundidad</h3>
@@ -38,11 +27,10 @@
           class="form__field"
           type="number"
           placeholder="Min"
-          name=""
+          name="min_prof"
           autocomplete="off"
-          value = ""
           min="1"
-          max="9"
+          max="14"
         />
         <label for="" class="form__label">
           Min
@@ -54,11 +42,10 @@
           class="form__field"
           type="number"
           placeholder="Max"
-          name=""
+          name="max_prof"
           autocomplete="off"
-          value = ""
           min="2"
-          max="10"
+          max="15"
         />
         <label for="" class="form__label">
           Max
@@ -74,9 +61,8 @@
           class="form__field"
           type="date"
           placeholder="date-min"
-          name=""
+          name="start_date"
           autocomplete="off"
-          value = "2022-01-01"
         />
         <label for="" class="form__label">
           Min
@@ -88,9 +74,8 @@
           class="form__field"
           type="date"
           placeholder="date-max"
-          name=""
+          name="end_date"
           autocomplete="off"
-          value = "2022-01-05"
         />
         <label for="" class="form__label">
           Max
@@ -98,9 +83,12 @@
       </div>
     </div>
 
-    <nav class="flex-row">
-      <button class="btn btn-success"><span class="icon-checkmark"></span></button>
-    </nav>
+    <button 
+      type="button" 
+      id="remove-filters"
+      class="btn btn-filter">
+      Limpiar filtros
+    </button>
 
   </form>
 </div>

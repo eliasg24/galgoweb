@@ -53,6 +53,9 @@ pip install spyne
 pip install psycopg2
 ```
 
+```bash
+pip install python-decouple
+```
 
 
 ## Para abrir el servidor en la carpeta del proyecto

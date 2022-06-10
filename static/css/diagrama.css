@@ -8,19 +8,19 @@
 }
 
 .good {
-  background-color: var(--colorv04);
+  background-color: #026cf5; /* No cambia */
 }
 
 .yellow {
-  background-color: var(--colorv05);
+  background-color: #dbc002; /* No cambia */
 }
 
 .bad {
-  background-color: var(--colorv07);
+  background-color: #f0412c; /* No cambia */
 }
 
 .purple {
-  background-color: var(--colorv06);
+  background-color: #8a2be2; /* No cambia */
 }
 
 .config__container::-webkit-scrollbar,
@@ -61,7 +61,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv16);
+  background-color: var(--colorv46);
   height: 1rem;
   opacity: 0.25;
 }
@@ -94,7 +94,7 @@
 
 .form__container,
 .absolute.form__container {
-  background-color: var(--colorv02);
+  background-color: var(--colorv27);
   display: flex;
   gap: 1rem;
   flex-flow: column nowrap;
@@ -223,7 +223,7 @@
 
 .input-check > i {
   font-size: 3rem;
-  border: thin solid var(--colorv16);
+  border: thin solid var(--colorv02);
   padding: 0.5rem;
 }
 
@@ -238,8 +238,7 @@
 }
 
 .observations__container div i {
-  color: var(--colorv16);
-  border: thin solid var(--colorv16);
+  border: thin solid var(--colorv02);
   font-size: 3rem;
   padding: 0.5rem;
 }
@@ -281,8 +280,7 @@
 }
 
 .drop-options {
-  color: var(--colorv16);
-  background-color: var(--colorv02);
+  background-color: var(--colorv27);
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;

@@ -14,12 +14,10 @@
   <header class="head-cont">
     <h1>Almacenes</h1>
 
-    <form action="">
-      <div class="drop-search">
-        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
-        <i class="bx bx-search"></i>
-      </div>
-    </form>
+    <button class="btn btn-config flex-center" id="open-search" role="search">
+      Buscar
+      <i class="bx bx-search"></i>
+    </button>
   </header>
 
   <div class="container">
@@ -46,15 +44,17 @@
         <h2 class="card_number" id="antes_de_renovar"></h2>
       </div>
     </a>
-    <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
+    <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
       <div class="card">
         <div class="card_title">
           <h2>
-            <span class="card_title_icon icon-spin1"></span>
-            ANTES DE DESECHAR
+            <span
+              class="card_title_icon icon-published_with_changes"
+            ></span>
+            CON RENOVADOR
           </h2>
         </div>
-        <h2 class="card_number" id="antes_de_desechar"></h2>
+        <h2 class="card_number" id="con_renovador"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:renovada' %}">
@@ -68,17 +68,15 @@
         <h2 class="card_number" id="renovada"></h2>
       </div>
     </a>
-    <a class="a-card" href="{% url 'dashboards:conRenovador' %}">
+    <a class="a-card" href="{% url 'dashboards:antesDesechar' %}">
       <div class="card">
         <div class="card_title">
           <h2>
-            <span
-              class="card_title_icon icon-published_with_changes"
-            ></span>
-            CON RENOVADOR
+            <span class="card_title_icon icon-spin1"></span>
+            ANTES DE DESECHAR
           </h2>
         </div>
-        <h2 class="card_number" id="con_renovador"></h2>
+        <h2 class="card_number" id="antes_de_desechar"></h2>
       </div>
     </a>
     <a class="a-card" href="{% url 'dashboards:desechoFinal' %}">
@@ -138,8 +136,66 @@
   </div>
 </div>
 
+<div class="search__container">
+  <form class="search__form">
+    <header class="search__header">
+      <div class="drop-search">
+        <input type="search" name="eco" id="search" class="drop-input" placeholder="Buscar llanta..." autocomplete="off">
+        <i class="bx bx-search"></i>
+      </div>
+
+      <button type="button" class="btn btn-cancel" id="close-search">
+        Cancel
+      </button>
+    </header>
+
+    <nav class="flex-row">
+      <button class="btn btn-prev" type="button" disabled>Anterior</button>
+      <button class="btn btn-next" type="button" disabled>Siguiente</button>
+    </nav>
+
+    <section class="search__list">
+      <p>Sin busquedas</p>
+    </section>
+    <div class="icon-spinner2" id="loader"></div>
+
+    <footer class="search__footer">
+      <div class="footer__item">
+        <small>
+          Esc
+        </small>
+        <strong>Cerrar</strong>
+      </div>
+    </footer>
+
+  </form>
+</div>
+
+<template id="tire-template">
+  <a href="">
+    <figure class="tire__card">
+      <span class="icon-llanta-outline"></span>
+
+      <figcaption class="tire__body">
+        <div class="card__row">
+          <h4>Número económico: <span class="economico"></span></h4>
+        </div>
+        <div class="card__row">
+          <span class="producto"></span>
+        </div>
+        <div class="card__row">
+          <span class="fecha"></span>
+        </div>
+      </figcaption>
+    </figure>
+  </a>
+</template>
+
+<script src="{% static 'js/almacen/tire-search/getTires.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', (e) => {
+    searchView();
+
     document.querySelectorAll('.card_number').forEach(card => {
       card.innerHTML += `<div class="icon-spinner2"></div>`
     });
@@ -156,6 +212,33 @@
         })
       })
       .catch(error => console.error(error))
-  })
+  });
+
+  const searchView = () => {
+    const searchBtn = document.getElementById('open-search'),
+          closeBtn = document.getElementById('close-search'),
+          searchContainer = document.querySelector('.search__container'),
+          searchForm = document.querySelector('.search__form');
+
+    document.addEventListener('click', (e) => {
+      if (e.target === searchBtn) {
+        searchContainer.classList.add('active');
+      }
+
+      if (e.target === closeBtn) {
+        searchContainer.classList.remove('active');
+      }
+    });
+    
+    document.addEventListener('keyup', (e) => {
+      if (e.keyCode === 27) {
+        if (searchContainer.classList.contains('active')) {
+          searchContainer.classList.remove('active');
+        }
+      }
+    });
+
+  };
+
 </script>
 {% endblock content %}

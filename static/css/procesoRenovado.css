@@ -1,48 +1,228 @@
+select {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.drop-search {
+  background-color: var(--colorv00);
+  flex: 0 1 300px;
+}
+
+.drop-input {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.filter {
+  order: 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-config {
+  background-color: #fff; /*No cambia*/
+  border: thin solid #a5a5a5; /*No cambia*/
+  border-radius: 0.25rem;
+  color: var(--colorv16);
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.form__row {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
 .all-cont {
-    display: grid;
-    height: 100%;
-    grid-template-rows: auto 1fr;
+  display: grid;
+  height: 100%;
+  grid-template-rows: auto 1fr;
+}
+
+.head-cont {
+  justify-content: space-between;
+}
+
+.back {
+  font-size: 3rem;
+}
+
+.icon-arrow-left2 {
+  font-size: 2rem;
 }
 
 .container {
-    width: 100%;
-    margin: 1rem auto;
-    padding: 1rem;
-    display: grid;
-    gap: 1rem;
-    grid-template-rows: auto 1fr;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 350px 1fr;
 }
 
-.nav__top {
-    display: grid;
-    gap: 1rem;
+.container > * {
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.renovado__form {
+  background-color: var(--colorv27);
+  height: fit-content;
+  position: sticky;
+  top: 1vh;
+}
+
+.renovado__form-body {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.renovado__form-footer {
+  padding: 1rem;
 }
 
 .card__item {
-    background: var(--colorv04);
-    padding: 1rem;
+  background: var(--colorv08);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .list__items {
-    background: var(--colorv27);
+  background: var(--colorv27);
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.tire__list {
+  display: grid;
+  /* flex-flow: row wrap; */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  height: fit-content;
+  padding: 1rem;
+}
+
+.list__cont {
+  display: grid;
+  gap: 1rem;
+}
+
+.button__group {
+  margin: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.all__done,
+.all__rejected {
+  padding: 1rem;
+  font-size: 1rem;
+  color: var(--colorv02);
+  background: var(--colorv16);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.all__done {
+  border: solid 2px var(--colorv08);
+}
+
+.all__rejected {
+  border: solid 2px var(--colorv07);
+}
+
+.all__done:hover {
+  background: var(--colorv08);
+  border: solid 2px var(--colorv08);
+}
+
+.all__rejected:hover {
+  background: var(--colorv07);
+  border: solid 2px var(--colorv07);
+}
+
+.tire__item {
+  align-items: center;
+  background: var(--colorv00);
+  border-radius: 0.25rem;
+  display: flex;
+  gap: 1rem;
+  flex: 0 1 300px;
+  padding: 1rem;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+}
+
+.tire__input {
+  display: none;
+}
+
+.tire__input:checked ~ .tire__item {
+  filter: brightness(0.75);
+}
+
+.icon-tire2 {
+  font-size: 26vmin;
+}
+
+.tire__data {
+  flex: 1 1 auto;
+  padding: 0.5rem;
+}
+
+.tire__data p {
+  margin: 0;
+}
+
+.icon-thumbs-down,
+.icon-thumbs-up {
+  transition: all 0.4s ease;
+  font-size: 1rem;
+}
+
+.icon-thumbs-up:hover {
+  color: var(--colorv08);
+}
+
+.icon-thumbs-down:hover {
+  color: var(--colorv07);
 }
 
 .top__list {
-    background: var(--colorv04);
-    display: flex;
+  align-items: center;
+  background: var(--colorv08);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
 }
 
 .top__list h2 {
-    font-size: 2rem;
-    padding: 0.5rem;
+  font-size: 2rem;
 }
 
-@media screen and (min-width: 1024px) { 
-    .container {
-        width: 80%;
-    }
-    .nav__top {
-        grid-template-columns: repeat(3, 1fr);
-        justify-content: space-between;
-    }
+@media screen and (min-width: 1024px) {
+  .nav__top {
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: space-between;
+  }
+
+  .back {
+    position: absolute;
+    left: 5vw;
+  }
+
+  .icon-tire2 {
+    font-size: 12vmin;
+  }
 }
