@@ -926,13 +926,43 @@
       // create a chart
       var chart = anychart.column();
 
+      // create extra axis on the left side of chart
+      // and set scale for it
+      var extraYAxis = chart.yAxis();
+
+      // setup axis to append '%' symbol to label values
+      extraYAxis.labels().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
       // create the first series, set the data and name
       var series1 = chart.column(seriesData_1);
       series1.name("Cantidad");
 
+      // configure the visual settings of the second series
+      series1.normal().fill("#051026");
+      series1.hovered().fill("#051026", 0.1);
+      series1.selected().fill("#051026", 0.5);
+      series1.normal().stroke("#051026", 2);
+      series1.hovered().stroke("#051026", 4);
+      series1.selected().stroke("#051026", 6);
+        
+      //tooltip
+      series1.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+
       // create the second series, set the data and name
       var series2 = chart.column(seriesData_2);
       series2.name("Cantidad");
+
+      // configure the visual settings of the second series
+      series2.normal().fill("#4973f2");
+      series2.hovered().fill("#4973f2", 0.1);
+      series2.selected().fill("#4973f2", 0.5);
+      series2.normal().stroke("#4973f2", 2);
+      series2.hovered().stroke("#4973f2", 4);
+      series2.selected().stroke("#4973f2", 6);
+        
+      //tooltip
+      series2.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
+    
 
       // set the padding between columns
       chart.barsPadding(0.5);
@@ -952,25 +982,41 @@
 
       // config title
       var title = chart.title();
-      title.fontColor('#fff');
+      title.fontColor('#000');
       title.fontWeight(600);
       title.fontSize(18);
 
       // config xTitle
       var titlex = chart.xAxis().title();
-      titlex.fontColor('#fff');
+      titlex.fontColor('#000');
       titlex.fontSize(12);
       titlex.fontWeight(800);
 
-      // chart credits false
-      var credits = chart.credits();
-      credits.enabled(false);
+      //Set Background
+      var background = chart.background();
+      background.stroke("#202020");
+      background.corners();
+      background.enabled(false);
+
+      // adjust y axis
+      chart.yAxis().stroke("#000");
+      chart.yAxis().ticks(false);
+      chart.yAxis().labels().fontColor("#000");
+
+      // adjust x axis
+      chart.xAxis().stroke("#000");
+      chart.xAxis().labels().fontColor("#000");
 
       // set the container id
       chart.container("vehiculos__problemas");
 
       // initiate drawing the chart
       chart.draw();
+
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+
     });
 
     // Tendencia de vehiculos con problemas
@@ -1040,12 +1086,18 @@
       // create data
       const data = [
         {x: "Dirección", value: 1000},
-        {x: "Treacción", value: 2000},
+        {x: "Tracción", value: 2000},
         {x: "Arrastre", value: 4000},
       ];
 
       // create a chart and set the data
       let chart = anychart.pie(data);
+      chart.labels().hAlign("center").position("outside");
+
+      // font labels font settings
+      chart.labels().fontSize(10);
+      chart.labels().fontColor("black")
+      chart.labels().fontWeight(900);
 
       // set the chart title
       // chart.title("Pie Chart: Basic Sample");
@@ -1058,7 +1110,13 @@
       chart.legend()
             .position('right')
             .itemsLayout('vertical')
-            .align('center');
+            .align('center')
+            .fontColor("#000")
+            .fontSize(25)
+            .fontWeight(600);
+
+      // set the size of legend icons
+      chart.legend().iconSize(25);
 
       // set the container id
       chart.container("pie-chart-vida");
