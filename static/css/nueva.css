@@ -12,6 +12,8 @@
 }
 
 .drop-input {
+  border: thin solid #fff; /*No cambia*/
+  color: #fff; /*No cambia*/
   font-size: 1rem;
 }
 
