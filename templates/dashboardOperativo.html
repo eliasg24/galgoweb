@@ -1021,65 +1021,128 @@
 
     // Tendencia de vehiculos con problemas
     anychart.onDocumentReady(function () {
+    // create line chart
+    var chart = anychart.line();
 
-      // create a data set
-      var data = anychart.data.set([
-        [1, 10000],
-        [2, 12000],
-        [3, 13000]
-      ]);
+    // turn on chart animation
+    chart.animation(true);
 
-      // map the data
-      var seriesData_1 = data.mapAs({x: 0, value: 1});
+    // turn on the crosshair
+    chart.crosshair(false);
 
-      // create a chart
-      var chart = anychart.line();
+    // set chart title text settings
+    var title = chart.title();
+    chart.title("VEHÍCULOS CON PROBLEMAS");
+    title.fontColor("#000");
+    title.fontSize(18);
+    title.fontWeight(600);
 
-      // create the first series, set the data and name
-      var series1 = chart.line(seriesData_1);
-      series1.name("Cantidad");
+    // set y axis title
+    chart.yAxis().title("CANTIDAD");
+    var titley = chart.yAxis().title();
+    titley.fontColor("#000");
+    titley.fontSize(12);
+    titley.fontWeight(500);
 
-      // set the chart title
-      chart.title("VEHÍCULOS CON PROBLEMAS");
+    // set y axis title
+    chart.xAxis().title("MES");
+    var titlex = chart.xAxis().title();
+    titlex.fontColor("#000");
+    titlex.fontSize(12);
+    titlex.fontWeight(800);
 
-      // set the titles of the axes
-      chart.xAxis().title("MES");
+    // set function to format y axis labels
+    var yLabels = chart.yAxis(0).labels();
+    yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-      // set the titles of the axes
-      chart.yAxis().title("CANTIDAD");
+    chart
+      .tooltip()
+      .format("PORCENTAJE: {%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-      //  set background
-      var background = chart.background();
-      background.enabled(false);
+    // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
 
-      // config title
-      var title = chart.title();
-      title.fontColor('#fff');
-      title.fontWeight(600);
-      title.fontSize(18);
+    // enable major grids
+    chart.xGrid().enabled(true);
+    chart.yGrid().enabled(true);
+    // enable minor grids
+    chart.xMinorGrid().enabled(false);
+    chart.yMinorGrid().enabled(false);
 
-      // config xTitle
-      var titlex = chart.xAxis().title();
-      titlex.fontColor('#fff');
-      titlex.fontSize(12);
-      titlex.fontWeight(800);
+    // create logarithmic scale
+    var logScale = anychart.scales.log();
+    logScale.minimum(0.0).maximum(10);
 
-      // config yTitle
-      var titley = chart.yAxis().title();
-      titley.fontColor('#fff');
-      titley.fontSize(12);
-      titley.fontWeight(500);
+    // set ticks interval
+    chart.xScale().ticks().interval(1);
 
-      // chart credits false
-      var credits = chart.credits();
-      credits.enabled(false);
+    // create data set on our data,also we can pud data directly to series
+    var dataSet = anychart.data.set([
+      [0, "2"],
+      [1, "1"],
+      [2, "5"],
+      [3, "2"],
+      [4, "4"],
+      [5, "2"],
+      [6, "10"],
+      [7, "5"],
+      [8, "6"],
+      [9, "8"],
+      [10, "9"]
+    ]);
 
-      // set the container id
-      chart.container("ten__vehiculos__problemas");
+    // map data for the first series,take value from first column of data set
+    var seriesData_1 = dataSet.mapAs({ x: 0, value: 1 });
 
-      // initiate drawing the chart
-      chart.draw();
-    });
+    // temp variable to store series instance
+    var series;
+
+    // setup first series
+    series = chart.line(seriesData_1);
+    series.name("Review about the product");
+
+    // configure the visual settings of the second series
+    series.normal().stroke("#4973f2", 2);
+    series.hovered().stroke("#4973f2", 4);
+    series.selected().stroke("#4973f2", 6);
+
+    // enable series data labels
+    series.labels().enabled(false).anchor("left-bottom").padding(5);
+    // enable series markers
+    series.markers(true);
+
+    // turn the legend on
+    chart.legend().enabled(false).fontSize(13).padding([0, 0, 20, 0]);
+
+    chart.xScale().mode("continuous");
+
+    //Set Background
+    var background = chart.background();
+    background.stroke("#202020");
+    background.corners();
+    background.enabled(false);
+
+    // adjust y axis
+    chart.yAxis().stroke("#000");
+    chart.yAxis().ticks(false);
+    chart.yAxis().labels().fontColor("#000");
+
+    // adjust x axis
+    chart.xAxis().stroke("#000");
+    chart.xAxis().labels().fontColor("#000");
+
+    // set container for the chart and define padding
+    chart.container("ten__vehiculos__problemas");
+
+    // initiate chart drawing
+    chart.draw();
+
+    // chart credits false
+    var credits = chart.credits();
+    credits.enabled(false);
+  });
 
     // PIE CHART - VIDA
     anychart.onDocumentReady(function () {
