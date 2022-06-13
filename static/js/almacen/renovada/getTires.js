@@ -7,7 +7,7 @@ const loader = document.querySelector('.icon-spinner2');
 const productList = document.querySelector('select[name="producto"]');
 
 let page = 1,
-  size = 12;
+  size = 24;
 
 const getTires = async (querys = '') => {
   const origin = window.location.origin,
@@ -75,7 +75,7 @@ const getTires = async (querys = '') => {
       // ? El inventario se pone manual según el inventario      
       template.querySelector('.add-item').dataset.id = item.id;
       template.querySelector('.add-item').dataset.inventario =
-        'Con renovador';
+        'Renovada';
 
       let clone = document.importNode(template, true);
       fragment.appendChild(clone);
@@ -108,6 +108,7 @@ const getTires = async (querys = '') => {
         )
           .then((res) => (res.ok ? res.json() : Promise.reject(res)))
           .then((res) => {
+            console.log('success')
             getTires(window.location.search);
             getCounter();
             document.querySelector('.alert__success').classList.add('active');

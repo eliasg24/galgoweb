@@ -13,7 +13,7 @@ html {
 body {
   margin: 0;
   font-family: Arial;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   background-color: var(--colorv00);
   overflow-x: hidden;
   display: grid;
@@ -103,19 +103,19 @@ hr {
   justify-content: end;
 }
 
-.fecha{
+.fecha {
   font-size: 1.5rem;
   color: var(--colorv23);
   width: 50%;
 }
 
-.almohadilla{
+.almohadilla {
   font-size: 1.5rem;
   color: var(--colorv23);
   width: 50%;
 }
 
-.list{
+.list {
   list-style: disc;
   margin-left: 1rem;
   font-size: 1.5rem;
@@ -123,10 +123,10 @@ hr {
 }
 
 select {
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background-color: var(--colorv00);
   color: var(--colorv02);
   font-size: 1rem;
   border: none;
-  padding: .25rem;
+  padding: 0.25rem;
 }

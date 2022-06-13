@@ -14,7 +14,7 @@ const getFilters = async (querys = '') => {
     tires = `${api}/tiresearch`,
     apiSearch = `${tires}${
       querys || '?'
-    }&inventario=Con%20renovador&size=20&page=${pageSearch}`;
+    }&inventario=Con%20renovador&size=24&page=${pageSearch}`;
 
   loader.style.display = 'block';
 

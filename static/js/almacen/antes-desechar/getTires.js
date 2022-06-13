@@ -7,7 +7,7 @@ const loader = document.querySelector('.icon-spinner2');
 const productList = document.querySelector('select[name="producto"]');
 
 let page = 1,
-  size = 12;
+  size = 24;
 
 const getTires = async (querys = '') => {
   const origin = window.location.origin,
@@ -74,7 +74,7 @@ const getTires = async (querys = '') => {
 
       template.querySelector('.add-item').dataset.id = item.id;
       // ? El inventario se pone manual según el inventario
-      template.querySelector('.add-item').dataset.inventario = 'Nueva';
+      template.querySelector('.add-item').dataset.inventario = 'Antes de Desechar';
 
       let clone = document.importNode(template, true);
       fragment.appendChild(clone);

@@ -7,7 +7,7 @@ const loader = document.querySelector('.icon-spinner2');
 const productList = document.querySelector('select[name="producto"]');
 
 let page = 1,
-  size = 12;
+  size = 24;
 
 const getTires = async (querys = '') => {
   const origin = window.location.origin,

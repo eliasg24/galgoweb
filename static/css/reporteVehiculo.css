@@ -381,8 +381,7 @@ img {
 .ejes__4 .tire__economic-top,
 .ejes__4 .tire__economic-bottom,
 .ejes__5 .tire__economic-top,
-.ejes__5 .tire__economic-bottom
-.ejes__6 .tire__economic-top,
+.ejes__5 .tire__economic-bottom .ejes__6 .tire__economic-top,
 .ejes__6 .tire__economic-bottom {
   font-size: 0.65rem;
 }

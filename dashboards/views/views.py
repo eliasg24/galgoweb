@@ -1324,30 +1324,8 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                 llanta_actual.ultima_inspeccion.save()
                 llanta_actual.save()
             elementos += 1
-            
-        #CREACION DE BITACORA
-        """print(diferencias)
-        if len(diferencias) > 0:
-            if id_bitacora == None:
-                bitacora_cambios = Bitacora_Edicion.objects.create(
-                    vehiculo = llanta.vehiculo,
-                    tipo = 'edicion'
-                    )
-                bitacora_cambios.save()
-                id_bitacora = bitacora_cambios.id
-                
-            else:
-                try:
-                    bitacora_cambios = Bitacora_Edicion.objects.get(pk = id_bitacora)
-                except:
-                    pass
-            
-            for diferencia in diferencias:
-                registro = Registro_Bitacora.objects.create(
-                    bitacora = bitacora_cambios,
-                    evento = diferencia
-                )
-                registro.save()"""
+        #Diagrma obds
+        functions.observaciones_vehiculo(vehiculo)
                         
         return redirect('dashboards:detail', self.kwargs['pk'])
         #return redirect('dashboards:diagrama', self.kwargs['pk'])
@@ -1401,6 +1379,7 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
         print(request.POST)
         #print(self.kwargs['pk'])
         llanta = Llanta.objects.get(pk=self.kwargs['pk'])
+        llanta_actual_referencia = Llanta.objects.get(pk=self.kwargs['pk'])
         economico = request.POST.getlist('economico')[0]
         producto = request.POST.getlist('producto')[0]
         vida = request.POST.getlist('vida')[0]
@@ -1430,7 +1409,6 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
             cambios.append('producto')
             
         if llanta.vida != vida:
-            functions.cambio_de_vida(llanta)
             cambios.append('vida')
             llanta.vida = vida
             inspeccion_actual.vida = llanta.vida
@@ -1456,7 +1434,8 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
             inspeccion_actual.presion = presion
         llanta.save()
         inspeccion_actual.save()
-        
+        if 'vida' in cambios:
+            functions.cambio_de_vida(llanta_actual_referencia, llanta)
         if len(cambios) > 0:
             if inspeccion_actual.evento != None:
                 #print(inspeccion_actual.evento)
@@ -1622,6 +1601,8 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
             for observacion in llanta.observaciones.all():
                 llanta.ultima_inspeccion.observaciones.add(observacion)
             llanta.ultima_inspeccion.save()
+        #Tire Diagrama
+        functions.observaciones_vehiculo(llanta.vehiculo)
         return redirect('dashboards:tireDetail', self.kwargs['pk'])
 
 class inspeccionLlantaView(LoginRequiredMixin, TemplateView):
@@ -2342,7 +2323,6 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                 profundidad_derecha_post = (float(profundidad_derecha[elementos]) if profundidad_derecha[elementos]!='' else None)
                 presion_post = (presion[elementos] if presion[elementos] != '' else llanta_actual.presion_actual)
                 if vida_post != llanta_referencia.vida:
-                    functions.cambio_de_vida(llanta_referencia)
                     print('Cambio de vida')
                     cambios.append('1')
                 if str(profundidad_izquierda_post) != str(llanta_referencia.profundidad_izquierda):
@@ -2403,7 +2383,8 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                     llanta_actual.profundidad_central = profundidad_central_post
                     llanta_actual.profundidad_derecha = profundidad_derecha_post
                     llanta_actual.save()
-                    
+                    if 'vida' in cambios:
+                        functions.cambio_de_vida(llanta_referencia, llanta_actual)
                     if vehiculo.km != None:
                         if kilometraje[0] != vehiculo_referencia.km:
                             if llanta_actual.km_montado == None:
@@ -2571,32 +2552,9 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                 llanta_actual.ultima_inspeccion.save()
                 llanta_actual.save()
             elementos += 1
-                    
-            
-            
-        #CREACION DE BITACORA
-        """print(diferencias)
-        if len(diferencias) > 0:
-            if id_bitacora == None:
-                ""bitacora_cambios = Bitacora_Edicion.objects.create(
-                    vehiculo = llanta_ref.vehiculo,
-                    tipo = 'inspeccion'
-                    )
-                bitacora_cambios.save()
-                id_bitacora = bitacora_cambios.id
-                
-            else:
-                try:
-                    bitacora_cambios = Bitacora_Edicion.objects.get(pk = id_bitacora)
-                except:
-                    pass""
-            
-            for diferencia in diferencias:
-                registro = Registro_Bitacora.objects.create(
-                    bitacora = bitacora_cambios,
-                    evento = diferencia
-                )
-                registro.save()"""
+            #Inspeccion      
+        functions.observaciones_vehiculo(vehiculo)
+        Vehiculo.objects.filter(pk=vehiculo.id).update(fecha_ultima_inspeccion = date.today())
         return redirect('dashboards:detail', self.kwargs['pk'])
         #return redirect('dashboards:inspeccionVehiculo', self.kwargs['pk'])
 
@@ -5228,8 +5186,41 @@ class calendarView(LoginRequiredMixin, TemplateView):
 
     template_name = "calendar/calendar.html"
 
+class planTallerView(LoginRequiredMixin, TemplateView):
+# Vista de planTallerView
 
-
+    template_name = "planTaller.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #? Se obtiene el vehiculo
+        vehiculo = Vehiculo.objects.filter(pk=self.kwargs['pk'])
+        print(vehiculo)
+        #? Se convirte el id en una lista(Por convenvion de las funciones)
+        ids_vehiculo = functions.list_vehicle_id(vehiculo.values('id'))
+        #? Se obtiene las llantas 
+        llantas = Llanta.objects.filter(vehiculo__id__in = ids_vehiculo)
+        #? Se acomodan las llantas
+        vehiculos_llantas_acomodadas = functions.acomodo_de_llantas_por_vehiculo(llantas, ids_vehiculo)
+        acomodo_ejes_vehicle = functions.acomodo_ejes_vehicle(vehiculos_llantas_acomodadas)
+        acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
+        vehiculo_acomodado = acomodo_posicion_ejes_vehicle
+        
+        context['vehiculo_acomodado'] = vehiculo_acomodado
+        return context
+    
+    def post(self, request, pk):
+        print(request.POST)
+        llantas = request.POST.getlist('llanta')
+        inflado = request.POST.getlist('inflar')
+        print(llantas)
+        for llanta in llantas:
+            if llanta in inflado:
+                print(llanta)
+        
+    
+    
+    
 class vehicleListView(LoginRequiredMixin, TemplateView):
 # Vista de vehicleListView
 
@@ -5247,7 +5238,6 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         exclude = self.request.GET.get('exclude', None)
         exclude_query = ({'observaciones_llanta__id__in': exclude.split(',')} if exclude != '' and  exclude != None else {})
         ejes = self.request.GET.get('ejes', None)
-        print(filtro)
         
         #Se obtienen los vehiculos de la compañia
         vehiculos = Vehiculo.objects.select_related().filter(
@@ -5261,7 +5251,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
             query = reduce(operator.or_, clauses)
             vehiculos = vehiculos.filter(query)
         print(vehiculos)
-        #vehiculos = functions.ordenar_por_status(vehiculos)
+        vehiculos = functions.ordenar_por_status(vehiculos)
         ids_vehiculo = functions.list_vehicle_id(vehiculos)
         
         #Obtencion de los parametros iniciales de la paginación
@@ -5290,8 +5280,9 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         #    return redirect(url)
         
         #pagination = functions.pagination(page, pages)
-        prev = functions.pagination_prev(page, pages)
-        next = functions.pagination_next(page, pages)
+        url_complemento = functions.pagination_url(filtro, exclude, ejes)
+        prev = functions.pagination_prev(page, pages, url_complemento)
+        next = functions.pagination_next(page, pages, url_complemento)
         
         
         self.limit = limit
@@ -5299,6 +5290,9 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         self.prev = prev
         self.next = next
         self.ids_vehiculo = ids_vehiculo
+        self.ejes = ejes
+        self.exclude = exclude
+        self.filtro = filtro
         
         print(f'prev: {prev}')
         print(f'next: {next}')
@@ -5322,6 +5316,9 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         """print(llantas.count())
         print(len(current_vehiculos))"""
 
+        context['ejes'] = self.ejes
+        context['exclude'] = self.exclude
+        context['filtro'] = self.filtro
         context['prev'] = self.prev
         context['next'] = self.next
         context['llantas_acomodadas'] = vehiculos

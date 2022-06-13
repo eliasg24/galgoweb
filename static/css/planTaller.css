@@ -1,0 +1,352 @@
+/* BUTTONS */
+
+.btn-filter {
+  align-items: center;
+  background-color: var(--colorv17);
+  border-radius: 0.25rem;
+  border: none;
+  color: var(--colorv02);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  display: flex;
+  font-weight: 500;
+  /* height: 100%; */
+  justify-content: center;
+  padding: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+  /* width: 100%; */
+}
+
+.label-check input {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+.label-check {
+  position: relative;
+  width: 100%;
+}
+
+.label-check input:checked ~ .btn-filter,
+.btn-filter:hover,
+.btn-filter.active {
+  background-color: var(--colorv02);
+  color: var(--colorv00);
+}
+
+/* CUSTOM CSS */
+
+.all-cont {
+  display: grid;
+  height: 100%;
+  grid-template-rows: auto 1fr;
+}
+
+.container {
+  display: grid;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.left-cont {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+}
+
+.service-page,
+.tire-list,
+.main-cont,
+.right-cont {
+  background-color: var(--colorv01);
+  border-radius: 0.25rem;
+}
+
+.tire-list {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.tire-item {
+  display: flex;
+  background-color: var(--colorv00);
+  height: min-content;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.tire-item p {
+  margin: 0;
+}
+
+.tire-info {
+  text-align: center;
+}
+
+.main-cont {
+  flex-flow: column nowrap;
+  align-items: center;
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  gap: 1.25rem;
+}
+
+.head__services {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  position: relative;
+}
+
+.nav__services {
+  align-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  position: absolute;
+  gap: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s ease-in-out;
+  visibility: hidden;
+  width: 100%;
+  top: 0;
+}
+
+.nav__services .flex-row {
+  flex-flow: row wrap;
+}
+
+.nav__services .label-check {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.nav__services.active {
+  position: relative;
+  order: 0;
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.modal__bg {
+  background-color: rgba(0, 0, 0, 0.25);
+  display: grid;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  visibility: hidden;
+  width: 100%;
+  z-index: 999;
+  transition: all 0.2s ease-in-out;
+}
+
+.modal__bg.active {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.modal__form {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 2rem;
+  background-color: var(--colorv00);
+  border-radius: 0.25rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.card__config {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1.5rem;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.config__row {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  flex-flow: row nowrap;
+  position: relative;
+  justify-content: space-between;
+}
+
+.config__row.double-shaft {
+  width: 100%;
+}
+
+.config__row.double-shaft .shaft__wrapper {
+  flex: 1 1 auto;
+}
+
+.shaft__wrapper .shaft.xl {
+  width: 100%;
+}
+
+.shaft__wrapper {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.config__row .icon-llanta-outline {
+  font-size: 6rem;
+}
+
+.icon-llanta-outline.opacity-0 {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.config__row .shaft {
+  width: 100%;
+  min-width: 2rem;
+  height: 0.5rem;
+  border: 2px solid var(--colorv02);
+}
+
+.shaft.xl {
+  width: 6.25rem;
+}
+
+.tire {
+  border-radius: 0.25rem;
+  filter: brightness(0.5);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+
+.tire.select {
+  box-shadow: 0 0 12px 1px rgba(255, 255, 255, 0.5);
+  filter: brightness(1);
+}
+
+.config__row .double__tire {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.tag__middle {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.tag.good,
+.pos.good {
+  background-color: #026cf5; /*No cambia*/
+  opacity: 1;
+}
+.tag.bad,
+.pos.bad {
+  background-color: #f0412c; /*No cambia*/
+  opacity: 1;
+}
+.tag.yellow,
+.pos.yellow {
+  background-color: #dbc002; /*No cambia*/
+  color: #000; /* No cambia */
+}
+
+.tire .tag {
+  font-weight: 500;
+  color: #fff;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.pos {
+  font-weight: 500;
+  color: #fff;
+  height: auto;
+  width: 100%;
+  text-align: center;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-content: center;
+}
+
+.tag.top {
+  top: 0;
+}
+
+.tag.bottom {
+  bottom: 0;
+}
+
+.tag.good {
+  background-color: #026cf5; /*No cambia*/
+  opacity: 1;
+}
+
+.footer__row.good {
+  background-color: #026cf5; /*No cambia*/
+  opacity: 1;
+}
+
+.tag.bad {
+  background-color: #f0412c; /*No cambia*/
+  opacity: 1;
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr 2fr;
+  }
+  .tire-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card__config {
+    width: 60%;
+    margin: auto;
+  }
+
+  .card__config .config__row {
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .config__row .icon-llanta-outline {
+    font-size: 10rem;
+  }
+
+  .tire .tag__middle .pos {
+    height: 3rem;
+    width: 3rem;
+  }
+
+  .config__row .shaft__wrapper {
+    flex: 1 1 auto;
+  }
+
+  .modal__bg {
+    place-content: center;
+  }
+
+  .modal__form {
+    min-width: 600px;
+  }
+}

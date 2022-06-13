@@ -43,4 +43,3 @@ def modoDB(modo=config('MODO')):
         'HOST': 'galgowebservices-do-user-11664977-0.b.db.ondigitalocean.com',
         'PORT': '25060',
     }
-        

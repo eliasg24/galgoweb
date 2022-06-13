@@ -15,7 +15,7 @@
 
 .drop-input {
   color: #fff; /*No cambia*/
-  border:  thin solid #fff; /*No cambia*/
+  border: thin solid #fff; /*No cambia*/
   font-size: 1rem;
 }
 
@@ -49,8 +49,10 @@
 
 .vehicle__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  grid-template-rows: 1fr 1fr;
+  /* grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-rows: 1fr 1fr; */
+  /* 320 */
+  grid-template-columns: 1fr;
   padding: 0 1rem 1rem 1rem;
   gap: 1rem;
 }
@@ -73,6 +75,7 @@
   background-color: var(--colorv08);
   border-radius: 0.25rem 0.25rem 0 0;
   display: flex;
+  justify-content: space-around;
 }
 
 .card__config {
@@ -341,6 +344,15 @@
   padding: 0.5rem;
 }
 
+/* TABLET */
+@media screen and (min-width: 728px) {
+  .vehicle__list {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+}
+
+/* DESKTOP S */
 @media screen and (min-width: 1024px) {
   .form__filter {
     min-width: 600px;
@@ -349,5 +361,16 @@
 
   .filter__nav {
     flex-flow: row nowrap;
+  }
+
+  .vehicle__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* DESKTOP MD */
+@media screen and (min-width: 1440px) {
+  .vehicle__list {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

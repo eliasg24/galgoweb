@@ -131,13 +131,18 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                     #Check Desdualización
                     if desdualizacion in observaciones:
                         ico_desdualizacion = 'icon-cross'
+                    color_middle = color_observaciones_all_one(llanta)
+                    
                     temp_ejes.append({
                         'llanta': llanta,
                         'posicion': llanta.posicion,
                         'color_presion': color_presion,
                         'color_profundidad': color_profundidad,
                         'ico_desgaste': ico_desgaste,
-                        'ico_desdualizacion': ico_desdualizacion
+                        'ico_desdualizacion': ico_desdualizacion,
+                        'color_middle': color_middle,
+                        'min_presion': min_presion(llanta),
+                        'max_presion': max_presion(llanta),
                     })
             ejes_total.append(temp_ejes)
             dias_sin_inspeccion = 'Sin informacón'
@@ -161,7 +166,7 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                 
             if vehiculo_actual.fecha_ultima_alineacion != None:
                 #print(vehiculo_actual.fecha_ultima_inspeccion)
-                dias_sin_alinear = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days   
+                dias_sin_alinear = (hoy - vehiculo_actual.fecha_ultima_alineacion).days   
             
             if vehiculo_actual.dias_alinear != 0:
                 #print(vehiculo_actual.dias_alinear)
@@ -452,8 +457,11 @@ def check_presion_pulpo(llanta, min_presion, max_presion):
     print(presion)
     if presion < min_presion:
         llanta.observaciones.add(baja)
+        llanta.vehiculo.observaciones_llanta.add(baja)
     if presion > max_presion:
         llanta.observaciones.add(alta)
+        llanta.vehiculo.observaciones_llanta.add(alta)
+        
     llanta.save()
 
 
@@ -3215,6 +3223,13 @@ def nunca_vistos(vehiculos):
     nunca_visto = vehiculos.filter(ultima_inspeccion__fecha_hora__isnull=True).count()
     return nunca_visto
 
+def observaciones_vehiculo(vehiculo):
+    vehiculo.observaciones_llanta.clear()
+    llantas = Llanta.objects.filter(vehiculo__id = vehiculo.id)
+    for llanta in llantas:
+        for obs in llanta.observaciones.all():
+            vehiculo.observaciones_llanta.add(obs)
+
 def origen_option(origen):
     if origen == 'antesDeRenovar':
         return 'Antes de Renovar'
@@ -3256,35 +3271,35 @@ def ordenar_por_status(vehiculos):
     filtro_sospechoso = vehiculo_sospechoso(inspecciones)
     vehiculos_sospechosos = vehiculos.filter(id__in=filtro_sospechoso)
     vehiculos_sospechosos_list = list(vehiculos_sospechosos.values_list("id", flat=True))
-    print(vehiculos_sospechosos_list)
 
     doble_entrada = doble_mala_entrada(bitacora, vehiculos)
     #filtro_rojo = vehiculo_rojo(llantas, doble_entrada, vehiculos)
     doble_entrada_pro = doble_mala_entrada_pro(bitacora_pro, vehiculos)
     filtro_rojo = vehiculo_rojo_ordenamiento(llantas, vehiculos, doble_entrada, doble_entrada_pro)
-    vehiculos_rojos = filtro_rojo.exclude(id__in=vehiculos_sospechosos)
-    vehiculos_rojos_list = list(vehiculos_rojos.values_list("id", flat=True))
-    print(vehiculos_rojos_list)
+    try:
+        vehiculos_rojos = filtro_rojo.exclude(id__in=vehiculos_sospechosos)
+        vehiculos_rojos_list = list(vehiculos_rojos.values_list("id", flat=True))
+    except:
+        vehiculos_rojos_list = []
 
     filtro_amarillo = vehiculo_amarillo_ordenamiento(llantas, vehiculos)
-    vehiculos_amarillos = filtro_amarillo.exclude(id__in=vehiculos_rojos).exclude(id__in=vehiculos_sospechosos)
-    vehiculos_amarillos_list = list(vehiculos_amarillos.values_list("id", flat=True))
-    print(vehiculos_amarillos_list)
+    try:
+        vehiculos_amarillos = filtro_amarillo.exclude(id__in=vehiculos_rojos).exclude(id__in=vehiculos_sospechosos)
+        vehiculos_amarillos_list = list(vehiculos_amarillos.values_list("id", flat=True))
+    except:
+        vehiculos_amarillos_list = []
 
     vehiculos_verdes = vehiculos.exclude(id__in=vehiculos_rojos).exclude(id__in=vehiculos_sospechosos).exclude(id__in=vehiculos_amarillos)
     vehiculos_verdes_list = list(vehiculos_verdes.values_list("id", flat=True))
-    print(vehiculos_verdes_list)
 
     vehiculos_list = []
     vehiculos_list.extend(vehiculos_sospechosos_list)
     vehiculos_list.extend(vehiculos_rojos_list)
     vehiculos_list.extend(vehiculos_amarillos_list)
     vehiculos_list.extend(vehiculos_verdes_list)
-    print(vehiculos_list)
 
     q_list = ordenar_queryset(vehiculos_list)
     vehiculos = vehiculos.filter(id__in=vehiculos_list).order_by(q_list)
-    print(vehiculos)
     return vehiculos
    
 def ordenar_queryset(queryset_list):
@@ -3305,18 +3320,34 @@ def pagination(page, pages):
         
     return pagination
 
-def pagination_prev(page, pages):
+def pagination_url(filtro, exclude, ejes):
+    """Funcion que recibe los parametros de los filtros u devuelve una cadena para poder respetarlos
+
+    Args:
+        filtro (str): Filtros utilizados
+        exclude (str): Excluciones en la consulta
+        ejes (str): Tipos de eje
+
+    Returns:
+        str: Cadena concatenada de los diferentes filtros
+    """
+    if (filtro == None and exclude == None and ejes == None) or (filtro == '' and exclude == '' and ejes == ''):
+        return ''
+    return f'&filtro={filtro}&exclude={exclude}&ejes={ejes}'
+
+def pagination_prev(page, pages, url_complemento):
     if (page - 1) >= 1:
-        prev = f'{page - 1}'
+        prev = f'{page - 1}{url_complemento}'
     else:
         prev = None
     return prev
-def pagination_next(page, pages):
+def pagination_next(page, pages, url_complemento):
     if (page + 1) <= pages:
-        next = f'{page + 1}'
+        next = f'{page + 1}{url_complemento}'
     else:
         next = None
     return next
+
 def porcentaje(divisor, dividendo):
     try:
         return int((divisor/dividendo)*100)

@@ -1,0 +1,150 @@
+<div class="modal__bg" data-modal="{{ llanta.llanta.id }}">
+  <form class="modal__form">
+    <header class="flex-row">
+      <button
+        type="button"
+        class="btn btn-filter active"
+        data-nav="{{ llanta.llanta.id }}"
+        value="sr"
+      >
+        Servicios / Rotar
+      </button>
+      <button
+        type="button"
+        class="btn btn-filter"
+        data-nav="{{ llanta.llanta.id }}"
+        value="desmontaje"
+      >
+        Desmontaje
+      </button>
+    </header>
+
+    <div
+      class="form__view visible"
+      style="display: flex"
+      data-view="{{ llanta.llanta.id }}"
+    >
+      <legend>Servicios</legend>
+      <nav class="flex-row">
+        <label for="inflar-{{ llanta.llanta.id }}" class="label-check">
+          <input type="hidden" name="inflar" value="" />
+          <input
+            type="checkbox"
+            name="inflar"
+            id="inflar-{{ llanta.llanta.id }}"
+          />
+          <div class="btn-filter">Inflar</div>
+        </label>
+        <label for="balancear-{{ llanta.llanta.id }}" class="label-check">
+          <input type="hidden" name="balancear" value="" />
+          <input
+            type="checkbox"
+            name="balancear"
+            id="balancear-{{ llanta.llanta.id }}"
+          />
+          <div class="btn-filter">Balancear</div>
+        </label>
+        <label for="reparar-{{ llanta.llanta.id }}" class="label-check">
+          <input type="hidden" name="reparar" value="" />
+          <input
+            type="checkbox"
+            name="reparar"
+            id="reparar-{{ llanta.llanta.id }}"
+          />
+          <div class="btn-filter">Reparar</div>
+        </label>
+      </nav>
+
+      <section class="form__view-body">
+        <legend>Rotar</legend>
+
+        <fieldset>
+          <label for="no-{{ llanta.llanta.id }}">
+            No rotar
+            <input
+              type="radio"
+              name="rotar"
+              id="no-{{ llanta.llanta.id }}"
+              data-radioId="{{ llanta.llanta.id }}"
+              value="no"
+              checked
+            />
+          </label>
+          <label for="t-vehicle-{{ llanta.llanta.id }}">
+            Vehículo
+            <input
+              type="radio"
+              name="rotar"
+              id="t-vehicle-{{ llanta.llanta.id }}"
+              data-radioId="{{ llanta.llanta.id }}"
+              value="mismo"
+            />
+          </label>
+          <label for="otros-{{ llanta.llanta.id }}">
+            Otro vehículo
+            <input
+              type="radio"
+              name="rotar"
+              id="otros-{{ llanta.llanta.id }}"
+              data-radioId="{{ llanta.llanta.id }}"
+              value="otro"
+            />
+          </label>
+        </fieldset>
+
+        <label
+          for="origen-vehiculo-{{ llanta.llanta.id }}"
+          style="display: none"
+          data-rotar-id="{{ llanta.llanta.id }}"
+        >
+          Vehiculo origen
+          <select name="" id="origen-vehiculo-{{ llanta.llanta.id }}">
+            <option value="">Elige un vehículo...</option>
+          </select>
+        </label>
+
+        <label
+          for="origen-llanta-{{ llanta.llanta.id }}"
+          style="display: none"
+          data-rotar-id="{{ llanta.llanta.id }}"
+        >
+          Llanta de origen
+          <select name="" id="origen-llanta-{{ llanta.llanta.id }}">
+            <option value="">Elige una llanta...</option>
+          </select>
+        </label>
+      </section>
+    </div>
+
+    <div
+      class="form__view"
+      style="display: none"
+      data-view="{{ llanta.llanta.id }}"
+    >
+      <label for="">Stock origen</label>
+      <select name="stock" id="">
+        <option value="">Seleccione un stock...</option>
+        <option value="nueva">Nueva</option>
+        <option value="renovada">Renovada</option>
+        <option value="servicio">Servicio</option>
+      </select>
+
+      <label for="">Llanta</label>
+      <select name="nuevaLlanta" id="">
+        <option value="">Seleccione un stock...</option>
+      </select>
+
+      <label for="">Razón de desmontaje</label>
+      <select name="razon" id="">
+        <option value="">Seleccione un stock...</option>
+      </select>
+    </div>
+
+    <nav class="flex-row">
+      <button class="btn-submit">Guardar</button>
+      <button type="button" role="menu" class="close-modal">Cerrar</button>
+    </nav>
+
+    <input type="hidden" name="llantaId" value="{{ llanta.llanta.id }}" />
+  </form>
+</div>

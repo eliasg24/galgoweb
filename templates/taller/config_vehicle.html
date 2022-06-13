@@ -1,0 +1,127 @@
+<div class="card__config">
+
+    {% for eje in vehiculo.ejes %}
+      <!--Si el eje es de 2-->
+        {% if eje|length == 2 %}
+        
+            <!--Tire-->
+            <div class="config__row double-shaft">
+              <div class="tire" data-id="{{ eje.0.llanta.id }}">
+
+                <span class="tag top {{eje.0.color_presion}}">
+                  0
+                </span>
+
+                <div class="tag__middle">
+                  <div class="pos {{eje.0.color_middle}}">1L</div>
+                </div>
+
+                <div class="icon-llanta-outline"></div>
+                <span class="tag bottom {{eje.0.color_profundidad}}">
+                  1
+                </span>
+              </div>
+
+              <div class="shaft__wrapper">
+                <span>{{eje.0.min_presion}}-{{eje.0.max_presion}}</span>
+                <div class="shaft xl"></div>
+                <span>{{eje.0.llanta.producto.dimension}}</span>
+              </div>
+
+              <div class="tire" data-id="{{ eje.1.llanta.id }}">
+                <span class="tag top {{eje.1.color_presion}}">
+                  1
+                </span>
+
+                <div class="tag__middle">
+                  <div class="pos {{eje.1.color_middle}}">1L</div>
+                </div>
+
+                <div class="icon-llanta-outline"></div>
+                <span class="tag bottom {{eje.1.color_profundidad}}">
+                  1
+                </span>
+              </div>
+            </div>
+    
+        {% endif %}
+      
+    <!--Si el eje es de 4-->
+        {% if eje|length == 4 %}
+        <!--Double Tire-->
+            <div class="config__row">
+              <div class="double__tire">
+                <div class="tire" data-id="{{ eje.0.llanta.id }}">
+                  <span class="tag top {{eje.0.color_presion}}">
+                    1
+                  </span>
+
+                  <div class="tag__middle">
+                    <div class="pos {{eje.0.color_middle}}">1L</div>
+                  </div>
+
+                  <div class="icon-llanta-outline"></div>
+                  <span class="tag bottom {{eje.0.color_profundidad}}">
+                    1
+                  </span>
+                </div>
+
+                <div class="tire" data-id="{{ eje.1.llanta.id }}"> 
+                  <span class="tag top {{eje.1.color_presion}}">
+                    1
+                  </span>
+
+                  <div class="tag__middle">
+                    <div class="pos {{eje.1.color_middle}}">1L</div>
+                  </div>
+
+                  <div class="icon-llanta-outline"></div>
+                  <span class="tag bottom {{eje.1.color_profundidad}}">
+                    1
+                  </span>
+                </div>
+              </div>
+
+              <div class="shaft__wrapper">
+                <span>{{eje.0.min_presion}}-{{eje.0.max_presion}}</span>
+                <div class="shaft"></div>
+                <span>{{eje.0.llanta.producto.dimension}}</span>
+              </div>
+
+              <div class="double__tire">
+                <div class="tire" data-id="{{ eje.2.llanta.id }}">              
+                  <span class="tag top {{eje.2.color_presion}}">
+                    1
+                  </span>
+
+                  <div class="tag__middle">
+                    <div class="pos {{eje.2.color_middle}}">1L</div>
+                  </div>
+
+                  <div class="icon-llanta-outline"></div>
+                  <span class="tag bottom {{eje.2.color_profundidad}}">
+                    1
+                  </span>
+                </div>
+                <div class="tire" data-id="{{ eje.3.llanta.id }}">                
+                  <span class="tag top {{eje.3.color_presion}}">
+                    1
+                  </span>
+
+                  <div class="tag__middle">
+                    <div class="pos {{eje.3.color_middle}}">1L</div>
+                  </div>
+
+                  <div class="icon-llanta-outline"></div>
+                  <span class="tag bottom {{eje.3.color_profundidad}}">
+                    1
+                  </span>
+                </div>
+              </div>
+            </div>
+
+        {% endif %}
+
+        {% endfor %}
+
+  </div>

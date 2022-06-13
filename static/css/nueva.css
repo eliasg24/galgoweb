@@ -63,7 +63,8 @@ select {
   /* display: flex;
   flex-flow: row wrap; */
   gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  /* grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); */
+  grid-template-columns: 1fr;
   padding: 1rem;
 }
 
@@ -378,9 +379,27 @@ button:disabled {
     max-width: 350px;
   }
 }
+/* TABLET */
+@media screen and (min-width: 768px) {
+  .cards__container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
+/* DESKTOP S */
 @media screen and (min-width: 1024px) {
+  .cards__container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .filter__content {
     min-width: 630px;
+  }
+}
+
+/* DESKTOP M */
+@media screen and (min-width: 1440px) {
+  .cards__container {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

@@ -34,7 +34,7 @@ p {
 .top__search {
   display: flex;
   flex-direction: column;
-  background-color: var(--colorv45);
+  background-color: var(--colorv01);
   text-align: center;
   border-radius: 0.25rem;
 }
@@ -46,7 +46,7 @@ p {
   border-radius: 0.25rem 0.25rem 0 0;
 }
 
-input[type='search'] {
+input[type="search"] {
   background-color: var(--colorv18);
 }
 
@@ -85,7 +85,7 @@ input[type='search'] {
 
 .tire__item.disabled {
   pointer-events: none;
-  filter: brightness(.5);
+  filter: brightness(0.5);
 }
 
 .tire__item:hover,

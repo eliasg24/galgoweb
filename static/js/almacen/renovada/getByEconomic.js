@@ -14,7 +14,7 @@ const getFilters = async (querys = '') => {
     tires = `${api}/tiresearch`,
     apiSearch = `${tires}${
       querys || '?'
-    }&inventario=Renovada&size=20&page=${pageSearch}`;
+    }&inventario=Renovada&size=24&page=${pageSearch}`;
 
   loader.style.display = 'block';
 
@@ -73,7 +73,7 @@ const getFilters = async (querys = '') => {
       
       template.querySelector('.add-item').dataset.id = item.id;
       template.querySelector('.add-item').dataset.inventario =
-        'Con renovador';
+        'Renovada';
       
       let clone = document.importNode(template, true);
       fragment.appendChild(clone);

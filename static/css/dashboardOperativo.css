@@ -47,7 +47,7 @@ p {
 
 .grid-row2 {
   background: var(--colorv45);
-  border-radius: 0.25rem; 
+  border-radius: 0.25rem;
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -70,7 +70,7 @@ p {
   justify-items: center;
 }
 
-.item-info h2{
+.item-info h2 {
   font-size: 1.3rem;
 }
 
@@ -137,7 +137,7 @@ p {
 
 .card.active {
   background-color: var(--colorv41);
-  color: #fff; /* No cambia */ 
+  color: #fff; /* No cambia */
 }
 
 .cont__charts {

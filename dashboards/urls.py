@@ -442,6 +442,11 @@ urlpatterns = [
         name="vehicleList"
     ),
     path(
+        route="taller/<int:pk>",
+        view=views.planTallerView.as_view(),
+        name="planTaller"
+    ),
+    path(
         route="calendario",
         view=views.calendarView.as_view(),
         name="calendario"
@@ -637,6 +642,11 @@ urlpatterns = [
         route="api/tiresearchalmacen",
         view=views_rest.TireSearchAlmacen.as_view(),
         name="tiresearchalmacen"
+    ),
+    path(
+        route="api/tiresearchtaller",
+        view=views_rest.TireSearchTaller.as_view(),
+        name="tiresearchtaller"
     ),
 
     #-----------------------U-----------------------

@@ -42,7 +42,7 @@ const getTires = async (query) => {
     }
 
     result.forEach((tire) => {
-      template.querySelector('a').href = tire.url;
+      template.querySelector('a').href = `${tire.url}?eco=${ tire.numero_economico }`;
       template.querySelector('.economico').textContent =
         tire.numero_economico;
       template.querySelector('.producto').textContent =

@@ -5,6 +5,12 @@
         {{vehiculo.vehiculo.numero_economico}}
       </a>
     </h2>
+
+    <div class="flex-row">
+      <a href="{% url 'dashboards:planTaller' vehiculo.vehiculo.id %}">
+        Taller
+      </a>
+    </div>
   </header>
 
   <div class="card__config">
@@ -76,7 +82,7 @@
           <div class="shaft"></div>
 
           <div class="double__tire">
-            <span class="{{eje.2.ico_desdualizacion}"></span>
+            <span class="{{eje.2.ico_desdualizacion}}"></span>
             <div class="tire">
 
               <div class="rotate {{eje.2.ico_desgaste}}">

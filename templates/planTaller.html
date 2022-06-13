@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/planTaller.css' %}" />
+  <title>Taller</title>
+{% endblock head %}
+{% block content %}
+  <main class="all-cont">
+    <div class="head-cont">
+      <div class="logo">
+        <img src="{% static 'images/aeto.svg' %}" alt="logo" />
+      </div>
+      <form id="taller-form" class="title-cont">
+        <input type="hidden" name="data" value="" id="data-taller">
+        <button type="submit">
+          <span class="icon-checkmark"></span>
+        </button>
+      </form>
+    </div>
+    <div class="container">
+      <aside class="left-cont">
+        <div class="service-page">
+          <h3>Hoja de Servicio</h3>
+          <div class="form__row">
+            <label for="">
+              Folio:
+            </label>
+            <input type="text" value="123456789" readonly>
+          </div>
+          <div class="form__row">
+            <label for="">
+              Fecha y Horario:
+            </label>
+            <input type="datetime-local" readonly value="2022-06-12T19:30">
+            <!-- <input
+              type="datetime-local"
+              id="meeting-time"
+              name="meeting-time"
+              value="2018-06-12T19:30"
+              min="2018-06-07T00:00"
+              max="2018-06-14T00:00"
+            > -->
+          </div>
+          <div class="form__row">
+            <label for="">
+              Asignación
+            </label>
+            <input type="text" value="" readonly>
+          </div>
+          <div class="form__row">
+            <label for="">
+              Número ecónomico:
+            </label>
+            <input type="text" value="" readonly>
+          </div>
+          <div class="form__row">
+            <label for="">
+              Sucursal:
+            </label>
+            <input type="text" value="" readonly>
+          </div>
+          <div class="form__row">
+            <label for="">
+              Aplicación:
+            </label>
+            <input type="text" value="" readonly>
+          </div>
+
+        </div>
+
+        <div class="tire-list"></div>
+      </aside>
+      <div class="main-cont">
+
+        {% for vehiculo in vehiculo_acomodado %}
+          {% include 'taller/config_vehicle.html' %}
+        {% endfor %}
+
+      </div>
+    </div>
+
+    {% for vehiculo in vehiculo_acomodado %}
+      {% for eje in vehiculo.ejes %}
+        {% for llanta in eje %}
+          {% include 'taller/modal.html' %}
+        {% endfor %} 
+      {% endfor %}
+    {% endfor %}
+    
+  </main>
+
+
+  <script src="{% static 'js/taller/index.js' %}" type="module"></script>
+{% endblock content %}

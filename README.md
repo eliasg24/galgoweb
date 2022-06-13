@@ -57,7 +57,6 @@ pip install psycopg2
 pip install python-decouple
 ```
 
-
 ## Para abrir el servidor en la carpeta del proyecto
 
 ```bash

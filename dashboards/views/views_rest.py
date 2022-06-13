@@ -483,6 +483,83 @@ class TireSearchAlmacen(LoginRequiredMixin, View):
 
         return HttpResponse(json_context, content_type='application/json')
     
+class TireSearchTaller(LoginRequiredMixin, View):
+    # Vista del dashboard buscar_vehiculos
+
+    def get(self, request , *args, **kwargs):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        compania = perfil.compania
+        llantas = Llanta.objects.filter(compania = compania)
+        
+        #Queryparams
+        size = (int(request.GET['size']) if 'size' in request.GET else 10)
+        page = (int(request.GET['page']) if 'page' in request.GET else 1)
+        
+        eco = (request.GET['eco'] if 'eco' in request.GET else None)
+        eco_query = ({'numero_economico__icontains': eco} if  eco != None else {})
+        
+        dimension = (request.GET['dimension'] if 'dimension' in request.GET else None)
+        dimension_query = ({'producto__dimension': dimension} if  dimension != None else {})
+        
+        inventario = (request.GET['inventario'] if 'inventario' in request.GET else None)
+        inventario_query = ({'inventario': inventario} if  inventario != None else {})
+        
+        #Color de llanta
+        rojos = []
+        amarillos = []
+        azules = []
+        
+        for llanta in llantas:
+            color = functions.color_observaciones_all_one(llanta)            
+            if color == 'bad':
+                rojos.append(llanta.id)
+            elif color == 'yellow':
+                amarillos.append(llanta.id)
+            else:
+                azules.append(llanta.id)
+                
+        #Resultado final
+        search_first = llantas.filter(
+            **eco_query,
+            **dimension_query,
+            **inventario_query            
+            ).annotate(
+                min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha"), 
+                max_profundidad=Greatest("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
+                )
+        
+        search = search_first
+        
+        #Paginacion
+        datos = search.count()  
+        pages = (math.ceil(datos/size))
+        limit = page * size
+        offset = limit - size
+        
+        print(f'datos: {datos}')
+        print(f'size: {size}')
+        print(f'pages: {pages}')
+        print(f'page: {page}')
+        
+        pagination = functions.pagination(page, pages)
+        
+        #Serializar data
+        search_list = list(search[offset:limit].values( "numero_economico", "id", 'inventario', 'producto__producto', 'producto__dimension', 'min_profundidad', 'fecha_de_entrada_inventario'))
+
+        
+        dict_context = {
+            'pagination': pagination,
+            'result': search_list,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+    
+    
 class OrdenLlantaNuevaView(LoginRequiredMixin, View):
     # Vista de la orden llanta nueva
 

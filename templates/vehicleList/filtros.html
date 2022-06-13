@@ -6,9 +6,11 @@
       <h2>Filtros</h2>
 
       <nav class="flex-row">
-        <button type="button" role="button" class="btn btn-info">
-          <span class="icon-trash"></span>
-        </button>
+        <a href="{% url 'dashboards:vehicleList' %}">
+          <button type="button" role="button" class="btn btn-info">
+            <span class="icon-trash"></span>
+          </button>
+        </a>
         <button
           type="button"
           role="button"
@@ -28,27 +30,27 @@
 
         <div class="filter__nav">
           <label for="r-libre" class="label-check">
-            <input type="checkbox" name="r-libre" id="r-libre" />
+            <input type="checkbox" name="r-libre" id="r-libre" {% if "C" in ejes %}checked{% endif %} />
             <div class="btn-filter">Libre</div>
           </label>
 
           <label for="r-direccion" class="label-check">
-            <input type="checkbox" name="r-direccion" id="r-direccion" />
+            <input type="checkbox" name="r-direccion" id="r-direccion" {% if "S" in ejes %}checked{% endif %} />
             <div class="btn-filter">Direccion</div>
           </label>
 
           <label for="r-traccion" class="label-check">
-            <input type="checkbox" name="r-traccion" id="r-traccion" />
+            <input type="checkbox" name="r-traccion" id="r-traccion" {% if "D" in ejes %}checked{% endif %} />
             <div class="btn-filter">Tracción</div>
           </label>
 
           <label for="r-retractil" class="label-check">
-            <input type="checkbox" name="r-retractil" id="r-retractil" />
+            <input type="checkbox" name="r-retractil" id="r-retractil" {% if "L" in ejes %}checked{% endif %} />
             <div class="btn-filter">Retractil</div>
           </label>
 
           <label for="r-arrastre" class="label-check">
-            <input type="checkbox" name="r-arrastre" id="r-arrastre" />
+            <input type="checkbox" name="r-arrastre" id="r-arrastre" {% if "T" in ejes %}checked{% endif %} />
             <div class="btn-filter">Arrastre</div>
           </label>
         </div>
@@ -60,11 +62,11 @@
 
         <div class="filter__nav">
           <label for="baja-presion" class="label-check">
-            <input type="checkbox" name="baja-presion" id="baja-presion" />
+            <input type="checkbox" name="baja-presion" id="baja-presion" {% if "4" in filtro %}checked{% endif %} />
             <div class="btn-filter">Baja presión</div>
           </label>
           <label for="alta-presion" class="label-check">
-            <input type="checkbox" name="alta-presion" id="alta-presion" />
+            <input type="checkbox" name="alta-presion" id="alta-presion" {% if "5" in filtro %}checked{% endif %} />
             <div class="btn-filter">Alta presión</div>
           </label>
         </div>
@@ -81,6 +83,7 @@
               type="checkbox"
               name="profundidad-baja"
               id="profundidad-baja"
+              {% if "7" in filtro %}checked{% endif %}
             />
             <div class="btn-filter">Baja</div>
           </label>
@@ -90,6 +93,7 @@
               type="checkbox"
               name="profundidad-punto-retiro"
               id="profundidad-punto-retiro"
+              {% if "8" in filtro%}checked{% endif %}
             />
             <div class="btn-filter">En punto de retiro</div>
           </label>
@@ -99,6 +103,7 @@
               type="checkbox"
               name="profundidad-desgaste-irregular"
               id="profundidad-desgaste-irregular"
+              {% if "10,11,12,13" in filtro %}checked{% endif %}
             />
             <div class="btn-filter">Rotación</div>
           </label>
@@ -116,6 +121,7 @@
               name="dualizacion"
               value="con-dualizacion"
               id="con-dualizacion"
+              {% if "9" in filtro %}checked{% endif %}
             />
             <div class="btn-filter">Si</div>
           </label>
@@ -126,6 +132,7 @@
               name="dualizacion"
               value="sin-dualizacion"
               id="sin-dualizacion"
+              {% if "9" in exclude %}checked{% endif %}
             />
             <div class="btn-filter">No</div>
           </label>
@@ -136,6 +143,7 @@
               name="dualizacion"
               value="ambas"
               id="ambas"
+              {% if exclude == "" and "9" not in filtro %}checked{% endif %}
             />
             <div class="btn-filter">Ambas</div>
           </label>
