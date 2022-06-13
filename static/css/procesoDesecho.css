@@ -48,10 +48,11 @@ p {
 
 input[type="search"] {
   background-color: var(--colorv18);
+  color: #fff; /* No cambia */
 }
 
 .data p {
-  color: gainsboro;
+  color: var(--colorv02);
 }
 
 .tires__container {
@@ -90,7 +91,7 @@ input[type="search"] {
 
 .tire__item:hover,
 .tire__item:focus {
-  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 6px 1px var(--colorv02);
 }
 
 .icon-tire2 {

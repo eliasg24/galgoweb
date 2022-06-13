@@ -27,7 +27,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-menu">
     <div class="menu-li__left">
-      <img src="{% static 'images/aeto.svg' %}" alt="" />
+      <img src="{% static 'images/perro-galgo.png' %}" alt="" />
     </div>
       
       <form class="form-head" method="GET">
@@ -1103,7 +1103,7 @@
             }
         }
 
-  // Graph bubble-chart
+// Graph bubble-chart
   anychart.onDocumentReady(function () {
     // The data used in this sample can be obtained from the CDN
     // https://cdn.anychart.com/samples/marker-and-bubble-charts/multi-series-bubble-chart/data.json
@@ -1163,34 +1163,41 @@
              .maxBubbleSize(45);
 
         // set chart axes settings
+        // adjust x axis
         chart.xAxis()
                 .title('')
-                .minorTicks(false);
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+        // adjust y axis
         chart.yAxis()
                 .title('')
-                .minorTicks(false);
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
 
         //set chart legend settings
-        chart.legend()
-                .enabled(true)
-                .padding({bottom: 10});
-      
+        var legend = chart.legend();
+        legend.enabled(true)
+              .fontColor("#000")
+              .fontSize(12);
+        
         // create first series with mapped data
         {% for pro, valores in comparativa_de_productos.items %}
         
         var {{valores.6|lower}} = chart.bubble(sportsmen{{forloop.counter}}).name('{{valores.6}}');
         // configure the visual settings of the first series
         {{valores.6|lower}}.selected().fill("#5089b7", 0.5);
-        {{valores.6|lower}}.normal().stroke("2 white");
+        {{valores.6|lower}}.normal().stroke("2 black");
         {{valores.6|lower}}.hovered().stroke("3 #5089b7");
         {{valores.6|lower}}.selected().stroke("4 #5089b7");
         // labels
         {{valores.6|lower}}.labels(true);
         {{valores.6|lower}}.labels().format("{{valores.6}}");
         // set the color for the text of the labels
-        {{valores.6|lower}}.labels().fontColor('white');
-        {{valores.6|lower}}.hovered().labels().fontColor("white");
-        {{valores.6|lower}}.selected().labels().fontColor("white");
+        {{valores.6|lower}}.labels().fontColor('black');
+        {{valores.6|lower}}.hovered().labels().fontColor("black");
+        {{valores.6|lower}}.selected().labels().fontColor("black");
         {{valores.6|lower}}.labels().fontSize(10);
         {% endfor %}
 
@@ -1245,175 +1252,6 @@ function training_filter_constructor(val) {
         return fieldVal == val;
     }
 }
-  
-    // // heatMap
-    // anychart.onDocumentReady(function () {
-
-    //   // create data
-    //   var data = [
-    //     {x: "100", y: "A", heat: 15,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "A", heat: 17,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "A", heat: 21,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "400", y: "A", heat: 23,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "500", y: "A", heat: 28,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "100", y: "B", heat: 34,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "B", heat: 33,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "B", heat: 32,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "400", y: "B", heat: 30,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "500", y: "B", heat: 25,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "100", y: "C", heat: 43,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "C", heat: 42,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "300", y: "C", heat: 40,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "C", heat: 38,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "500", y: "C", heat: 35,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "100", y: "D", heat: 8,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "D", heat: 12,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "300", y: "D", heat: 18,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "D", heat: 22,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "500", y: "D", heat: 29,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "100", y: "F", heat: 11,
-    //     normal:   {fill: "#0097fc", stroke: "#0097fc"},
-    //     hovered:  {fill: "#0097fc 0.3", stroke: "2 #0097fc"},
-    //     selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
-    //     },
-    //     {x: "200", y: "F", heat: 13,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "300", y: "F", heat: 14,
-    //     normal:   {fill: "#12bcc8", stroke: "#12bcc8"},
-    //     hovered:  {fill: "#12bcc8 0.3", stroke: "2 #12bcc8"},
-    //     selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8"}
-    //     },
-    //     {x: "400", y: "F", heat: 15,
-    //     normal:   {fill: "#166991", stroke: "#166991"},
-    //     hovered:  {fill: "#166991 0.3", stroke: "2 #166991"},
-    //     selected: {fill: "#166991 0.5",stroke: "4 #166991"}
-    //     },
-    //     {x: "500", y: "F", heat: 19,
-    //     normal:   {fill: "#A349A4", stroke: "#A349A4"},
-    //     hovered:  {fill: "#A349A4 0.3", stroke: "2 #A349A4"},
-    //     selected: {fill: "#A349A4 0.5",stroke: "4 #A349A4"}
-    //     }
-    //   ];
-
-    //   // create a chart and set the data
-    //   var chart = anychart.heatMap(data);
-
-    //   // configure chart grids
-    //   chart.xGrid(true);
-    //   chart.xGrid().stroke('black', 5);
-    //   chart.yGrid(true);
-    //   chart.yGrid().stroke('black', 5);
-
-
-    //   // set the chart title
-    //   chart.title("Costo por kilómetro de vehículo");
-    //   var title = chart.title();
-    //   title.fontColor('#fff');
-    //   title.fontSize(18);
-    //   title.fontWeight(600);
-
-    //   // set the container id
-    //   chart.container("column-chart");
-
-    //   //Set Background
-    //     var background = chart.background();
-    //     background.stroke('0 #000');
-    //     background.corners();
-    //     background.enabled(false);
-
-    //   //turn on chart animation
-    //   chart.animation(true);
-
-    //   // initiate drawing the chart
-    //   chart.draw();
-    //   // chart credits false
-    //   var credits = chart.credits();
-    //   credits.enabled(false);
-    // });
-
     // Histogram
     anychart.onDocumentReady(function () {
         // create data set on our
@@ -1453,6 +1291,20 @@ function training_filter_constructor(val) {
         title.fontSize(18);
         title.fontWeight(600);
 
+        // set chart axes settings
+        // adjust x axis
+        chart.xAxis()
+                .title('')
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+        // adjust y axis
+        chart.yAxis()
+                .title('')
+                .minorTicks(false)
+                .stroke("#000")
+                .labels().fontColor("#000");
+
         // create scale for line series and extraYAxis
         // it force line series to not stuck values with over series
         var scale = anychart.scales.linear();
@@ -1471,12 +1323,12 @@ function training_filter_constructor(val) {
         columnSeries.name('Cantidad');
 
         // configure the visual settings of the second series
-        columnSeries.normal().fill("#166991");
-        columnSeries.hovered().fill("#166991", 0.1);
-        columnSeries.selected().fill("#166991", 0.5);
-        columnSeries.normal().stroke("#166991");
-        columnSeries.hovered().stroke("#166991", 2);
-        columnSeries.selected().stroke("#166991", 4);
+        columnSeries.normal().fill("#051026");
+        columnSeries.hovered().fill("#051026", 0.1);
+        columnSeries.selected().fill("#051026", 0.5);
+        columnSeries.normal().stroke("#051026");
+        columnSeries.hovered().stroke("#051026", 2);
+        columnSeries.selected().stroke("#051026", 4);
 
         // adding red line to emphasize zero of extra axis
         var lineMarker = chart.lineMarker();
@@ -1547,7 +1399,7 @@ function training_filter_constructor(val) {
 
     // adding extra Y scale
     var extraYScale = anychart.scales.linear();
-    extraYScale.ticks().interval(100000);
+    extraYScale.ticks().interval(1000);
 
     // set function to format y axis labels
     var yLabels = chart.yAxis(0).labels();
@@ -1555,15 +1407,22 @@ function training_filter_constructor(val) {
 
     // adding and adjust extra Y axis
     chart.xAxis().orientation("left");
+    // adjust x axis
+    chart.xAxis().stroke("#000");
+    chart.xAxis().labels().fontColor("#000");
 
     // adding and adjust extra Y axis
-    var extraYAxis0 = chart.yAxis(0);
-    extraYAxis0.orientation("bottom");
+    var extraYAxis0 = chart.yAxis(0)
+          .orientation("bottom")
+          .stroke("#000")
+          .labels().fontColor("#000");
 
     // adding and adjust extra Y axis
-    var extraYAxis = chart.yAxis(1);
-    extraYAxis.orientation("top");
-    extraYAxis.scale(extraYScale);
+    var extraYAxis = chart.yAxis(1)
+          .orientation("top")
+          .scale(extraYScale)
+          .stroke("#000")
+          .labels().fontColor("#000");
 
     // setting first series of data
     var firstSeries = [
@@ -1584,12 +1443,12 @@ function training_filter_constructor(val) {
     DosSeries.name("CPK");
 
     // configure the visual settings of the second series
-    DosSeries.normal().fill("#12bcc8");
-    DosSeries.hovered().fill("#12bcc8", 0.1);
-    DosSeries.selected().fill("#12bcc8", 0.5);
-    DosSeries.normal().stroke("#12bcc8");
-    DosSeries.hovered().stroke("#12bcc8", 2);
-    DosSeries.selected().stroke("#12bcc8", 4);
+    DosSeries.normal().fill("#4973f2");
+    DosSeries.hovered().fill("#4973f2", 0.1);
+    DosSeries.selected().fill("#4973f2", 0.5);
+    DosSeries.normal().stroke("#4973f2");
+    DosSeries.hovered().stroke("#4973f2", 2);
+    DosSeries.selected().stroke("#4973f2", 4);
 
 
     var UnoSeries = chart.bar(secondSeries);
@@ -1597,12 +1456,12 @@ function training_filter_constructor(val) {
     UnoSeries.name("KM");
 
     // configure the visual settings of the second series
-    UnoSeries.normal().fill("#0097fc");
-    UnoSeries.hovered().fill("#0097fc", 0.1);
-    UnoSeries.selected().fill("#0097fc", 0.5);
-    UnoSeries.normal().stroke("#0097fc");
-    UnoSeries.hovered().stroke("#0097fc", 2);
-    UnoSeries.selected().stroke("#0097fc", 4);
+    UnoSeries.normal().fill("#051026");
+    UnoSeries.hovered().fill("#051026", 0.1);
+    UnoSeries.selected().fill("#051026", 0.5);
+    UnoSeries.normal().stroke("#051026");
+    UnoSeries.hovered().stroke("#051026", 2);
+    UnoSeries.selected().stroke("#051026", 4);
 
     //tooltip
     UnoSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
@@ -1633,6 +1492,17 @@ function training_filter_constructor(val) {
     // Graph AreaLine-chart
     anychart.onDocumentReady(function () {
 
+    // set the default types of legend icons
+    anychart.theme({
+    chart: {
+    defaultSeriesSettings: {
+    column: {legendItem: {iconType: "cubo"}},
+    line: {legendItem: {iconType: "circle"}}
+
+    }
+    }
+    });
+
     // create a data set
     var data = anychart.data.set([
 
@@ -1657,10 +1527,35 @@ function training_filter_constructor(val) {
     // it force line series to not stuck values with over series
     var scale = anychart.scales.linear();
 
+    // adjust y axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
     // adjusting y axis title and setting additional axis
     chart.yAxis(1).scale(scale);
     chart.yAxis(1).orientation("right");
     chart.yAxis(1).labels().format("${%value}");
+
+    // adjust y axis
+    chart.yAxis(1)
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+     //set chart legend settings
+    var legend = chart.legend();
+    legend.enabled(true)
+          .fontColor("#000")
+          .fontSize(12);
 
     // create the first series, set the data and name
     var series1 = chart.line(seriesData_1);
@@ -1676,21 +1571,21 @@ function training_filter_constructor(val) {
     chart.interactivity().hoverMode('by-x');
 
     // configure the visual settings of the first series
-    series1.normal().stroke("#0097fc", 4);
-    series1.hovered().stroke("#0097fc", 2);
-    series1.selected().stroke("#0097fc", 6);
+    series1.normal().stroke("#ed2a3d", 4);
+    series1.hovered().stroke("#ed2a3d", 2);
+    series1.selected().stroke("#ed2a3d", 6);
 
     // create the second series, set the data and name
     var series2 = chart.area(seriesData_2);
     series2.name("Cantidad");
 
     // configure the visual settings of the second series
-    series2.normal().fill("#A349A4", 0.5);
-    series2.hovered().fill("#A349A4", 0.1);
-    series2.selected().fill("#A349A4", 0.3);
-    series2.normal().stroke("#A349A4", 4);
-    series2.hovered().stroke("#A349A4", 2);
-    series2.selected().stroke("#A349A4", 6);
+    series2.normal().fill("#4973f2", 0.5);
+    series2.hovered().fill("#4973f2", 0.1);
+    series2.selected().fill("#4973f2", 0.3);
+    series2.normal().stroke("#4973f2", 4);
+    series2.hovered().stroke("#4973f2", 2);
+    series2.selected().stroke("#4973f2", 6);
 
     // set the chart title
     // chart.title("Tendencia CPK vida");
@@ -1726,9 +1621,9 @@ function training_filter_constructor(val) {
     var data = [
     {% for flota, valores in km_flotas.items %}
     {x: '{{flota}}', low: {{valores.0}}, q1: {{valores.1}}, median: {{valores.2}}, q3: {{valores.3}}, high: {{valores.4}}, outliers: [],
-    normal:   {fill: "#12bcc8", stroke: "#12bcc8", medianStroke: "4 #000", whiskerWidth: 30},
-    hovered:  {fill: "#12bcc8 0.1", stroke: "2 #12bcc8",medianStroke: "2 #12bcc8", whiskerWidth: 10},
-    selected: {fill: "#12bcc8 0.5",stroke: "4 #12bcc8", medianStroke: "4 #12bcc8", whiskerWidth: 20}
+    normal:   {fill: "#4973f2", stroke: "#4973f2", medianStroke: "4 #000", whiskerWidth: 30},
+    hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2",medianStroke: "2 #4973f2", whiskerWidth: 10},
+    selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2", medianStroke: "4 #4973f2", whiskerWidth: 20}
     },
     {% endfor %}
     ];
@@ -1738,12 +1633,30 @@ function training_filter_constructor(val) {
     chart.isVertical(true)
     chart.yScale().ticks().interval();
 
+    // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .minorTicks(false)
+            .stroke("#000")
+            .labels().fontColor("#000");
+
     // set function to format y axis labels
     var yLabels = chart.yAxis(0).labels();
     yLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-    //tooltip
-    chart.tooltip().format("{%low}{groupsSeparator:\\,, decimalsCount:3}");
+    chart.tooltip()
+          .useHtml(true)
+          .fontColor('#fff')
+          .positionMode("point")
+          .format("Lowest: {%low}{groupsSeparator:\\,, decimalsCount:3}<br>Q1: {%q1}{groupsSeparator:\\,, decimalsCount:3}<br>Median: {%median}{groupsSeparator:\\,, decimalsCount:3}<br>Q3: {%q3}{groupsSeparator:\\,, decimalsCount:3}<br>Highes: {%high}{groupsSeparator:\\,, decimalsCount:3}");
 
     // set the chart title
     chart.title("Distribución de Datos");
@@ -2205,7 +2118,7 @@ function training_filter_constructor(val) {
 
       circularGauge4.container('score-gauge4').draw();
 
-      /**
+  /**
      * Enables gauge animation.
      *
      * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
