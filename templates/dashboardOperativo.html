@@ -1418,6 +1418,11 @@
         var xLabels = chart.xAxis().labels();
         xLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
 
+         // set grid stroke appearance
+         chart.xGrid().stroke({ color: "#000" });
+         // set grid stroke appearance
+         chart.yGrid().stroke({ color: "#000" });
+
         // grid settings
         chart.yGrid(true).xGrid(true).xMinorGrid(false).yMinorGrid(false);
 
@@ -1441,48 +1446,48 @@
         sportsmen1.name("P1");
 
         // configure the visual settings of the first series
-        sportsmen1.normal().fill("#1d939d");
-        sportsmen1.hovered().fill("#1d939d", 0.1);
-        sportsmen1.selected().fill("#1d939d", 0.5);
-        sportsmen1.normal().stroke("#1d939d", 1);
-        sportsmen1.hovered().stroke("#1d939d", 2);
-        sportsmen1.selected().stroke("#1d939d", 4);
+        sportsmen1.normal().fill("#7f9df5");
+        sportsmen1.hovered().fill("#7f9df5", 0.1);
+        sportsmen1.selected().fill("#7f9df5", 0.5);
+        sportsmen1.normal().stroke("#7f9df5", 1);
+        sportsmen1.hovered().stroke("#7f9df5", 2);
+        sportsmen1.selected().stroke("#7f9df5", 4);
 
         // create the first series and set the data
         var sportsmen2 = chart.bubble(sportsmen2);
         sportsmen2.name("P2");
 
         // configure the visual settings of the first series
-        sportsmen2.normal().fill("#1d939d");
-        sportsmen2.hovered().fill("#1d939d", 0.1);
-        sportsmen2.selected().fill("#1d939d", 0.5);
-        sportsmen2.normal().stroke("#1d939d", 1);
-        sportsmen2.hovered().stroke("#1d939d", 2);
-        sportsmen2.selected().stroke("#1d939d", 4);
+        sportsmen2.normal().fill("#7f9df5");
+        sportsmen2.hovered().fill("#7f9df5", 0.1);
+        sportsmen2.selected().fill("#7f9df5", 0.5);
+        sportsmen2.normal().stroke("#7f9df5", 1);
+        sportsmen2.hovered().stroke("#7f9df5", 2);
+        sportsmen2.selected().stroke("#7f9df5", 4);
 
         // create the first series and set the data
         var sportsmen3 = chart.bubble(sportsmen3);
         sportsmen3.name("P3");
 
         // configure the visual settings of the first series
-        sportsmen3.normal().fill("#1d939d");
-        sportsmen3.hovered().fill("#1d939d", 0.1);
-        sportsmen3.selected().fill("#1d939d", 0.5);
-        sportsmen3.normal().stroke("#1d939d", 1);
-        sportsmen3.hovered().stroke("#1d939d", 2);
-        sportsmen3.selected().stroke("#1d939d", 4);
+        sportsmen3.normal().fill("#7f9df5");
+        sportsmen3.hovered().fill("#7f9df5", 0.1);
+        sportsmen3.selected().fill("#7f9df5", 0.5);
+        sportsmen3.normal().stroke("#7f9df5", 1);
+        sportsmen3.hovered().stroke("#7f9df5", 2);
+        sportsmen3.selected().stroke("#7f9df5", 4);
 
         // create the first series and set the data
         var sportsmen4 = chart.bubble(sportsmen4);
         sportsmen4.name("P4");
 
         // configure the visual settings of the first series
-        sportsmen4.normal().fill("#1d939d");
-        sportsmen4.hovered().fill("#1d939d", 0.1);
-        sportsmen4.selected().fill("#1d939d", 0.5);
-        sportsmen4.normal().stroke("#1d939d", 1);
-        sportsmen4.hovered().stroke("#1d939d", 2);
-        sportsmen4.selected().stroke("#1d939d", 4);
+        sportsmen4.normal().fill("#7f9df5");
+        sportsmen4.hovered().fill("#7f9df5", 0.1);
+        sportsmen4.selected().fill("#7f9df5", 0.5);
+        sportsmen4.normal().stroke("#7f9df5", 1);
+        sportsmen4.hovered().stroke("#7f9df5", 2);
+        sportsmen4.selected().stroke("#7f9df5", 4);
 
         // labels
         chart.labels(true);
@@ -1631,12 +1636,12 @@
     areaSeries.name("VIDA");
 
     // configure the visual settings of the second series
-    areaSeries.normal().fill("#0071bc", 0.6);
-    areaSeries.hovered().fill("#0071bc", 0.1);
-    areaSeries.selected().fill("#0071bc", 0.5);
-    areaSeries.normal().stroke("#0071bc", 2);
-    areaSeries.hovered().stroke("#0071bc", 4);
-    areaSeries.selected().stroke("#0071bc", 6);
+    areaSeries.normal().fill("#0a2a75", 0.6);
+    areaSeries.hovered().fill("#0a2a75", 0.1);
+    areaSeries.selected().fill("#0a2a75", 0.5);
+    areaSeries.normal().stroke("#0a2a75", 2);
+    areaSeries.hovered().stroke("#0a2a75", 4);
+    areaSeries.selected().stroke("#0a2a75", 6);
 
     //tooltip
     areaSeries
@@ -1657,14 +1662,14 @@
     lineSeries.name("CPK");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#13bcc9", 6);
-    lineSeries.hovered().stroke("#13bcc9", 4);
-    lineSeries.selected().stroke("#13bcc9", 8);
+    lineSeries.normal().stroke("#051026", 6);
+    lineSeries.hovered().stroke("#051026", 4);
+    lineSeries.selected().stroke("#051026", 8);
 
     // enable and configure markers on the first series
     lineSeries.markers(true);
     lineSeries.markers().type("circle");
-    lineSeries.markers().fill("#13bcc9");
+    lineSeries.markers().fill("#051026");
     lineSeries.markers().size(5);
 
     //tooltip
@@ -1682,6 +1687,11 @@
     chart.legend().fontColor("#000");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
+
+     // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
 
     // enable major grids
     chart.xGrid().enabled(false);
