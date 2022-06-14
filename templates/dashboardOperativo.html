@@ -392,12 +392,12 @@
     columnSeries.name("$");
 
     // configure the visual settings of the second series
-    columnSeries.normal().fill("#0071bc");
-    columnSeries.hovered().fill("#0071bc", 0.1);
-    columnSeries.selected().fill("#0071bc", 0.5);
-    columnSeries.normal().stroke("#0071bc", 2);
-    columnSeries.hovered().stroke("#0071bc", 4);
-    columnSeries.selected().stroke("#0071bc", 6);
+    columnSeries.normal().fill("#4973f2");
+    columnSeries.hovered().fill("#4973f2", 0.1);
+    columnSeries.selected().fill("#4973f2", 0.5);
+    columnSeries.normal().stroke("#4973f2", 2);
+    columnSeries.hovered().stroke("#4973f2", 4);
+    columnSeries.selected().stroke("#4973f2", 6);
 
     //tooltip
     columnSeries
@@ -418,14 +418,14 @@
     lineSeries.name("%");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#13bcc9", 6);
-    lineSeries.hovered().stroke("#13bcc9", 4);
-    lineSeries.selected().stroke("#13bcc9", 8);
+    lineSeries.normal().stroke("#051026", 6);
+    lineSeries.hovered().stroke("#051026", 4);
+    lineSeries.selected().stroke("#051026", 8);
 
     // enable and configure markers on the first series
     lineSeries.markers(true);
     lineSeries.markers().type("circle");
-    lineSeries.markers().fill("#13bcc9");
+    lineSeries.markers().fill("#051026");
     lineSeries.markers().size(5);
 
     //tooltip
@@ -443,6 +443,11 @@
     chart.legend().fontColor("#000");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
+
+    // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -551,12 +556,12 @@
     columnSeries.name("$");
 
     // configure the visual settings of the second series
-    columnSeries.normal().fill("#0071bc");
-    columnSeries.hovered().fill("#0071bc", 0.1);
-    columnSeries.selected().fill("#0071bc", 0.5);
-    columnSeries.normal().stroke("#0071bc", 2);
-    columnSeries.hovered().stroke("#0071bc", 4);
-    columnSeries.selected().stroke("#0071bc", 6);
+    columnSeries.normal().fill("#051026");
+    columnSeries.hovered().fill("#051026", 0.1);
+    columnSeries.selected().fill("#051026", 0.5);
+    columnSeries.normal().stroke("#051026", 2);
+    columnSeries.hovered().stroke("#051026", 4);
+    columnSeries.selected().stroke("#051026", 6);
 
     //tooltip
     columnSeries
@@ -568,8 +573,15 @@
     columnLabels.enabled(true);
     columnLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
     columnLabels.position("top");
-    columnLabels.fontColor("#000");
+    columnLabels.fontColor("#fff");
     columnLabels.fontWeight("bold");
+
+    // background settings
+    var backgroundl = columnSeries.labels().background();
+    backgroundl.enabled(true);
+    backgroundl.fill("#000");
+    backgroundl.stroke("#717171");
+    backgroundl.corners(5);
 
     // create line series and set scale for it
     var lineSeries = chart.line(firstSeriesData);
@@ -577,9 +589,9 @@
     lineSeries.name("%");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#13bcc9", 6);
-    lineSeries.hovered().stroke("#13bcc9", 4);
-    lineSeries.selected().stroke("#13bcc9", 8);
+    lineSeries.normal().stroke("#4973f2", 6);
+    lineSeries.hovered().stroke("#4973f2", 4);
+    lineSeries.selected().stroke("#4973f2", 8);
 
     //tooltip
     lineSeries
@@ -596,6 +608,11 @@
     chart.legend().fontColor("#000");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
+
+    // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -639,11 +656,41 @@
   anychart.onDocumentReady(function () {
     // create data
     var data = [
-      ["NUEVA", 10000],
-      ["1R", 12000],
-      ["2R", 13000],
-      ["3R", 10000],
-      ["4R", 9000],
+      {
+        x: "NUEVA",
+        value: 2.5,
+        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
+        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
+        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+      },
+      {
+        x: "1R",
+        value: 4,
+        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
+        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
+        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+      },
+      {
+        x: "2R",
+        value: 4.5,
+        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
+        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
+        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+      },
+      {
+        x: "3R",
+        value: 5,
+        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
+        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
+        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+      },
+      {
+        x: "4R",
+        value: 6,
+        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
+        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
+        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+      },
     ];
 
     // create a chart
@@ -652,18 +699,64 @@
     // create a column series and set the data
     var series = chart.column(data);
 
+    //tooltip
+    chart.tooltip().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
+
+    // set the padding between column groups
+    chart.barGroupsPadding(0.2);
+
     // set the chart title
     chart.title("MM contra vida");
+    var title = chart.title();
+    title.fontColor("#000");
+    title.fontSize(18);
+    title.fontWeight(600);
 
-    // set the titles of the axes
-    chart.xAxis().title("VIDA");
+    // set y axis title
     chart.yAxis().title("MM");
+    var titley = chart.yAxis().title();
+    titley.fontColor("#000");
+    titley.fontSize(12);
+    titley.fontWeight(800);
+
+    // set y axis title
+    chart.xAxis().title("VIDA");
+    var titlex = chart.xAxis().title();
+    titlex.fontColor("#000");
+    titlex.fontSize(12);
+    titlex.fontWeight(800);
 
     //Set Background
     let background = chart.background();
     background.stroke("#202020");
     background.corners();
     background.enabled(false);
+
+    // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
+
+    // enable major grids
+    chart.xGrid().enabled(false);
+    chart.yGrid().enabled(true);
+    // enable minor grids
+    chart.xMinorGrid().enabled(false);
+    chart.yMinorGrid().enabled(false);
+
+    // force chart scale to stuck series values
+    var yscale = chart.yScale();
+    yscale.stackMode("value");
+    yscale.minimum(0).maximum(6).ticks({ interval: 1 });
+
+    // adjust y axis
+    chart.yAxis().stroke("#000");
+    chart.yAxis().ticks(false);
+    chart.yAxis().labels().fontColor("#000");
+
+    // adjust x axis
+    chart.xAxis().stroke("#000");
+    chart.xAxis().labels().fontColor("#000");
 
     // set the container id
     chart.container("column-scrap-chart");
@@ -686,6 +779,15 @@
 
     // create a chart and set the data
     let chart = anychart.pie(data);
+    chart.labels().hAlign("").position("");
+
+    // font labels font settings
+    chart.labels().fontSize(15);
+    chart.labels().fontColor("#000");
+    chart.labels().fontWeight(900);
+
+    //tooltip
+    chart.tooltip().format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
 
     // set the chart title
     // chart.title("Pie Chart: Basic Sample");
@@ -697,7 +799,14 @@
     background.enabled(false);
 
     // set legend position and items layout
-    chart.legend().position("right").itemsLayout("vertical").align("center");
+    chart
+      .legend()
+      .position("right")
+      .itemsLayout("vertical")
+      .align("center")
+      .fontColor("#000")
+      .fontSize(13)
+      .fontWeight(600);
 
     // set the container id
     chart.container("pie-chart");
@@ -988,12 +1097,12 @@
     series2.name("Cantidad");
 
     // configure the visual settings of the second series
-    series2.normal().fill("#13bcc9");
-    series2.hovered().fill("#13bcc9", 0.1);
-    series2.selected().fill("#13bcc9", 0.5);
-    series2.normal().stroke("#13bcc9", 2);
-    series2.hovered().stroke("#13bcc9", 4);
-    series2.selected().stroke("#13bcc9", 6);
+    series2.normal().fill("#4973f2");
+    series2.hovered().fill("#4973f2", 0.1);
+    series2.selected().fill("#4973f2", 0.5);
+    series2.normal().stroke("#4973f2", 2);
+    series2.hovered().stroke("#4973f2", 4);
+    series2.selected().stroke("#4973f2", 6);
 
     //tooltip
     series2
@@ -1033,6 +1142,18 @@
     background.stroke("#202020");
     background.corners();
     background.enabled(false);
+
+    // set grid stroke appearance
+    chart.xGrid().stroke({ color: "#000" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#000" });
+
+    // enable major grids
+    chart.xGrid().enabled(false);
+    chart.yGrid().enabled(true);
+    // enable minor grids
+    chart.xMinorGrid().enabled(false);
+    chart.yMinorGrid().enabled(false);
 
     // adjust y axis
     chart.yAxis().stroke("#000");
