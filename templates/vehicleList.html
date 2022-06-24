@@ -14,8 +14,17 @@
       <h1 style="text-align: left;">Lista de Vehiculos</h1>
     
       <div class="drop-search">
-        <input type="search" name="" id="" placeholder="Buscar llanta..." class="drop-input">
-        <i class="bx bx-search"></i>
+        <form method='POST'>
+          {% csrf_token %}
+          {% if search != '' and search != None %}
+            <input type="search" name="search" id="" value={{search}} class="drop-input">
+          {% else %}
+            <input type="search" name="search" id="" placeholder="Buscar vehiculo..." class="drop-input">
+          {% endif %}
+          
+          <input type="hidden" name="buscar" value="buscar">
+          <i class="bx bx-search"></i>
+        </form>
       </div>
     
       <nav class="flex-row">

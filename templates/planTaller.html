@@ -3,6 +3,8 @@
 {% block head %}
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/planTaller.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <title>Taller</title>
 {% endblock head %}
 {% block content %}
@@ -11,67 +13,62 @@
       <div class="logo">
         <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
       </div>
-      <form id="taller-form" class="title-cont">
+      <form id="taller-form" class="title-cont" method='POST'>
+        {% csrf_token %}
+        <input type="hidden" name="hoja" value="" id="hoja-servicio">
         <input type="hidden" name="data" value="" id="data-taller">
-        <button type="submit">
+        <input type="hidden" name="vehiculo" value="" id="vehiculo-data">
+        <input type="hidden" name="vehiculoId" value="{{vehiculo_acomodado.0.vehiculo.id}}">
+        <button type="submit" class="btn btn-success">
           <span class="icon-checkmark"></span>
         </button>
       </form>
     </div>
     <div class="container">
       <aside class="left-cont">
-        <div class="service-page">
+        <form class="service-page">
           <h3>Hoja de Servicio</h3>
           <div class="form__row">
-            <label for="">
-              Folio:
-            </label>
-            <input type="text" value="123456789" readonly>
-          </div>
-          <div class="form__row">
-            <label for="">
-              Fecha y Horario:
-            </label>
-            <input type="datetime-local" readonly value="2022-06-12T19:30">
-            <!-- <input
-              type="datetime-local"
-              id="meeting-time"
-              name="meeting-time"
-              value="2018-06-12T19:30"
-              min="2018-06-07T00:00"
-              max="2018-06-14T00:00"
-            > -->
-          </div>
-          <div class="form__row">
-            <label for="">
-              Asignación
-            </label>
-            <input type="text" value="" readonly>
-          </div>
-          <div class="form__row">
-            <label for="">
-              Número ecónomico:
-            </label>
-            <input type="text" value="" readonly>
-          </div>
-          <div class="form__row">
-            <label for="">
-              Sucursal:
-            </label>
-            <input type="text" value="" readonly>
-          </div>
-          <div class="form__row">
-            <label for="">
-              Aplicación:
-            </label>
-            <input type="text" value="" readonly>
+            <input type="text" name="folio" value="123456789" placeholder="Folio" readonly>
           </div>
 
+          <div class="flex-row">
+            <input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">
+            <input type="text" name="vehiculoEconomico" value="{{vehiculo.0}}" placeholder="Número económico" readonly>
+          </div>
+          <div class="flex-row">
+            <input type="text" name="sucursal" value="{{vehiculo.0.ubicacion}}" placeholder="Sucursal" readonly>
+            <input type="text" name="aplicacion" value="{{vehiculo.0.aplicacion}}" placeholder="Aplicación" readonly>
+          </div>
+          <div class="flex-row">
+            <input type="date" name="fecha" id="" required>
+            <input type="time" name="hora" id="" required>
+          </div>
+
+          <!-- <div class="form__row">
+            <button type="submit" class="btn btn-taller">
+              Guardar
+            </button>
+          </div> -->
+
+        </form>
+
+        <div class="relative">
+          <div class="absolute">
+            <div class="tire-list"></div>
+          </div>
         </div>
-
-        <div class="tire-list"></div>
       </aside>
       <div class="main-cont">
+
+        <form id="vehicle-form" class="flex-row">
+          <label for="alinearVehiculo" class="label-check">
+            <input type="checkbox" name="alinearVehiculo" id="alinearVehiculo" data-vehicleFix>
+            <div class="btn-filter">
+              Alinear Vehículo
+            </div>
+          </label>
+        </form>
 
         {% for vehiculo in vehiculo_acomodado %}
           {% include 'taller/config_vehicle.html' %}
@@ -90,6 +87,9 @@
     
   </main>
 
+  <div class="alert__success">
+    Agregado satisfactoriamente
+  </div>
 
   <script src="{% static 'js/taller/index.js' %}" type="module"></script>
 {% endblock content %}

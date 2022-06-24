@@ -141,8 +141,8 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                         'ico_desgaste': ico_desgaste,
                         'ico_desdualizacion': ico_desdualizacion,
                         'color_middle': color_middle,
-                        'min_presion': min_presion(llanta),
-                        'max_presion': max_presion(llanta),
+                        'min_presion': round(min_presion(llanta)),
+                        'max_presion': round(max_presion(llanta)),
                     })
             ejes_total.append(temp_ejes)
             dias_sin_inspeccion = 'Sin informacón'
@@ -2436,6 +2436,8 @@ def get_product_list(productos):
     for producto in productos:
         list_temp.append(producto['producto__producto'])
     return list_temp
+
+
 def inflado_promedio(vehiculo):
     tiempo_promedio = 0
     promedio_contar = 0
@@ -2846,6 +2848,10 @@ def list_vehicle_id(vehiculos):
             vehicle.append(vehiculo['vehiculo__id'])
     return vehicle
 
+
+def lista_de_id_observaciones_get(GET):
+    return GET.get('filtro', '')
+
 def lista_de_id_observaciones(POST):
     #? Lista de ids
     alta_presion = 5
@@ -2879,6 +2885,10 @@ def lista_de_id_observaciones(POST):
     list_obs = str(list_obs).replace('[', '').replace(']', '').replace(' ', '')
     return list_obs
 
+
+def lista_de_id_observaciones_exclude_get(GET):
+    return GET.get('exclude', '')
+
 def lista_de_id_observaciones_exclude(POST):
     #? Lista de ids
     dualizacion = 9
@@ -2889,7 +2899,12 @@ def lista_de_id_observaciones_exclude(POST):
             list_obs.append(dualizacion)
     list_obs = str(list_obs).replace('[', '').replace(']', '').replace(' ', '')
     return list_obs
-        
+
+
+def lista_de_ejes_get(GET):
+    return GET.get('ejes', '')
+
+       
 def lista_de_ejes(POST):
     ejes = []
     
@@ -3320,20 +3335,21 @@ def pagination(page, pages):
         
     return pagination
 
-def pagination_url(filtro, exclude, ejes):
+def pagination_url(filtro, exclude, ejes, search):
     """Funcion que recibe los parametros de los filtros u devuelve una cadena para poder respetarlos
 
     Args:
         filtro (str): Filtros utilizados
         exclude (str): Excluciones en la consulta
         ejes (str): Tipos de eje
+        search (str): Filtro de busqueda
 
     Returns:
         str: Cadena concatenada de los diferentes filtros
     """
-    if (filtro == None and exclude == None and ejes == None) or (filtro == '' and exclude == '' and ejes == ''):
+    if (filtro == None and exclude == None and ejes == None and search == None) or (filtro == '' and exclude == '' and ejes == '' and search == ''):
         return ''
-    return f'&filtro={filtro}&exclude={exclude}&ejes={ejes}'
+    return f'&filtro={filtro}&exclude={exclude}&ejes={ejes}&search={search}'
 
 def pagination_prev(page, pages, url_complemento):
     if (page - 1) >= 1:

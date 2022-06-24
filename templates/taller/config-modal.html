@@ -1,0 +1,109 @@
+<div
+  class="card__config-modal"
+  style="display: none"
+  data-rotar-id="{{ llanta.llanta.id }}"
+>
+  {% for eje in vehiculo.ejes %}
+  <!--Si el eje es de 2-->
+  {% if eje|length == 2 %}
+
+  <!--Tire-->
+  <div class="config__row double-shaft">
+    <label for="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+      <input type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
+      <div class="tire">
+        <div class="tag__middle">
+          <div class="pos {{eje.0.color_middle}}">
+            {{ eje.0.llanta.posicion }}
+          </div>
+        </div>
+  
+        <div class="icon-llanta-outline"></div>
+      </div>
+    </label>
+
+    <div class="shaft__wrapper">
+      <div class="shaft xl"></div>
+    </div>
+
+    <label for="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+      <input type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
+      <div class="tire">
+        <div class="tag__middle">
+          <div class="pos {{eje.1.color_middle}}">
+            {{ eje.1.llanta.posicion }}
+          </div>
+        </div>
+        <div class="icon-llanta-outline"></div>
+      </div>
+    </label>
+  </div>
+
+  {% endif %}
+
+  <!--Si el eje es de 4-->
+  {% if eje|length == 4 %}
+  <!--Double Tire-->
+  <div class="config__row">
+    <div class="double__tire">
+      <label for="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+        <input type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
+        <div class="tire">
+          <div class="tag__middle">
+            <div class="pos {{eje.0.color_middle}}">
+              {{ eje.0.llanta.posicion }}
+            </div>
+          </div>
+  
+          <div class="icon-llanta-outline"></div>
+        </div>
+      </label>
+
+      <label for="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+        <input type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
+        <div class="tire">
+          <div class="tag__middle">
+            <div class="pos {{eje.1.color_middle}}">
+              {{ eje.1.llanta.posicion }}
+            </div>
+          </div>
+  
+          <div class="icon-llanta-outline"></div>
+        </div>
+      </label>
+    </div>
+
+    <div class="shaft__wrapper">
+      <div class="shaft"></div>
+    </div>
+
+    <div class="double__tire">
+      <label for="{{  eje.2.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+        <input type="radio" name="origenLlanta" id="{{  eje.2.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.2.llanta.id }}">
+        <div class="tire">
+          <div class="tag__middle">
+            <div class="pos {{eje.2.color_middle}}">
+              {{ eje.2.llanta.posicion }}
+            </div>
+          </div>
+          <div class="icon-llanta-outline"></div>
+        </div>
+      </label>
+
+      <label for="{{  eje.3.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
+        <input type="radio" name="origenLlanta" id="{{  eje.3.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.3.llanta.id }}">
+        <div class="tire">
+          <div class="tag__middle">
+            <div class="pos {{eje.3.color_middle}}">
+              {{ eje.3.llanta.posicion }}
+            </div>
+          </div>
+  
+          <div class="icon-llanta-outline"></div>
+        </div>
+      </label>
+    </div>
+  </div>
+  {% endif %} 
+  {% endfor %}
+</div>

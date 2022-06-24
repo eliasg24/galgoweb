@@ -11,13 +11,13 @@
       href="{% static 'css/icomoon/style.css' %}"
     />
     <title>
-      Reporte de Inspeccion - {{ vehiculo }}
+      Reporte de servicios en taller - {{ vehiculo }}
     </title>
   </head>
   <body id="report">
     <header class="report__head">
       <div class="flex-row space-between">
-        <h1 class="report__title">Reporte inspección - {{ vehiculo }}</h1>
+        <h1 class="report__title">Reporte de servicios en taller - {{ vehiculo }}</h1>
         <div class="logo">
           <img src="{% static 'images/aeto-logo.svg' %}" alt="logo aeto reporte">
         </div>
@@ -57,28 +57,26 @@
         </div>
       </nav>
     </header>
-    <main class="main__container-config ejes__{{cant_ejes|safe}}">
+    <main class="main__container-config ejes__2{{cant_ejes|safe}}">
       <div class="config__container">
-        {% for eje in ejes %}
-          {% if eje|length == 2 %}
           
             <!--Eje 2 llantas-->
-            <div class="tire__container ejes__{{cant_ejes|safe}}">
+            <div class="tire__container ejes__2{{cant_ejes|safe}}">
 
               <div class="tire__content">
                 <div class="tire__economic-top">
                   &downarrow; {{eje.0.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}}
                 </div>
                 <div class="tire">
-                  <div class="tire__tag pos {{eje.0.5}}">
-                    {{eje.0.0.posicion}}
+                  <div class="tire__tag good pos {{eje.0.5}}">
+                    0{{eje.0.0.posicion}}
                   </div>
-                  <div class="tire__tag up {{eje.0.3}}">
-                    {{eje.0.0.presion}}
+                  <div class="tire__tag good up {{eje.0.3}}">
+                    0{{eje.0.0.presion}}
                   </div>
                   <span class="icon-tire2"></span>
-                  <div class="tire__tag down {{eje.0.1}}">
-                    {{eje.0.4}}
+                  <div class="tire__tag good down {{eje.0.1}}">
+                    0{{eje.0.4}}
                   </div>
                 </div>
               </div>
@@ -94,24 +92,23 @@
                   &downarrow; {{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}}
                 </div>
                 <div class="tire">
-                  <div class="tire__tag pos {{eje.1.5}}">
-                    {{eje.1.0.posicion}}
+                  <div class="tire__tag good pos {{eje.1.5}}">
+                    0{{eje.1.0.posicion}}
                   </div>
-                  <div class="tire__tag up {{eje.1.3}}">
-                    {{eje.1.0.presion}}
+                  <div class="tire__tag good up {{eje.1.3}}">
+                    0{{eje.1.0.presion}}
                   </div>
                   <span class="icon-tire2"></span>
-                  <div class="tire__tag down {{eje.1.1}}">
-                    {{eje.1.4}}
+                  <div class="tire__tag good down {{eje.1.1}}">
+                    0{{eje.1.4}}
                   </div>
                 </div>
               </div>
             </div>
-          {% else %}
             
             <!--Eje 4 llantas-->
 
-            <div class="tire__container ejes__{{cant_ejes|safe}}">
+            <div class="tire__container ejes__3{{cant_ejes|safe}}">
               <div class="double-tire">
                 
                 <div class="tire__content">
@@ -119,15 +116,15 @@
                     &downarrow; {{eje.0.0.llanta.numero_economico}} | {{ eje.0.0.llanta.producto.marca }}
                   </div>
                   <div class="tire">
-                    <div class="tire__tag pos {{eje.0.5}}">
-                      {{eje.0.0.posicion}}
+                    <div class="tire__tag good pos {{eje.0.5}}">
+                      0{{eje.0.0.posicion}}
                     </div>
-                    <div class="tire__tag up {{eje.0.3}}">
-                      {{eje.0.0.presion}}
+                    <div class="tire__tag good up {{eje.0.3}}">
+                      0{{eje.0.0.presion}}
                     </div>
                     <span class="icon-tire2"></span>
-                    <div class="tire__tag down {{eje.0.1}}">
-                      {{eje.0.4}}
+                    <div class="tire__tag good down {{eje.0.1}}">
+                      0{{eje.0.4}}
                     </div>
                   </div>
                 </div>
@@ -135,19 +132,19 @@
 
                 <div class="tire__content">
                   <div class="tire">
-                    <div class="tire__tag pos {{eje.1.5}}">
-                      {{eje.1.0.posicion}}
+                    <div class="tire__tag good pos {{eje.1.5}}">
+                      0{{eje.1.0.posicion}}
                     </div>
-                    <div class="tire__tag up {{eje.1.3}}">
-                      {{eje.1.0.presion}}
+                    <div class="tire__tag good up {{eje.1.3}}">
+                      0{{eje.1.0.presion}}
                     </div>
                     <span class="icon-tire2"></span>
-                    <div class="tire__tag down {{eje.1.1}}">
-                      {{eje.1.4}}
+                    <div class="tire__tag good down {{eje.1.1}}">
+                      0{{eje.1.4}}
                     </div>
                   </div>
                   <div class="tire__economic-bottom">
-                    {{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}} &uparrow;
+                    0{{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}} &uparrow;
                   </div>
                 </div>
               </div>
@@ -166,15 +163,15 @@
 
                   <div class="tire__content">
                     <div class="tire">
-                      <div class="tire__tag pos {{eje.2.5}}">
-                        {{eje.2.0.posicion}}
+                      <div class="tire__tag good pos {{eje.2.5}}">
+                        0 {{eje.2.0.posicion}}
                       </div>
-                      <div class="tire__tag up {{eje.2.3}}">
-                        {{eje.2.0.presion}}
+                      <div class="tire__tag good up {{eje.2.3}}">
+                        0 {{eje.2.0.presion}}
                       </div>
                       <span class="icon-tire2"></span>
-                      <div class="tire__tag down {{eje.2.1}}">
-                        {{eje.2.4}}
+                      <div class="tire__tag good down {{eje.2.1}}">
+                        0 {{eje.2.4}}
                       </div>
                     </div>
                   </div>
@@ -182,15 +179,15 @@
 
                 <div class="tire__content">
                   <div class="tire">
-                    <div class="tire__tag pos {{eje.3.5}}">
-                      {{eje.3.0.posicion}}
+                    <div class="tire__tag pos good {{eje.3.5}}">
+                      0{{eje.3.0.posicion}}
                     </div>
-                    <div class="tire__tag up {{eje.3.3}}">
-                      {{eje.3.0.presion}}
+                    <div class="tire__tag good {{eje.3.3}}">
+                      0{{eje.3.0.presion}}
                     </div>
                     <span class="icon-tire2"></span>
-                    <div class="tire__tag down {{eje.3.1}}">
-                      {{eje.3.4}}
+                    <div class="tire__tag down good {{eje.3.1}}">
+                      0{{eje.3.4}}
                     </div>
                   </div>
                   
@@ -200,8 +197,6 @@
                 </div>
               </div>
             </div> 
-          {% endif %}
-        {% endfor %}
     </div>
     </main>
     {% if problemas|length > 0 %}
@@ -210,7 +205,7 @@
         
         <div class="list__cont">
           <div class="title-list">
-            <h1>Lista de problemas</h1>
+            <h1>Servicios</h1>
           </div>
           <div class="config__container-table">
               <table class="config__table">
@@ -264,7 +259,7 @@
 
     {% endif %}
 
-    <script
+    <!-- <script
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
       integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
       crossorigin="anonymous"
@@ -295,6 +290,6 @@
           .save()
           .catch((err) => console.log(err));
       })()
-    </script>
+    </script> -->
   </body>
 </html>

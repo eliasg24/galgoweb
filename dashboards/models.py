@@ -46,6 +46,7 @@ class Compania(models.Model):
     valor_casco_3r = models.FloatField(blank=True, null=True)
     valor_casco_4r = models.FloatField(blank=True, null=True)
     valor_casco_5r = models.FloatField(blank=True, null=True)
+
     def __str__(self):
         # Retorna el nombre de la compañía
         return f"{self.compania}"
@@ -389,6 +390,7 @@ class Llanta(models.Model):
     rechazo = models.ForeignKey("Rechazo", on_delete=models.SET_NULL, null=True, blank=True)
     observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Llanta"})
     tirecheck = models.BooleanField(default=False)
+    fecha_de_balanceado = models.DateField(null=True, blank=True)
 
     def __str__(self):
         # Retorna el número económico
@@ -582,6 +584,32 @@ class Servicio(models.Model):
     fecha_real = models.DateField(null=True, blank=True)
     horario_real = models.TimeField(null=True, blank=True)
 
+
+class ServicioVehiculo(models.Model):
+    folio = models.CharField(max_length=200)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Perfil, on_delete=models.SET_NULL, null=True)
+    fecha_real = models.DateField(null=True, blank=True)
+    horario_real = models.TimeField(null=True, blank=True)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, blank=True, null=True)
+    aplicacion = models.ManyToManyField("Aplicacion", blank=True, null=True)
+    configuracion = models.CharField(max_length=5000)
+
+class ServicioLlanta(models.Model):
+    serviciovehiculo = models.ForeignKey(ServicioVehiculo, null=True, on_delete=models.SET_NULL)
+    llanta = models.ForeignKey(Llanta, on_delete=models.CASCADE)
+    inflado = models.BooleanField()
+    balanceado = models.BooleanField()
+    reparado = models.BooleanField()
+    valvula_reparada = models.BooleanField()
+    costado_reparado = models.BooleanField()
+    rotar = models.BooleanField()
+    rotar_mismo = models.BooleanField()
+    rotar_otro = models.BooleanField()
+    rotar_mismo = models.BooleanField()
+    llanta_cambio = models.ForeignKey(Llanta, on_delete=models.CASCADE, related_name='NuevaLlanta')
+            
+            
 class TareasServicio(models.Model):
     folio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
     
@@ -651,20 +679,3 @@ class LlantasSeleccionadas(models.Model):
         verbose_name_plural = "LlantasSeleccionadas"
 
 
-"""
-class Bitacora_Edicion(models.Model):
-    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(auto_now=True)
-    tipo = models.CharField(max_length=500)
-    
-    def __str__(self):
-        # Retorna el número económico
-        return f"{self.tipo} |{self.id} | {self.vehiculo} | {self.fecha.strftime('%Y %m %d')}"
-
-class Registro_Bitacora(models.Model):
-    bitacora = models.ForeignKey(Bitacora_Edicion, on_delete=models.CASCADE)
-    evento = models.CharField(max_length=500)
-    def __str__(self):
-        # Retorna el número económico
-        return f"{self.id} | {self.bitacora.vehiculo} | {self.evento}"
-"""

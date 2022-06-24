@@ -6,19 +6,26 @@
         
             <!--Tire-->
             <div class="config__row double-shaft">
-              <div class="tire" data-id="{{ eje.0.llanta.id }}">
+              <div 
+                class="tire" 
+                data-id="{{ eje.0.llanta.id }}" 
+                data-pos="{{ eje.0.llanta.posicion }}"
+                data-dimension="{{ eje.0.llanta.producto.dimension }}"
+              >
 
                 <span class="tag top {{eje.0.color_presion}}">
-                  0
+                  {{eje.0.llanta.presion_actual}}
                 </span>
 
                 <div class="tag__middle">
-                  <div class="pos {{eje.0.color_middle}}">1L</div>
+                  <div class="pos {{eje.0.color_middle}}">
+                    {{ eje.0.llanta.posicion }}
+                  </div>
                 </div>
 
                 <div class="icon-llanta-outline"></div>
                 <span class="tag bottom {{eje.0.color_profundidad}}">
-                  1
+                  {{eje.0.llanta.min_profundidad}}
                 </span>
               </div>
 
@@ -28,18 +35,25 @@
                 <span>{{eje.0.llanta.producto.dimension}}</span>
               </div>
 
-              <div class="tire" data-id="{{ eje.1.llanta.id }}">
+              <div 
+                class="tire" 
+                data-id="{{ eje.1.llanta.id }}"
+                data-pos="{{ eje.1.llanta.posicion }}"
+                data-dimension="{{ eje.1.llanta.producto.dimension }}"
+              >
                 <span class="tag top {{eje.1.color_presion}}">
-                  1
+                  {{eje.1.llanta.presion_actual}}
                 </span>
 
                 <div class="tag__middle">
-                  <div class="pos {{eje.1.color_middle}}">1L</div>
+                  <div class="pos {{eje.1.color_middle}}">
+                    {{ eje.1.llanta.posicion }}
+                  </div>
                 </div>
 
                 <div class="icon-llanta-outline"></div>
                 <span class="tag bottom {{eje.1.color_profundidad}}">
-                  1
+                  {{eje.1.llanta.min_profundidad}}
                 </span>
               </div>
             </div>
@@ -51,33 +65,47 @@
         <!--Double Tire-->
             <div class="config__row">
               <div class="double__tire">
-                <div class="tire" data-id="{{ eje.0.llanta.id }}">
+                <div 
+                  class="tire" 
+                  data-id="{{ eje.0.llanta.id }}"
+                  data-pos="{{ eje.0.llanta.posicion }}"
+                  data-dimension="{{ eje.0.llanta.producto.dimension }}"
+                >
                   <span class="tag top {{eje.0.color_presion}}">
-                    1
+                    {{eje.0.llanta.presion_actual}}
                   </span>
 
                   <div class="tag__middle">
-                    <div class="pos {{eje.0.color_middle}}">1L</div>
+                    <div class="pos {{eje.0.color_middle}}">
+                      {{ eje.0.llanta.posicion }}
+                    </div>
                   </div>
 
                   <div class="icon-llanta-outline"></div>
                   <span class="tag bottom {{eje.0.color_profundidad}}">
-                    1
+                    {{eje.0.llanta.min_profundidad}}
                   </span>
                 </div>
 
-                <div class="tire" data-id="{{ eje.1.llanta.id }}"> 
+                <div 
+                  class="tire"
+                  data-id="{{ eje.1.llanta.id }}"
+                  data-pos="{{ eje.1.llanta.posicion }}"
+                  data-dimension="{{ eje.1.llanta.producto.dimension }}"
+                > 
                   <span class="tag top {{eje.1.color_presion}}">
-                    1
+                    {{eje.1.llanta.presion_actual}}
                   </span>
 
                   <div class="tag__middle">
-                    <div class="pos {{eje.1.color_middle}}">1L</div>
+                    <div class="pos {{eje.1.color_middle}}">
+                      {{ eje.1.llanta.posicion }}
+                    </div>
                   </div>
 
                   <div class="icon-llanta-outline"></div>
                   <span class="tag bottom {{eje.1.color_profundidad}}">
-                    1
+                    {{eje.1.llanta.min_profundidad}}
                   </span>
                 </div>
               </div>
@@ -89,39 +117,50 @@
               </div>
 
               <div class="double__tire">
-                <div class="tire" data-id="{{ eje.2.llanta.id }}">              
+                <div 
+                  class="tire" 
+                  data-id="{{ eje.2.llanta.id }}"
+                  data-pos="{{ eje.2.llanta.posicion }}"
+                  data-dimension="{{ eje.2.llanta.producto.dimension }}"
+                >              
                   <span class="tag top {{eje.2.color_presion}}">
-                    1
+                    {{eje.2.llanta.presion_actual}}
                   </span>
 
                   <div class="tag__middle">
-                    <div class="pos {{eje.2.color_middle}}">1L</div>
+                    <div class="pos {{eje.2.color_middle}}">
+                      {{ eje.2.llanta.posicion }}
+                    </div>
                   </div>
 
                   <div class="icon-llanta-outline"></div>
                   <span class="tag bottom {{eje.2.color_profundidad}}">
-                    1
+                    {{eje.2.llanta.min_profundidad}}
                   </span>
                 </div>
-                <div class="tire" data-id="{{ eje.3.llanta.id }}">                
+                <div 
+                  class="tire"
+                  data-id="{{ eje.3.llanta.id }}"
+                  data-pos="{{ eje.3.llanta.posicion }}"
+                  data-dimension="{{ eje.3.llanta.producto.dimension }}"
+                >                
                   <span class="tag top {{eje.3.color_presion}}">
-                    1
+                    {{eje.3.llanta.presion_actual}}
                   </span>
 
                   <div class="tag__middle">
-                    <div class="pos {{eje.3.color_middle}}">1L</div>
+                    <div class="pos {{eje.3.color_middle}}">
+                      {{ eje.3.llanta.posicion }}
+                    </div>
                   </div>
 
                   <div class="icon-llanta-outline"></div>
                   <span class="tag bottom {{eje.3.color_profundidad}}">
-                    1
+                    {{eje.3.llanta.min_profundidad}}
                   </span>
                 </div>
               </div>
             </div>
-
         {% endif %}
-
         {% endfor %}
-
-  </div>
+</div>

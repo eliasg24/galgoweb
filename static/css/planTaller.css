@@ -1,3 +1,7 @@
+.head-cont {
+  justify-content: space-between;
+}
+
 /* BUTTONS */
 
 .btn-filter {
@@ -19,6 +23,22 @@
   /* width: 100%; */
 }
 
+.label-check input:checked ~ .btn-filter.head,
+.btn-filter.head:hover {
+  background-color: var(--colorv08);
+  color: #fff;
+}
+
+.label-check input:checked ~ .tire {
+  color: orange;
+}
+
+.label-check input:checked ~ .btn-filter.rotar,
+.btn-filter.rotar:hover {
+  background-color: var(--colorv04);
+  color: #fff;
+}
+
 .label-check input {
   opacity: 0;
   visibility: hidden;
@@ -28,6 +48,12 @@
 .label-check {
   position: relative;
   width: 100%;
+}
+
+.label-check input:disabled ~ .btn-filter,
+.label-check input:disabled ~ .tire {
+  filter: brightness(0.75);
+  cursor: not-allowed;
 }
 
 .label-check input:checked ~ .btn-filter,
@@ -65,19 +91,99 @@
   border-radius: 0.25rem;
 }
 
-.tire-list {
+/* ! Service page */
+
+.service-page {
   display: grid;
+  gap: 0.45rem;
+  padding: 0.5rem;
+}
+
+.form__row input,
+.service-page .flex-row input {
+  background: transparent;
+  border: thin solid #fff;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.service-page .flex-row * {
+  flex: 1 1 auto;
+}
+
+.btn-taller {
+  background-color: var(--colorv04);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.close-modal {
+  background-color: var(--colorv07);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.alert__success {
+  background-color: seagreen;
+  border-radius: 0.25rem;
+  bottom: 2vh;
+  color: #fff;
+  padding: 0.75rem;
+  position: fixed;
+  right: 2vw;
+  transition: all ease-in-out 0.2s;
+  transform: translateY(300%);
+}
+
+.alert__success.active {
+  transform: translateY(0);
+}
+
+/* ! */
+
+.tire-list {
+  display: flex;
+  flex-flow: column nowrap;
   gap: 1rem;
   padding: 1rem;
+  height: 100%;
+  overflow: auto;
+}
+
+.relative {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.absolute {
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }
 
 .tire-item {
-  display: flex;
-  background-color: var(--colorv00);
-  height: min-content;
-  gap: 0.5rem;
   align-items: center;
+  background-color: var(--colorv00);
+  display: flex;
+  gap: 1rem;
+  height: min-content;
   justify-content: space-evenly;
+  padding: 0.75rem;
+}
+
+.service__img span {
+  font-size: 6rem;
 }
 
 .tire-item p {
@@ -137,7 +243,7 @@
 
 .modal__bg {
   background-color: rgba(0, 0, 0, 0.25);
-  display: grid;
+  display: flex;
   height: 100vh;
   opacity: 0;
   pointer-events: none;
@@ -161,10 +267,30 @@
   background-color: var(--colorv45);
   border-radius: 0.25rem;
   gap: 1rem;
+  overflow: auto;
+}
+
+.modal__form label,
+.modal__form select {
+  display: block;
   width: 100%;
 }
 
-.card__config {
+.modal__form select {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal__form legend {
+  margin-bottom: 0.25rem;
+}
+
+.modal__form .flex-row {
+  margin-bottom: 0.5rem;
+}
+
+.card__config,
+.card__config-modal {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
@@ -180,6 +306,7 @@
   flex-flow: row nowrap;
   position: relative;
   justify-content: space-between;
+  width: 100%;
 }
 
 .config__row.double-shaft {
@@ -221,7 +348,6 @@
 
 .tire {
   border-radius: 0.25rem;
-  filter: brightness(0.5);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -311,16 +437,33 @@
   opacity: 1;
 }
 
+.flex-row {
+  flex-flow: row wrap;
+}
+
+.form__services {
+  display: flex;
+  gap: 1rem;
+  flex-flow: row wrap;
+  margin-bottom: 1rem;
+}
+
+.form__services label {
+  flex: 1 1 auto;
+  width: auto;
+}
+
 @media screen and (min-width: 1024px) {
+  .flex-row {
+    flex-flow: row nowrap;
+  }
+
   .container {
     grid-template-columns: 1fr 2fr;
   }
-  .tire-list {
-    grid-template-columns: 1fr 1fr;
-  }
 
   .card__config {
-    width: 60%;
+    width: 80%;
     margin: auto;
   }
 
@@ -333,6 +476,16 @@
     font-size: 10rem;
   }
 
+  .card__config-modal .config__row .icon-llanta-outline {
+    font-size: 5rem;
+  }
+
+  .card__config-modal .tire .tag__middle .pos {
+    font-size: 0.75rem;
+    height: 2rem;
+    width: 2rem;
+  }
+
   .tire .tag__middle .pos {
     height: 3rem;
     width: 3rem;
@@ -343,10 +496,18 @@
   }
 
   .modal__bg {
-    place-content: center;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .modal__form {
-    min-width: 600px;
+    margin-left: 1.5rem;
+    width: 500px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .card__config {
+    width: 60%;
   }
 }

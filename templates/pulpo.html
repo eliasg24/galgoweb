@@ -1,1646 +1,1660 @@
-{% extends 'base.html' %}
-
-{% block head %}
-{% load static %}
-    <link rel="stylesheet" href="{% static 'css/pulpo.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'js/daterangepicker.css' %}"/>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bundle.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-radar.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-circular-gauge.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.10.0/themes/dark_provence.js"></script>
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
-    <title>AETO WEB</title>
-{% endblock head %}
-
-{% block content %}
+{% extends 'base.html' %} {% block head %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/pulpo.css' %}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+  rel="stylesheet"
+/>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+></script>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'js/daterangepicker.css' %}"
+/>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bundle.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-radar.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-circular-gauge.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/themes/dark_provence.js"></script>
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+<title>AETO WEB</title>
+{% endblock head %} {% block content %}
 <div class="all-cont animate__animated animate__fadeIn">
-    <header class="head-cont">
-        <div class="logo">
-          <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+    </div>
+
+    <form class="form-head" action="{% url 'dashboards:buscar' %}" method="GET">
+      <nav class="btn-group">
+        <a href="{% url 'dashboards:pulpo' %}" class="btn btn-trash">
+          <span class="icon-trash2"></span>
+        </a>
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="text"
+            placeholder="fechaInicio"
+            name="fechaInicio"
+            id="fecha-inicio"
+            onfocus="(this.type='date')"
+            data-fecha
+          />
+          <label for="fecha-inicio" class="form__label">
+            Desde {% if fecha_con_formato1 %}{{fecha_con_formato1}}{% endif %}
+          </label>
         </div>
-    
-        <form 
-          class="form-head"
-          action="{% url 'dashboards:buscar' %}"
-          method="GET"
-        >
-          <nav class="btn-group">
-            <a href="{% url 'dashboards:pulpo' %}" class="btn btn-trash">
-              <span class="icon-trash2"></span>
-            </a>
-            
-            <div class="form__group field">
-              <input
-                class="form__field"
-                type="text"
-                placeholder="fechaInicio"
-                name="fechaInicio"
-                id="fecha-inicio"
-                onfocus="(this.type='date')"
-                data-fecha
-              />
-              <label for="fecha-inicio" class="form__label">
-                Desde {% if fecha_con_formato1 %}{{fecha_con_formato1}}{% endif %}
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="text"
+            placeholder="Hasta"
+            name="fechaFin"
+            id="fecha-fin"
+            onfocus="(this.type='date')"
+            data-fecha
+          />
+          <label for="fecha-fin" class="form__label">
+            Hasta {% if fecha_con_formato2 %}{{fecha_con_formato2}}{% endif %}
+          </label>
+        </div>
+
+        <div class="dropdown">
+          <button class="drop-btn" id="d-clase">
+            Clase
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
+
+          <ul class="drop-menu" id="menu-clase">
+            <li>
+              <div class="drop-search">
+                <input
+                  type="search"
+                  id="search-clase"
+                  class="drop-input"
+                  autocomplete="off"
+                />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-clase" class="input-check select-all">
+                Seleccionar todas <input type="checkbox" name="clase2"
+                value="all" id="all-clase" {% if clase2|slugify == "all"%}checked{% endif %} />
+                <span class="checkmark"></span>
               </label>
-            </div>
-    
-            <div class="form__group field">
-              <input
-                class="form__field"
-                type="text"
-                placeholder="Hasta"
-                name="fechaFin"
-                id="fecha-fin"
-                onfocus="(this.type='date')"
-                data-fecha
-              />
-              <label for="fecha-fin" class="form__label">
-                Hasta {% if fecha_con_formato2 %}{{fecha_con_formato2}}{% endif %}
+            </li>
+            {% for clase in clases_compania %}
+            <li class="search-item">
+              <label for="{{clase}}" class="input-check">
+                {{clase}} <input type="checkbox" name="clase" id="{{clase}}"
+                value="{{clase}}"{% for c in clase1 %}{% if c|slugify == clase|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
               </label>
-            </div>
-              
-            <div class="dropdown">
-              <button class="drop-btn" id="d-clase">
-                Clase
-                <span class="indicator">
-                  <i class="bx bxs-right-arrow"></i>
-                </span>
-              </button>
-    
-              <ul class="drop-menu" id="menu-clase">
-                <li>
-                  <div class="drop-search">
-                    <input type="search" id="search-clase" class="drop-input" autocomplete="off" />
-                    <i class="bx bx-search"></i>
-                  </div>
-                </li>
-                <li>
-                  <label for="all-clase" class="input-check select-all">
-                    Seleccionar todas
-                    <input type="checkbox" name="clase2" value="all" id="all-clase" {% if clase2|slugify == "all" %}checked{% endif %} />
-                    <span class="checkmark"></span>
-                  </label>
-                </li>
-                {% for clase in clases_compania %}
-                <li class="search-item">
-                  <label for={{clase}} class="input-check">
-                    
-                    {{clase}}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
 
-                    <input type="checkbox" name="clase" id="{{clase}}" value="{{clase}}"{% for c in clase1 %}{% if c|slugify == clase|slugify %}checked{% endif %}{% endfor %} />
-                    <span class="checkmark"></span>
-                  </label>
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
-            
-            <div class="dropdown">
-                <button class="drop-btn" id="d-ubicacion">
-                  Sucursal
-                  <span class="indicator">
-                    <i class="bx bxs-right-arrow"></i>
-                  </span>
-                </button>
-                
-                <ul class="drop-menu" id="menu-ubicacion">
-                  <li>
-                    <div class="drop-search">
-                      <input type="search" id="search-ubicacion" class="drop-input" autocomplete="off" />
-                      <i class="bx bx-search"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <label for="all-ubicacion" class="input-check select-all">
-                      Seleccionar todas
-                      <input type="checkbox" name="ubicacion" value="all" id="all-ubicacion" {% if clase2|slugify == "all" %}checked{% endif %} />
-                      <span class="checkmark"></span>
-                    </label>
-                  </li>
-                  {% for flota in flotas %}
-                  <li class="search-item">
-                    <label for={{flota}} class="input-check">
-                      
-                      {{flota}}
+        <div class="dropdown">
+          <button class="drop-btn" id="d-ubicacion">
+            Sucursal
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
 
-                      <input type="checkbox" name="flota" id="{{flota}}" value="{{flota}}" {% for f in flota1 %}{% if f|slugify == flota|slugify %}checked{% endif %}{% endfor %}   />
-                      <span class="checkmark"></span>
+          <ul class="drop-menu" id="menu-ubicacion">
+            <li>
+              <div class="drop-search">
+                <input
+                  type="search"
+                  id="search-ubicacion"
+                  class="drop-input"
+                  autocomplete="off"
+                />
+                <i class="bx bx-search"></i>
+              </div>
+            </li>
+            <li>
+              <label for="all-ubicacion" class="input-check select-all">
+                Seleccionar todas <input type="checkbox" name="ubicacion"
+                value="all" id="all-ubicacion" {% if clase2|slugify == "all"%}checked{% endif %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% for flota in flotas %}
+            <li class="search-item">
+              <label for="{{flota}}" class="input-check"> {{flota}} 
+                <input type="checkbox" name="flota" id="{{flota}}" value="{{flota}}" {% for f in flota1 %}{% if f|slugify == flota|slugify %}checked{% endif %}{% endfor %} />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            {% endfor%}
+          </ul>
+        </div>
 
-                    </label>
-                  </li> 
-                  {% endfor%}
-                </ul>
-            </div>
-            
+        <div class="dropdown">
+          <button class="drop-btn" id="d-compa">
+            Compañia
+            <span class="indicator">
+              <i class="bx bxs-right-arrow"></i>
+            </span>
+          </button>
 
-            <div class="dropdown">
-                <button class="drop-btn" id="d-compa">
-                    Compañia
-                    <span class="indicator">
-                    <i class="bx bxs-right-arrow"></i>
-                    </span>
-                </button>
-        
-                <ul class="drop-menu" id="menu-compa">
-                    <li>
-                      <label for={{compania}} class="input-check">
-                          {{compania}}
-                          <input type="checkbox" name="{{compania}}" id="{{compania}}" />
-                          <span class="checkmark"></span>
-                      </label>
-                    </li>
-                </ul>
+          <ul class="drop-menu" id="menu-compa">
+            <li>
+              <label for="{{compania}}" class="input-check">
+                {{compania}}
+                <input type="checkbox" name="{{compania}}" id="{{compania}}" />
+                <span class="checkmark"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+
+        <button class="btn btn-aeto" id="btn-buscar" type="submit">
+          <span>Buscar</span>
+          <span class="icon-magnifier"></span>
+        </button>
+      </nav>
+    </form>
+  </header>
+
+  <section class="container">
+    <aside class="d-flex col">
+      <nav class="nav-header">
+        <button class="btn btn-aeto-crunch active" id="chart-btn">
+          Graficas
+        </button>
+        <button class="btn btn-aeto-crunch" id="tab-btn">Tablas</button>
+      </nav>
+      <div class="grid-c4 on-view">
+        <article class="chart-container" id="chart-1">
+          <nav class="nav-btn justify-end">
+            <div class="about-btn">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Porcentaje de vehiculos de la flota inflados durante el
+                  periodo de inflado
+                </p>
+              </div>
             </div>
-    
-            <button class="btn btn-aeto" id="btn-buscar" type="submit">
-              <span>Buscar</span>
-              <span class="icon-magnifier"></span>
+            <button class="btn icono-pantallaC" id="btn-1">
+              <span class="icon-fullscreen"></span>
             </button>
           </nav>
-        </form>
-    </header>
-
-    <section class="container">
-      <aside class="d-flex col">
-        <nav class="nav-header">
-          <button class="btn btn-aeto-crunch active" id="chart-btn">
-            Graficas
-          </button>
-          <button class="btn btn-aeto-crunch" id="tab-btn">
-            Tablas
-          </button>
-        </nav>
-        <div class="grid-c4 on-view">
-          <article class="chart-container" id="chart-1">
-            <nav class="nav-btn justify-end">
-              <div class="about-btn">
-                <span class="icon-question-circle-o"></span>
-                <div class="popout-text">
-                  <p class="italic">
-                    Porcentaje de vehiculos de la flota inflados durante el periodo de inflado
-                  </p>
-                </div>
-              </div>
-              <button class="btn icono-pantallaC" id="btn-1">
-                <span class="icon-fullscreen"></span>
-              </button>
-            </nav>
-            <aside class="chart row">
-              <div class="col">
-                <div class="score-gauge" id="score-gauge"></div>
-              </div>
-              <div class="col flex-center">
-                {% if fecha_con_formato1 %}
-                    <p class="divis">{{fecha_con_formato1}}-{{fecha_con_formato2}}</p>
-                {% else %}
-                    {% if fecha1 %}
-                        <p class="divis">{{fecha1}}-{{fecha2}}</p>
-                    {% else %}
-                        <p class="divis">Último mes</p>
-                    {% endif %}
-                {% endif %}
-                {% if porcentaje_inflado %}
-                    {% if porcentaje_inflado == "Nada" %}
-                        <p class="percent">0/0</p>
-                    {% else %}
-                        <p class="percent">{{cantidad_inflado}}/{{cantidad_total}}</p>
-                    {% endif %}
-                {% else %}
-                    {% if porcentaje_inflado == 0 %}
-                        <p class="percent">{{cantidad_inflado}}/{{cantidad_total}}</p>
-                    {% endif %}
-                {% endif %}
-              </div>
-              <div class="col">
-                <div class="score-spline" id="score-spline"></div>
-              </div>
-            </aside>
-          </article>
-          <article class="chart-container" id="chart-2">
-            <nav class="nav-btn justify-end">
-              <div class="about-btn">
-                <span class="icon-question-circle-o"></span>
-                <div class="popout-text">
-                  <p class="italic">
-                    Porcentaje de vehiculos inflados que tuvieron entrada por fuera del parametro de presión. 
-                  </p>
-                </div>
-              </div>
-              <button class="btn icono-pantallaC" id="btn-2">
-                <span class="icon-fullscreen"></span>
-              </button>
-            </nav>
-            <aside class="chart row">
-              <div class="col">
-                <div class="score-gauge2" id="score-gauge2"></div>
-                    {% comment %} <canvas id="demo2"></canvas>
-                    {% if porcentaje_entrada_correcta %}
-                        {% if porcentaje_entrada_correcta == "Nada" %}
-                            <p class="percent-score">0%</p>
-                        {% else %}
-                            <p class="percent-score">{{porcentaje_entrada_correcta}}%</p>
-                        {% endif %}
-                    {% else %}
-                        {% if porcentaje_entrada_correcta == 0 %}
-                            <p class="percent-score">{{porcentaje_entrada_correcta}}%</p>
-                        {% endif %}
-                    {% endif %}
-                    <div id="preview-textfield2" style="display:none;"></div> {% endcomment %}
-              </div>
-              <div class="col flex-center">
-                {% if fecha_con_formato1 %}
-                    <p class="divis">{{fecha_con_formato1}}-{{fecha_con_formato2}}</p>
-                {% else %}
-                    {% if fecha1 %}
-                        <p class="divis">{{fecha1}}-{{fecha2}}</p>
-                    {% else %}
-                        <p class="divis">Último mes</p>
-                    {% endif %}
-                {% endif %}
-                {% if porcentaje_entrada_correcta %}
-                    {% if porcentaje_entrada_correcta == "Nada" %}
-                        <p class="percent">0/0</p>
-                    {% else %}
-                        <p class="percent">{{cantidad_entrada}}/{{cantidad_inflado}}</p>
-                    {% endif %}
-                {% else %}
-                    {% if porcentaje_entrada_correcta == 0 %}
-                        <p class="percent">{{cantidad_entrada}}/{{cantidad_inflado}}</p>
-                    {% endif %}
-                {% endif %}
-              </div>
-              <div class="col">
-                <div class="score-spline2" id="score-spline2"></div>
-              </div>
-            </aside>
-          </article>
-          <article class="chart-container" id="chart-3">
-            <nav class="nav-btn">
-              <h2>
-                Periodos de inflados
-              </h2>
-              <div class="row">
-                <div class="about-btn">
-                  <span class="icon-question-circle-o"></span>
-                  <div class="popout-text">
-                    <p class="italic">
-                      Grafica que muestra la cantidad y porcentaje vencido.
-                    </p>
-                    <p>
-                      <strong>Objetivo</strong>: ver el pie lo mas azul posible
-                    </p>
-                  </div>
-                </div>
-                <button class="btn icono-pantallaC" id="btn-3">
-                  <span class="icon-fullscreen"></span>
-                </button>
-              </div>
-            </nav>
-            <aside class="chart">
-              <div class="col">
-                <div id="doughnut" class="doughnut"></div>
-              </div>
-            </aside>
-          </article>
-          <article class="chart-container" id="chart-4">
-            <nav class="nav-btn">
-              <h2>
-                Cantidad de vehiculos Vs Inflados
-              </h2>
-              <div class="row">
-                <div class="about-btn">
-                  <span class="icon-question-circle-o"></span>
-                  <div class="popout-text">
-                    <p class="italic">
-                      Tendencia de cantidad de inflados totales, cantidad de malas entradas en esos inflados, cantidad de doble malas entradas en esos inflados.
-                    </p>
-                    <p>
-                      <strong>Objetivo</strong>: Ver la barra azul lo mas alta posible y las lineas morada y roja lo mas bajas posible.
-                    </p>
-                  </div>
-                </div>
-                <button class="btn icono-pantallaC" id="btn-4">
-                  <span class="icon-fullscreen"></span>
-                </button>
-              </div>
-            </nav>
-            <aside class="chart">
-              <div class="col">
-                <div id="line-graph" class="line-graph"></div>
-              </div>
-            </aside>
-          </article>
-        </div>
-        <article class="tables">
-
-          <nav class="nav-tables">
-            <button class="btn btn-aeto-crunch alt active" id="btn-tab-1">
-              Vehículos Vencidos
-            </button>
-            <button class="btn btn-aeto-crunch alt" id="btn-tab-2">
-              Malas Entradas
-            </button>
-          </nav>
-              
-          <div class="table-container">
-            <table class="table active" id="table-1">
-              {% if vehiculos_periodo %}
-              <thead class="thead1">
-                <tr class="tr1">
-                  <th class="td-width1" id="th-icono">Icono</th>
-                  <th class="td-width1">Serial</th>
-                  <th class="td-width2" id="th-clase">Clase</th>
-                  <th class="td-width1">Días sin Inflado</th>
-                  <th class="td-width1" id="th-icono">Status</th>
-              </tr>
-            </thead>
-          
-            <tbody>
-              {% for vehiculo_p, status in vehiculos_periodo.items %}
-                <tr class="tr2">
-                    <td class="td-color"><img src="{% static 'images/truck.png' %}" alt=""></td>
-                    <td class="td-noColor"><a class="td-truck" href="{% url 'dashboards:detail' vehiculo_p.id %}">{{vehiculo_p.numero_economico}}</a></td>
-                    <td class="td-color">{{vehiculo_p.clase}}</td>
-                    <td class="td-noColor" id="dias {{vehiculo_p.id}}"></td>
-                    {% if status == "Doble Entrada" %}
-                        <td class="td-color"><span class="icon-cross"></span><span class="icon-cross"></span></td>
-                    {% elif status == "Mala Entrada" %}
-                        <td class="td-color"><span class="icon-cross"></span></td>
-                    {% else %}
-                        <td class="td-color"><span class="icon-checkmark"></span></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-             </tbody>
-            {% endif %}
-            </table>
-
-            <table class="table" id="table-2">
-            
-            {% if vehiculos_malos %}
-                <thead class="thead1">
-                    <tr class="tr1">
-                        <th class="td-width1" id="th-icono">Icono</th>
-                        <th class="td-width1">Serial</th>
-                        <th class="td-width2" id="th-clase">Clase</th>
-                        <th class="td-width1">Días sin Inflado</th>
-                        <th class="td-width1" id="th-icono">Status</th>
-                    </tr>
-                </thead>
-                
-            
-                <tbody>
-                  {% for vehiculo_p, status in vehiculos_malos.items %}
-                    <tr class="tr2">
-                        <td class="td-color"><img src="{% static 'images/truck.png' %}" alt=""></td>
-                        <td class="td-noColor">
-                          <a class="td-truck" href="{% url 'dashboards:detail' vehiculo_p.id %}">{{vehiculo_p.numero_economico}}</a>
-                        </td>
-                        <td class="td-color">
-                          {{vehiculo_p.clase}}
-                        </td>
-                        <td class="td-noColor" id="dias_malos {{vehiculo_p.id}}"></td>
-                        {% if status == "Doble Entrada" %}
-                            <td class="td-color">
-                              <span class="icon-cross"></span>
-                              <span class="icon-cross"></span>
-                            </td>
-                        {% elif status == "Mala Entrada" %}
-                            <td class="td-color">
-                              <span class="icon-cross"></span>
-                            </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-  
-            {% endif %}
-            </table>
-          </div>
-
-
+          <aside class="chart row">
+            <div class="col">
+              <div class="score-gauge" id="score-gauge"></div>
+            </div>
+            <div class="col flex-center">
+              {% if fecha_con_formato1 %}
+              <p class="divis">{{fecha_con_formato1}}-{{fecha_con_formato2}}</p>
+              {% else %} 
+              {% if fecha1 %}
+              <p class="divis">{{fecha1}}-{{fecha2}}</p>
+              {% else %}
+              <p class="divis">Último mes</p>
+              {% endif %} 
+              {% endif %} 
+              {% if porcentaje_inflado %} {% if porcentaje_inflado == "Nada" %}
+              <p class="percent">0/0</p>
+              {% else %}
+                <p class="percent">{{cantidad_inflado}}/{{cantidad_total}}</p>
+              {% endif %} 
+              {% else %} 
+              {% if porcentaje_inflado == 0 %}
+                <p class="percent">{{cantidad_inflado}}/{{cantidad_total}}</p>{% endif %} 
+              {% endif %}
+            </div>
+            <div class="col">
+              <div class="score-spline" id="score-spline"></div>
+            </div>
+          </aside>
         </article>
-      </aside>
-      <div class="row-3">
-        <article class="chart-container" id="chart-5">
+        <article class="chart-container" id="chart-2">
+          <nav class="nav-btn justify-end">
+            <div class="about-btn">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Porcentaje de vehiculos inflados que tuvieron entrada por
+                  fuera del parametro de presión.
+                </p>
+              </div>
+            </div>
+            <button class="btn icono-pantallaC" id="btn-2">
+              <span class="icon-fullscreen"></span>
+            </button>
+          </nav>
+          <aside class="chart row">
+            <div class="col">
+              <div class="score-gauge2" id="score-gauge2"></div>
+              {% comment %} <canvas id="demo2"></canvas>
+              {% if porcentaje_entrada_correcta %} {% if
+              porcentaje_entrada_correcta == "Nada" %}
+              <p class="percent-score">0%</p>
+              {% else %}
+              <p class="percent-score">{{porcentaje_entrada_correcta}}%</p>
+              {% endif %} {% else %} {% if porcentaje_entrada_correcta == 0 %}
+              <p class="percent-score">{{porcentaje_entrada_correcta}}%</p>
+              {% endif %} {% endif %}
+              <div id="preview-textfield2" style="display: none"></div>
+              {% endcomment %}
+            </div>
+            <div class="col flex-center">
+              {% if fecha_con_formato1 %}
+              <p class="divis">{{fecha_con_formato1}}-{{fecha_con_formato2}}</p>
+              {% else %} {% if fecha1 %}
+              <p class="divis">{{fecha1}}-{{fecha2}}</p>
+              {% else %}
+              <p class="divis">Último mes</p>
+              {% endif %} 
+              {% endif %} 
+              {% if porcentaje_entrada_correcta %} 
+              {% if porcentaje_entrada_correcta == "Nada" %}
+              <p class="percent">0/0</p>
+              {% else %}
+              <p class="percent">{{cantidad_entrada}}/{{cantidad_inflado}}</p>
+              {% endif %} 
+              {% else %} 
+              {% if porcentaje_entrada_correcta == 0 %}
+              <p class="percent">{{cantidad_entrada}}/{{cantidad_inflado}}</p>
+              {% endif %}
+              {% endif %}
+            </div>
+            <div class="col">
+              <div class="score-spline2" id="score-spline2"></div>
+            </div>
+          </aside>
+        </article>
+        <article class="chart-container" id="chart-3">
           <nav class="nav-btn">
-            <h2>
-              Porcentaje de Clase de Vehículos Inflados
-            </h2>
+            <h2>Periodos de inflados</h2>
             <div class="row">
               <div class="about-btn">
                 <span class="icon-question-circle-o"></span>
                 <div class="popout-text">
                   <p class="italic">
-                    Porcentaje de clase de vehiculos inflado en el periodo de inflado.
+                    Grafica que muestra la cantidad y porcentaje vencido.
                   </p>
                   <p>
-                    <strong>Objetivo</strong>: Ver el Radar lo más lleno posible. Los puntos del radar bajos son área de oportunidad.
+                    <strong>Objetivo</strong>: ver el pie lo mas azul posible
                   </p>
                 </div>
               </div>
-              <button class="btn icono-pantallaC" id="btn-5">
+              <button class="btn icono-pantallaC" id="btn-3">
                 <span class="icon-fullscreen"></span>
               </button>
             </div>
           </nav>
           <aside class="chart">
             <div class="col">
-              <div id="radar1" class="radar-1"></div>
+              <div id="doughnut" class="doughnut"></div>
             </div>
           </aside>
         </article>
-        <article class="chart-container" id="chart-6">
+        <article class="chart-container" id="chart-4">
           <nav class="nav-btn">
-            <h2>
-              Porcentaje de Aplicación de Vehículos Inflados
-            </h2>
+            <h2>Cantidad de vehiculos Vs Inflados</h2>
             <div class="row">
               <div class="about-btn">
                 <span class="icon-question-circle-o"></span>
                 <div class="popout-text">
                   <p class="italic">
-                    Porcentaje de aplicación de vehiculos inflado en el periodo de inflado.
+                    Tendencia de cantidad de inflados totales, cantidad de malas
+                    entradas en esos inflados, cantidad de doble malas entradas
+                    en esos inflados.
                   </p>
                   <p>
-                    <strong>Objetivo</strong>: Ver el Radar lo más lleno posible. Los puntos del radar bajos son área de oportunidad.
+                    <strong>Objetivo</strong>: Ver la barra azul lo mas alta
+                    posible y las lineas morada y roja lo mas bajas posible.
                   </p>
                 </div>
               </div>
-              <button class="btn icono-pantallaC" id="btn-6">
+              <button class="btn icono-pantallaC" id="btn-4">
                 <span class="icon-fullscreen"></span>
               </button>
             </div>
           </nav>
           <aside class="chart">
             <div class="col">
-              <div id="radar2" class="radar-2"></div>
+              <div id="line-graph" class="line-graph"></div>
             </div>
           </aside>
-        </article>
-        <article class="chart-container p-1">
-          <h2 class="card-title text-center">Tiempo Promedio</h2>
-          <div class="flex-center flex-row">
-              <span class="icon-chronometer icon-lg"></span>
-              <p class="time-text">
-                <strong>
-                  {% if tiempo_promedio %}{{tiempo_promedio}}{% else %}0{% endif %} minutos
-                </strong>
-              </p>
-          </div> 
         </article>
       </div>
-    </section>
+      <article class="tables">
+        <nav class="nav-tables">
+          <button class="btn btn-aeto-crunch alt active" id="btn-tab-1">
+            Vehículos Vencidos
+          </button>
+          <button class="btn btn-aeto-crunch alt" id="btn-tab-2">
+            Malas Entradas
+          </button>
+        </nav>
+
+        <div class="table-container">
+          <table class="table active" id="table-1">
+            {% if vehiculos_periodo %}
+            <thead class="thead1">
+              <tr class="tr1">
+                <th class="td-width1" id="th-icono">Icono</th>
+                <th class="td-width1">Serial</th>
+                <th class="td-width2" id="th-clase">Clase</th>
+                <th class="td-width1">Días sin Inflado</th>
+                <th class="td-width1" id="th-icono">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for vehiculo_p, status in vehiculos_periodo.items %}
+              <tr class="tr2">
+                <td class="td-color">
+                  <img src="{% static 'images/truck.png' %}" alt="" />
+                </td>
+                <td class="td-noColor">
+                  <a
+                    class="td-truck"
+                    href="{% url 'dashboards:detail' vehiculo_p.id %}"
+                    >{{vehiculo_p.numero_economico}}</a
+                  >
+                </td>
+                <td class="td-color">{{vehiculo_p.clase}}</td>
+                <td class="td-noColor" id="dias {{vehiculo_p.id}}"></td>
+                {% if status == "Doble Entrada" %}
+                <td class="td-color">
+                  <span class="icon-cross"></span
+                  ><span class="icon-cross"></span>
+                </td>
+                {% elif status == "Mala Entrada" %}
+                <td class="td-color"><span class="icon-cross"></span></td>
+                {% else %}
+                <td class="td-color"><span class="icon-checkmark"></span></td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+            {% endif %}
+          </table>
+
+          <table class="table" id="table-2">
+            {% if vehiculos_malos %}
+            <thead class="thead1">
+              <tr class="tr1">
+                <th class="td-width1" id="th-icono">Icono</th>
+                <th class="td-width1">Serial</th>
+                <th class="td-width2" id="th-clase">Clase</th>
+                <th class="td-width1">Días sin Inflado</th>
+                <th class="td-width1" id="th-icono">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for vehiculo_p, status in vehiculos_malos.items %}
+              <tr class="tr2">
+                <td class="td-color">
+                  <img src="{% static 'images/truck.png' %}" alt="" />
+                </td>
+                <td class="td-noColor">
+                  <a
+                    class="td-truck"
+                    href="{% url 'dashboards:detail' vehiculo_p.id %}"
+                    >{{vehiculo_p.numero_economico}}</a
+                  >
+                </td>
+                <td class="td-color">{{vehiculo_p.clase}}</td>
+                <td class="td-noColor" id="dias_malos {{vehiculo_p.id}}"></td>
+                {% if status == "Doble Entrada" %}
+                <td class="td-color">
+                  <span class="icon-cross"></span>
+                  <span class="icon-cross"></span>
+                </td>
+                {% elif status == "Mala Entrada" %}
+                <td class="td-color">
+                  <span class="icon-cross"></span>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+
+            {% endif %}
+          </table>
+        </div>
+      </article>
+    </aside>
+    <div class="row-3">
+      <article class="chart-container" id="chart-5">
+        <nav class="nav-btn">
+          <h2>Porcentaje de Clase de Vehículos Inflados</h2>
+          <div class="row">
+            <div class="about-btn">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Porcentaje de clase de vehiculos inflado en el periodo de
+                  inflado.
+                </p>
+                <p>
+                  <strong>Objetivo</strong>: Ver el Radar lo más lleno posible.
+                  Los puntos del radar bajos son área de oportunidad.
+                </p>
+              </div>
+            </div>
+            <button class="btn icono-pantallaC" id="btn-5">
+              <span class="icon-fullscreen"></span>
+            </button>
+          </div>
+        </nav>
+        <aside class="chart">
+          <div class="col">
+            <div id="radar1" class="radar-1"></div>
+          </div>
+        </aside>
+      </article>
+      <article class="chart-container" id="chart-6">
+        <nav class="nav-btn">
+          <h2>Porcentaje de Aplicación de Vehículos Inflados</h2>
+          <div class="row">
+            <div class="about-btn">
+              <span class="icon-question-circle-o"></span>
+              <div class="popout-text">
+                <p class="italic">
+                  Porcentaje de aplicación de vehiculos inflado en el periodo de
+                  inflado.
+                </p>
+                <p>
+                  <strong>Objetivo</strong>: Ver el Radar lo más lleno posible.
+                  Los puntos del radar bajos son área de oportunidad.
+                </p>
+              </div>
+            </div>
+            <button class="btn icono-pantallaC" id="btn-6">
+              <span class="icon-fullscreen"></span>
+            </button>
+          </div>
+        </nav>
+        <aside class="chart">
+          <div class="col">
+            <div id="radar2" class="radar-2"></div>
+          </div>
+        </aside>
+      </article>
+      <article class="chart-container p-1">
+        <h2 class="card-title text-center">Tiempo Promedio</h2>
+        <div class="flex-center flex-row">
+          <span class="icon-chronometer icon-lg"></span>
+          <p class="time-text">
+            <strong>
+              {% if tiempo_promedio %}{{tiempo_promedio}}{% else %}0{% endif %}
+              minutos
+            </strong>
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
 </div>
 <script src="{% static './js/filter.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
-<script src="{% static 'js/gauge.js' %}"></script> 
+<script src="{% static 'js/gauge.js' %}"></script>
 <script>
 
-document.addEventListener('DOMContentLoaded', (e) => {
-    dropdown('d-clase','menu-clase');
-    dropdown('d-ubicacion','menu-ubicacion');
-    dropdown('d-compa','menu-compa');
-    handleFullscreen('btn-1', 'chart-1');
-    handleFullscreen('btn-2', 'chart-2');
-    handleFullscreen('btn-3', 'chart-3');
-    handleFullscreen('btn-4', 'chart-4');
-    handleFullscreen('btn-5', 'chart-5');
-    handleFullscreen('btn-6', 'chart-6');
-    handleButtons('.nav-header');
-    handleButtons('.nav-tables');
-    handleView('chart-btn', '.grid-c4');
-    handleView('tab-btn', '.tables');
-    handleTables('btn-tab-1', 'table-1');
-    handleTables('btn-tab-2', 'table-2');
-    handleCheckbox();
-    // Select All
-    handleSelectAll({ container: 'menu-clase', selectAll: 'all-clase' });
-    handleSelectAll({ container: 'menu-ubicacion', selectAll: 'all-ubicacion' });
-});
-
-const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
-  const selector = document.querySelector(`#${container} #${selectAll}`);
-  const checkboxs = document.querySelectorAll(
-    `#${container} input[type="checkbox"]`
-  );
-
-  selector.addEventListener('change', (e) => {
-    selector.checked
-      ? checkboxs.forEach((check) => (check.checked = true))
-      : checkboxs.forEach((check) => (check.checked = false));
+  document.addEventListener('DOMContentLoaded', (e) => {
+      dropdown('d-clase','menu-clase');
+      dropdown('d-ubicacion','menu-ubicacion');
+      dropdown('d-compa','menu-compa');
+      handleFullscreen('btn-1', 'chart-1');
+      handleFullscreen('btn-2', 'chart-2');
+      handleFullscreen('btn-3', 'chart-3');
+      handleFullscreen('btn-4', 'chart-4');
+      handleFullscreen('btn-5', 'chart-5');
+      handleFullscreen('btn-6', 'chart-6');
+      handleButtons('.nav-header');
+      handleButtons('.nav-tables');
+      handleView('chart-btn', '.grid-c4');
+      handleView('tab-btn', '.tables');
+      handleTables('btn-tab-1', 'table-1');
+      handleTables('btn-tab-2', 'table-2');
+      handleCheckbox();
+      // Select All
+      handleSelectAll({ container: 'menu-clase', selectAll: 'all-clase' });
+      handleSelectAll({ container: 'menu-ubicacion', selectAll: 'all-ubicacion' });
   });
 
-  checkboxs.forEach((item) => {
-    item.addEventListener('change', (e) => {
-      let notAll = false;
+  const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+    const selector = document.querySelector(`#${container} #${selectAll}`);
+    const checkboxs = document.querySelectorAll(
+      `#${container} input[type="checkbox"]`
+    );
 
-      checkboxs.forEach((item) => {
-        if (!item.checked) notAll = true;
-        if (notAll) selector.checked = false;
+    selector.addEventListener('change', (e) => {
+      selector.checked
+        ? checkboxs.forEach((check) => (check.checked = true))
+        : checkboxs.forEach((check) => (check.checked = false));
+    });
+
+    checkboxs.forEach((item) => {
+      item.addEventListener('change', (e) => {
+        let notAll = false;
+
+        checkboxs.forEach((item) => {
+          if (!item.checked) notAll = true;
+          if (notAll) selector.checked = false;
+        });
       });
     });
-  });
-};
+  };
 
-const handleCheckbox = () => {
-  const inputs = document.querySelectorAll('.input-check');
-  const form = document.querySelector('.form-head');
+  const handleCheckbox = () => {
+    const inputs = document.querySelectorAll('.input-check');
+    const form = document.querySelector('.form-head');
 
-  inputs.forEach(input => {
-    input.addEventListener('change', (e) => form.submit());
-  })
-};
+    inputs.forEach(input => {
+      input.addEventListener('change', (e) => form.submit());
+    })
+  };
 
-const dropdown = (button = '', menu = '') => {
-  const dropBtn = document.getElementById(button);
-  const dropMenu = document.getElementById(menu);
+  const dropdown = (button = '', menu = '') => {
+    const dropBtn = document.getElementById(button);
+    const dropMenu = document.getElementById(menu);
 
-  dropBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    dropMenu.classList.toggle('active');
-    if (dropMenu.classList.contains('active')) {
-      dropBtn.querySelector('.indicator').classList.add('active');
-    } else {
-      dropBtn.querySelector('.indicator').classList.remove('active');
-    }
-  });
-}
-
-const handleFullscreen = (button = '', element = '') => {
-  const btn = document.getElementById(button);
-  const el = document.getElementById(element);
-
-  btn.addEventListener('click', (e) => {
-    if (!document.fullscreenElement) {
-      el.requestFullscreen();
-      btn.innerHTML = `
-        <span class="icon-fullscreen_exit"></span>
-      `;
-      console.clear();
-    } else {
-      document.exitFullscreen();
-      btn.innerHTML = `
-        <span class="icon-fullscreen"></span>
-      `;
-    }
-  })
-};
-
-const handleView = (button = '', view = '') => {
-  const btn = document.getElementById(button);
-  const image = document.querySelector(view);
-
-  btn.addEventListener('click', (e) => {
-    document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
-
-    image.classList.add('on-view');
-  });
-};
-
-const handleButtons = (container = '') => {
-  const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
-
-  buttons.forEach( button => {
-    button.addEventListener('click', ({ target }) => {
-      buttons.forEach(item => item.classList.remove('active'));
-
-      target.classList.add('active');
+    dropBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropMenu.classList.toggle('active');
+      if (dropMenu.classList.contains('active')) {
+        dropBtn.querySelector('.indicator').classList.add('active');
+      } else {
+        dropBtn.querySelector('.indicator').classList.remove('active');
+      }
     });
-  } );
-};
+  }
 
-const handleTables = (button = '', table = '') => {
-  const btn = document.getElementById(button);
-  const tb = document.getElementById(table);
+  const handleFullscreen = (button = '', element = '') => {
+    const btn = document.getElementById(button);
+    const el = document.getElementById(element);
 
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.table.active').forEach(item => item.classList.remove('active'));
+    btn.addEventListener('click', (e) => {
+      if (!document.fullscreenElement) {
+        el.requestFullscreen();
+        btn.innerHTML = `
+          <span class="icon-fullscreen_exit"></span>
+        `;
+        console.clear();
+      } else {
+        document.exitFullscreen();
+        btn.innerHTML = `
+          <span class="icon-fullscreen"></span>
+        `;
+      }
+    })
+  };
 
-    tb.classList.add('active');
-  });
+  const handleView = (button = '', view = '') => {
+    const btn = document.getElementById(button);
+    const image = document.querySelector(view);
 
-}
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.on-view').forEach(view => view.classList.remove('on-view'));
 
-function buttonTable1() {
-    document.querySelector('[buttonT1]').style.background = "#8a2be2";
-    document.querySelector('[buttonT2]').style.background = "#1f1f1f";
-    document.querySelector('[qdata1]').style.display = "block";
-    document.querySelector('[qdata]').style.display = "none";
-}
+      image.classList.add('on-view');
+    });
+  };
 
-function buttonTable2() {
-    document.querySelector('[buttonT2]').style.background = "#8a2be2";
-    document.querySelector('[buttonT1]').style.background = "#1f1f1f";
-    document.querySelector('[qdata]').style.display = "block";
-    document.querySelector('[qdata1]').style.display = "none";
-}
+  const handleButtons = (container = '') => {
+    const buttons = document.querySelectorAll(`${ container } .btn-aeto-crunch`);
 
-//licencia de anyChart
-anychart.licenseKey("aeto.com.mx-16056097-34281685");
+    buttons.forEach( button => {
+      button.addEventListener('click', ({ target }) => {
+        buttons.forEach(item => item.classList.remove('active'));
 
-function winter() {
-stage.suspend();
-layer_1.zIndex(1000000);
-layer_2.zIndex(0);
-stage.resume();
-};
+        target.classList.add('active');
+      });
+    } );
+  };
 
-function spring() {
-stage.suspend();
-layer_1.zIndex(0);
-layer_2.zIndex(1000000);
-stage.resume();
-};
+  const handleTables = (button = '', table = '') => {
+    const btn = document.getElementById(button);
+    const tb = document.getElementById(table);
 
-var expanded = false;
-function showCheckboxes(){
-    var checkboxes = document.getElementById("checkboxes");
-    if (!expanded) {
-        checkboxes.style.display = "block"; 
-        checkboxes.style.position = "fixed";
-        expanded = true;
-    } else {
-        checkboxes.style.display = "none";
-        expanded = false;
-    }
-}
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.table.active').forEach(item => item.classList.remove('active'));
 
-function showCheckboxes2(){
-    var checkboxes = document.getElementById("checkboxes2");
-    if (!expanded) {
-        checkboxes.style.display = "block";
-        checkboxes.style.position = "fixed";
-        expanded = true;
-    } else {
-        checkboxes.style.display = "none";
-        expanded = false;
-    }
-}
+      tb.classList.add('active');
+    });
 
-function showCheckboxes3(){
-    var checkboxes = document.getElementById("checkboxes3");
-    if (!expanded) {
-        checkboxes.style.display = "block";
-        checkboxes.style.position = "fixed";
-        expanded = true;
-    } else {
-        checkboxes.style.display = "none";
-        expanded = false;
-    }
-}
+  }
 
-        window.onload = function dias_sin_inflado(){
-                hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
-                var rango_1 = 0;
-                var rango_2 = 0;
-                var rango_3 = 0;
-                var mes_1 = 0;
-                var mes_2 = 0;
-                var mes_3 = 0;
-                var mes_4 = 0;
+  function buttonTable1() {
+      document.querySelector('[buttonT1]').style.background = "#8a2be2";
+      document.querySelector('[buttonT2]').style.background = "#1f1f1f";
+      document.querySelector('[qdata1]').style.display = "block";
+      document.querySelector('[qdata]').style.display = "none";
+  }
+
+  function buttonTable2() {
+      document.querySelector('[buttonT2]').style.background = "#8a2be2";
+      document.querySelector('[buttonT1]').style.background = "#1f1f1f";
+      document.querySelector('[qdata]').style.display = "block";
+      document.querySelector('[qdata1]').style.display = "none";
+  }
+
+  //licencia de anyChart
+  anychart.licenseKey("aeto.com.mx-16056097-34281685");
+
+  function winter() {
+  stage.suspend();
+  layer_1.zIndex(1000000);
+  layer_2.zIndex(0);
+  stage.resume();
+  };
+
+  function spring() {
+  stage.suspend();
+  layer_1.zIndex(0);
+  layer_2.zIndex(1000000);
+  stage.resume();
+  };
+
+  var expanded = false;
+  function showCheckboxes(){
+      var checkboxes = document.getElementById("checkboxes");
+      if (!expanded) {
+          checkboxes.style.display = "block";
+          checkboxes.style.position = "fixed";
+          expanded = true;
+      } else {
+          checkboxes.style.display = "none";
+          expanded = false;
+      }
+  }
+
+  function showCheckboxes2(){
+      var checkboxes = document.getElementById("checkboxes2");
+      if (!expanded) {
+          checkboxes.style.display = "block";
+          checkboxes.style.position = "fixed";
+          expanded = true;
+      } else {
+          checkboxes.style.display = "none";
+          expanded = false;
+      }
+  }
+
+  function showCheckboxes3(){
+      var checkboxes = document.getElementById("checkboxes3");
+      if (!expanded) {
+          checkboxes.style.display = "block";
+          checkboxes.style.position = "fixed";
+          expanded = true;
+      } else {
+          checkboxes.style.display = "none";
+          expanded = false;
+      }
+  }
+
+          window.onload = function dias_sin_inflado(){
+                  hoy = new Date("{{hoy.month}}/{{hoy.day}}/{{hoy.year}}")
+                  var rango_1 = 0;
+                  var rango_2 = 0;
+                  var rango_3 = 0;
+                  var mes_1 = 0;
+                  var mes_2 = 0;
+                  var mes_3 = 0;
+                  var mes_4 = 0;
 
 
-                {% for vehiculo in vehiculos_todos %}
-                    {% if vehiculo.fecha_de_inflado and vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
-                        fecha1 = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
-                        fecha2 = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
-                        if (fecha1 > fecha2){
-                          vehiculo_fecha{{vehiculo.id}} = fecha1
-                        }
-                        else {
-                          vehiculo_fecha{{vehiculo.id}} = fecha2
-                        }
-                        var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
-                        days = Math.round(difference/(1000 * 3600 * 24));
-                        {% if vehiculo in vehiculos_periodo %}
-                            document.getElementById("dias {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        {% if vehiculo in vehiculos_malos %}
-                            document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        if (0<=days && days<= {{rango_1}} ){
-                            rango_1 = rango_1 + 1;
-                        }
-                        else if ( {{rango_3}} <=days && days<= {{rango_2}}){
-                            rango_2++;
-                        }
-                        else if ( {{rango_4}} <=days){
-                            rango_3++;
-                        }
-                    {% elif vehiculo.fecha_de_inflado %}
-                        vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
-                        var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
-                        days = Math.round(difference/(1000 * 3600 * 24));
-                        {% if vehiculo in vehiculos_periodo %}
-                            document.getElementById("dias {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        {% if vehiculo in vehiculos_malos %}
-                            document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        if (0<=days && days<= {{rango_1}} ){
-                            rango_1 = rango_1 + 1;
-                        }
-                        else if ( {{rango_3}} <=days && days<= {{rango_2}}){
-                            rango_2++;
-                        }
-                        else if ( {{rango_4}} <=days){
-                            rango_3++;
-                        }
-                    {% elif vehiculo.ultima_bitacora_pro.fecha_de_inflado %}  
-                        vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
-                        var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
-                        days = Math.round(difference/(1000 * 3600 * 24));
-                        {% if vehiculo in vehiculos_periodo %}
-                            document.getElementById("dias {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        {% if vehiculo in vehiculos_malos %}
-                            document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
-                        {% endif %}
-                        if (0<=days && days<= {{rango_1}} ){
-                            rango_1 = rango_1 + 1;
-                        }
-                        else if ( {{rango_3}} <=days && days<= {{rango_2}}){
-                            rango_2++;
-                        }
-                        else if ( {{rango_4}} <=days){
-                            rango_3++;
-                        }
-                    {% else %}
-                        {% if not boton_intuitivo == "Malas Entradas" %}
-                            document.getElementById("dias {{vehiculo.id}}").innerText = "Nunca";
-                        {% endif %}
-                        rango_3++;
-                    {% endif %}
-            {% endfor %}
-        
-            
-            
-            function cierre(fecha, num) { 
-                var date = new Date(fecha);
-                /* Javascript recalculará la fecha si el mes es menor de 0 (enero) 
-                  o mayor de 11 (diciembre) */
-                date.setMonth(date.getMonth() - num);
-                /* Obtenemos la fecha en formato YYYY-mm */
-                return parseInt(date.toISOString().substring(5, 7));
-              }
+                  {% for vehiculo in vehiculos_todos %}
+                      {% if vehiculo.fecha_de_inflado and vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
+                          fecha1 = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+                          fecha2 = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+                          if (fecha1 > fecha2){
+                            vehiculo_fecha{{vehiculo.id}} = fecha1
+                          }
+                          else {
+                            vehiculo_fecha{{vehiculo.id}} = fecha2
+                          }
+                          var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
+                          days = Math.round(difference/(1000 * 3600 * 24));
+                          {% if vehiculo in vehiculos_periodo %}
+                              document.getElementById("dias {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          {% if vehiculo in vehiculos_malos %}
+                              document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          if (0<=days && days<= {{rango_1}} ){
+                              rango_1 = rango_1 + 1;
+                          }
+                          else if ( {{rango_3}} <=days && days<= {{rango_2}}){
+                              rango_2++;
+                          }
+                          else if ( {{rango_4}} <=days){
+                              rango_3++;
+                          }
+                      {% elif vehiculo.fecha_de_inflado %}
+                          vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.fecha_de_inflado.month}}/{{vehiculo.fecha_de_inflado.day}}/{{vehiculo.fecha_de_inflado.year}}")
+                          var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
+                          days = Math.round(difference/(1000 * 3600 * 24));
+                          {% if vehiculo in vehiculos_periodo %}
+                              document.getElementById("dias {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          {% if vehiculo in vehiculos_malos %}
+                              document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          if (0<=days && days<= {{rango_1}} ){
+                              rango_1 = rango_1 + 1;
+                          }
+                          else if ( {{rango_3}} <=days && days<= {{rango_2}}){
+                              rango_2++;
+                          }
+                          else if ( {{rango_4}} <=days){
+                              rango_3++;
+                          }
+                      {% elif vehiculo.ultima_bitacora_pro.fecha_de_inflado %}
+                          vehiculo_fecha{{vehiculo.id}} = new Date("{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.month}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.day}}/{{vehiculo.ultima_bitacora_pro.fecha_de_inflado.year}}")
+                          var difference= Math.abs(hoy-vehiculo_fecha{{vehiculo.id}});
+                          days = Math.round(difference/(1000 * 3600 * 24));
+                          {% if vehiculo in vehiculos_periodo %}
+                              document.getElementById("dias {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          {% if vehiculo in vehiculos_malos %}
+                              document.getElementById("dias_malos {{vehiculo.id}}").innerText = days;
+                          {% endif %}
+                          if (0<=days && days<= {{rango_1}} ){
+                              rango_1 = rango_1 + 1;
+                          }
+                          else if ( {{rango_3}} <=days && days<= {{rango_2}}){
+                              rango_2++;
+                          }
+                          else if ( {{rango_4}} <=days){
+                              rango_3++;
+                          }
+                      {% else %}
+                          {% if not boton_intuitivo == "Malas Entradas" %}
+                              document.getElementById("dias {{vehiculo.id}}").innerText = "Nunca";
+                          {% endif %}
+                          rango_3++;
+                      {% endif %}
+              {% endfor %}
 
-            {% for vehiculo_bitacora in bitacoras %}
-                vehiculo_fecha{{vehiculo_bitacora.id}} = new Date("{{vehiculo_bitacora.fecha_de_inflado.month}}/{{vehiculo_bitacora.fecha_de_inflado.day}}/{{vehiculo_bitacora.fecha_de_inflado.year}}")
-                fecha{{vehiculo_bitacora.id}} = vehiculo_fecha{{vehiculo_bitacora.id}}.getMonth() + 1;
-            switch (fecha{{vehiculo_bitacora.id}}){
-                    case (hoy.getMonth() + 1):
-                        mes_1++;
-                        break;
-                    case (hoy.getMonth()):
-                        mes_2++;
-                        break;
-                    case (hoy.getMonth() - 1):
-                        mes_3++;
-                        break;
-                    case (hoy.getMonth() - 2):
-                        mes_4++;
-                        break;
+
+
+              function cierre(fecha, num) {
+                  var date = new Date(fecha);
+                  /* Javascript recalculará la fecha si el mes es menor de 0 (enero)
+                    o mayor de 11 (diciembre) */
+                  date.setMonth(date.getMonth() - num);
+                  /* Obtenemos la fecha en formato YYYY-mm */
+                  return parseInt(date.toISOString().substring(5, 7));
                 }
-                
-            {% endfor %}
 
-            {% for vehiculo_bitacora in bitacoras_pro %}
-                vehiculo_fecha{{vehiculo_bitacora.id}} = new Date("{{vehiculo_bitacora.fecha_de_inflado.month}}/{{vehiculo_bitacora.fecha_de_inflado.day}}/{{vehiculo_bitacora.fecha_de_inflado.year}}")
-                fecha{{vehiculo_bitacora.id}} = vehiculo_fecha{{vehiculo_bitacora.id}}.getMonth() + 1;
-            switch (fecha{{vehiculo_bitacora.id}}){
-                    case (hoy.getMonth() + 1):
-                        mes_1++;
-                        break;
-                    case (hoy.getMonth()):
-                        mes_2++;
-                        break;
-                    case (hoy.getMonth() - 1):
-                        mes_3++;
-                        break;
-                    case (hoy.getMonth() - 2):
-                        mes_4++;
-                        break;
-                }
-                
-            {% endfor %}
+              {% for vehiculo_bitacora in bitacoras %}
+                  vehiculo_fecha{{vehiculo_bitacora.id}} = new Date("{{vehiculo_bitacora.fecha_de_inflado.month}}/{{vehiculo_bitacora.fecha_de_inflado.day}}/{{vehiculo_bitacora.fecha_de_inflado.year}}")
+                  fecha{{vehiculo_bitacora.id}} = vehiculo_fecha{{vehiculo_bitacora.id}}.getMonth() + 1;
+              switch (fecha{{vehiculo_bitacora.id}}){
+                      case (hoy.getMonth() + 1):
+                          mes_1++;
+                          break;
+                      case (hoy.getMonth()):
+                          mes_2++;
+                          break;
+                      case (hoy.getMonth() - 1):
+                          mes_3++;
+                          break;
+                      case (hoy.getMonth() - 2):
+                          mes_4++;
+                          break;
+                  }
 
-// score+spline
-anychart.onDocumentReady(function () {
-// create data set on our data
-var dataSet = anychart.data.set(getData());
+              {% endfor %}
 
-// map data for the first series, take x from the zero column and value from the first column of data set
-var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+              {% for vehiculo_bitacora in bitacoras_pro %}
+                  vehiculo_fecha{{vehiculo_bitacora.id}} = new Date("{{vehiculo_bitacora.fecha_de_inflado.month}}/{{vehiculo_bitacora.fecha_de_inflado.day}}/{{vehiculo_bitacora.fecha_de_inflado.year}}")
+                  fecha{{vehiculo_bitacora.id}} = vehiculo_fecha{{vehiculo_bitacora.id}}.getMonth() + 1;
+              switch (fecha{{vehiculo_bitacora.id}}){
+                      case (hoy.getMonth() + 1):
+                          mes_1++;
+                          break;
+                      case (hoy.getMonth()):
+                          mes_2++;
+                          break;
+                      case (hoy.getMonth() - 1):
+                          mes_3++;
+                          break;
+                      case (hoy.getMonth() - 2):
+                          mes_4++;
+                          break;
+                  }
 
-// create line chart
-var chart = anychart.line();
+              {% endfor %}
 
-chart.yScale().ticks().interval(1);
+  // score+spline
+  anychart.onDocumentReady(function () {
+  // create data set on our data
+  var dataSet = anychart.data.set(getData());
 
-// turn on chart animation
-chart.animation(true);
+  // map data for the first series, take x from the zero column and value from the first column of data set
+  var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
 
-// turn on the crosshair
-chart
-.crosshair()
-.enabled(true)
-.yLabel({ enabled: false })
-.yStroke(null)
-.xStroke('#a349a4')
-.zIndex(99);
+  // create line chart
+  var chart = anychart.line();
 
-chart
-.yAxis()
-.title('')
-.labels({ padding: [5, 5, 0, 5] });
-chart.xAxis().title('');
+  chart.yScale().ticks().interval(1);
 
-// set chart title text settings
-chart.title(
-);
+  // turn on chart animation
+  chart.animation(true);
 
-// create first series with mapped data
-var firstSeries = chart.spline(firstSeriesData);
-firstSeries.name('vehiculos');
-firstSeries.markers().zIndex(100);
-firstSeries.hovered().markers().enabled(true).type('circle').size(4);
+  // turn on the crosshair
+  chart
+  .crosshair()
+  .enabled(true)
+  .yLabel({ enabled: false })
+  .yStroke(null)
+  .xStroke('#a349a4')
+  .zIndex(99);
 
-// create first series with mapped data
-firstSeries.normal().fill("#a349a4");
-firstSeries.hovered().fill("#a349a4", 0.1);
-firstSeries.selected().fill("#a349a4", 0.5);
-firstSeries.normal().stroke("#a349a4");
-firstSeries.hovered().stroke("#a349a4", 2);
-firstSeries.selected().stroke("#a349a4", 4);
+  chart
+  .yAxis()
+  .title('')
+  .labels({ padding: [5, 5, 0, 5] });
+  chart.xAxis().title('');
 
-// set container id for the chart
-chart.container('score-spline');
+  // set chart title text settings
+  chart.title(
+  );
 
-//Set Background
-var background = chart.background();
-background.stroke('0 #000');
-background.corners();
-background.enabled(false);
+  // create first series with mapped data
+  var firstSeries = chart.spline(firstSeriesData);
+  firstSeries.name('vehiculos');
+  firstSeries.markers().zIndex(100);
+  firstSeries.hovered().markers().enabled(true).type('circle').size(4);
 
-// initiate chart drawing
-chart.draw();
+  // create first series with mapped data
+  firstSeries.normal().fill("#a349a4");
+  firstSeries.hovered().fill("#a349a4", 0.1);
+  firstSeries.selected().fill("#a349a4", 0.5);
+  firstSeries.normal().stroke("#a349a4");
+  firstSeries.hovered().stroke("#a349a4", 2);
+  firstSeries.selected().stroke("#a349a4", 4);
 
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
+  // set container id for the chart
+  chart.container('score-spline');
 
-});
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
 
-function getData() {
-return [
-['Oct', 1],
-['Nov', 2],
-['Dec', 1],
-['Jan', 0]
-]
-}
-// score+spline2
-anychart.onDocumentReady(function () {
-// create data set on our data
-var dataSet_1 = anychart.data.set(getData());
+  // initiate chart drawing
+  chart.draw();
 
-// map data for the first series, take x from the zero column and value from the first column of data set
-var firstSeriesData1 = dataSet_1.mapAs({ x: 0, value: 1 });
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
 
-// create line chart
-var chart = anychart.line();
-
-chart.yScale().ticks().interval(1);
-
-// turn on chart animation
-chart.animation(true);
-
-// turn on the crosshair
-chart
-.crosshair()
-.enabled(true)
-.yLabel({ enabled: false })
-.yStroke(null)
-.xStroke('#026cf5')
-.zIndex(99);
-
-chart
-.yAxis()
-.title('')
-.labels({ padding: [5, 5, 0, 5] });
-chart.xAxis().title('');
-
-// set chart title text settings
-chart.title(
-);
-
-// create first series with mapped data
-var firstSeries1 = chart.spline(firstSeriesData1);
-firstSeries1.name('vehiculos');
-firstSeries1.markers().zIndex(100);
-firstSeries1.hovered().markers().enabled(true).type('circle').size(4);
-
-// create first series with mapped data
-firstSeries1.normal().fill("#026cf5");
-firstSeries1.hovered().fill("#026cf5", 0.1);
-firstSeries1.selected().fill("#026cf5", 0.5);
-firstSeries1.normal().stroke("#026cf5");
-firstSeries1.hovered().stroke("#026cf5", 2);
-firstSeries1.selected().stroke("#026cf5", 4);
-
-// set container id for the chart
-chart.container('score-spline2');
-
-//Set Background
-var background = chart.background();
-background.stroke('0 #000');
-background.corners();
-background.enabled(false);
-
-// initiate chart drawing
-chart.draw();
-
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
-
-});
-
-function getData() {
-return [
-['Oct', 1],
-['Nov', 2],
-['Dec', 1],
-['Jan', 0]
-]
-}
-
-//Score Guage
-anychart.onDocumentReady(function () {
-var axisMaximum = 100;
-var data = [
-{% if porcentaje_inflado %}
-    {% if porcentaje_inflado == "Nada" %}
-        0
-    {% else %}
-        {{porcentaje_inflado}}
-    {% endif %}
-{% else %}
-    0
-{% endif %}
-];
-var dataSet = anychart.data.set(data);
-
-var circularGauge = anychart.gauges.circular();
-circularGauge.data(dataSet);
-circularGauge.fill(false)
-.stroke(null)
-.padding(0)
-.startAngle(235)
-.sweepAngle(250);
-
-circularGauge.needle()
-        .stroke('2 #545f69')
-        .startRadius('2%')
-        .endRadius('100%')
-        .startWidth('0.1%')
-        .endWidth('0.1%')
-        .middleWidth('0.9%');
-
-var circularAxis = circularGauge.axis().radius(70).width(50).fill('#969696');
-circularAxis.scale()
-.minimum(0)
-.maximum(axisMaximum);
-circularAxis.labels().enabled(false);
-circularAxis.ticks().enabled(false);
-circularAxis.minorTicks().enabled(false);
-
-circularGauge.bar(0).dataIndex(0)
-.radius(70)
-.width(50)
-.fill('#a349a4')
-.stroke(null)
-.zIndex(50);
-
-circularGauge.bounds('0%','0%', '100%', '100%');
-
-//enable gauge animation
-animateGauge(circularGauge, 1000);
-
-circularGauge.cap()
-        .radius('10%')
-        .enabled(true)
-        .fill('#545f69');
-
-// Gauge percentage
-circularGauge.label(0)
-.text('<span style="">' + data[0] + '%</span>')
-.useHtml(true)
-.fontSize(17)
-.fontColor('#a349a4')
-.hAlign('center')
-.width("50%")
-.height("80%")
-.anchor('center')
-.offsetY("-100%")
-.offsetX("50%")
-.zIndex(10);
-
-circularGauge.container('score-gauge').draw();
-
-/**
-* Enables gauge animation.
-*
-* @param {anychart.circularGaugeModule.Chart} gauge chart instance.
-* @param {number} animation duration
-*/
-function animateGauge(chart, duration) {
-var originalValue = chart.data().get(0, 'value');
-// set 0 as initial data value 
-chart.data().set(0, 'value', 0);
-
-// launch the animation when the chart is rendered
-chart.listenOnce('chartDraw', function() {
-
-  // provide animation timing
-  var start = performance.now();
-  requestAnimationFrame(function animationStep(time) {
-    var timePassed = time - start;
-    var timeFraction = timePassed / duration;
-    if (timePassed > duration) {
-      timePassed = duration;
-      timeFraction = 1
-    }
-    //Set Background
-    var background = chart.background();
-    background.stroke('0 #000');
-    background.corners();
-    background.enabled(false);
-    // chart credits false
-    var credits = chart.credits();
-    credits.enabled(false);
-
-    
-    //redraw by increasing the value from zero to the required one
-    chart.data().set(0, 'value', originalValue * timeFraction);
-    
-    if (timePassed < duration) {
-      requestAnimationFrame(animationStep);
-    }
   });
-});
-}
-});
-// score-gauge2
-anychart.onDocumentReady(function () {
 
-var axisMaximum1 = 100;
-var data1 = [
-{% if porcentaje_entrada_correcta %}
-    {% if porcentaje_entrada_correcta == "Nada" %}
-        0
-    {% else %}
-        {{porcentaje_entrada_correcta}}
-    {% endif %}
-{% else %}
-    0
-{% endif %}
-];
-var dataSet1 = anychart.data.set(data1);
+  function getData() {
+  return [
+  ['Oct', 1],
+  ['Nov', 2],
+  ['Dec', 1],
+  ['Jan', 0]
+  ]
+  }
+  // score+spline2
+  anychart.onDocumentReady(function () {
+  // create data set on our data
+  var dataSet_1 = anychart.data.set(getData());
 
-var circularGauge1 = anychart.gauges.circular();
-circularGauge1.data(dataSet1);
-circularGauge1.fill(false)
-.stroke(null)
-.padding(0)
-.startAngle(235)
-.sweepAngle(250);
+  // map data for the first series, take x from the zero column and value from the first column of data set
+  var firstSeriesData1 = dataSet_1.mapAs({ x: 0, value: 1 });
 
-circularGauge1.needle()
-        .stroke('2 #545f69')
-        .startRadius('2%')
-        .endRadius('100%')
-        .startWidth('0.1%')
-        .endWidth('0.1%')
-        .middleWidth('0.9%');
+  // create line chart
+  var chart = anychart.line();
 
-var circularAxis = circularGauge1.axis().radius(70).width(50).fill('#969696');
-circularAxis.scale()
-.minimum(0)
-.maximum(axisMaximum1);
-circularAxis.labels().enabled(false);
-circularAxis.ticks().enabled(false);
-circularAxis.minorTicks().enabled(false);
+  chart.yScale().ticks().interval(1);
 
-circularGauge1.bar(0).dataIndex(0)
-.radius(70)
-.width(50)
-.fill('#026cf5')
-.stroke(null)
-.zIndex(50);
+  // turn on chart animation
+  chart.animation(true);
 
-circularGauge1.bounds('0%','0%', '100%', '100%');
+  // turn on the crosshair
+  chart
+  .crosshair()
+  .enabled(true)
+  .yLabel({ enabled: false })
+  .yStroke(null)
+  .xStroke('#026cf5')
+  .zIndex(99);
 
-//enable gauge animation
-animateGauge(circularGauge1, 1000);
-circularGauge1.cap()
-        .radius('10%')
-        .enabled(true)
-        .fill('#545f69');
+  chart
+  .yAxis()
+  .title('')
+  .labels({ padding: [5, 5, 0, 5] });
+  chart.xAxis().title('');
 
-//Gauge percentage
-circularGauge1.label(0)
-.text('<span style="">' + data1[0] + '%</span>')
-.useHtml(true)
-.fontSize(17)
-.fontColor('#026cf5')
-.hAlign('center')
-.width("50%")
-.height("80%")
-.anchor('center')
-.offsetY("-100%")
-.offsetX("50%")
-.zIndex(10);
+  // set chart title text settings
+  chart.title(
+  );
 
-circularGauge1.container('score-gauge2').draw();
+  // create first series with mapped data
+  var firstSeries1 = chart.spline(firstSeriesData1);
+  firstSeries1.name('vehiculos');
+  firstSeries1.markers().zIndex(100);
+  firstSeries1.hovered().markers().enabled(true).type('circle').size(4);
 
-/**
-* Enables gauge animation.
-*
-* @param {anychart.circularGauge1Module.Chart} gauge chart instance.
-* @param {number} animation duration
-*/
-function animateGauge(chart, duration) {
-var originalValue = chart.data().get(0, 'value');
-// set 0 as initial data value 
-chart.data().set(0, 'value', 0);
+  // create first series with mapped data
+  firstSeries1.normal().fill("#026cf5");
+  firstSeries1.hovered().fill("#026cf5", 0.1);
+  firstSeries1.selected().fill("#026cf5", 0.5);
+  firstSeries1.normal().stroke("#026cf5");
+  firstSeries1.hovered().stroke("#026cf5", 2);
+  firstSeries1.selected().stroke("#026cf5", 4);
 
-// launch the animation when the chart is rendered
-chart.listenOnce('chartDraw', function() {
+  // set container id for the chart
+  chart.container('score-spline2');
 
-  // provide animation timing
-  var start = performance.now();
-  requestAnimationFrame(function animationStep(time) {
-    var timePassed = time - start;
-    var timeFraction = timePassed / duration;
-    if (timePassed > duration) {
-      timePassed = duration;
-      timeFraction = 1;
-    }
-    //Set Background
-    var background = chart.background();
-    background.stroke('0 #000');
-    background.corners();
-    background.enabled(false);
-    // chart credits false
-    var credits = chart.credits();
-    credits.enabled(false);
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
 
-    
-    //redraw by increasing the value from zero to the required one
-    chart.data().set(0, 'value', originalValue * timeFraction);
-    
-    if (timePassed < duration) {
-      requestAnimationFrame(animationStep);
-    }
+  // initiate chart drawing
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
   });
-});
-}
-});
 
-            // var ctx = document.getElementById('myChart').getContext('2d');
-            // var myChart = new Chart(ctx, {
-            //     type: 'doughnut',
-            //     data: {
-            //         labels: ['0-{{rango_1}} días', '{{rango_3}}-{{rango_2}} días', '{{rango_2}}+'],
-            //         datasets: [{
-            //             label: '# of Votes',
-            //             data: [rango_1, rango_2, rango_3],
-            //             backgroundColor: [
-            //                 'rgba(51, 241, 17, 0.2)',
-            //                 'rgba(255, 206, 86, 0.2)',
-            //                 'rgba(255, 99, 132, 0.2)',
-            //             ],
-            //             borderColor: [
-            //                 'rgba(51, 241, 17, 1)',
-            //                 'rgba(255, 206, 86, 1)',
-            //                 'rgba(255, 99, 132, 1)',
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         plugins: {
-            //             title: {
-            //                 display: true,
-            //                 text: 'Periodos de inflado',
-            //                 font: {
-            //                     family: "Montserrat",
-            //                     size: 18,
-            //                     lineHeight: 0,
-            //                 },
-            //                 color: 'white',
-            //             }
-            //         },
-            //         // scales: {
-            //         //     y: {
-            //         //         beginAtZero: true
-            //         //     }
-            //         // }
-            //     }
-            // });
+  function getData() {
+  return [
+  ['Oct', 1],
+  ['Nov', 2],
+  ['Dec', 1],
+  ['Jan', 0]
+  ]
+  }
 
-//Doughnut
-anychart.onDocumentReady(function () {
+  //Score Guage
+  anychart.onDocumentReady(function () {
+  var axisMaximum = 100;
+  var data = [
+  {% if porcentaje_inflado %}
+      {% if porcentaje_inflado == "Nada" %}
+          0
+      {% else %}
+          {{porcentaje_inflado}}
+      {% endif %}
+  {% else %}
+      0
+  {% endif %}
+  ];
+  var dataSet = anychart.data.set(data);
 
-// create pie chart with passed data
-var chart = anychart.pie([
-{x: "0-{{rango_1}} dias", value: rango_1, fill: '#026CF5'},
-{x: "{{rango_3}}-{{rango_2}} dias", value: rango_2, fill:'#D0F533'},
-{x: "+{{rango_2}} dias", value: rango_3, fill:'#f0412c'}
-]);
-// set the position of the legend
-var legend = chart.legend();
-legend.position('right');
-legend.align('top');
-legend.itemsLayout('vertical');
+  var circularGauge = anychart.gauges.circular();
+  circularGauge.data(dataSet);
+  circularGauge.fill(false)
+  .stroke(null)
+  .padding(0)
+  .startAngle(235)
+  .sweepAngle(250);
 
-// turn on chart animation
-chart.animation(true);
+  circularGauge.needle()
+          .stroke('2 #545f69')
+          .startRadius('2%')
+          .endRadius('100%')
+          .startWidth('0.1%')
+          .endWidth('0.1%')
+          .middleWidth('0.9%');
 
-//Set Background
-var background = chart.background();
-background.stroke('0 #000');
-background.corners();
-background.enabled(false);
-// set chart title text settings
-chart.title('')
-//set chart radius
-.radius('100%')
-// create empty area in pie chart
-.innerRadius('60%');
-var title = chart.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
+  var circularAxis = circularGauge.axis().radius(70).width(50).fill('#969696');
+  circularAxis.scale()
+  .minimum(0)
+  .maximum(axisMaximum);
+  circularAxis.labels().enabled(false);
+  circularAxis.ticks().enabled(false);
+  circularAxis.minorTicks().enabled(false);
 
-// set container id for the chart
-chart.container('doughnut');
-// initiate chart drawing
-chart.draw();
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
+  circularGauge.bar(0).dataIndex(0)
+  .radius(70)
+  .width(50)
+  .fill('#a349a4')
+  .stroke(null)
+  .zIndex(50);
 
-// horizontal expandable
-//chart.legend().itemsLayout('horizontal');
-});
+  circularGauge.bounds('0%','0%', '100%', '100%');
 
-            // var ctx = document.getElementById('myChart2').getContext('2d');
-            // var myChart = new Chart(ctx, {
-            //     type: 'line',
-            //     data: {
-            //         labels: ["{{mes_4}}", "{{mes_3}}", "{{mes_2}}", "{{mes_1}}"],
-            //         datasets: [{
-            //             label: 'Inflados',
-            //             data: [mes_4, mes_3, mes_2, mes_1],
-            //             backgroundColor: [
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //             ],
-            //             borderColor: [
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //                 'rgba(18, 188, 200, 1)',
-            //             ],
-            //             borderWidth: 1
-            //         },
-            //         {
-            //             label: 'Entrada',
-            //             data: [{{cantidad_entrada_mes4}}, {{cantidad_entrada_mes3}}, {{cantidad_entrada_mes2}}, {{cantidad_entrada_mes1}}],
-            //             backgroundColor: [
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)'
-            //             ],
-            //             borderColor: [
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)'
-            //             ],
-            //             borderWidth: 1
-            //         },
-            //         {
-            //             label: 'Doble Entrada',
-            //             data: [{% for mes, cantidad in cantidad_doble_entrada.items %}{{cantidad}}, {% endfor %}],
-            //             backgroundColor: [
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //             ],
-            //             borderColor: [
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //                 'rgba(255, 0, 0, 0.6)',
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         elements: {
-            //             point: {
-            //                 backgroundColor: "yellow"
-            //             }
-            //         },
-            //         plugins: {
-            //             title: {
-            //                 display: true,
-            //                 text: 'Cantidad de vehículos Vs Inflados',
-            //                 font: {
-            //                     family: "Montserrat",
-            //                     size: 18,
-            //                     lineHeight: 0
-            //                 },
-            //                 color: 'white',
-            //             },
-            //         },
-            //         scales: {
-            //             y: {
-            //                 beginAtZero: true
-            //             }
-            //         }
-            //     },
-            // });
-//line                
-anychart.onDocumentReady(function () {
+  //enable gauge animation
+  animateGauge(circularGauge, 1000);
 
-// set the default types of legend icons
-anychart.theme({
-chart: {
-defaultSeriesSettings: {
-spline: {legendItem: {iconType: "spline"}},
-column: {legendItem: {iconType: "column"}}
-}
-}
-});
+  circularGauge.cap()
+          .radius('10%')
+          .enabled(true)
+          .fill('#545f69');
 
-// create data set on our data
-var dataSet = anychart.data.set(getData());
+  // Gauge percentage
+  circularGauge.label(0)
+  .text('<span style="">' + data[0] + '%</span>')
+  .useHtml(true)
+  .fontSize(17)
+  .fontColor('#a349a4')
+  .hAlign('center')
+  .width("50%")
+  .height("80%")
+  .anchor('center')
+  .offsetY("-100%")
+  .offsetX("50%")
+  .zIndex(10);
 
-// map data for the first series, take x from the zero column and value from the first column of data set
-var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+  circularGauge.container('score-gauge').draw();
 
-// map data for the second series, take x from the zero column and value from the second column of data set
-var seriesData_2 = dataSet.mapAs({'x': 0, 'value': 2});
+  /**
+  * Enables gauge animation.
+  *
+  * @param {anychart.circularGaugeModule.Chart} gauge chart instance.
+  * @param {number} animation duration
+  */
+  function animateGauge(chart, duration) {
+  var originalValue = chart.data().get(0, 'value');
+  // set 0 as initial data value
+  chart.data().set(0, 'value', 0);
 
-// map data for the third series, take x from the zero column and value from the third column of data set
-var seriesData_3 = dataSet.mapAs({'x': 0, 'value': 3});
+  // launch the animation when the chart is rendered
+  chart.listenOnce('chartDraw', function() {
 
-// create line chart
-var chart = anychart.line();
-
-// turn on chart animation
-chart.animation(true);
-
-// set chart padding
-chart.padding([10, 20, 5, 20]);
-
-// turn on the crosshair
-chart.crosshair()
-        .enabled(true)
-        .yLabel(false)
-        .yStroke(null);
-
-// set tooltip mode to point
-chart.tooltip().positionMode('point');
-
-// set chart title text settings
-// chart.title('Cantidad de vehiculos Vs Inflados');
-var title = chart.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
-
-// set yAxis title
-chart.xAxis().labels().padding(5);
-
-// create first series with mapped data
-var series_1 = chart.column(seriesData_1);
-series_1.normal().fill("#0097fc");
-series_1.hovered().fill("#0097fc", 0.1);
-series_1.selected().fill("#0097fc", 0.5);
-series_1.normal().stroke("#0097fc");
-series_1.hovered().stroke("#0097fc", 2);
-series_1.selected().stroke("#0097fc", 4);
-series_1.name('Inflados');
-series_1.hovered().markers()
-        .enabled(true)
-        .type('circle')
-        .size(4);
-series_1.tooltip()
-        .position('right')
-        .anchor('left-center')
-        .offsetX(5)
-        .offsetY(5);
-
-// create second series with mapped data
-var series_2 = chart.spline(seriesData_2);
-series_2.normal().stroke("#A349A4", 4);
-series_2.hovered().stroke("#A349A4", 2);
-series_2.selected().stroke("#A349A4", 6);
-series_2.name('Mala Entrada');
-series_2.hovered().markers()
-        .enabled(true)
-        .type('circle')
-        .size(4);
-series_2.tooltip()
-        .position('right')
-        .anchor('left-center')
-        .offsetX(5)
-        .offsetY(5);
-
- // enable and configure markers on the first series
-series_2.markers(true);
-series_2.markers().type("circle");
-series_2.markers().fill("#A349A4");
-series_2.markers().size(5);
+    // provide animation timing
+    var start = performance.now();
+    requestAnimationFrame(function animationStep(time) {
+      var timePassed = time - start;
+      var timeFraction = timePassed / duration;
+      if (timePassed > duration) {
+        timePassed = duration;
+        timeFraction = 1
+      }
+      //Set Background
+      var background = chart.background();
+      background.stroke('0 #000');
+      background.corners();
+      background.enabled(false);
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
 
 
-// create third series with mapped data
-var series_3 = chart.spline(seriesData_3);
-series_3.normal().stroke("#F0412C", 4);
-series_3.hovered().stroke("#F0412C", 2);
-series_3.selected().stroke("#F0412C", 6);
-series_3.name('Doble Entrada');
-series_3.hovered().markers()
-        .enabled(true)
-        .type('circle')
-        .size(4);
-series_3.tooltip()
-        .position('right')
-        .anchor('left-center')
-        .offsetX(5)
-        .offsetY(5);
+      //redraw by increasing the value from zero to the required one
+      chart.data().set(0, 'value', originalValue * timeFraction);
 
-// enable and configure markers on the first series
-series_3.markers(true);
-series_3.markers().type("square");
-series_3.markers().fill("#F0412C");
-series_3.markers().size(5);   
+      if (timePassed < duration) {
+        requestAnimationFrame(animationStep);
+      }
+    });
+  });
+  }
+  });
+  // score-gauge2
+  anychart.onDocumentReady(function () {
 
-// turn the legend on
-chart.legend()
-        .enabled(true)
-        .fontSize(13)
-        .padding([0, 0, 10, 0]);
+  var axisMaximum1 = 100;
+  var data1 = [
+  {% if porcentaje_entrada_correcta %}
+      {% if porcentaje_entrada_correcta == "Nada" %}
+          0
+      {% else %}
+          {{porcentaje_entrada_correcta}}
+      {% endif %}
+  {% else %}
+      0
+  {% endif %}
+  ];
+  var dataSet1 = anychart.data.set(data1);
 
-chart.yScale().ticks().interval(1);
+  var circularGauge1 = anychart.gauges.circular();
+  circularGauge1.data(dataSet1);
+  circularGauge1.fill(false)
+  .stroke(null)
+  .padding(0)
+  .startAngle(235)
+  .sweepAngle(250);
 
-// set container id for the chart
-chart.container('line-graph');
+  circularGauge1.needle()
+          .stroke('2 #545f69')
+          .startRadius('2%')
+          .endRadius('100%')
+          .startWidth('0.1%')
+          .endWidth('0.1%')
+          .middleWidth('0.9%');
 
-//Set Background
-var background = chart.background();
-        background.stroke('0 #000');
-        background.corners();
-        background.enabled(false);
+  var circularAxis = circularGauge1.axis().radius(70).width(50).fill('#969696');
+  circularAxis.scale()
+  .minimum(0)
+  .maximum(axisMaximum1);
+  circularAxis.labels().enabled(false);
+  circularAxis.ticks().enabled(false);
+  circularAxis.minorTicks().enabled(false);
 
-// initiate chart drawing
-chart.draw();
+  circularGauge1.bar(0).dataIndex(0)
+  .radius(70)
+  .width(50)
+  .fill('#026cf5')
+  .stroke(null)
+  .zIndex(50);
 
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
+  circularGauge1.bounds('0%','0%', '100%', '100%');
 
-// horizontal expandable
-chart.legend().itemsLayout('horizontal');
-});
+  //enable gauge animation
+  animateGauge(circularGauge1, 1000);
+  circularGauge1.cap()
+          .radius('10%')
+          .enabled(true)
+          .fill('#545f69');
 
-function getData() {
-return [
-    ['{{mes_4}}', mes_4, {{cantidad_entrada_mes4}}, {{doble_entrada.1.mes4}} + {{doble_entrada.3.mes4}}],
-    ['{{mes_3}}', mes_3, {{cantidad_entrada_mes3}}, {{doble_entrada.1.mes3}} + {{doble_entrada.3.mes3}}],
-    ['{{mes_2}}', mes_2, {{cantidad_entrada_mes2}}, {{doble_entrada.1.mes2}} + {{doble_entrada.3.mes2}}],
-    ['{{mes_1}}', mes_1, {{cantidad_entrada_mes1}}, {{doble_entrada.1.mes1}} + {{doble_entrada.3.mes1}}],
-]
-}
+  //Gauge percentage
+  circularGauge1.label(0)
+  .text('<span style="">' + data1[0] + '%</span>')
+  .useHtml(true)
+  .fontSize(17)
+  .fontColor('#026cf5')
+  .hAlign('center')
+  .width("50%")
+  .height("80%")
+  .anchor('center')
+  .offsetY("-100%")
+  .offsetX("50%")
+  .zIndex(10);
 
-            /*radar1*/
+  circularGauge1.container('score-gauge2').draw();
 
-            // var ctx = document.getElementById('radar1').getContext('2d');
-            // var myChart1 = new Chart(ctx, {
-            //     type: 'radar',
-            //     data: {
-            //         labels: [
-            //                 {% if clases_mas_frecuentes_infladas %}
-            //                     {% for clase in clases_mas_frecuentes_infladas %}
-            //                         '{{clase}}', 
-            //                     {% endfor %}
-            //                 {% else %}
-            //                     0, 0, 0, 0, 0, 0, 0, 0
-            //                 {% endif %}
-            //                     ],
-            //         datasets: [{
-            //             label: '%',
-            //             data: [
-            //                 {% if clases_mas_frecuentes_infladas %}
-            //                     {% for clase, num in clases_mas_frecuentes_infladas.items %}
-            //                         '{{num}}', 
-            //                     {% endfor %}
-            //                     ],
-            //                 {% else %}
-            //                     0, 0, 0, 0, 0, 0, 0, 0
-            //                     ],
-            //             pointRadius: 0,
-            //             pointHitRadius: 0,
-            //             {% endif %}
+  /**
+  * Enables gauge animation.
+  *
+  * @param {anychart.circularGauge1Module.Chart} gauge chart instance.
+  * @param {number} animation duration
+  */
+  function animateGauge(chart, duration) {
+  var originalValue = chart.data().get(0, 'value');
+  // set 0 as initial data value
+  chart.data().set(0, 'value', 0);
 
-            //             backgroundColor: [
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)',
-            //                 'rgba(246, 170, 111, 0.2)'
-            //             ],
-            //             borderColor: [
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)',
-            //                 'rgba(246, 170, 111, 1)'
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         plugins: {
-            //             legend: {
-            //                 display: false
-            //             },
-            //             title: {
-            //                 display: true,
-            //                 text: 'Porcentaje de clase de vehículos inflados',
-            //                 font: {
-            //                     family: "Montserrat",
-            //                     size: 18,
-            //                     lineHeight: 0
-            //                 },
-            //                 color: 'white'
-            //             }
-            //         },
-            //         scales: {
-            //             y: {
-            //                 display: false
-            //             },
-            //             r: {
-            //                 pointLabels:{
-            //                     /*ma o meno así*/
-            //                     display: false,
-            //                     font:{
-            //                         size: 24
-            //                     }
-            //                 },
-            //                 grid:{
-            //                     color:'#fff'
-            //                 },
-            //                 angleLines:{
-            //                     color:'#fff'
-            //                 },
-            //                 max: {% if radar_max %}{{radar_max}} + 1{% else %}10{% endif %},
-            //                 min: {% if radar_min %}{{radar_min}}{% else %}0{% endif %},
-            //                 ticks: {
-            //                     display: false,
-            //                     color: 'white',
-            //                     showLabelBackdrop: false
-            //                 },
-            //             }
-            //         }
-            //     }
-            // });
+  // launch the animation when the chart is rendered
+  chart.listenOnce('chartDraw', function() {
 
+    // provide animation timing
+    var start = performance.now();
+    requestAnimationFrame(function animationStep(time) {
+      var timePassed = time - start;
+      var timeFraction = timePassed / duration;
+      if (timePassed > duration) {
+        timePassed = duration;
+        timeFraction = 1;
+      }
+      //Set Background
+      var background = chart.background();
+      background.stroke('0 #000');
+      background.corners();
+      background.enabled(false);
+      // chart credits false
+      var credits = chart.credits();
+      credits.enabled(false);
+
+
+      //redraw by increasing the value from zero to the required one
+      chart.data().set(0, 'value', originalValue * timeFraction);
+
+      if (timePassed < duration) {
+        requestAnimationFrame(animationStep);
+      }
+    });
+  });
+  }
+  });
+
+              // var ctx = document.getElementById('myChart').getContext('2d');
+              // var myChart = new Chart(ctx, {
+              //     type: 'doughnut',
+              //     data: {
+              //         labels: ['0-{{rango_1}} días', '{{rango_3}}-{{rango_2}} días', '{{rango_2}}+'],
+              //         datasets: [{
+              //             label: '# of Votes',
+              //             data: [rango_1, rango_2, rango_3],
+              //             backgroundColor: [
+              //                 'rgba(51, 241, 17, 0.2)',
+              //                 'rgba(255, 206, 86, 0.2)',
+              //                 'rgba(255, 99, 132, 0.2)',
+              //             ],
+              //             borderColor: [
+              //                 'rgba(51, 241, 17, 1)',
+              //                 'rgba(255, 206, 86, 1)',
+              //                 'rgba(255, 99, 132, 1)',
+              //             ],
+              //             borderWidth: 1
+              //         }]
+              //     },
+              //     options: {
+              //         plugins: {
+              //             title: {
+              //                 display: true,
+              //                 text: 'Periodos de inflado',
+              //                 font: {
+              //                     family: "Montserrat",
+              //                     size: 18,
+              //                     lineHeight: 0,
+              //                 },
+              //                 color: 'white',
+              //             }
+              //         },
+              //         // scales: {
+              //         //     y: {
+              //         //         beginAtZero: true
+              //         //     }
+              //         // }
+              //     }
+              // });
+
+  //Doughnut
+  anychart.onDocumentReady(function () {
+
+  // create pie chart with passed data
+  var chart = anychart.pie([
+  {x: "0-{{rango_1}} dias", value: rango_1, fill: '#026CF5'},
+  {x: "{{rango_3}}-{{rango_2}} dias", value: rango_2, fill:'#D0F533'},
+  {x: "+{{rango_2}} dias", value: rango_3, fill:'#f0412c'}
+  ]);
+  // set the position of the legend
+  var legend = chart.legend();
+  legend.position('right');
+  legend.align('top');
+  legend.itemsLayout('vertical');
+
+  // turn on chart animation
+  chart.animation(true);
+
+  //Set Background
+  var background = chart.background();
+  background.stroke('0 #000');
+  background.corners();
+  background.enabled(false);
+  // set chart title text settings
+  chart.title('')
+  //set chart radius
+  .radius('100%')
+  // create empty area in pie chart
+  .innerRadius('60%');
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  // set container id for the chart
+  chart.container('doughnut');
+  // initiate chart drawing
+  chart.draw();
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  // horizontal expandable
+  //chart.legend().itemsLayout('horizontal');
+  });
+
+              // var ctx = document.getElementById('myChart2').getContext('2d');
+              // var myChart = new Chart(ctx, {
+              //     type: 'line',
+              //     data: {
+              //         labels: ["{{mes_4}}", "{{mes_3}}", "{{mes_2}}", "{{mes_1}}"],
+              //         datasets: [{
+              //             label: 'Inflados',
+              //             data: [mes_4, mes_3, mes_2, mes_1],
+              //             backgroundColor: [
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //             ],
+              //             borderColor: [
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //                 'rgba(18, 188, 200, 1)',
+              //             ],
+              //             borderWidth: 1
+              //         },
+              //         {
+              //             label: 'Entrada',
+              //             data: [{{cantidad_entrada_mes4}}, {{cantidad_entrada_mes3}}, {{cantidad_entrada_mes2}}, {{cantidad_entrada_mes1}}],
+              //             backgroundColor: [
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)'
+              //             ],
+              //             borderColor: [
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)'
+              //             ],
+              //             borderWidth: 1
+              //         },
+              //         {
+              //             label: 'Doble Entrada',
+              //             data: [{% for mes, cantidad in cantidad_doble_entrada.items %}{{cantidad}}, {% endfor %}],
+              //             backgroundColor: [
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //             ],
+              //             borderColor: [
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //                 'rgba(255, 0, 0, 0.6)',
+              //             ],
+              //             borderWidth: 1
+              //         }]
+              //     },
+              //     options: {
+              //         elements: {
+              //             point: {
+              //                 backgroundColor: "yellow"
+              //             }
+              //         },
+              //         plugins: {
+              //             title: {
+              //                 display: true,
+              //                 text: 'Cantidad de vehículos Vs Inflados',
+              //                 font: {
+              //                     family: "Montserrat",
+              //                     size: 18,
+              //                     lineHeight: 0
+              //                 },
+              //                 color: 'white',
+              //             },
+              //         },
+              //         scales: {
+              //             y: {
+              //                 beginAtZero: true
+              //             }
+              //         }
+              //     },
+              // });
+  //line
+  anychart.onDocumentReady(function () {
+
+  // set the default types of legend icons
+  anychart.theme({
+  chart: {
+  defaultSeriesSettings: {
+  spline: {legendItem: {iconType: "spline"}},
+  column: {legendItem: {iconType: "column"}}
+  }
+  }
+  });
+
+  // create data set on our data
+  var dataSet = anychart.data.set(getData());
+
+  // map data for the first series, take x from the zero column and value from the first column of data set
+  var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+
+  // map data for the second series, take x from the zero column and value from the second column of data set
+  var seriesData_2 = dataSet.mapAs({'x': 0, 'value': 2});
+
+  // map data for the third series, take x from the zero column and value from the third column of data set
+  var seriesData_3 = dataSet.mapAs({'x': 0, 'value': 3});
+
+  // create line chart
+  var chart = anychart.line();
+
+  // turn on chart animation
+  chart.animation(true);
+
+  // set chart padding
+  chart.padding([10, 20, 5, 20]);
+
+  // turn on the crosshair
+  chart.crosshair()
+          .enabled(true)
+          .yLabel(false)
+          .yStroke(null);
+
+  // set tooltip mode to point
+  chart.tooltip().positionMode('point');
+
+  // set chart title text settings
+  // chart.title('Cantidad de vehiculos Vs Inflados');
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+
+  // set yAxis title
+  chart.xAxis().labels().padding(5);
+
+  // create first series with mapped data
+  var series_1 = chart.column(seriesData_1);
+  series_1.normal().fill("#0097fc");
+  series_1.hovered().fill("#0097fc", 0.1);
+  series_1.selected().fill("#0097fc", 0.5);
+  series_1.normal().stroke("#0097fc");
+  series_1.hovered().stroke("#0097fc", 2);
+  series_1.selected().stroke("#0097fc", 4);
+  series_1.name('Inflados');
+  series_1.hovered().markers()
+          .enabled(true)
+          .type('circle')
+          .size(4);
+  series_1.tooltip()
+          .position('right')
+          .anchor('left-center')
+          .offsetX(5)
+          .offsetY(5);
+
+  // create second series with mapped data
+  var series_2 = chart.spline(seriesData_2);
+  series_2.normal().stroke("#A349A4", 4);
+  series_2.hovered().stroke("#A349A4", 2);
+  series_2.selected().stroke("#A349A4", 6);
+  series_2.name('Mala Entrada');
+  series_2.hovered().markers()
+          .enabled(true)
+          .type('circle')
+          .size(4);
+  series_2.tooltip()
+          .position('right')
+          .anchor('left-center')
+          .offsetX(5)
+          .offsetY(5);
+
+   // enable and configure markers on the first series
+  series_2.markers(true);
+  series_2.markers().type("circle");
+  series_2.markers().fill("#A349A4");
+  series_2.markers().size(5);
+
+
+  // create third series with mapped data
+  var series_3 = chart.spline(seriesData_3);
+  series_3.normal().stroke("#F0412C", 4);
+  series_3.hovered().stroke("#F0412C", 2);
+  series_3.selected().stroke("#F0412C", 6);
+  series_3.name('Doble Entrada');
+  series_3.hovered().markers()
+          .enabled(true)
+          .type('circle')
+          .size(4);
+  series_3.tooltip()
+          .position('right')
+          .anchor('left-center')
+          .offsetX(5)
+          .offsetY(5);
+
+  // enable and configure markers on the first series
+  series_3.markers(true);
+  series_3.markers().type("square");
+  series_3.markers().fill("#F0412C");
+  series_3.markers().size(5);
+
+  // turn the legend on
+  chart.legend()
+          .enabled(true)
+          .fontSize(13)
+          .padding([0, 0, 10, 0]);
+
+  chart.yScale().ticks().interval(1);
+
+  // set container id for the chart
+  chart.container('line-graph');
+
+  //Set Background
+  var background = chart.background();
+          background.stroke('0 #000');
+          background.corners();
+          background.enabled(false);
+
+  // initiate chart drawing
+  chart.draw();
+
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
+
+  // horizontal expandable
+  chart.legend().itemsLayout('horizontal');
+  });
+
+  function getData() {
+  return [
+      ['{{mes_4}}', mes_4, {{cantidad_entrada_mes4}}, {{doble_entrada.2.mes4}} + {{doble_entrada.3.mes4}}],
+      ['{{mes_3}}', mes_3, {{cantidad_entrada_mes3}}, {{doble_entrada.2.mes3}} + {{doble_entrada.3.mes3}}],
+      ['{{mes_2}}', mes_2, {{cantidad_entrada_mes2}}, {{doble_entrada.2.mes2}} + {{doble_entrada.3.mes2}}],
+      ['{{mes_1}}', mes_1, {{cantidad_entrada_mes1}}, {{doble_entrada.2.mes1}} + {{doble_entrada.3.mes1}}],
+  ]
+  }
+
+              /*radar1*/
+
+              // var ctx = document.getElementById('radar1').getContext('2d');
+              // var myChart1 = new Chart(ctx, {
+              //     type: 'radar',
+              //     data: {
+              //         labels: [
+              //                 {% if clases_mas_frecuentes_infladas %}
+              //                     {% for clase in clases_mas_frecuentes_infladas %}
+              //                         '{{clase}}',
+              //                     {% endfor %}
+              //                 {% else %}
+              //                     0, 0, 0, 0, 0, 0, 0, 0
+              //                 {% endif %}
+              //                     ],
+              //         datasets: [{
+              //             label: '%',
+              //             data: [
+              //                 {% if clases_mas_frecuentes_infladas %}
+              //                     {% for clase, num in clases_mas_frecuentes_infladas.items %}
+              //                         '{{num}}',
+              //                     {% endfor %}
+              //                     ],
+              //                 {% else %}
+              //                     0, 0, 0, 0, 0, 0, 0, 0
+              //                     ],
+              //             pointRadius: 0,
+              //             pointHitRadius: 0,
+              //             {% endif %}
+
+              //             backgroundColor: [
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)',
+              //                 'rgba(246, 170, 111, 0.2)'
+              //             ],
+              //             borderColor: [
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)',
+              //                 'rgba(246, 170, 111, 1)'
+              //             ],
+              //             borderWidth: 1
+              //         }]
+              //     },
+              //     options: {
+              //         plugins: {
+              //             legend: {
+              //                 display: false
+              //             },
+              //             title: {
+              //                 display: true,
+              //                 text: 'Porcentaje de clase de vehículos inflados',
+              //                 font: {
+              //                     family: "Montserrat",
+              //                     size: 18,
+              //                     lineHeight: 0
+              //                 },
+              //                 color: 'white'
+              //             }
+              //         },
+              //         scales: {
+              //             y: {
+              //                 display: false
+              //             },
+              //             r: {
+              //                 pointLabels:{
+              //                     /*ma o meno así*/
+              //                     display: false,
+              //                     font:{
+              //                         size: 24
+              //                     }
+              //                 },
+              //                 grid:{
+              //                     color:'#fff'
+              //                 },
+              //                 angleLines:{
+              //                     color:'#fff'
+              //                 },
+              //                 max: {% if radar_max %}{{radar_max}} + 1{% else %}10{% endif %},
+              //                 min: {% if radar_min %}{{radar_min}}{% else %}0{% endif %},
+              //                 ticks: {
+              //                     display: false,
+              //                     color: 'white',
+              //                     showLabelBackdrop: false
+              //                 },
+              //             }
+              //         }
+              //     }
+              // });
 //radar1
 anychart.onDocumentReady(function () {
 // create data set on our data
@@ -1919,31 +1933,34 @@ chart_2.title().fontColor('#000');
 chart_2.container(layer_2).draw();
 
 });
- 
-/*rango de fechas*/
-$(function() {
-    $('input[name="fecha1"]').daterangepicker({
-        opens: 'left',
-        autoUpdateInput: false,
-        "autoApply": true
-    },
-    function(start, end, label) {
-        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-    });
-    $('input[name="fecha1"]').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-    });
-});
-// $(document).ready(function(){
-//     $('#mostrar-clase').click(function(){
-//         myChart1.options.scales.r.pointLabels.display = true;
-//   });
-// });
-// $(document).ready(function(){
-//     $('#ocultar-clase').click(function(){
-//         myChart1.options.scales.r.pointLabels.display = false;
-//   });
-// });
-}//ESTA LLAVE NO SE BORRA
+
+
+
+
+  /*rango de fechas*/
+  $(function() {
+      $('input[name="fecha1"]').daterangepicker({
+          opens: 'left',
+          autoUpdateInput: false,
+          "autoApply": true
+      },
+      function(start, end, label) {
+          console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      });
+      $('input[name="fecha1"]').on('apply.daterangepicker', function(ev, picker) {
+          $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+      });
+  });
+  // $(document).ready(function(){
+  //     $('#mostrar-clase').click(function(){
+  //         myChart1.options.scales.r.pointLabels.display = true;
+  //   });
+  // });
+  // $(document).ready(function(){
+  //     $('#ocultar-clase').click(function(){
+  //         myChart1.options.scales.r.pointLabels.display = false;
+  //   });
+  // });
+  }//ESTA LLAVE NO SE BORRA
 </script>
 {% endblock content %}

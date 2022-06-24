@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.generic.base import View
 
 # Views
-from dashboards.views import views, views_rest
+from dashboards.views import views, views_rest, views_pbi
 
 urlpatterns = [
     path(
@@ -447,6 +447,11 @@ urlpatterns = [
         name="planTaller"
     ),
     path(
+        route="reporte-taller",
+        view=views.reporteTallerView.as_view(),
+        name="reporteTaller"
+    ),
+    path(
         route="calendario",
         view=views.calendarView.as_view(),
         name="calendario"
@@ -619,11 +624,15 @@ urlpatterns = [
         view=views_rest.PanelRenovadoApi.as_view(),
         name="panelrenovado"
     ),
-
     path(
         route="api/procesodesecho",
         view=views_rest.ProcesoDesechoApi.as_view(),
         name="procesodesecho"
+    ),
+    path(
+        route="api/pulpoapi/<str:user>",
+        view=views_rest.PulpoApiView.as_view(),
+        name="pulpoapi"
     ),
     #-----------------------Q-----------------------
 
@@ -648,7 +657,11 @@ urlpatterns = [
         view=views_rest.TireSearchTaller.as_view(),
         name="tiresearchtaller"
     ),
-
+    path(
+        route="api/vehicleandtiresearchtaller",
+        view=views_rest.VehicleAndTireSearchTaller.as_view(),
+        name="vehicleandtiresearchtaller"
+    ),
     #-----------------------U-----------------------
 
     #-----------------------V-----------------------
@@ -666,6 +679,12 @@ urlpatterns = [
     #-----------------------Y-----------------------
 
     #-----------------------Z-----------------------
-
-
+    
+    
+    #? Power BI API
+    path(
+        route="api/vehiculos/<str:usuario>",
+        view=views_pbi.VeicleData.as_view(),
+        name="vehiculosapi"
+    ),
 ]

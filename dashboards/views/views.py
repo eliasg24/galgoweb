@@ -5199,28 +5199,253 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         #? Se convirte el id en una lista(Por convenvion de las funciones)
         ids_vehiculo = functions.list_vehicle_id(vehiculo.values('id'))
         #? Se obtiene las llantas 
-        llantas = Llanta.objects.filter(vehiculo__id__in = ids_vehiculo)
+        llantas = Llanta.objects.filter(
+            vehiculo__id__in = ids_vehiculo,
+            inventario = 'Rodante'
+            ).annotate(
+                min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
+                ) 
         #? Se acomodan las llantas
         vehiculos_llantas_acomodadas = functions.acomodo_de_llantas_por_vehiculo(llantas, ids_vehiculo)
         acomodo_ejes_vehicle = functions.acomodo_ejes_vehicle(vehiculos_llantas_acomodadas)
         acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
         vehiculo_acomodado = acomodo_posicion_ejes_vehicle
         
+        talleres = Taller.objects.filter(compania = vehiculo[0].compania)
+        
         context['vehiculo_acomodado'] = vehiculo_acomodado
+        context['talleres'] = talleres
+        context['vehiculo'] = vehiculo
+        context['fecha'] = datetime.now()
+        print(datetime.now())
         return context
     
     def post(self, request, pk):
         print(request.POST)
-        llantas = request.POST.getlist('llanta')
-        inflado = request.POST.getlist('inflar')
-        print(llantas)
-        for llanta in llantas:
-            if llanta in inflado:
-                print(llanta)
+        #? Acciones del vehiculo
+        vehiculo = Vehiculo.objects.get(pk = pk)
+        try:
+            acciones_vehiculo = json.loads(request.POST.getlist('vehiculo')[0])
+        except:
+            acciones_vehiculo = []
+        if 'alinearVehiculo' in acciones_vehiculo:
+            vehiculo.fecha_ultima_alineacion = date.today()
         
+        Vehiculo.objects.bulk_update([vehiculo], ['fecha_ultima_alineacion'])
+        
+        #? Acciones de llanta
+        try:
+            dataPOST = json.loads(request.POST.getlist('data')[0])
+        except:
+            dataPOST = []
+        llantas_desmontadas = []
+        llantas_rotadas = []
+        print('---------------')
+        for data in dataPOST:
+            if data['tipoServicio'] == 'desmontaje':
+                print('Desmontaje')
+                #? Se llama la llanta actual
+                llanta = Llanta.objects.get(pk=data['llantaId'])
+                vehiculo = llanta.vehiculo
+                ubicacion = llanta.ubicacion
+                aplicacion = llanta.aplicacion
+                tipo_eje = llanta.tipo_de_eje
+                eje = llanta.eje
+                posicion = llanta.posicion
+                
+                #? Se llama la llanta a montar
+                nuevaLlanta = data['nuevaLlanta']
+                llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta)
+                
+                #? Se obtienen los datos del desmontaje
+                razon = data['razon']
+                almacen_desmontaje = data['almacen_desmontaje']
+                taller_desmontaje = Taller.objects.get(id = int(data['taller_desmontaje']))
+                
+                #? Se desmonta la llanta
+                llanta.inventario = almacen_desmontaje
+                llanta.taller = taller_desmontaje
+                
+                #?Montaje de la nueva llanta
+                llanta_nueva.vehiculo = vehiculo
+                llanta_nueva.posicion = posicion
+                llanta_nueva.ubicacion = ubicacion
+                llanta_nueva.aplicacion = aplicacion
+                llanta_nueva.tipo_de_eje = tipo_eje
+                llanta_nueva.eje = eje
+                llanta_nueva.inventario = 'Rodante'
+                
+                #? Se actualizan las llantas respectivamente
+                Llanta.objects.bulk_update([llanta_nueva], [
+                    'vehiculo',
+                    'posicion',
+                    'ubicacion',
+                    'aplicacion',
+                    'tipo_de_eje',
+                    'eje',
+                    'inventario'
+                    ])
+                
+                Llanta.objects.bulk_update([llanta], [
+                    'taller', 'inventario'
+                    ])
+                llantas_desmontadas.append(llanta)
+                
+                print('---------------')
+                
+        for data in dataPOST:
+            if data['tipoServicio'] == 'sr':
+                print('Servicio')
+                #?Se llama la llanta
+                llanta = Llanta.objects.get(pk=data['llantaId'])
+                #? Se verifican que servicios se realizaron
+                inflar = True if data['inflar'] == 'on' else False
+                balancear = True if data['balancear'] == 'on' else False
+                reparar = True if data['reparar'] == 'on' else False
+                valvula = True if data['valvula'] == 'on' else False
+                costado = True if data['costado'] == 'on' else False
+                
+                rotar = data['rotar'] if data['rotar'] != 'no' else False
+                
+                
+                print(f'inflar:{inflar}')
+                print(f'balancear:{balancear}')
+                print(f'reparar:{reparar}')
+                print(f'valvula:{valvula}')
+                print(f'costado:{costado}')
+                
+                print(f'rotar:{rotar}')
+                
+                #? Servicios
+                if inflar:
+                    print('Se inflo')
+                    presion_establecida = functions.presion_establecida(llanta)
+                    llanta.presion_actual = presion_establecida
+                    presion = Observacion.objects.get(observacion = 'Baja presión')
+                    llanta.observaciones.remove(presion)
+                if balancear:
+                    print('Se balanceo')
+                    llanta.fecha_de_balanceado = date.today()
+                if reparar:
+                    print('Se reparo')
+                    obj_penetrado = Observacion.objects.get(observacion = 'Objeto penetrado')
+                    llanta.observaciones.remove(obj_penetrado)
+                if valvula:
+                    print('Se reparo valvula')
+                    valvula_fuga = Observacion.objects.get(observacion = 'Válvula fugando')
+                    valvula_inaccesible = Observacion.objects.get(observacion = 'Válvula inaccesible')
+                    llanta.observaciones.remove(valvula_fuga)
+                    llanta.observaciones.remove(valvula_inaccesible)
+                if costado:
+                    print('Se reparo costado')
+                    costado = Observacion.objects.get(observacion = 'Ruptura en costado')
+                    llanta.observaciones.remove(costado)
+                
+                Llanta.objects.bulk_update([llanta], [
+                    'presion_actual', 
+                    'fecha_de_balanceado'
+                    ])
+                
+                #? Rotar en el mismo vehiculo
+                if rotar == 'mismo':
+                    print('Rotar en el mismo vehiculo')
+                    id_llanta_rotar = int(data['origenLlanta'])
+                    llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                    
+                    if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
+                        continue
+                    
+                    #? Datos de la llanta a rotar
+                    posicion_llanta_rotar = llanta_rotar.posicion
+                    eje_llanta_rotar = llanta_rotar.eje
+                    tipo_de_eje_llanta_rotar = llanta_rotar.tipo_de_eje
+                    
+                    #? Datos de la llanta montada
+                    posicion_llanta_montada = llanta.posicion
+                    eje_llanta_montada = llanta.eje
+                    tipo_de_eje_llanta_montada = llanta.tipo_de_eje
+                    
+                    #? llanta montada
+                    llanta.posicion = posicion_llanta_rotar
+                    llanta.eje = eje_llanta_rotar
+                    llanta.tipo_de_eje = tipo_de_eje_llanta_rotar
+                    #? Llanta a rotar
+                    llanta_rotar.posicion = posicion_llanta_montada
+                    llanta_rotar.eje = eje_llanta_montada
+                    llanta_rotar.tipo_de_eje = tipo_de_eje_llanta_montada
+                    
+                    Llanta.objects.bulk_update([llanta, llanta_rotar], [
+                        'posicion', 
+                        'tipo_de_eje', 
+                        'eje', 
+                        ])
+                    llantas_rotadas.append(llanta)
+                    llantas_rotadas.append(llanta_rotar)
+                    
+                #? Rotar en diferente vehiculo
+                if rotar == 'otro':
+                    print('Rotar en diferentes vehiculo')
+                    id_llanta_rotar = int(data['llantaOrigen'])
+                    llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                    
+                    if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
+                        continue
+                    
+                    #? Datos de la llanta a rotar
+                    vehiculo_llanta_rotar = llanta_rotar.vehiculo
+                    posicion_llanta_rotar = llanta_rotar.posicion
+                    eje_llanta_rotar = llanta_rotar.eje
+                    tipo_de_eje_llanta_rotar = llanta_rotar.tipo_de_eje
+                    
+                    #? Datos de la llanta montada
+                    vehiculo_llanta_montada = llanta.vehiculo
+                    posicion_llanta_montada = llanta.posicion
+                    eje_llanta_montada = llanta.eje
+                    tipo_de_eje_llanta_montada = llanta.tipo_de_eje
+                    
+                    #? llanta montada
+                    llanta.vehiculo = vehiculo_llanta_rotar
+                    llanta.posicion = posicion_llanta_rotar
+                    llanta.eje = eje_llanta_rotar
+                    llanta.tipo_de_eje = tipo_de_eje_llanta_rotar
+                    #? Llanta a rotar
+                    llanta_rotar.vehiculo = vehiculo_llanta_montada
+                    llanta_rotar.posicion = posicion_llanta_montada
+                    llanta_rotar.eje = eje_llanta_montada
+                    llanta_rotar.tipo_de_eje = tipo_de_eje_llanta_montada
+                    
+                    Llanta.objects.bulk_update([llanta, llanta_rotar], [
+                        'vehiculo',
+                        'posicion', 
+                        'tipo_de_eje', 
+                        'eje', 
+                        ])
+                    llantas_rotadas.append(llanta)
+                    llantas_rotadas.append(llanta_rotar)
+                print('---------------')
+        #? Guardado de la bitacora
+        vehiculo = Vehiculo.objects.filter(pk=pk)
+        print(vehiculo)
+        #? Se convirte el id en una lista(Por convenvion de las funciones)
+        ids_vehiculo = functions.list_vehicle_id(vehiculo.values('id'))
+        #? Se obtiene las llantas 
+        llantas = Llanta.objects.filter(
+            vehiculo__id__in = ids_vehiculo,
+            inventario = 'Rodante'
+            ).annotate(
+                min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
+                ) 
+        #? Se acomodan las llantas
+        vehiculos_llantas_acomodadas = functions.acomodo_de_llantas_por_vehiculo(llantas, ids_vehiculo)
+        acomodo_ejes_vehicle = functions.acomodo_ejes_vehicle(vehiculos_llantas_acomodadas)
+        acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
+        vehiculo_acomodado = acomodo_posicion_ejes_vehicle
+        return redirect('dashboards:planTaller', pk)
     
-    
-    
+class reporteTallerView(LoginRequiredMixin, TemplateView):
+    # Vista del reporteTallerView
+    template_name = "reporte-taller.html"
+
 class vehicleListView(LoginRequiredMixin, TemplateView):
 # Vista de vehicleListView
 
@@ -5238,18 +5463,22 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         exclude = self.request.GET.get('exclude', None)
         exclude_query = ({'observaciones_llanta__id__in': exclude.split(',')} if exclude != '' and  exclude != None else {})
         ejes = self.request.GET.get('ejes', None)
+        search = self.request.GET.get('search', None)
+        search_query = ({'numero_economico__icontains': search} if search != '' and  search != None else {})
         
         #Se obtienen los vehiculos de la compañia
         vehiculos = Vehiculo.objects.select_related().filter(
             compania = compania,
             **filtro_query,
+            **search_query
             ).exclude(
                 **exclude_query
-                ).values('id').order_by('id')
+                ).exclude(configuracion=None).values('id').order_by('id')
         if ejes != None:
             clauses = (Q(configuracion__icontains=p) for p in ejes.split(','))
             query = reduce(operator.or_, clauses)
             vehiculos = vehiculos.filter(query)
+        vehiculos = vehiculos.distinct()
         print(vehiculos)
         vehiculos = functions.ordenar_por_status(vehiculos)
         ids_vehiculo = functions.list_vehicle_id(vehiculos)
@@ -5280,7 +5509,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         #    return redirect(url)
         
         #pagination = functions.pagination(page, pages)
-        url_complemento = functions.pagination_url(filtro, exclude, ejes)
+        url_complemento = functions.pagination_url(filtro, exclude, ejes, search)
         prev = functions.pagination_prev(page, pages, url_complemento)
         next = functions.pagination_next(page, pages, url_complemento)
         
@@ -5293,6 +5522,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         self.ejes = ejes
         self.exclude = exclude
         self.filtro = filtro
+        self.search = search
         
         print(f'prev: {prev}')
         print(f'next: {next}')
@@ -5303,7 +5533,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         #Se realiza la obtencion de la rebajada para obtener las llantas
         current_vehiculos = self.ids_vehiculo[self.offset:self.limit]
-        llantas = Llanta.objects.filter(vehiculo__id__in = current_vehiculos)
+        llantas = Llanta.objects.filter(vehiculo__id__in = current_vehiculos, inventario = 'Rodante')
         
         #Se acomodan las llantas por vehiculo.
         vehiculos_llantas_acomodadas = functions.acomodo_de_llantas_por_vehiculo(llantas, current_vehiculos)
@@ -5322,10 +5552,21 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         context['prev'] = self.prev
         context['next'] = self.next
         context['llantas_acomodadas'] = vehiculos
+        context['search'] = self.search
         return context
 
     def post(self, request):
+        print('---------------------------------')
         print(request.POST)
+        print('---------------------------------')
+        
+        if 'buscar' in request.POST:
+            lista_observaciones = functions.lista_de_id_observaciones_get(request.GET)
+            lista_observaciones_exclude = functions.lista_de_id_observaciones_exclude_get(request.GET)
+            lista_ejes = functions.lista_de_ejes_get(request.GET)
+            vehiculo_search = request.POST['search']
+            url = f'%s?filtro={lista_observaciones}&exclude={lista_observaciones_exclude}&ejes={lista_ejes}&search={vehiculo_search}' % reverse('dashboards:vehicleList')
+            return redirect(url)
         lista_observaciones = functions.lista_de_id_observaciones(request.POST)
         lista_observaciones_exclude = functions.lista_de_id_observaciones_exclude(request.POST)
         lista_ejes = functions.lista_de_ejes(request.POST)
@@ -5349,7 +5590,7 @@ class VehiculoAPI(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request):
+    def get(self, request):
         jd = json.loads(request.body)
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
         vehiculo.fecha_de_inflado=date.today()
