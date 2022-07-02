@@ -184,6 +184,9 @@
 }
 
 .footer__row {
+  align-items: center;
+  display: flex;
+  justify-content: center;
   padding: 0.5rem;
   width: 100%;
   border-radius: 0 0 0 0.25rem;
@@ -315,10 +318,10 @@
 }
 
 .filter__footer {
-  padding: 1rem 2rem;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  padding: 1rem 2rem;
 }
 
 .filter__footer button {
@@ -344,6 +347,35 @@
   padding: 0.5rem;
 }
 
+.filter__control {
+  flex: 1 1 auto;
+}
+
+.filter__label {
+  display: block;
+  font-weight: 600;
+}
+
+.filter__input {
+  background: transparent;
+  border: thin solid #fff;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: var(--colorv13);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
 /* TABLET */
 @media screen and (min-width: 728px) {
   .vehicle__list {
@@ -356,7 +388,6 @@
 @media screen and (min-width: 1024px) {
   .form__filter {
     min-width: 600px;
-    overflow: hidden;
   }
 
   .filter__nav {

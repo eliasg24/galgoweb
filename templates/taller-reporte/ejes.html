@@ -1,0 +1,141 @@
+{% for eje in vehiculo.ejes %}
+
+    <!--Eje 2 llantas-->
+    {% if eje|length == 2 %}
+        <div class="tire__container ejes__{{cant_ejes|safe}}">
+
+            <div class="tire__content">
+              <div class="tire__economic-top">
+                &downarrow; {{eje.0.llanta.numero_economico}} | {{eje.0.llanta.producto.marca}}
+              </div>
+              <div class="tire">
+                <div class="tire__tag pos {{eje.0.color_middle}}">
+                    {{ eje.0.llanta.posicion }}
+                </div>
+                <div class="tire__tag up {{eje.0.color_presion}}">
+                    {{eje.0.llanta.presion_actual}}
+                </div>
+                <span class="icon-tire2"></span>
+                <div class="tire__tag good down {{eje.0.1}}">
+                  0{{eje.0.4}}
+                </div>
+              </div>
+            </div>
+
+            <div class="axle">
+              <span>{{eje.0.min_presion}} - {{eje.0.max_presion}}</span>
+              <div class="shaft"></div>
+              <span>{{ eje.0.llanta.producto.dimension }}</span>
+            </div>
+
+            <div class="tire__content">
+              <div class="tire__economic-top">
+                &downarrow; {{eje.1.llanta.numero_economico}} | {{eje.1.llanta.producto.marca}}
+              </div>
+              <div class="tire">
+                <div class="tire__tag pos {{eje.1.color_middle}}">
+                    {{ eje.1.llanta.posicion }}
+                </div>
+                <div class="tire__tag up {{eje.1.color_presion}}">
+                    {{eje.1.llanta.presion_actual}}
+                </div>
+                <span class="icon-tire2"></span>
+                <div class="tire__tag good down {{eje.1.1}}">
+                  0{{eje.1.4}}
+                </div>
+              </div>
+            </div>
+        </div>
+    {% else %}
+        <!--Eje 4 llantas-->
+        <div class="tire__container ejes__{{cant_ejes|safe}}">
+            <div class="double-tire">
+            
+              <div class="tire__content">
+                <div class="tire__economic-top">
+                  &downarrow; {{eje.0.llanta.numero_economico}} | {{ eje.0.llanta.producto.marca }}
+                </div>
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.0.color_middle}}">
+                    {{ eje.0.llanta.posicion }}
+                  </div>
+                  <div class="tire__tag up {{eje.0.color_presion}}">
+                    {{eje.0.llanta.presion_actual}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag good down {{eje.0.1}}">
+                    0{{eje.0.4}}
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="tire__content">
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.1.color_middle}}">
+                    {{ eje.1.llanta.posicion }}
+                  </div>
+                  <div class="tire__tag up {{eje.1.color_presion}}">
+                    {{eje.1.llanta.presion_actual}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag good down {{eje.1.1}}">
+                    0{{eje.1.4}}
+                  </div>
+                </div>
+                <div class="tire__economic-bottom">
+                  {{eje.1.llanta.numero_economico}} | {{eje.1.llanta.producto.marca}} &uparrow;
+                </div>
+              </div>
+            </div>
+
+            <div class="axle">
+              <span>{{eje.0.min_presion}} - {{eje.0.max_presion}}</span>
+              <div class="shaft"></div>
+              <span>{{ eje.0.llanta.producto.dimension }}</span>
+            </div>
+
+            <div class="double-tire">
+              <div class="tire__content">
+                <div class="tire__economic-top">
+                  &downarrow; {{eje.2.llanta.numero_economico}} | {{eje.2.llanta.producto.marca}}
+                </div>
+
+                <div class="tire__content">
+                  <div class="tire">
+                    <div class="tire__tag pos {{eje.2.color_middle}}">
+                        {{ eje.2.llanta.posicion }}
+                    </div>
+                    <div class="tire__tag up {{eje.2.color_presion}}">
+                        {{eje.2.llanta.presion_actual}}
+                    </div>
+                    <span class="icon-tire2"></span>
+                    <div class="tire__tag good down {{eje.2.1}}">
+                      0 {{eje.2.4}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tire__content">
+                <div class="tire">
+                  <div class="tire__tag pos {{eje.3.color_middle}}">
+                    {{ eje.3.llanta.posicion }}
+                  </div>
+                  <div class="tire__tag up {{eje.3.color_presion}}">
+                    {{eje.3.llanta.presion_actual}}
+                  </div>
+                  <span class="icon-tire2"></span>
+                  <div class="tire__tag down good {{eje.3.1}}">
+                    0{{eje.3.4}}
+                  </div>
+                </div>
+
+                <div class="tire__economic-bottom">
+                  {{eje.3.llanta.numero_economico}} | {{eje.3.llanta.producto.marca}} &uparrow;
+                </div>
+              </div>
+            </div>
+        </div> 
+    {% endif %}
+{% endfor %}

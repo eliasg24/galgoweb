@@ -442,12 +442,17 @@ urlpatterns = [
         name="vehicleList"
     ),
     path(
+        route="resumen",
+        view=views.resumenView.as_view(),
+        name="resumen"
+    ),
+    path(
         route="taller/<int:pk>",
         view=views.planTallerView.as_view(),
         name="planTaller"
     ),
     path(
-        route="reporte-taller",
+        route="reporte-taller/<int:pk>",
         view=views.reporteTallerView.as_view(),
         name="reporteTaller"
     ),
@@ -683,8 +688,63 @@ urlpatterns = [
     
     #? Power BI API
     path(
+        route="api/compania/<str:usuario>",
+        view=views_pbi.CompaniaData.as_view(),
+        name="companiaapi"
+    ),
+    path(
+        route="api/sucursales/<str:usuario>",
+        view=views_pbi.SucursalData.as_view(),
+        name="sucursalapi"
+    ),
+    path(
+        route="api/aplicaciones/<str:usuario>",
+        view=views_pbi.AplicacionData.as_view(),
+        name="aplicacionapi"
+    ),
+    path(
+        route="api/talleres/<str:usuario>",
+        view=views_pbi.TallerData.as_view(),
+        name="tallerapi"
+    ),
+    path(
+        route="api/perfil/<str:usuario>",
+        view=views_pbi.PerfilData.as_view(),
+        name="perfilapi"
+    ),
+    path(
         route="api/vehiculos/<str:usuario>",
-        view=views_pbi.VeicleData.as_view(),
+        view=views_pbi.VehicleData.as_view(),
         name="vehiculosapi"
+    ),
+    path(
+        route="api/llantas/<str:usuario>",
+        view=views_pbi.LlantaData.as_view(),
+        name="llantasapi"
+    ),
+    path(
+        route="api/productos/<str:usuario>",
+        view=views_pbi.ProductoData.as_view(),
+        name="productosapi"
+    ),
+    path(
+        route="api/desechos/<str:usuario>",
+        view=views_pbi.DesechoData.as_view(),
+        name="desechosapi"
+    ),
+    path(
+        route="api/rendimientos/<str:usuario>",
+        view=views_pbi.RendimientoData.as_view(),
+        name="rendimientosapi"
+    ),
+    path(
+        route="api/inspeccionesvehiculo/<str:usuario>",
+        view=views_pbi.InspeccionesVehiculoData.as_view(),
+        name="inspeccionesvehiculoapi"
+    ),
+    path(
+        route="api/inspeccionesllanta/<str:usuario>",
+        view=views_pbi.InspeccionesLlantaData.as_view(),
+        name="inspeccionesllantaapi"
     ),
 ]

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/resumen.css' %}">
+  <title>Resumen</title>
+{% endblock head %}
+
+{% block content %}
+  <main class="main-cont">
+    <header class="main-header">
+      <h1>Resumen</h1>
+    </header>
+
+    <section class="scores-container">
+
+      <div class="score-card">
+        <header class="score-card_header">
+          <h3>Vehículos vencidos de alineación</h3>
+        </header>
+        <div class="score-card_body">
+          <span class="score-number">{{vehiculos_sin_alineacion}}</span>
+        </div>
+      </div>
+
+      <div class="score-card">
+        <header class="score-card_header">
+          <h3>Vehículos vencidos de inspección</h3>
+        </header>
+        <div class="score-card_body">
+          <span class="score-number">{{vehiculos_sin_inspeccion}}</span>
+        </div>
+      </div>
+
+      <div class="score-card">
+        <header class="score-card_header">
+          <h3>Vehículos vencidos de inflado</h3>
+        </header>
+        <div class="score-card_body">
+          <span class="score-number">{{vehiculos_sin_inflado}}</span>
+        </div>
+      </div>
+
+      <div class="score-card">
+        <header class="score-card_header">
+          <h3>Duales inparejos</h3>
+        </header>
+        <div class="score-card_body">
+          <span class="score-number">{{duales_impares}}</span>
+        </div>
+      </div>
+      
+    </section>
+
+    <section class="table-container">
+      <table class="resumen-table">
+        <thead>
+          <tr>
+            <th>Ejes</th>
+            <th>Baja presión</th>
+            <th>Alta presión</th>
+            <th>Baja profundidad</th>
+            <th>Desgaste irregular</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dirección</td>
+            <td>{{direccion_baja_presion}}</td>
+            <td>{{direccion_alta_presion}}</td>
+            <td>{{direccion_baja_profundidad}}</td>
+            <td>{{direccion_desgaste_irregular}}</td>
+          </tr>
+          <tr>
+            <td>Libre</td>
+            <td>{{libre_baja_presion}}</td>
+            <td>{{libre_alta_presion}}</td>
+            <td>{{libre_baja_profundidad}}</td>
+            <td>{{libre_desgaste_irregular}}</td>
+          </tr>
+          <tr>
+            <td>Retractil</td>
+            <td>{{retractil_baja_presion}}</td>
+            <td>{{retractil_alta_presion}}</td>
+            <td>{{retractil_baja_profundidad}}</td>
+            <td>{{retractil_desgaste_irregular}}</td>
+          </tr>
+          <tr>
+            <td>Tracción</td>
+            <td>{{traccion_baja_presion}}</td>
+            <td>{{traccion_alta_presion}}</td>
+            <td>{{traccion_baja_profundidad}}</td>
+            <td>{{traccion_desgaste_irregular}}</td>
+          </tr>
+          <tr>
+            <td>Arrastre</td>
+            <td>{{arrastre_baja_presion}}</td>
+            <td>{{arrastre_alta_presion}}</td>
+            <td>{{arrastre_baja_profundidad}}</td>
+            <td>{{arrastre_desgaste_irregular}}</td>
+          </tr>
+          <tr>
+            <td>Total</td>
+            <td>{{total_alta_presion}}</td>
+            <td>{{total_baja_presion}}</td>
+            <td>{{total_baja_profundidad}}</td>
+            <td>{{total_desgaste_irregular}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+{% endblock content %}

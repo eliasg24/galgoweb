@@ -24,6 +24,10 @@
       </div>
       <nav class="report__details">
         <div class="report__card">
+          <div class="report__card-title">Folio</div>
+          <div class="report__card-body">{{folio}}</div>
+        </div>
+        <div class="report__card">
           <div class="report__card-title">N° de flota</div>
           <div class="report__card-body">{{vehiculo.ubicacion}}</div>
         </div>
@@ -45,219 +49,82 @@
         </div>
         <div class="report__card">
           <div class="report__card-title">Fecha</div>
-          <div class="report__card-body">{{inspeccion_vehiculo.fecha.date}}</div>
+          <div class="report__card-body">{{fecha}}</div>
         </div>
-        <div class="report__card">
-          <div class="report__card-title">Kilómetros</div>
-          <div class="report__card-body">{{inspeccion_vehiculo.km}}</div>
-        </div>
+        
         <div class="report__card">
           <div class="report__card-title">Tipo de inspección</div>
-          <div class="report__card-body">Inspection</div>
+          <div class="report__card-body">Servicio</div>
         </div>
       </nav>
     </header>
-    <main class="main__container-config ejes__2{{cant_ejes|safe}}">
+    <main class="main__container-config ejes__{{cant_ejes|safe}}">
       <div class="config__container">
-          
-            <!--Eje 2 llantas-->
-            <div class="tire__container ejes__2{{cant_ejes|safe}}">
-
-              <div class="tire__content">
-                <div class="tire__economic-top">
-                  &downarrow; {{eje.0.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}}
-                </div>
-                <div class="tire">
-                  <div class="tire__tag good pos {{eje.0.5}}">
-                    0{{eje.0.0.posicion}}
-                  </div>
-                  <div class="tire__tag good up {{eje.0.3}}">
-                    0{{eje.0.0.presion}}
-                  </div>
-                  <span class="icon-tire2"></span>
-                  <div class="tire__tag good down {{eje.0.1}}">
-                    0{{eje.0.4}}
-                  </div>
-                </div>
-              </div>
-
-              <div class="axle">
-                <span>{{eje.0.6}} - {{eje.0.7}}</span>
-                <div class="shaft"></div>
-                <span>{{eje.1.0.llanta.producto.dimencion}}</span>
-              </div>
-
-              <div class="tire__content">
-                <div class="tire__economic-top">
-                  &downarrow; {{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}}
-                </div>
-                <div class="tire">
-                  <div class="tire__tag good pos {{eje.1.5}}">
-                    0{{eje.1.0.posicion}}
-                  </div>
-                  <div class="tire__tag good up {{eje.1.3}}">
-                    0{{eje.1.0.presion}}
-                  </div>
-                  <span class="icon-tire2"></span>
-                  <div class="tire__tag good down {{eje.1.1}}">
-                    0{{eje.1.4}}
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!--Eje 4 llantas-->
-
-            <div class="tire__container ejes__3{{cant_ejes|safe}}">
-              <div class="double-tire">
-                
-                <div class="tire__content">
-                  <div class="tire__economic-top">
-                    &downarrow; {{eje.0.0.llanta.numero_economico}} | {{ eje.0.0.llanta.producto.marca }}
-                  </div>
-                  <div class="tire">
-                    <div class="tire__tag good pos {{eje.0.5}}">
-                      0{{eje.0.0.posicion}}
-                    </div>
-                    <div class="tire__tag good up {{eje.0.3}}">
-                      0{{eje.0.0.presion}}
-                    </div>
-                    <span class="icon-tire2"></span>
-                    <div class="tire__tag good down {{eje.0.1}}">
-                      0{{eje.0.4}}
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="tire__content">
-                  <div class="tire">
-                    <div class="tire__tag good pos {{eje.1.5}}">
-                      0{{eje.1.0.posicion}}
-                    </div>
-                    <div class="tire__tag good up {{eje.1.3}}">
-                      0{{eje.1.0.presion}}
-                    </div>
-                    <span class="icon-tire2"></span>
-                    <div class="tire__tag good down {{eje.1.1}}">
-                      0{{eje.1.4}}
-                    </div>
-                  </div>
-                  <div class="tire__economic-bottom">
-                    0{{eje.1.0.llanta.numero_economico}} | {{eje.1.0.llanta.producto.marca}} &uparrow;
-                  </div>
-                </div>
-              </div>
-
-              <div class="axle">
-                <span>{{eje.0.6}} - {{eje.0.7}}</span>
-                <div class="shaft"></div>
-                <span>{{eje.1.0.llanta.producto.dimension}}</span>
-              </div>
-
-              <div class="double-tire">
-                <div class="tire__content">
-                  <div class="tire__economic-top">
-                    &downarrow; {{eje.2.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}}
-                  </div>
-
-                  <div class="tire__content">
-                    <div class="tire">
-                      <div class="tire__tag good pos {{eje.2.5}}">
-                        0 {{eje.2.0.posicion}}
-                      </div>
-                      <div class="tire__tag good up {{eje.2.3}}">
-                        0 {{eje.2.0.presion}}
-                      </div>
-                      <span class="icon-tire2"></span>
-                      <div class="tire__tag good down {{eje.2.1}}">
-                        0 {{eje.2.4}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="tire__content">
-                  <div class="tire">
-                    <div class="tire__tag pos good {{eje.3.5}}">
-                      0{{eje.3.0.posicion}}
-                    </div>
-                    <div class="tire__tag good {{eje.3.3}}">
-                      0{{eje.3.0.presion}}
-                    </div>
-                    <span class="icon-tire2"></span>
-                    <div class="tire__tag down good {{eje.3.1}}">
-                      0{{eje.3.4}}
-                    </div>
-                  </div>
-                  
-                  <div class="tire__economic-bottom">
-                    {{eje.3.0.llanta.numero_economico}} | {{eje.0.0.llanta.producto.marca}} &uparrow;
-                  </div>
-                </div>
-              </div>
-            </div> 
-    </div>
+        {% for vehiculo in vehiculo_acomodado %}
+          {% include 'taller-reporte/ejes.html' %}
+        {% endfor %}
+      </div>
     </main>
-    {% if problemas|length > 0 %}
 
-      <div class="config__list">
-        
-        <div class="list__cont">
-          <div class="title-list">
-            <h1>Servicios</h1>
-          </div>
-          <div class="config__container-table">
-              <table class="config__table">
-                  <thead>
+    
+
+    <div class="config__list">
+      
+      <div class="list__cont">
+        <div class="title-list">
+          <h1>Servicios</h1>
+        </div>
+        <div class="config__container-table">
+            <table class="config__table">
+                <thead>
+                    <tr>
+                        <th class="th-table">Pos</th>
+                        <th class="th-table">Icono</th>
+                        <th class="th-table">Incidencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for problema in problemas %}
+
+
+                    {% if forloop.counter|divisibleby:2  == False %}
+                    <tr>
+                        <td class="td-table" id="{{forloop.counter}}">{{problema.posicion}}</td>
+                        <td class="td-table"><span class="{{problema.icono}}"></span></td>
+                        <td class="td-table">{{problema.accion}}</td>
+                    </tr>
+                    {% endif %}
+
+                  {% endfor %}
+                </tbody>
+            </table>
+            <table class="config__table">
+                <thead>
+                    <tr>
+                        <th class="th-table">Pos</th>
+                        <th class="th-table">Icono</th>
+                        <th class="th-table">Incidencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for problema in problemas %}
+                  
+                      {% if forloop.counter|divisibleby:2  == True %}
                       <tr>
-                          <th class="th-table">Pos</th>
-                          <th class="th-table">Icono</th>
-                          <th class="th-table">Incidencia</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {% for problema in problemas %}
-
-
-                      {% if forloop.counter|divisibleby:2  == False %}
-                      <tr>
-                          <td class="td-table" id="{{forloop.counter}}">{{problema.0}}</td>
-                          <td class="td-table"><span class="{{problema.1.icono}}"></span></td>
-                          <td class="td-table">{{problema.1.observacion}}</td>
+                          <td class="td-table" id="{{forloop.counter}}">{{problema.posicion}}</td>
+                          <td class="td-table"><span class="{{problema.icono}}"></span></td>
+                          <td class="td-table">{{problema.accion}}</td>
                       </tr>
                       {% endif %}
 
-                    {% endfor %}
-                  </tbody>
-              </table>
-              <table class="config__table">
-                  <thead>
-                      <tr>
-                          <th class="th-table">Pos</th>
-                          <th class="th-table">Icono</th>
-                          <th class="th-table">Incidencia</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {% for problema in problemas %}
-                    
-                        {% if forloop.counter|divisibleby:2  == True %}
-                        <tr>
-                            <td class="td-table" id="{{forloop.counter}}">{{problema.0}}</td>
-                            <td class="td-table"><span class="{{problema.1.icono}}"></span></td>
-                            <td class="td-table">{{problema.1.observacion}}</td>
-                        </tr>
-                        {% endif %}
-
-                    {% endfor %}
-                  </tbody>
-              </table>
-          </div>
+                  {% endfor %}
+                </tbody>
+            </table>
         </div>
       </div>
+    </div>
 
-    {% endif %}
+    
 
     <!-- <script
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"

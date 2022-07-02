@@ -6,7 +6,7 @@ from django.contrib import admin
 # Models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import RelatedField
-from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden
+from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, ServicioLlanta, ServicioVehiculo, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden, Bitacora_Desecho, Rendimiento
 
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
@@ -26,6 +26,12 @@ class BitacorasProAdmin(admin.ModelAdmin):
     list_filter = ('fecha_de_inflado', 'compania')
     verbose_name_plural = "Bitacoras Pro"
 
+@admin.register(Bitacora_Desecho)
+class BitacorasDesechoAdmin(admin.ModelAdmin):
+    # Admin de las Bitácoras de Desecho
+    list_display = ('llanta', 'desecho', )
+    search_fields= ('llanta',)
+    verbose_name_plural = "Bitacoras Desecho"
 
 @admin.register(Ubicacion)
 class UbicacionesAdmin(admin.ModelAdmin):
@@ -157,6 +163,24 @@ class LlantasSeleccionadasAdmin(admin.ModelAdmin):
     # Admin del Perfil
     list_display = ('id', 'perfil', 'inventario')
     search_fields= ('id', 'perfil', 'inventario')
+
+
+@admin.register(ServicioVehiculo)
+class ServicioVehiculoAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('folio', 'vehiculo', 'usuario', 'alineacion')
+
+
+@admin.register(ServicioLlanta)
+class ServicioLlantaAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('serviciovehiculo', 'llanta', 'llanta', 'inflado', 'balanceado', 'reparado',
+                    'valvula_reparada', 'rotar', 'rotar_mismo', 'rotar_otro', 'desmontaje')
+
+@admin.register(Rendimiento)
+class RendimientoAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('mes', 'llanta', 'analizada')
 
 class ProfileInline(admin.StackedInline):
     # Alinear el admin del perfil con el de User de Django

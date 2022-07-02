@@ -7,7 +7,7 @@
     </h2>
 
     <div class="flex-row">
-      <a href="{% url 'dashboards:planTaller' vehiculo.vehiculo.id %}">
+      <a href="{% url 'dashboards:planTaller' vehiculo.vehiculo.id %}" class="btn btn-primary">
         Taller
       </a>
     </div>
@@ -113,7 +113,15 @@
   </div>
 
   <footer class="card__footer">
-    <div class="footer__row {{vehiculo.color_dias_inspenccion}}">Días sin inspeccionar: {{vehiculo.dias_sin_inspeccion}}</div>
-    <div class="footer__row fbottom {{vehiculo.color_dias_alinear}}">Días sin alinear: {{vehiculo.dias_sin_alinear}}</div>
+    <div class="footer__row {{vehiculo.color_dias_inspenccion}}">
+      <i class="icon-magnifier"></i>: {{vehiculo.dias_sin_inspeccion}}
+    </div>
+    <div class="footer__row fbottom {{vehiculo.color_dias_alinear}}">
+      <i class="icon-vehiculo-desalineado" style="font-size: 2rem;"></i>: {{vehiculo.dias_sin_alinear}}
+    </div>
+    <div class="footer__row fbottom {{vehiculo.color_dias_inflado}}">
+      <i class="icon-pulpo"></i>:
+      {{vehiculo.dias_sin_inflar}}
+    </div>
   </footer>
 </div>

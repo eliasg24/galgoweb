@@ -1,5 +1,6 @@
 #Python
 from concurrent.futures import thread
+import json
 import threading
 
 # Django
@@ -18,7 +19,7 @@ from django.utils import timezone
 
 
 # Utilities
-from dashboards.models import Aplicacion, Bitacora, Bitacora_Pro, Compania, HistoricoLlanta, Inspeccion, Llanta, LlantasSeleccionadas, Observacion, Perfil, Ubicacion, Vehiculo, Producto, FTP
+from dashboards.models import Aplicacion, Bitacora, Bitacora_Pro, Compania, HistoricoLlanta, Inspeccion, Llanta, LlantasSeleccionadas, Observacion, Perfil, ServicioLlanta, ServicioVehiculo, Taller, Ubicacion, Vehiculo, Producto, FTP
 from datetime import date, datetime, timedelta
 from heapq import nlargest
 from itertools import count
@@ -68,7 +69,7 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
         vehiculos_llantas_acomodadas (list): _description_
 
     Returns:
-        _type_: _description_
+        list: Lista que contiene los diccionarios de los vehiculos acomodados
     """
     vehiculos_acomodados = []
     #Check de presion y profundidades
@@ -145,21 +146,22 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                         'max_presion': round(max_presion(llanta)),
                     })
             ejes_total.append(temp_ejes)
-            dias_sin_inspeccion = 'Sin informacón'
-            dias_sin_alinear = 'Sin informacón'
+            dias_sin_inspeccion = 'N/A'
+            dias_sin_alinear = 'N/A'
             
             color_dias_inspenccion = 'good'
             color_dias_alinear = 'good'
+            color_dias_inflado = 'good'
             hoy = date.today()
             if vehiculo_actual.fecha_ultima_inspeccion != None:
                 #print(vehiculo_actual.fecha_ultima_inspeccion)
                 dias_sin_inspeccion = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days
-            if vehiculo_actual.dias_inspeccion != 0:
-                #print(vehiculo_actual.dias_inspeccion)
+            if vehiculo_actual.compania.periodo2_inspeccion != 0:
+                #print(vehiculo_actual.compania.periodo2_inspeccion)
                 try:
-                    if dias_sin_inspeccion >= (vehiculo_actual.dias_inspeccion * 2):
+                    if dias_sin_inspeccion > (vehiculo_actual.compania.periodo2_inspeccion * 2):
                         color_dias_inspenccion = 'bad'
-                    elif dias_sin_inspeccion >= vehiculo_actual.dias_inspeccion:
+                    elif dias_sin_inspeccion > vehiculo_actual.compania.periodo2_inspeccion:
                         color_dias_inspenccion = 'yellow'
                 except:
                     pass
@@ -171,12 +173,21 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
             if vehiculo_actual.dias_alinear != 0:
                 #print(vehiculo_actual.dias_alinear)
                 try:
-                    if dias_sin_alinear >= (vehiculo_actual.dias_alinear * 2):
+                    if dias_sin_alinear > (vehiculo_actual.dias_alinear * 2):
                         color_dias_alinear = 'bad'
-                    elif dias_sin_alinear >= vehiculo_actual.dias_alinear:
+                    elif dias_sin_alinear > vehiculo_actual.dias_alinear:
                         color_dias_alinear = 'yellow'
                 except:
                     pass 
+        dias_sin_inflar = is_valid_dias_sin_inflar(vehiculo_actual)
+        if vehiculo_actual.compania.periodo2_inflado != 0:
+            try:
+                if dias_sin_inflar > (vehiculo_actual.compania.periodo2_inflado * 2):
+                    color_dias_inflado = 'bad'
+                elif dias_sin_inflar > vehiculo_actual.compania.periodo2_inflado:
+                    color_dias_inflado = 'yellow'
+            except:
+                pass
             
         vehiculos_acomodados.append(
             {
@@ -186,9 +197,27 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                 'dias_sin_alinear': dias_sin_alinear,
                 'color_dias_inspenccion': color_dias_inspenccion,
                 'color_dias_alinear': color_dias_alinear,
+                'dias_sin_inflar': dias_sin_inflar,
+                'color_dias_inflado': color_dias_inflado
             }
         )
     return vehiculos_acomodados
+
+
+def is_valid_dias_sin_inflar(vehiculo_actual):
+    """Funcion que determina si la lista de dias sin inflar es valisa(Que no este vacia)
+
+    Args:
+        dias_sin_inflar (list): Lista de los dias con inflado
+
+    Returns:
+        _type_: Cadena o fecha que resulto
+    """
+    if vehiculo_actual.fecha_de_inflado != None:
+        return (date.today() - vehiculo_actual.fecha_de_inflado).days
+        #return max(dias_sin_inflar)
+    else:
+        return 'N/A'
 
 
 def acomodo_pocisiones_vehicle(vehiculos):
@@ -237,7 +266,10 @@ def acomodo_pocisiones_vehicle(vehiculos):
             'dias_sin_inspeccion': vehiculo['dias_sin_inspeccion'],
             'dias_sin_alinear': vehiculo['dias_sin_alinear'],
             'color_dias_inspenccion': vehiculo['color_dias_inspenccion'],
-            'color_dias_alinear': vehiculo['color_dias_alinear']
+            'color_dias_alinear': vehiculo['color_dias_alinear'],
+            'dias_sin_inflar': vehiculo['dias_sin_inflar'],
+            'color_dias_inflado': vehiculo['color_dias_inflado']
+            
         })
     return vehiculos_ejes_acomodados
 
@@ -452,16 +484,38 @@ def check_presion_pulpo(llanta, min_presion, max_presion):
     presion = int(llanta.presion_actual)
     alta = Observacion.objects.get(observacion='Alta presion')
     baja = Observacion.objects.get(observacion='Baja presión')
+    mala_entrada = Observacion.objects.get(observacion='Mala entrada')
+    doble_mala_entrada = Observacion.objects.get(observacion='Doble mala entrada')
     llanta.observaciones.remove(alta)
     llanta.observaciones.remove(baja)
     print(presion)
     if presion < min_presion:
         llanta.observaciones.add(baja)
         llanta.vehiculo.observaciones_llanta.add(baja)
-    if presion > max_presion:
+        if mala_entrada in llanta.vehiculo.observaciones_llanta or doble_mala_entrada in llanta.vehiculo.observaciones_llanta :
+            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+            llanta.observaciones.add(doble_mala_entrada)
+        else:
+            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
+            llanta.observaciones.add(mala_entrada)
+            
+    elif presion > max_presion:
         llanta.observaciones.add(alta)
         llanta.vehiculo.observaciones_llanta.add(alta)
+        if mala_entrada in llanta.vehiculo.observaciones_llanta or doble_mala_entrada in llanta.vehiculo.observaciones_llanta :
+            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+            llanta.observaciones.add(doble_mala_entrada)
+        else:
+            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
+            llanta.observaciones.add(mala_entrada)
         
+    else:
+        llanta.observaciones.remove(doble_mala_entrada)
+        llanta.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
+        
+        llanta.observaciones.remove(mala_entrada)
+        llanta.vehiculo.observaciones_llanta.remove(mala_entrada)
+          
     llanta.save()
 
 
@@ -496,6 +550,13 @@ def aplicaciones_mas_frecuentes(vehiculo_fecha, vehiculos, compania):
         return aplicaciones
     except:
         return None
+
+def cant_ejes(vehiculo_acomodado):
+    ejes = 0
+    for eje in vehiculo_acomodado[0]['ejes']:
+        ejes += 1
+    return ejes
+
 
 def cantidad_llantas(configuracion):
     try:
@@ -2430,6 +2491,81 @@ def exist_context(user):
 def folio():
     pass
 
+def inflado_inicio(POST):
+    #? Lista de ids
+    fecha = ''
+    list_fechas_str = []
+    if 'inflado-inicio' in POST and POST['inflado-inicio'] != '' and POST['inflado-inicio'] != None:
+        fecha = POST['inflado-inicio']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+def inflado_final(POST):
+    #? Lista de ids
+    fecha = ''
+    if 'inflado-final' in POST and POST['inflado-final'] != '' and POST['inflado-final'] != None:
+        fecha = POST['inflado-final']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+def inspeccion_inicio(POST):
+    #? Lista de ids
+    fecha = ''
+    if 'inspeccion-inicio' in POST and POST['inspeccion-inicio'] != '' and POST['inspeccion-inicio'] != None:
+        fecha = POST['inspeccion-inicio']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+def inspeccion_final(POST):
+    #? Lista de ids
+    fecha = ''
+    if 'inspeccion-final' in POST and POST['inspeccion-final'] != '' and POST['inspeccion-final'] != None:
+        fecha = POST['inspeccion-final']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+def alineacion_inicio(POST):
+    #? Lista de ids
+    fecha = ''
+    if 'alineacion-inicio' in POST and POST['alineacion-inicio'] != '' and POST['alineacion-inicio'] != None:
+        fecha = POST['alineacion-inicio']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+def alineacion_final(POST):
+    #? Lista de ids
+    fecha = ''
+    if 'alineacion-final' in POST and POST['alineacion-final'] != '' and POST['alineacion-final'] != None:
+        fecha = POST['alineacion-final']
+    fecha = str(fecha).replace(' ', '').replace('\'', '')
+    return fecha
+
+
+
+def inflado_inicio_get(GET):
+    return GET.get('inflado_inicio', '')
+
+def inflado_final_get(GET):
+    return GET.get('inflado_final', '')
+
+def inspeccion_inicio_get(GET):
+    return GET.get('inspeccion_inicio', '')
+
+def inspeccion_final_get(GET):
+    return GET.get('inspeccion_final', '')
+
+def alineacion_inicio_get(GET):
+    return GET.get('alineacion_inicio', '')
+
+def alineacion_final_get(GET):
+    return GET.get('alineacion_final', '')
+
+
 
 def get_product_list(productos):
     list_temp = []
@@ -2830,6 +2966,43 @@ def km_max_template(inspeccion_vehiculo):
     else:
         return inspeccion_vehiculo.km
     
+
+
+def lista_problemas_taller(servicios_llanta, servicio):
+    problemas = []
+    if servicio.alineacion == True:
+        problemas.append({'posicion':f'Vehiculo {servicio.vehiculo}', 'icono': '', 'accion': f'El vehiculo se alineo'})
+    for servicio in servicios_llanta:
+        if servicio.inflado == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se inflo la llanta'})
+        if servicio.balanceado == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se balanceo la llanta'})
+        if servicio.reparado == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se reparo la llanta'})
+        if servicio.valvula_reparada == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se reparo la valvula'})
+        if servicio.costado_reparado == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se reparo el costado de la llanta'})
+        if servicio.rotar == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se roto la llanta por {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
+        if servicio.desmontaje == True:
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Esta llanta se desmonto por la {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
+    return problemas
+
+def list_vehicles_valid_filter(vehiculos, filtro, query2):
+    ids_vehiculos_validos = []
+    ids = list_vehicle_id(vehiculos)
+    filtro_query = ({'observaciones__id__in': filtro.split(',')} if filtro != '' and  filtro != None else {})
+    
+    for id in ids:
+        llantas = Llanta.objects.filter(vehiculo__id = id, inventario = 'Rodante')
+        llantas = llantas.filter(query2, **filtro_query)
+        num_llantas =  llantas.count()
+        if num_llantas > 0:
+            ids_vehiculos_validos.append(id)
+            
+    return ids_vehiculos_validos
+
 
 def list_vehicle_id(vehiculos):
     """AI is creating summary for list_vehicle_id
@@ -3335,7 +3508,16 @@ def pagination(page, pages):
         
     return pagination
 
-def pagination_url(filtro, exclude, ejes, search):
+def pagination_url(filtro, 
+                    exclude, 
+                    ejes, 
+                    search, 
+                    inflado_inicio,
+                    inflado_final,
+                    inspeccion_inicio,
+                    inspeccion_final,
+                    alineacion_inicio,
+                    alineacion_final):
     """Funcion que recibe los parametros de los filtros u devuelve una cadena para poder respetarlos
 
     Args:
@@ -3347,9 +3529,32 @@ def pagination_url(filtro, exclude, ejes, search):
     Returns:
         str: Cadena concatenada de los diferentes filtros
     """
-    if (filtro == None and exclude == None and ejes == None and search == None) or (filtro == '' and exclude == '' and ejes == '' and search == ''):
+    if (
+        filtro == None 
+        and exclude == None 
+        and ejes == None 
+        and search == None 
+        and inflado_inicio == None 
+        and inflado_final == None 
+        and inspeccion_inicio == None 
+        and inspeccion_final == None 
+        and alineacion_inicio == None 
+        and alineacion_final == None
+        ) or (
+        filtro == '' 
+        and exclude == '' 
+        and ejes == '' 
+        and search == ''
+        and inflado_inicio == '' 
+        and inflado_final == '' 
+        and inspeccion_inicio == '' 
+        and inspeccion_final == '' 
+        and alineacion_inicio == '' 
+        and alineacion_final == ''):
         return ''
-    return f'&filtro={filtro}&exclude={exclude}&ejes={ejes}&search={search}'
+    if search == None:
+        search=''
+    return f'&filtro={filtro}&exclude={exclude}&ejes={ejes}&search={search}&inflado_inicio={inflado_inicio}&inflado_final={inflado_final}&inspeccion_inicio={inspeccion_inicio}&inspeccion_final={inspeccion_final}&alineacion_inicio={alineacion_inicio}&alineacion_final={alineacion_final}'
 
 def pagination_prev(page, pages, url_complemento):
     if (page - 1) >= 1:
@@ -3437,6 +3642,28 @@ def punto_de_retiro(llanta_actual):
     elif "L" in llanta_actual.tipo_de_eje:
         punto_retiro = compania.punto_retiro_eje_retractil
     return(punto_retiro)
+
+
+
+def quitar_desgaste(llanta, llanta_rotar):
+    d_alta_presion = Observacion.objects.get(observacion = 'Desgaste alta presión') #?Amarillo
+    d_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna') #?Amarillo
+    d_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha') #?Amarillo
+    d_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda') #?Amarillo
+
+    
+    #? Llanta
+    llanta.observaciones.remove(d_alta_presion)
+    llanta.observaciones.remove(d_costilla_interna)
+    llanta.observaciones.remove(d_inclinado_derecha)
+    llanta.observaciones.remove(d_inclinado_izquierda)
+    
+    #? Llanta rotada
+    llanta_rotar.observaciones.remove(d_alta_presion)
+    llanta_rotar.observaciones.remove(d_costilla_interna)
+    llanta_rotar.observaciones.remove(d_inclinado_derecha)
+    llanta_rotar.observaciones.remove(d_inclinado_izquierda)
+
 
 def radar_min(vehiculo_fecha, compania):
     try:
@@ -3549,6 +3776,178 @@ def send_mail(bitacora, tipo):
     thread = threading.Thread(target=mail, args=(bitacora, tipo))
     print('Crear hilo')
     thread.start()
+
+def eje_a_str(vehiculo_acomodado):
+    vehiculo_id = vehiculo_acomodado[0]['vehiculo'].id
+    vehiculo_acomodado[0]['vehiculo'] = vehiculo_id
+    for eje in vehiculo_acomodado[0]['ejes']:
+        for llanta in eje:
+            id_llanta = llanta['llanta'].id
+            llanta['llanta'] = id_llanta
+    return str(vehiculo_acomodado)
+
+
+def eje_a_list(configuracion):
+    #? Se obtiene la configuracion y se convierte a una lista de diccionarios
+    orden_raw = configuracion
+    orden_raw = orden_raw.replace("\'", "\"")
+    configuracion = json.loads(orden_raw)
+    #? Se obtiene el id del vehiculo y se cambia en la lista
+    vehiculo_id = configuracion[0]['vehiculo']
+    vehiculo = Vehiculo.objects.get(pk =vehiculo_id )
+    configuracion[0]['vehiculo'] = vehiculo
+    #? Se cambian las llantas
+    for eje in configuracion[0]['ejes']:
+        for llanta in eje:
+            id_llanta = llanta['llanta']
+            llanta_ = Llanta.objects.get(pk = id_llanta)
+            llanta['llanta'] = llanta_
+    return configuracion
+    
+
+
+def bitacora_servicios(pk: int, request, acciones_vehiculo: list, dataPOST: list, llantas_desmontadas: list):
+    """Esta funcion junta todas las demas que tienen que ver con la bitacora de servicio
+
+    Args:
+        pk (int): Id del vehiculo
+        request (_type_): Objeto request de Django
+        acciones_vehiculo (list): Acciones que se realizaran a nivel vehiculo
+        dataPOST (list): Datos de las  acciones a nivel llanta 
+        llantas_desmontadas (list): Lista de las llantas desmontadas
+    """
+    servicio_de_vehiculo = servicio_vehiculo(pk, request, acciones_vehiculo)
+    servicio_llanta_desmomtaje(dataPOST, servicio_de_vehiculo)
+    servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_de_vehiculo)
+
+
+def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
+    """Esta funcion realiza las funciones del guardado del servicio a nivel vehiculo
+
+    Args:
+        pk (int): Id del vehiculo 
+        request (WSGIRequest): Request
+        acciones_vehiculo (list): Lista de las acciones del vehiculo
+
+    Returns:
+        ServicioVehiculo: Es el servicio que se creo
+    """
+    vehiculo = Vehiculo.objects.get(pk=pk)
+    vehiculo_acomodado = vehiculo_con_ejes_acomodados(pk)
+    #? Se obtiene la fecha y la hora
+    hoja = request.POST['hoja']
+    hoja = json.loads(hoja)
+    dateString = f"{hoja['fecha']}, {hoja['hora']}:00"
+    dateFormatter = "%Y-%m-%d, %H:%M:%S"
+    fecha = datetime.strptime(dateString, dateFormatter)
+    
+    #? Se guardan los servicios
+    servicio = ServicioVehiculo.objects.create(
+        vehiculo = vehiculo,
+        usuario = request.user,
+        fecha_real = fecha.date(),
+        horario_real = fecha.time(),
+        ubicacion = vehiculo.ubicacion,
+        aplicacion = vehiculo.aplicacion,
+        configuracion = eje_a_str(vehiculo_acomodado),
+    )
+    
+    folio = f'SRP{date.today().year}{date.today().month}{date.today().day}{servicio.id}-{vehiculo.id}'
+    servicio.folio = folio
+    
+    #? Guardado de las acciones del vehiculo  
+    if 'alinearVehiculo' in acciones_vehiculo:
+        servicio.alineacion = True
+    servicio.save()
+    return servicio
+
+
+def servicio_llanta_desmomtaje(dataPOST, servicio_vehiculo_id):
+    for data in dataPOST:
+        if data['tipoServicio'] == 'desmontaje':
+            #? Se llama la llanta actual
+            llanta = Llanta.objects.get(pk=data['llantaId'])
+            
+            #? Se llama la llanta a montar
+            nuevaLlanta = data['nuevaLlanta']
+            llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta)
+            
+            #? Se obtienen los datos del desmontaje
+            razon = data['razon']
+            almacen_desmontaje = data['almacen_desmontaje']
+            taller_desmontaje = Taller.objects.get(id = int(data['taller_desmontaje']))
+            
+           
+            ServicioLlanta.objects.create(
+                serviciovehiculo = servicio_vehiculo_id,
+                llanta = llanta,
+                desmontaje = True,
+                llanta_cambio = llanta_nueva,
+                inventario_de_desmontaje = almacen_desmontaje,
+                taller_de_desmontaje = taller_desmontaje,
+                razon_de_desmontaje = razon
+            )
+
+
+def servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_vehiculo_id):
+        llantas_rotadas = []
+        for data in dataPOST:
+            if data['tipoServicio'] == 'sr':
+                #?Se llama la llanta
+                llanta = Llanta.objects.get(pk=data['llantaId'])
+                #? Se verifican que servicios se realizaron
+                inflar = True if data['inflar'] == 'on' else False
+                balancear = True if data['balancear'] == 'on' else False
+                reparar = True if data['reparar'] == 'on' else False
+                valvula = True if data['valvula'] == 'on' else False
+                costado = True if data['costado'] == 'on' else False
+                rotar = data['rotar'] if data['rotar'] != 'no' else False
+                rotar_bool = True if rotar == 'mismo' or rotar == 'otro' else False
+                rotar_mismo = False
+                rotar_otro = False
+                llanta_rotar = None
+                #? Rotar en el mismo vehiculo
+                if rotar == 'mismo':
+                    id_llanta_rotar = int(data['origenLlanta'])
+                    llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                    
+                    if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
+                        llanta_rotar = None
+                        continue
+                    
+                    rotar_mismo = True
+                    
+                    llantas_rotadas.append(llanta)
+                    llantas_rotadas.append(llanta_rotar)
+                    
+                #? Rotar en diferente vehiculo
+                if rotar == 'otro':
+                    id_llanta_rotar = int(data['llantaOrigen'])
+                    llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                    
+                    if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
+                        llanta_rotar = None
+                        continue
+                    
+                    rotar_otro = True
+                    
+                    llantas_rotadas.append(llanta)
+                    llantas_rotadas.append(llanta_rotar)
+                    
+                ServicioLlanta.objects.create(
+                    serviciovehiculo = servicio_vehiculo_id,
+                    llanta = llanta,
+                    inflado = inflar,
+                    balanceado = balancear,
+                    reparado = reparar,
+                    valvula_reparada = valvula,
+                    costado_reparado = costado,
+                    rotar = rotar_bool,
+                    rotar_mismo = rotar_mismo,
+                    rotar_otro = rotar_otro,
+                    llanta_cambio = llanta_rotar
+                )
+
 
 def mail(bitacora, tipo):
     vehiculo = Vehiculo.objects.get(pk = bitacora.numero_economico.id)
@@ -3798,6 +4197,35 @@ def signo_pulpo_pro(bitacora, num_llanta, num_eje):
         return 'icon-checkmark good-text'
     else:
         return 'icon-cross bad-text'
+
+
+def vehiculo_con_ejes_acomodados(pk):
+    """Funcion que obtiene un vehiculo y acomoda sus ejes internos
+
+    Args:
+        pk (int): Id del vehiculo
+
+    Returns:
+        list: Lista de diccionarios de los ejes
+    """
+    #? Se obtiene el vehiculo con un filter, por convicciones de la funcion
+    vehiculo = Vehiculo.objects.filter(pk=pk)
+    print(vehiculo)
+    #? Se convirte el id en una lista(Por convenvion de las funciones)
+    ids_vehiculo = list_vehicle_id(vehiculo.values('id'))
+    #? Se obtiene las llantas 
+    llantas = Llanta.objects.filter(
+        vehiculo__id__in = ids_vehiculo,
+        inventario = 'Rodante'
+        ).annotate(
+            min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
+            ) 
+    #? Se acomodan las llantas
+    vehiculos_llantas_acomodadas = acomodo_de_llantas_por_vehiculo(llantas, ids_vehiculo)
+    acomodo_ejes_vehiculo = acomodo_ejes_vehicle(vehiculos_llantas_acomodadas)
+    acomodo_posicion_ejes_vehicle = acomodo_pocisiones_vehicle(acomodo_ejes_vehiculo)
+    return acomodo_posicion_ejes_vehicle
+
 
 def vehiculo_amarillo(llantas):
     vehiculos_amarillos = []

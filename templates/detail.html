@@ -404,7 +404,22 @@
                                                     </td>
                                                 </tr>
 
+                                                {% elif evento.2 == 'servicio'%}  
+                                            
+                                                <tr id="paragraph {{evento.1.id}}">
+                                                    <td class="td-table4"><span class="icon-ruler3"></span></td>
+                                                    <td class="td-table4">{{evento.1.fecha_real.day}}/{{evento.1.fecha_real.month}}/{{evento.1.fecha_real.year}}</td>
+                                                    <td class="td-table4"><span class="{{evento.3}}"></span></td>
+                                                    <td class="td-table4">{{evento.1.id}}</td>
+                                                    <td class="td-table4">
+                                                        <a href="{% url 'dashboards:reporteTaller' evento.1.id %}" rel="noopener" target="_blank">
+                                                            <span class="icon-file-pdf" ></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
                                             {% else %}
+                                            
                                             {% endif %}
                                         {% endfor %}
 

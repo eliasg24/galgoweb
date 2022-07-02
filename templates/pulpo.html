@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block head %} {% load static %}
+{% extends 'base.html' %} 
+{% block head %} 
+{% load static %}
 <link rel="stylesheet" href="{% static 'css/pulpo.css' %}" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,7 +34,8 @@
 <script src="https://cdn.anychart.com/releases/8.10.0/themes/dark_provence.js"></script>
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 <title>AETO WEB</title>
-{% endblock head %} {% block content %}
+{% endblock head %} 
+{% block content %}
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-cont">
     <div class="logo">
@@ -1933,9 +1936,6 @@ chart_2.title().fontColor('#000');
 chart_2.container(layer_2).draw();
 
 });
-
-
-
 
   /*rango de fechas*/
   $(function() {

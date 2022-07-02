@@ -9,5 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path("", include(("dashboards.urls", "dashboards"), namespace="dashboards")),
+    
+    path("", include(("calendario.urls", "calendario"), namespace="calendario")),
+    
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

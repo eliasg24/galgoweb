@@ -43,9 +43,10 @@
           allowOutsideClick: true,
           allowEscapeKey: true,
         });
-      } else {
         return;
       }
+
+      return;
     }
 
     if (target.matches('.service-page')) {

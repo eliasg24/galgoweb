@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # Aplicaciones Locales
     "dashboards",
+    "calendario",
 ]
 
 MIDDLEWARE = [

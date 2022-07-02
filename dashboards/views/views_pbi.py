@@ -2,23 +2,249 @@ import json
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.contrib.auth.models import User, Group
+from django.contrib.postgres.fields import ArrayField
+from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func
+from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest
 
-from dashboards.models import Perfil, Vehiculo
+from dashboards.functions.functions import DiffDays, CastDate
+from dashboards.models import Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion
 
-
-class VeicleData(View):
+class CompaniaData(View):
     def get(self, request , *args, **kwargs):
         #Queryparams
         usuario = kwargs['usuario']
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        vehiculos = Vehiculo.objects.filter(compania=compania)
+        compania = Compania.objects.filter(compania=compania)
+        #Serializar data
+        print(compania)
+        compania = list(compania.values())
+        print(compania)
+        
+        dict_context = {
+            'compania': compania,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class SucursalData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        sucursales = Ubicacion.objects.filter(compania=compania)
+        #Serializar data
+        print(sucursales)
+        sucursales = list(sucursales.values())
+        print(sucursales)
+        
+        dict_context = {
+            'sucursales': sucursales,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class AplicacionData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        aplicaciones = Aplicacion.objects.filter(compania=compania).annotate(sucursal=F("ubicacion")).values("nombre", "compania", "sucursal", "parametro_desgaste_direccion", "parametro_desgaste_traccion", "parametro_desgaste_arrastre", "parametro_desgaste_loco", "parametro_desgaste_retractil")
+        #Serializar data
+        print(aplicaciones)
+        aplicaciones = list(aplicaciones)
+        print(aplicaciones)
+        
+        dict_context = {
+            'aplicaciones': aplicaciones,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class TallerData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        talleres = Taller.objects.filter(compania=compania)
+        #Serializar data
+        print(talleres)
+        talleres = list(talleres.values())
+        print(talleres)
+        
+        dict_context = {
+            'talleres': talleres,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class PerfilData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.filter(user = user)
+        ubicacion = list(perfil.values_list("ubicacion", flat=True))
+        aplicacion = list(perfil.values_list("aplicacion", flat=True))
+        taller = list(perfil.values_list("taller", flat=True))
+        companias = list(perfil.values_list("companias", flat=True))
+        ubicaciones = list(perfil.values_list("ubicaciones", flat=True))
+        aplicaciones = list(perfil.values_list("aplicaciones", flat=True))
+        talleres = list(perfil.values_list("talleres", flat=True))
+        #Serializar data
+        perfil = list(perfil.annotate(ubicacion_id=Value(ubicacion, output_field=ArrayField(IntegerField())), aplicacion_id=Value(aplicacion, output_field=ArrayField(IntegerField())), taller_id=Value(taller, output_field=ArrayField(IntegerField())), companias_id=Value(companias, output_field=ArrayField(IntegerField())), ubicaciones_id=Value(ubicaciones, output_field=ArrayField(IntegerField())), aplicaciones_id=Value(aplicaciones, output_field=ArrayField(IntegerField())), talleres_id=Value(talleres, output_field=ArrayField(IntegerField()))).values("user", "user__username", "compania", "ubicacion_id", "aplicacion_id", "taller_id", "idioma", "fecha_de_creacion", "fecha_de_modificacion", "companias_id", "ubicaciones_id", "aplicaciones_id", "talleres_id"))
+        print(perfil)
+        
+        dict_context = {
+            'perfil': perfil,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class VehicleData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        vehiculos = Vehiculo.objects.filter(compania=compania).select_related("compania").annotate(dias_sin_inspeccion=DiffDays(CastDate(Now())-CastDate(F('fecha_ultima_inspeccion')), output_field=IntegerField()), dias_sin_inflar=DiffDays(CastDate(Now())-CastDate(F('fecha_de_inflado')), output_field=IntegerField()), vencido=Case(When(dias_sin_inspeccion__gt=F("compania__periodo2_inspeccion"), then=True), When(fecha_ultima_inspeccion=None, then=True), default=False), estatus_pulpo=Case(When(observaciones_llanta__observacion__in=["Doble mala entrada"], then=Value("Doble mala entrada")), When(observaciones_llanta__observacion__in=["Mala entrada"], then=Value("Mala entrada")), default=Value("Entrada Correcta")))
         #Serializar data
         vehiculos = list(vehiculos.values())
         
         dict_context = {
             'vehiculos': vehiculos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class LlantaData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        llantas = Llanta.objects.filter(compania=compania).annotate(health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField()))
+        #Serializar data
+        llantas = list(llantas.values("id", "numero_economico", "compania_id", "vehiculo_id", "ubicacion_id", "aplicacion_id", "taller_id", "renovador_id", "vida", "tipo_de_eje", "eje", "posicion", "nombre_de_eje", "presion_de_entrada", "presion_de_salida", "presion_actual", "fecha_de_inflado", "ultima_inspeccion_id", "profundidad_izquierda", "profundidad_central", "profundidad_derecha", "km_actual", "km_montado", "producto_id", "inventario", "fecha_de_entrada_inventario", "rechazo_id", "tirecheck", "fecha_de_balanceado", "health", "min_profundidad"))
+        
+        dict_context = {
+            'llantas': llantas,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class ProductoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        productos = Producto.objects.filter(compania=compania)
+        #Serializar data
+        productos = list(productos.values())
+        
+        dict_context = {
+            'productos': productos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class DesechoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        desechos = Desecho.objects.filter(llanta__compania=compania)
+        #Serializar data
+        desechos = list(desechos.values())
+        
+        dict_context = {
+            'desechos': desechos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class RendimientoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        rendimientos = Rendimiento.objects.filter(llanta__compania=compania)
+        #Serializar data
+        rendimientos = list(rendimientos.values())
+        
+        dict_context = {
+            'rendimientos': rendimientos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class InspeccionesVehiculoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        inspecciones_vehiculo = InspeccionVehiculo.objects.filter(vehiculo__compania=compania)
+        #Serializar data
+        inspecciones_vehiculo = list(inspecciones_vehiculo.values())
+        
+        dict_context = {
+            'inspecciones_vehiculo': inspecciones_vehiculo,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class InspeccionesLlantaData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        inspecciones_llanta = Inspeccion.objects.filter(llanta__compania=compania)
+        #Serializar data
+        inspecciones_llanta = list(inspecciones_llanta.values())
+        
+        dict_context = {
+            'inspecciones_llanta': inspecciones_llanta,
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

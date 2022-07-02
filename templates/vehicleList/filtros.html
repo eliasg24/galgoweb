@@ -25,6 +25,93 @@
     <div class="filter__body">
       <div class="filter__row">
         <div class="filter__row-header">
+          <h3>Inflado por fecha <i class="icon-pulpo"></i></h3>
+        </div>
+
+        <div class="filter__nav">
+          <div class="filter__control">
+            <label class="filter__label" for="inflado-inicio">Desde</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="inflado-inicio"
+              id="inflado-inicio"
+              value="{{inflado_inicio}}"
+            />
+          </div>
+          <div class="filter__control">
+            <label class="filter__label" for="inflado-final">Hasta</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="inflado-final"
+              id="inflado-final"
+              value="{{inflado_final}}"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>Inspección por fecha</h3>
+        </div>
+
+        <div class="filter__nav">
+          <div class="filter__control">
+            <label class="filter__label" for="inspeccion-inicio">Desde</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="inspeccion-inicio"
+              id="inspeccion-inicio"
+              value="{{inspeccion_inicio}}"
+            />
+          </div>
+          <div class="filter__control">
+            <label class="filter__label" for="inspeccion-final">Hasta</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="inspeccion-final"
+              id="inspeccion-final"
+              value="{{inspeccion_final}}"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter__row">
+        <div class="filter__row-header">
+          <h3>Alineación por fecha</h3>
+        </div>
+
+        <div class="filter__nav">
+          <div class="filter__control">
+            <label class="filter__label" for="alineacion-inicio">Desde</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="alineacion-inicio"
+              id="alineacion-inicio"
+              value="{{alineacion_inicio}}"
+            />
+          </div>
+          <div class="filter__control">
+            <label class="filter__label" for="alineacion-final">Hasta</label>
+            <input
+              class="filter__input"
+              type="date"
+              name="alineacion-final"
+              id="alineacion-final"
+              value="{{alineacion_final}}"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter__row">
+        <div class="filter__row-header">
           <h3>TIPO DE EJE</h3>
         </div>
 
@@ -55,6 +142,7 @@
           </label>
         </div>
       </div>
+
       <div class="filter__row">
         <div class="filter__row-header">
           <h3>PRESIONES</h3>
@@ -79,36 +167,22 @@
 
         <div class="filter__nav">
           <label for="profundidad-baja" class="label-check">
-            <input
-              type="checkbox"
-              name="profundidad-baja"
-              id="profundidad-baja"
-              {% if "7" in filtro %}checked{% endif %}
-            />
+            <input type="checkbox" name="profundidad-baja" id="profundidad-baja" {% if "7" in filtro %}checked{% endif %} />
             <div class="btn-filter">Baja</div>
           </label>
 
           <label for="profundidad-punto-retiro" class="label-check">
-            <input
-              type="checkbox"
-              name="profundidad-punto-retiro"
-              id="profundidad-punto-retiro"
-              {% if "8" in filtro%}checked{% endif %}
-            />
+            <input type="checkbox" name="profundidad-punto-retiro" id="profundidad-punto-retiro" {% if "8" in filtro%}checked{% endif%} />
             <div class="btn-filter">En punto de retiro</div>
           </label>
 
           <label for="profundidad-desgaste-irregular" class="label-check">
-            <input
-              type="checkbox"
-              name="profundidad-desgaste-irregular"
-              id="profundidad-desgaste-irregular"
-              {% if "10,11,12,13" in filtro %}checked{% endif %}
-            />
+            <input type="checkbox" name="profundidad-desgaste-irregular" id="profundidad-desgaste-irregular" {% if "10,11,12,13" in filtro%}checked{% endif %} />
             <div class="btn-filter">Rotación</div>
           </label>
         </div>
       </div>
+
       <div class="filter__row">
         <div class="filter__row-header">
           <h3>DUALIZACIÓN</h3>
@@ -116,35 +190,19 @@
 
         <div class="filter__nav">
           <label for="con-dualizacion" class="label-check">
-            <input
-              type="radio"
-              name="dualizacion"
-              value="con-dualizacion"
-              id="con-dualizacion"
-              {% if "9" in filtro %}checked{% endif %}
-            />
+            <input type="radio" name="dualizacion" value="con-dualizacion"
+            id="con-dualizacion" {% if "9" in filtro %}checked{% endif %} />
             <div class="btn-filter">Si</div>
           </label>
 
           <label for="sin-dualizacion" class="label-check">
-            <input
-              type="radio"
-              name="dualizacion"
-              value="sin-dualizacion"
-              id="sin-dualizacion"
-              {% if "9" in exclude %}checked{% endif %}
-            />
+            <input type="radio" name="dualizacion" value="sin-dualizacion"
+            id="sin-dualizacion" {% if "9" in exclude %}checked{% endif %} />
             <div class="btn-filter">No</div>
           </label>
 
           <label for="ambas" class="label-check">
-            <input
-              type="radio"
-              name="dualizacion"
-              value="ambas"
-              id="ambas"
-              {% if exclude == "" and "9" not in filtro %}checked{% endif %}
-            />
+            <input type="radio" name="dualizacion" value="ambas" id="ambas" {%if exclude == "" and "9" not in filtro %}checked{% endif %} />
             <div class="btn-filter">Ambas</div>
           </label>
         </div>
