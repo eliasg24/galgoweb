@@ -8,7 +8,10 @@ class Calendario(models.Model):
     # Modelo de la Compañía
 
     start = models.DateField(null=True, blank=True)
+    horario_start = models.TimeField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
+    horario_end = models.TimeField(null=True, blank=True)
+    
     title = models.CharField(max_length=255, null=True, blank=True)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
 

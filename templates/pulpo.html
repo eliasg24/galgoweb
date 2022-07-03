@@ -39,7 +39,7 @@
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+      <img src="{% static 'images/aeto.svg' %}" alt="logo" />
     </div>
 
     <form class="form-head" action="{% url 'dashboards:buscar' %}" method="GET">
@@ -1780,7 +1780,7 @@ var stroke = '5 #e5e4e4';
 if (without_stroke) {
     stroke = null;
     gauge.label(i)
-            .text(names[i] + ', <span style="color:#fff">' + data_1[i] + '%</span>')// color: #7c868e
+            .text(names[i] + ', <span style="color:#sb1b7bc">' + data_1[i] + '%</span>')// color: #7c868e
             .useHtml(true);
     gauge.label(i)
             .hAlign('center')

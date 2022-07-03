@@ -3841,12 +3841,19 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     dateFormatter = "%Y-%m-%d, %H:%M:%S"
     fecha = datetime.strptime(dateString, dateFormatter)
     
+    dateStringEnd = f"{hoja['fecha_end']}, {hoja['hora_end']}:00"
+    dateFormatterEnd = "%Y-%m-%d, %H:%M:%S"
+    fecha_end = datetime.strptime(dateString, dateFormatter)
+    
+    
     #? Se guardan los servicios
     servicio = ServicioVehiculo.objects.create(
         vehiculo = vehiculo,
         usuario = request.user,
-        fecha_real = fecha.date(),
-        horario_real = fecha.time(),
+        fecha_inicio = fecha.date(),
+        horario_inicio = fecha.time(),
+        fecha_final = fecha_end.date(),
+        horario_final = fecha_end.time(),
         ubicacion = vehiculo.ubicacion,
         aplicacion = vehiculo.aplicacion,
         configuracion = eje_a_str(vehiculo_acomodado),

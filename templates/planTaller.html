@@ -11,7 +11,7 @@
   <main class="all-cont">
     <div class="head-cont">
       <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+        <img src="{% static 'images/aeto.svg' %}" alt="logo" />
       </div>
       <form id="taller-form" class="title-cont" method='POST'>
         {% csrf_token %}
@@ -43,6 +43,10 @@
           <div class="flex-row">
             <input type="date" name="fecha" id="" required>
             <input type="time" name="hora" id="" required>
+          </div>
+          <div class="flex-row">
+            <input type="date" name="fecha_end" id="" required>
+            <input type="time" name="hora_end" id="" required>
           </div>
 
           <!-- <div class="form__row">
