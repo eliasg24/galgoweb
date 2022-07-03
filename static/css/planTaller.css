@@ -101,9 +101,9 @@
 
 .form__row input,
 .service-page .flex-row input {
-  background: transparent;
-  border: thin solid #fff;
-  color: #fff;
+  background: var(--colorv00);
+  border: thin solid var(--colorv02);
+  color: var(--colorv02);
   font-family: inherit;
   font-size: 1rem;
   outline: none;

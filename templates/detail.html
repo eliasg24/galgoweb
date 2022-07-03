@@ -1056,6 +1056,24 @@ anychart.onDocumentReady(function () {
             .fontSize(13)
             .padding([0, 0, 10, 0]);
 
+    // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+            
+    // adjust y axis       
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+var legend = chart.legend();
+    legend.enabled(true)
+            .fontColor("#000")
+            .fontSize(12);
+
     // set container id for the chart
     chart.container('spline-chart');
 
@@ -1100,9 +1118,9 @@ anychart.onDocumentReady(function () {
 var data = anychart.data.set([
 {% for eje, kmxmm in comparativa_de_ejes.items %}
 {x: "{{eje}}", value: {{kmxmm}},
-normal:   {fill: "#0097fc", stroke: "#0097fc"},
-hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
-selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+normal:   {fill: "#4a73f2", stroke: "#4a73f2"},
+hovered:  {fill: "#4a73f2 0.1", stroke: "2 #4a73f2"},
+selected: {fill: "#4a73f2 0.5",stroke: "4 #4a73f2"}
 },
 {% endfor %}
 ]);
@@ -1125,6 +1143,19 @@ var title = chart.title();
 // set the titles of the axes
 chart.xAxis().title("");
 chart.yAxis().title("");
+
+// set chart axes settings
+// adjust x axis
+chart.xAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
+
+// adjust y axis       
+chart.yAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
 
 // set function to format y axis labels
 var yLabels = chart.yAxis(0).labels();
@@ -1159,9 +1190,9 @@ anychart.onDocumentReady(function () {
 var data = anychart.data.set([
     {% for posicion, profundidad in comparativa_de_posiciones.items %}
         {x: "{{posicion}}", value: {{profundidad.0}},
-        normal:   {fill: "#0097fc", stroke: "#0097fc"},
-        hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
-        selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
+        normal:   {fill: "#4973f2", stroke: "#4973f2"},
+        hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2"},
+        selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2"}
         },
     {% endfor %}
 
@@ -1185,6 +1216,20 @@ var title = chart1.title();
 chart1.yScale().ticks().interval(10);
 chart1.xAxis().title("");
 chart1.yAxis().title("");
+
+// set chart axes settings
+// adjust x axis
+chart1.xAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
+        
+// adjust y axis       
+chart1.yAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
+
 
 // set function to format y axis labels
 var yLabels = chart1.yAxis(0).labels();
@@ -1220,9 +1265,9 @@ anychart.onDocumentReady(function () {
 var data = [
     {% for posicion, profundidad in comparativa_de_posiciones.items %}
         {x: "{{posicion}}", value: {{profundidad.1}}, markerSize:12,
-        normal:   {fill: "#A349A4", stroke: "#A349A4", type: "circle"},
-        hovered:  {fill: "#A349A4 0.3", stroke: "4 #A349A4"},
-        selected: {fill: "#A349A4 0.5",stroke: "6 #A349A4"}
+        normal:   {fill: "#4973f2", stroke: "#4973f2", type: "circle"},
+        hovered:  {fill: "#4973f2 0.3", stroke: "4 #4973f2"},
+        selected: {fill: "#4973f2 0.5",stroke: "6 #4973f2"}
         },
     {% endfor %}
 ];
@@ -1249,6 +1294,11 @@ series.name('Posición');
 chart.xGrid(true);
 chart.yGrid(true);
 
+// set grid stroke appearance
+chart.xGrid().stroke({color: "#000"});
+// set grid stroke appearance
+chart.yGrid().stroke({color: "#000"});
+
 //turn on chart animation
 chart.animation(true);
   
@@ -1262,6 +1312,19 @@ title.fontWeight(600);
 var tooltip = chart.tooltip();
 tooltip.positionMode("point");
 
+// set chart axes settings
+// adjust x axis
+chart.xAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
+        
+// adjust y axis       
+chart.yAxis()
+        .title('')
+        .stroke("#000")
+        .labels().fontColor("#000");
+        
 // set the container id
 chart.container("chart-scatter");
 
