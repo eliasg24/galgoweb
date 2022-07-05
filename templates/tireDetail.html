@@ -24,7 +24,7 @@
 <main class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-      <img src="{% static 'images/aeto.svg' %}">
+      <img src="{% static 'images/perro-galgo.png' %}">
     </div>
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
       <h1>{{vehiculo.numero_economico}}</h1>
@@ -574,6 +574,24 @@
     // set container id for the chart
     chart.container('lineChart');
 
+    // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+            
+    // adjust y axis       
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+var legend = chart.legend();
+    legend.enabled(true)
+            .fontColor("#000")
+            .fontSize(12);
+
     //Set Background
     var background = chart.background();
     background.stroke('0 #000');
@@ -633,11 +651,16 @@
     chart.xGrid().enabled(true);
     chart.yGrid().enabled(true);
 
+    // set grid stroke appearance
+    chart.xGrid().stroke({color: "#000"});
+    // set grid stroke appearance
+    chart.yGrid().stroke({color: "#000"});
+
     // set the chart title
     chart.title('Comportamiento de Desgaste');
     var title = chart.title();
     title.align('center');
-    title.fontColor('#fff');
+    title.fontColor('#000');
     title.fontSize(18);
     title.fontWeight(600);
 
@@ -661,6 +684,18 @@
     // set the container id
     chart.container('spline-chart');
 
+    // set chart axes settings
+    // adjust x axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+            
+    // adjust y axis       
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     //Set Background
     var background = chart.background();

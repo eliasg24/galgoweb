@@ -752,4 +752,39 @@ urlpatterns = [
         view=views_pbi.InspeccionesLlantaData.as_view(),
         name="inspeccionesllantaapi"
     ),
+    path(
+        route="api/observacionesinspeccion/<str:usuario>",
+        view=views_pbi.ObservacionesInspeccionData.as_view(),
+        name="observacionesinspeccionapi"
+    ),
+    path(
+        route="api/observacionesllanta/<str:usuario>",
+        view=views_pbi.ObservacionesLlantaData.as_view(),
+        name="observacionesllantaapi"
+    ),
+    path(
+        route="api/observacionesvehiculo/<str:usuario>",
+        view=views_pbi.ObservacionesVehiculoData.as_view(),
+        name="observacionesvehiculoapi"
+    ),
+    path(
+        route="api/bitacoras/<str:usuario>",
+        view=views_pbi.BitacorasData.as_view(),
+        name="bitacorasapi"
+    ),
+    path(
+        route="api/bitacoraspro/<str:usuario>",
+        view=views_pbi.BitacorasProData.as_view(),
+        name="bitacorasproapi"
+    ),
+    path(
+        route="api/acciones/<str:usuario>",
+        view=views_pbi.AccionData.as_view(),
+        name="accionesapi"
+    ),
+    path(
+        route="api/reemplazos/<str:usuario>",
+        view=views_pbi.ReemplazoData.as_view(),
+        name="reemplazosapi"
+    ),
 ]

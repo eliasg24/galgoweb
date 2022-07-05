@@ -2003,7 +2003,7 @@ def embudo_vidas_con_regresion(inspecciones, ubicacion, days):
         for r in fecha_llanta:
             resta = abs(r["fecha_hora"] - primera_fecha["primera_fecha"]).days
             x.append(resta)
-        profundidades = regresion.filter(llanta=llanta["llanta"]).values("min_profundidad")
+        profundidades = regresion.filter(llanta=llanta["llanta"]).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).values("min_profundidad")
         for p in profundidades:
             y.append(p["min_profundidad"])
         
@@ -2012,21 +2012,26 @@ def embudo_vidas_con_regresion(inspecciones, ubicacion, days):
 
         if len(x) > 2:
             dia = x[-1]
+        
+            try:
 
-            f = np.polyfit(x, y, 3)
-            p = np.poly1d(f)
-            termino = []
-            for numero in p:
-                numero = round(numero, 4)
-                termino.append(numero)
-            regresion_resultado = (termino[0]*(dia**2))+(termino[1]*dia)+termino[2]
-            resta = y[0]-regresion_resultado
-            diario = resta/dia
-            dias_30 = resta - (diario * 30)
-            dias_60 = resta - diario * 60
-            dias_90 = resta - diario * 90
-            
-            vehiculos_sospechosos = regresion.filter(min_profundidad__gt=desgaste_normal).values("llanta__vehiculo").distinct()
+                f = np.polyfit(x, y, 3)
+                p = np.poly1d(f)
+                termino = []
+                for numero in p:
+                    numero = round(numero, 4)
+                    termino.append(numero)
+                regresion_resultado = (termino[0]*(dia**2))+(termino[1]*dia)+termino[2]
+                resta = y[0]-regresion_resultado
+                diario = resta/dia
+                dias_30 = resta - (diario * 30)
+                dias_60 = resta - diario * 60
+                dias_90 = resta - diario * 90
+
+            except:
+                pass
+
+            #vehiculos_sospechosos = regresion.filter(min_profundidad__gt=desgaste_normal).values("llanta__vehiculo").distinct()
     duplicadas = inspecciones.select_related("llanta").values("llanta").annotate(count=Count("llanta")).filter(count__lte=2, count__gt=0)
     sin_regresion = inspecciones.select_related("llanta__vehiculo__compania").annotate(poli=Case(When(llanta__in=duplicadas.values("llanta"), then=1), default=0, output_field=IntegerField())).filter(poli=1)
     llantas = sin_regresion.values("llanta").distinct()
@@ -4451,7 +4456,7 @@ def vehiculo_sospechoso_llanta(inspecciones):
                 diferencia_dias = dia-x[-2]
                 prediccion = diario*diferencia_dias
                 desgaste_normal = prediccion*2.5
-                llantas_sospechosas = regresion.annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__gt=desgaste_normal).values("llanta__vehiculo").distinct()
+                llantas_sospechosas = regresion.annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__gt=desgaste_normal).values("llanta__numero_economico").distinct()
             except:
                 pass
     # En un futuro poner el parámetro sospechoso para cuando es 1 inspección

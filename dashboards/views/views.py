@@ -1356,7 +1356,7 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
         observaciones_todas=Observacion.objects.all()
         llantas_actuales = Llanta.objects.filter(pk=self.kwargs['pk'])
         num_eco_comp = functions.all_num_eco_compania(llanta.compania, llantas_actuales)
-        color_observaciones = functions.color_observaciones_all_one(llanta.ultima_inspeccion)
+        color_observaciones = functions.color_observaciones_all_one(llanta)
         context['llanta'] = llanta
         context['punto_de_retiro'] = punto_de_retiro
         context['min_presion'] = min_presion
@@ -1540,16 +1540,22 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
                 diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
                 llanta.observaciones.add(diferencia_presion_duales)
                 dual_llanta.observaciones.add(diferencia_presion_duales)
-                dual_llanta.ultima_inspeccion.observaciones.add(diferencia_presion_duales)
                 dual_llanta.save()
-                dual_llanta.ultima_inspeccion.save()
+                try:
+                    dual_llanta.ultima_inspeccion.observaciones.add(diferencia_presion_duales)
+                    dual_llanta.ultima_inspeccion.save()
+                except:
+                    pass
                 print(diferencia_presion_duales)
             else:
                 diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
                 dual_llanta.observaciones.remove(diferencia_presion_duales)
-                dual_llanta.ultima_inspeccion.observaciones.remove(diferencia_presion_duales)
                 dual_llanta.save()
-                dual_llanta.ultima_inspeccion.save()     
+                try:
+                    dual_llanta.ultima_inspeccion.observaciones.remove(diferencia_presion_duales)
+                    dual_llanta.ultima_inspeccion.save()     
+                except:
+                    pass
             
             if (
                 (functions.min_profundidad(llanta) - functions.min_profundidad(dual_llanta)) >= compania.mm_de_diferencia_entre_duales
@@ -1560,16 +1566,22 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
                 desdualización = Observacion.objects.get(observacion = 'Desdualización')
                 llanta.observaciones.add(desdualización)
                 dual_llanta.observaciones.add(desdualización)
-                dual_llanta.ultima_inspeccion.observaciones.add(desdualización)
                 dual_llanta.save()
-                dual_llanta.ultima_inspeccion.save()
+                try:
+                    dual_llanta.ultima_inspeccion.observaciones.add(desdualización)
+                    dual_llanta.ultima_inspeccion.save()
+                except:
+                    pass
                 print(desdualización)
             else:
                 desdualización = Observacion.objects.get(observacion = 'Desdualización')
                 dual_llanta.observaciones.remove(desdualización)
-                dual_llanta.ultima_inspeccion.observaciones.remove(desdualización)
                 dual_llanta.save()
-                dual_llanta.ultima_inspeccion.save()
+                try:
+                    dual_llanta.ultima_inspeccion.observaciones.remove(desdualización)
+                    dual_llanta.ultima_inspeccion.save()
+                except:
+                    pass
             
         if "S" in llanta.tipo_de_eje:
             punto_retiro = compania.punto_retiro_eje_direccion
@@ -1598,14 +1610,17 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
 
         
         llanta.save()
-        if len(llanta.observaciones.all()) > 0:
-            for observacion in llanta.observaciones.all():
-                llanta.ultima_inspeccion.observaciones.add(observacion)
-            llanta.ultima_inspeccion.save()
+        try:
+            if len(llanta.observaciones.all()) > 0:
+                for observacion in llanta.observaciones.all():
+                    llanta.ultima_inspeccion.observaciones.add(observacion)
+                llanta.ultima_inspeccion.save()
+        except:
+            pass
         #Tire Diagrama
         functions.observaciones_vehiculo(llanta.vehiculo)
         return redirect('dashboards:tireDetail', self.kwargs['pk'])
-
+        
 class inspeccionLlantaView(LoginRequiredMixin, TemplateView):
     # Vista de inspeccionLlantaView
 
@@ -6864,6 +6879,8 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         llanta = self.get_object()
         inspecciones_llanta = Inspeccion.objects.filter(llanta=llanta)
         vehiculo = llanta.vehiculo
+        if llanta.vehiculo == None:
+            return print('hola')
         llantas = Llanta.objects.filter(vehiculo=vehiculo)
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
 
@@ -6871,10 +6888,13 @@ class tireDetailView(LoginRequiredMixin, DetailView):
             bitacora = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         except:
             bitacora = None
-
-        bitacora_normal = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
-        bitacora_pro = Bitacora_Pro.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
-
+        try:
+            bitacora_normal = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
+            bitacora_pro = Bitacora_Pro.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
+        except:
+            bitacora_normal = None 
+            bitacora_pro = None
+            
         entradas_correctas = functions.entrada_correcta(bitacora, bitacora_pro)
 
         print(f'bitacora_normal: {bitacora_normal}')
@@ -6951,13 +6971,17 @@ class tireDetailView(LoginRequiredMixin, DetailView):
 
         filtro_sospechoso = functions.vehiculo_sospechoso_llanta(inspecciones)
         llantas_sospechosas = llantas.filter(numero_economico__in=filtro_sospechoso)
-
+        print('----------')
+        print(filtro_sospechoso)
+        print(llantas_sospechosas)
+        
+        
         filtro_rojo = functions.vehiculo_rojo_llanta(llantas)
         llantas_rojas = llantas.filter(numero_economico__in=filtro_rojo).exclude(id__in=llantas_sospechosas)
-        
+
         filtro_amarillo = functions.vehiculo_amarillo_llanta(llantas)
         llantas_amarillas = llantas.filter(numero_economico__in=filtro_amarillo).exclude(id__in=llantas_sospechosas).exclude(id__in=llantas_rojas)
-        
+
         llantas_azules = llantas.exclude(id__in=llantas_sospechosas).exclude(id__in=llantas_rojas).exclude(id__in=llantas_amarillas)
         
         if llanta in llantas_sospechosas:
@@ -7060,7 +7084,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         
         #Generacion de ejes dinamico
         vehiculo_actual = vehiculo
-        llantas_actuales = llantas
+        llantas_actuales = llantas.filter(inventario = 'Rodante')
         inspecciones_actuales = inspecciones
         llanta_actual = Llanta.objects.get(pk=self.kwargs['pk'])
         

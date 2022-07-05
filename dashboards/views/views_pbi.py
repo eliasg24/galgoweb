@@ -6,8 +6,9 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func
 from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest
 
+from dashboards.functions import functions
 from dashboards.functions.functions import DiffDays, CastDate
-from dashboards.models import Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion
+from dashboards.models import Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
 
 class CompaniaData(View):
     def get(self, request , *args, **kwargs):
@@ -245,6 +246,159 @@ class InspeccionesLlantaData(View):
         
         dict_context = {
             'inspecciones_llanta': inspecciones_llanta,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class ObservacionesInspeccionData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        inspecciones = Inspeccion.objects.filter(llanta__compania=compania).annotate(health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField()))
+        #Serializar data
+        inspecciones = list(inspecciones.values("id", "llanta__numero_economico", "observaciones__observacion"))
+        
+        dict_context = {
+            'inspecciones': inspecciones,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class ObservacionesLlantaData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        llantas = Llanta.objects.filter(compania=compania).annotate(health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField()))
+        #Serializar data
+        llantas = list(llantas.values("numero_economico", "observaciones__observacion"))
+        
+        dict_context = {
+            'llantas': llantas,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class ObservacionesVehiculoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        vehiculos = Vehiculo.objects.filter(compania=compania).select_related("compania").annotate(dias_sin_inspeccion=DiffDays(CastDate(Now())-CastDate(F('fecha_ultima_inspeccion')), output_field=IntegerField()), dias_sin_inflar=DiffDays(CastDate(Now())-CastDate(F('fecha_de_inflado')), output_field=IntegerField()), vencido=Case(When(dias_sin_inspeccion__gt=F("compania__periodo2_inspeccion"), then=True), When(fecha_ultima_inspeccion=None, then=True), default=False), estatus_pulpo=Case(When(observaciones_llanta__observacion__in=["Doble mala entrada"], then=Value("Doble mala entrada")), When(observaciones_llanta__observacion__in=["Mala entrada"], then=Value("Mala entrada")), default=Value("Entrada Correcta")))
+        #Serializar data
+        vehiculos = list(vehiculos.values("numero_economico", "observaciones__observacion"))
+        
+        dict_context = {
+            'vehiculos': vehiculos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class BitacorasData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        bitacoras = Bitacora.objects.filter(compania=compania)
+        #Serializar data
+        bitacoras = list(bitacoras.values())
+        
+        dict_context = {
+            'bitacoras': bitacoras,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class BitacorasProData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        bitacoras_pro = Bitacora_Pro.objects.filter(compania=compania)
+        #Serializar data
+        bitacoras_pro = list(bitacoras_pro.values())
+        
+        dict_context = {
+            'bitacoras_pro': bitacoras_pro,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+class AccionData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        servicios_llantas = ServicioLlanta.objects.filter(llanta__compania=compania).annotate(punto_de_retiro=Case(When(llanta__nombre_de_eje="Dirección", then=F("llanta__compania__punto_retiro_eje_direccion")),When(llanta__nombre_de_eje="Tracción", then=F("llanta__compania__punto_retiro_eje_traccion")),When(llanta__nombre_de_eje="Arrastre", then=F("llanta__compania__punto_retiro_eje_arrastre")),When(llanta__nombre_de_eje="Loco", then=F("llanta__compania__punto_retiro_eje_loco")),When(llanta__nombre_de_eje="Retractil", then=F("llanta__compania__punto_retiro_eje_retractil")))).values("id", "serviciovehiculo__folio", "llanta__numero_economico", "serviciovehiculo__fecha_real", "serviciovehiculo__vehiculo__numero_economico", "llanta__posicion", "llanta__nombre_de_eje", "punto_de_retiro", "serviciovehiculo__vehiculo__ubicacion__nombre", "serviciovehiculo__vehiculo__aplicacion__nombre", "serviciovehiculo__vehiculo__configuracion", "serviciovehiculo__usuario__username", "llanta_cambio__numero_economico", "inventario_de_desmontaje", "taller_de_desmontaje", "razon_de_desmontaje")
+        #Serializar data
+        servicios_llantas = list(servicios_llantas)
+        
+        dict_context = {
+            'servicios_llantas': servicios_llantas,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class ReemplazoData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        llantas = Llanta.objects.filter(vehiculo__compania=compania).filter(inventario="Rodante")
+        inspecciones = Inspeccion.objects.filter(llanta__vehiculo__compania=compania)
+        ubicacion = Ubicacion.objects.filter(compania=compania)[0]
+
+        embudo_vida1 = functions.embudo_vidas(llantas)
+        embudo_vida2 = functions.embudo_vidas_con_regresion(inspecciones, ubicacion, 30)
+        embudo_vida3 = functions.embudo_vidas_con_regresion(inspecciones, ubicacion, 60)
+        embudo_vida4 = functions.embudo_vidas_con_regresion(inspecciones, ubicacion, 90)
+
+        periodo = {}
+        for llanta in llantas:
+            if llanta in embudo_vida1[0]:
+                periodo[llanta.id] = "Hoy"
+            elif llanta in embudo_vida2[0]:
+                periodo[llanta.id] = "30 días"
+            elif llanta in embudo_vida3[0]:
+                periodo[llanta.id] = "60 días"
+            elif llanta in embudo_vida4[0]:
+                periodo[llanta.id] = "90 días"
+            else:
+                periodo[llanta.id] = "-"
+
+        print(periodo)
+            
+        dict_context = {
+            'llantas': list(llantas.annotate(periodo=periodo[F("id")]).values("numero_economico", "vehiculo__numero_economico", "compania", "posicion", "eje", "ubicacion__nombre", "aplicacion__nombre", "vehiculo__clase", "producto__precio", "producto__producto", "nombre_de_eje", "vida", "periodo"))
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
