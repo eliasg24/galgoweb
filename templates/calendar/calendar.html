@@ -1,16 +1,17 @@
 {% extends 'base.html' %} 
 
 {% block head %} 
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/base.css' %}" />
-<link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
-<title>Calendario</title>
-{% endblock %} 
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
+  <title>Calendario</title>
+{% endblock %}
+
 {% block content %}
 
 <div class="all-cont">

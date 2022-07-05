@@ -37,22 +37,16 @@
 
   // adding and adjust extra Y axis
   chart.xAxis().orientation("left");
-  // adjust x axis
-  chart.xAxis().stroke("#000");
-  chart.xAxis().labels().fontColor("#000");
 
   // adding and adjust extra Y axis
-  var extraYAxis0 = chart.yAxis(0)
-        .orientation("bottom")
-        .stroke("#000")
-        .labels().fontColor("#000");
+  var extraYAxis0 = chart.yAxis(0);
+  extraYAxis0.orientation("bottom");
 
   // adding and adjust extra Y axis
-  var extraYAxis = chart.yAxis(1)
-        .orientation("top")
-        .scale(extraYScale)
-        .stroke("#000")
-        .labels().fontColor("#000");
+  var extraYAxis = chart.yAxis(1);
+  extraYAxis.orientation("top");
+  extraYAxis.scale(extraYScale);
+
   // setting first series of data
   var firstSeries = [
           {% for eje, valores in comparativa_de_ejes.items %}
@@ -72,12 +66,12 @@
   DosSeries.name("CPK");
 
   // configure the visual settings of the second series
-  DosSeries.normal().fill("#4973f2");
-  DosSeries.hovered().fill("#4973f2", 0.1);
-  DosSeries.selected().fill("#4973f2", 0.5);
-  DosSeries.normal().stroke("#4973f2");
-  DosSeries.hovered().stroke("#4973f2", 2);
-  DosSeries.selected().stroke("#4973f2", 4);
+  DosSeries.normal().fill("#12bcc8");
+  DosSeries.hovered().fill("#12bcc8", 0.1);
+  DosSeries.selected().fill("#12bcc8", 0.5);
+  DosSeries.normal().stroke("#12bcc8");
+  DosSeries.hovered().stroke("#12bcc8", 2);
+  DosSeries.selected().stroke("#12bcc8", 4);
 
 
   var UnoSeries = chart.bar(secondSeries);
@@ -85,12 +79,12 @@
   UnoSeries.name("KM");
 
   // configure the visual settings of the second series
-  UnoSeries.normal().fill("#051026");
-  UnoSeries.hovered().fill("#051026", 0.1);
-  UnoSeries.selected().fill("#051026", 0.5);
-  UnoSeries.normal().stroke("#051026");
-  UnoSeries.hovered().stroke("#051026", 2);
-  UnoSeries.selected().stroke("#051026", 4);
+  UnoSeries.normal().fill("#0097fc");
+  UnoSeries.hovered().fill("#0097fc", 0.1);
+  UnoSeries.selected().fill("#0097fc", 0.5);
+  UnoSeries.normal().stroke("#0097fc");
+  UnoSeries.hovered().stroke("#0097fc", 2);
+  UnoSeries.selected().stroke("#0097fc", 4);
 
   //tooltip
   UnoSeries.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");

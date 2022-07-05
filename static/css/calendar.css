@@ -6,3 +6,7 @@
 .calendar {
   padding: 1rem;
 }
+
+.fc-view-harness {
+  background-color: var(--colorv01);
+}

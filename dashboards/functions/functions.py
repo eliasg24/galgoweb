@@ -16,6 +16,7 @@ from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, 
 from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest
 from django.forms import DurationField
 from django.utils import timezone
+from calendario.models import Calendario
 
 
 # Utilities
@@ -3843,7 +3844,7 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     
     dateStringEnd = f"{hoja['fecha_end']}, {hoja['hora_end']}:00"
     dateFormatterEnd = "%Y-%m-%d, %H:%M:%S"
-    fecha_end = datetime.strptime(dateString, dateFormatter)
+    fecha_end = datetime.strptime(dateStringEnd, dateFormatterEnd)
     
     
     #? Se guardan los servicios
@@ -3866,7 +3867,26 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     if 'alinearVehiculo' in acciones_vehiculo:
         servicio.alineacion = True
     servicio.save()
+    calendarioTaller(servicio)
     return servicio
+
+
+def calendarioTaller(servicio):
+    titulo = f'Servicio al vehiculo {servicio.vehiculo}'
+    horario_start_str = str(servicio.fecha_inicio) + 'T' + str(servicio.horario_inicio) + '-05:00'
+    horario_end_str = str(servicio.fecha_final) + 'T' + str(servicio.horario_final) + '-05:00'
+    Calendario.objects.create(
+        servicio = servicio,
+        vehiculo = servicio.vehiculo,
+        start = servicio.fecha_inicio,
+        horario_start = servicio.horario_inicio,
+        end = servicio.fecha_final,
+        horario_end = servicio.horario_final,
+        title = titulo,
+        horario_start_str = horario_start_str,
+        horario_end_str = horario_end_str,
+        compania = servicio.vehiculo.compania
+    )
 
 
 def servicio_llanta_desmomtaje(dataPOST, servicio_vehiculo_id):

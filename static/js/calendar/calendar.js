@@ -6,7 +6,23 @@
 
       if (!resp.ok) throw new Error('Algo salió mal');
 
-      return json.calendarios;
+      console.log(json)
+
+      let newEvents;
+
+      for (const event of json.calendarios) {
+        const { horario_start_str, horario_end_str, ...restEvent } = event;
+
+        newEvents = [
+          {
+            ...restEvent,
+            start: event.horario_start_str,
+            end: event.horario_end_str,
+          }
+        ];
+      }
+
+      return newEvents;
     } catch (error) {
       console.error(error);
     }
@@ -18,13 +34,14 @@
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: 'esLocale',
-      initialView: 'timeGridWeek',
+      initialView: 'timeGridWeek', // * timeGridWeek || dayGridMonth
       height: '100vh',
       selectable: true,
       events: calendarEvents,
-      eventColor: 'seagreen',
-      eventClick: function (info) {
-        alert('Event: ' + info.event.title);
+      eventColor: '026cf5',
+      eventClick: function ({ event }) {
+        console.log({ event })
+        alert('Event: ' + event.title);
       },
     });
 

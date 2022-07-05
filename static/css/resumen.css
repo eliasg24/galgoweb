@@ -117,3 +117,22 @@
   padding: 1rem;
   text-align: center;
 }
+
+/* Open services */
+
+.open-services {
+  grid-template-rows: auto 1fr;
+}
+
+.open-services .table-container {
+  align-self: center;
+}
+
+.btn-primary {
+  background-color: var(--colorv04);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}

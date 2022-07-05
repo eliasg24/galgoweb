@@ -447,6 +447,11 @@ urlpatterns = [
         name="resumen"
     ),
     path(
+        route="serviciosAbiertos",
+        view=views.serviciosAbiertosView.as_view(),
+        name="serviciosAbiertos"
+    ),
+    path(
         route="taller/<int:pk>",
         view=views.planTallerView.as_view(),
         name="planTaller"

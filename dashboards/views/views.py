@@ -5188,6 +5188,11 @@ class calendarView(LoginRequiredMixin, TemplateView):
 
     template_name = "calendar/calendar.html"
 
+class serviciosAbiertosView(LoginRequiredMixin, TemplateView):
+# Vista de serviciosAbiertosView
+
+    template_name = "serviciosAbiertos.html"
+
 class resumenView(LoginRequiredMixin, TemplateView):
 # Vista de resumenView
 
@@ -5643,7 +5648,7 @@ class reporteTallerView(LoginRequiredMixin, TemplateView):
         context['problemas'] = problemas
         context['vehiculo'] = servicio.vehiculo
         context['folio'] = servicio.folio
-        context['fecha'] = servicio.fecha_real
+        context['fecha'] = servicio.fecha_inicio
         return context
     
 class vehicleListView(LoginRequiredMixin, TemplateView):
@@ -7294,7 +7299,7 @@ class DetailView(LoginRequiredMixin, DetailView):
         for ins in inspecciones_list:
             eventos.append([ins[0].date(), ins[1], ins[2], ins[3]])
         for servicio in servicios:
-            eventos.append([servicio.fecha_real, servicio, 'servicio', 'icon-checkmark good-text'])
+            eventos.append([servicio.fecha_inicio, servicio, 'servicio', 'icon-checkmark good-text'])
         eventos = sorted(eventos, key=lambda x:x[0], reverse=True)
         context["eventos"] = eventos
         print(eventos)

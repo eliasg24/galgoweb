@@ -17,7 +17,7 @@ class CalendarioApi(LoginRequiredMixin, View):
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
         calendarios = Calendario.objects.filter(compania = compania)
-        calendarios = list(calendarios.values('start', 'end', 'title'))
+        calendarios = list(calendarios.values('id', 'horario_start_str', 'horario_end_str', 'title'))
         
         dict_context = {
             'calendarios': calendarios,
