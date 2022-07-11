@@ -100,7 +100,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .form-body_form {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   height: fit-content;
   padding: 1rem;
   border-radius: 0.5rem;
@@ -135,7 +135,7 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .table-container {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   border-radius: 0.5rem;
   padding: 0.5rem;
   overflow: auto;
@@ -148,20 +148,26 @@ input[type='date']::-webkit-inner-spin-button,
 }
 
 .main-table thead {
-  background-color: var(--colorv01);
+  background-color: var(--colorv12);
   position: sticky;
   top: 0;
 }
 
-.main-table th,
 .main-table td {
+  color: var(--colorv02);
   padding: 1rem 0.75rem;
   text-align: center;
-  border-bottom: thin solid rgba(255, 255, 255, 0.25);
 }
 
-.main-table tbody tr:nth-child(odd) {
-  background-color: #333;
+.main-table th {
+  color: #fff;
+  border-bottom: 2px solid var(--colorv14);
+  padding: 1rem 0.75rem;
+  text-align: center;
+}
+
+.main-table tbody tr:nth-child(even) {
+  background-color: var(--colorv47);
 }
 
 .form__group {
@@ -170,7 +176,7 @@ input[type='date']::-webkit-inner-spin-button,
 
 select {
   background: transparent;
-  color: #fff;
+  color: var(--colorv02);
   font-family: inherit;
   font-size: 0.9rem;
 }
