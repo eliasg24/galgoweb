@@ -1,97 +1,14 @@
-<form class="block" method="POST" id="tire-form">
-  <div class="forms__container">
-    <div class="form__container">
-      <h3>Vehículo</h3>
-   <!-- Start input  -->
-      <div class="form__group field">
-        <input
-          class="form__field"
-          type="text"
-          placeholder="producto"
-          required
-          name="vehiculo"
-          autocomplete="off"
-          value="{{vehiculo_actual}}"
-          required
-          readonly
-        />
-        <label for="vehiculo" class="form__label">
-          Vehiculo
-        </label>
-      </div>
-      <input type="text" name="vehiculo_id" value="{{vehiculo_actual.id}}" style="display: none">
-      <!-- End input -->
-
-      <!-- Start input -->
-      <div class="form__group field">
-        <input
-          class="form__field"
-          type="number"
-          {% if vehiculo_actual.km == None %}
-            min="0"
-          {% else %}
-            min="{{vehiculo_actual.km}}"
-          {% endif %}
-          max="{{km_max}}"
-          placeholder="producto"
-          name="kilometraje"
-          autocomplete="off"
-          {% if vehiculo_actual.km == None %}
-            value = ""
-          {% else %}
-            value = "{{vehiculo_actual.km}}"
-          {% endif %}
-          
-        />
-        <label for="kilometraje" class="form__label">
-          Kilometraje
-        </label>
-      </div>
-      <!-- End input -->
-
-      <!-- OBSERVACIONES VEHICULO -->
-
-      <div class="drop-form">
-        <input type="search" class="drop-input" placeholder="Observación de vehículo" id="vehiculo-search">
-        <ul class="drop-options" id="vehiculo-observaciones">
-          {% for observacion in observaciones_vehiculo %}
-            <li class="search-item">
-              <label for="{{observacion.observacion}}" class="input-check">
-                <i class="{{observacion.icono}}"></i>
-                {{observacion.observacion}}
-                <input 
-                  type="checkbox" 
-                  name="observation-vehiculo" 
-                  value="{{observacion.observacion}}" 
-                  id="{{observacion.observacion}}" 
-                  data-vehiculo-item="{{observacion.observacion}}"
-                />
-                <span class="checkmark"></span>
-              </label>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <h3 class="text-center">
-        Observaciones
-      </h3>
-
-      <div class="observations__container">
-        {% for observacion in observaciones_vehiculo %}
-          <div data-icon-type="{{observacion.observacion}}">
-            <i class="{{observacion.icono}}"></i>
-            {{observacion.observacion}}
-          </div>
-        {% endfor %}
-      </div>
-
-    </div>
-    
+<article class="block">
+  <div class="forms__container">    
     <div class="form__container">
       <div class="relative">
         <div class="absolute">
-          <h3>Llanta</h3>
+          <div class="flex-row" style="justify-content: space-between;">
+            <h3>Llanta</h3>
+            <button class="btn modal" type="button">
+              <i class="icon-truck"></i>
+            </button>
+          </div>
       {% for eje in ejes %}
         {% for ej in eje %}
           <div class="form__wrapper" data-item-id="{{ej.0.id}}">
@@ -425,8 +342,6 @@
         </div>
       </div>
     </div>
-
     <button type="submit" class="btn btn-info">Guardar</button>
-
   </div>
-</form>
+</article>

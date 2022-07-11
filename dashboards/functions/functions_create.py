@@ -853,6 +853,19 @@ def configurar_producto():
         producto.dimension = dimension
         producto.save()
 
+def asignar_ultima_fecha_de_inflado():
+    vehiculos = Vehiculo.objects.all()
+    for v in vehiculos:
+        fecha_1 = v.fecha_de_inflado
+        try:
+            fecha_2 = v.ultima_bitacora_pro.fecha_de_inflado
+
+            if fecha_1 < fecha_2:
+                v.fecha_de_inflado = fecha_2
+                v.save()
+        except:
+            pass
+
 def crear_clase(clase):
     clases = Vehiculo.opciones_clase
     for c in clases:
@@ -1065,41 +1078,37 @@ def crear_configuracion():
             vehiculo.numero_de_llantas = 6
             vehiculo.save()
 
-
 def crear_configuracion2():
     inspecciones = Inspeccion.objects.filter(id__in=range(1030, 1115))
     for inspeccion in inspecciones:
         inspeccion.fecha_hora = date(2022, 2, 2)
         inspeccion.save()
-    
 
 def crear_llantas():
-    vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania="Tramo"))
+    vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania="pruebacarlos")).exclude(numero_economico__in=["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"])
     for vehiculo in vehiculos:
         posiciones = []
         ejes = vehiculo.configuracion.split(".")
-        if vehiculo.configuracion == "T4.T4.SP1":
-            posiciones.append("1LO")
+        if vehiculo.configuracion == "S2.D2":
             posiciones.append("1LI")
             posiciones.append("1RI")
-            posiciones.append("1RO")
-            posiciones.append("2LO")
             posiciones.append("2LI")
             posiciones.append("2RI")
-            posiciones.append("2RO")
-            posiciones.append("3LI")
-        if vehiculo.configuracion == "T4.T4.SP2":
-            posiciones.append("1LO")
+        if vehiculo.configuracion == "S2.D2.D2":
             posiciones.append("1LI")
             posiciones.append("1RI")
-            posiciones.append("1RO")
-            posiciones.append("2LO")
             posiciones.append("2LI")
             posiciones.append("2RI")
-            posiciones.append("2RO")
             posiciones.append("3LI")
             posiciones.append("3RI")
-        if vehiculo.configuracion == "S2.C4.D4":
+        if vehiculo.configuracion == "S2.D4":
+            posiciones.append("1LI")
+            posiciones.append("1RI")
+            posiciones.append("2LO")
+            posiciones.append("2LI")
+            posiciones.append("2RI")
+            posiciones.append("2RO")
+        if vehiculo.configuracion == "S2.D4.D4":
             posiciones.append("1LI")
             posiciones.append("1RI")
             posiciones.append("2LO")
@@ -1110,18 +1119,14 @@ def crear_llantas():
             posiciones.append("3LI")
             posiciones.append("3RI")
             posiciones.append("3RO")
-        if vehiculo.configuracion == "S2.D4.D4.SP1":
+        if vehiculo.configuracion == "S2.D4.SP1":
             posiciones.append("1LI")
             posiciones.append("1RI")
             posiciones.append("2LO")
             posiciones.append("2LI")
             posiciones.append("2RI")
             posiciones.append("2RO")
-            posiciones.append("3LO")
             posiciones.append("3LI")
-            posiciones.append("3RI")
-            posiciones.append("3RO")
-            posiciones.append("4LI")
         if vehiculo.configuracion == "T4.T4.T4.SP2":
             posiciones.append("1LO")
             posiciones.append("1LI")
@@ -1201,7 +1206,7 @@ def crear_nombre_de_eje():
 def crear_de_bitacora_el_vehiculo():
     bitacoras = Bitacora.objects.filter(compania=Compania.objects.get(compania="New Pick"))
     for b in bitacoras:
-        vehiculo = Vehiculo.objects.get(numero_economico=b.numero_economico)
+        vehiculo = Vehiculo.objects.get(numero_economico=b.vehiculo)
         vehiculo.fecha_de_inflado = b.fecha_de_inflado
         vehiculo.tiempo_de_inflado = b.tiempo_de_inflado
         vehiculo.presion_de_entrada = b.presion_de_entrada
@@ -1474,7 +1479,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.4,
@@ -1495,7 +1500,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.4,
@@ -1516,7 +1521,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.0,
@@ -1537,7 +1542,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.0,
@@ -1558,7 +1563,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.8,
@@ -1579,7 +1584,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.7,
@@ -1600,7 +1605,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.5,
@@ -1621,7 +1626,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.5,
@@ -1642,7 +1647,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.2,
@@ -1663,7 +1668,7 @@ def excel(user):
                                         presion_de_salida=100,
                                         presion_establecida=100
                                     )
-            Bitacora.objects.create(numero_economico=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
+            Bitacora.objects.create(vehiculo=Vehiculo.objects.get(numero_economico=f"AETO-{num}"),
                 compania=Compania.objects.get(compania=Compania.objects.get(compania="Compania Prueba")),
                 fecha_de_inflado=date.today(),
                 tiempo_de_inflado=2.6,

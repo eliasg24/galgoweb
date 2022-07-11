@@ -1,6 +1,6 @@
 # AETO WEB
 
-> ### Nota:
+> **Nota:**
 > Es **importante** tener instalado **[Python](https://www.python.org/downloads/) para correr el servidor** y visualizar los archivos HTML.
 
 ## Librerias del proyecto (requeridas)
@@ -61,4 +61,4 @@ pip install python-decouple
 
 ```bash
 py manage.py runserver
-``` 
+```

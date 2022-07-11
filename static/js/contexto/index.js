@@ -8,10 +8,10 @@ let currentStep = formSteps.findIndex((step) =>
 if (currentStep < 0) {
   currentStep = 0;
 
-  formSteps[currentStep].classList.add('active');
+  formSteps[currentStep]?.classList.add('active');
 }
 
-multiForm.addEventListener('click', (e) => {
+multiForm?.addEventListener('click', (e) => {
   const showCurrentStep = () => {
     formSteps.forEach((step, index) => {
       step.classList.toggle('active', index === currentStep);
@@ -40,7 +40,7 @@ multiForm.addEventListener('click', (e) => {
       document
         .querySelectorAll('.context__error')
         .forEach((alert) => alert.remove());
-        
+
       allValid = true;
     } else {
       document
@@ -61,4 +61,17 @@ multiForm.addEventListener('click', (e) => {
     currentStep += increment;
     showCurrentStep();
   }
+});
+
+/*
+ * Cambiar contexto
+ */
+
+const btnContext = document.querySelector('.btn-context');
+
+btnContext?.addEventListener('click', (e) => {
+  fetch('/api/clearcontexto')
+    .then((resp) => (resp.ok ? resp.json() : Promise.reject(resp)))
+    .then((reps) => location.reload())
+    .catch((error) => console.error(error));
 });

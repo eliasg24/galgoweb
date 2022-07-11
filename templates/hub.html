@@ -7,7 +7,7 @@
 <div class="container animate__animated animate__fadeIn">
   <div class="top-nav">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
     <h1>Dashboards y formularios</h1>
   </div>
@@ -37,6 +37,7 @@
           <h2>PULPO</h2>
         </a>
       </div>
+      {% if grupo != "Pulpo Manager" %}
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:tireDB1' %}">
           <h2>ESTATUS DE FLOTA</h2>
@@ -57,6 +58,7 @@
           <h2>DASHBOARD OPERATIVO</h2>
         </a>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -1,13 +1,19 @@
 <div class="flex-row">
     
     {% if prev %}
-        <a href="{% url 'dashboards:vehicleList' %}?page={{prev}}" class="btn prev">Anterior</a>
-    {% else %}
+        <a href="{% url 'dashboards:vehicleList' %}?page={{prev}}" class="btn prev">
+            <div style="transform: rotate(180deg);">
+                <i class="icon-keyboard_arrow_right"></i>
+            </div>
+        </a>
+        {% else %}
         
-    {% endif %}
-
-    {% if next %}
-        <a href="{% url 'dashboards:vehicleList' %}?page={{next}}" class="btn next">Siguiente</a>
+        {% endif %}
+        
+        {% if next %}
+        <a href="{% url 'dashboards:vehicleList' %}?page={{next}}" class="btn next">
+            <i class="icon-keyboard_arrow_right"></i>
+        </a>
     {% else %}
         
     {% endif %}

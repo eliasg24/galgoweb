@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?te020m');
-  src:  url('fonts/icomoon.eot?te020m#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?te020m') format('truetype'),
-    url('fonts/icomoon.woff?te020m') format('woff'),
-    url('fonts/icomoon.svg?te020m#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?7ypn4g');
+  src:  url('fonts/icomoon.eot?7ypn4g#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?7ypn4g') format('truetype'),
+    url('fonts/icomoon.woff?7ypn4g') format('woff'),
+    url('fonts/icomoon.svg?7ypn4g#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-frenado-subito:before {
+  content: "\e946";
+}
 .icon-llanta-outline:before {
   content: "\e944";
 }

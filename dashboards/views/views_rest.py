@@ -32,7 +32,7 @@ from dashboards.functions import functions, functions_ftp, functions_create, fun
 from aeto import settings
 
 # Forms
-from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, LlantaForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm
+from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm
 
 # Models
 from django.contrib.auth.models import User, Group
@@ -1292,6 +1292,28 @@ class PulpoApiView(View):
             "vehiculos_malos": vehiculo_malos_status,
             "vehiculos_periodo": vehiculo_periodo_status,
             "vehiculos_todos": vehiculos
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+
+class ClearContexto(LoginRequiredMixin, View):
+    # Vista del dashboard buscar_vehiculos
+
+    def get(self, request , *args, **kwargs):
+
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        perfil.compania = None
+        perfil.ubicacion.clear()
+        perfil.aplicacion.clear()
+        perfil.taller.clear()
+        perfil.save()
+                
+        dict_context = {
+            'status': 'ok',
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

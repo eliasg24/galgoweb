@@ -14,10 +14,23 @@
   <header class="head-cont">
     <h1>Almacenes</h1>
 
-    <button class="btn btn-config flex-center" id="open-search" role="search">
-      Buscar
-      <i class="bx bx-search"></i>
-    </button>
+    <div class="flex-row">
+      <a href="{% url 'dashboards:formordennueva' %}" class="btn btn-primary">
+        <span class="icon-clipboard4"></span>
+        Llantas nuevas
+      </a>
+
+      <a href="{% url 'dashboards:historialTransacciones' %}" class="btn btn-primary">
+        <span class="icon-history2"></span>
+        Transacciones
+      </a>
+
+      <button class="btn btn-config flex-center" id="open-search" role="search">
+        Buscar
+        <i class="bx bx-search"></i>
+      </button>
+    </div>
+
   </header>
 
   <div class="container">
@@ -114,7 +127,7 @@
     </a>
   </div>
 
-  <div class="operaciones">
+  <!-- <div class="operaciones">
     <div class="operacion">
       <h2 class="op__title">Operaciones</h2>
       <a href="{% url 'dashboards:formordennueva' %}">
@@ -133,7 +146,7 @@
         </figure>
       </a>
     </div>
-  </div>
+  </div> -->
 </div>
 
 <div class="search__container">

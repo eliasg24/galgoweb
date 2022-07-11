@@ -42,6 +42,7 @@
   gap: 1rem;
   flex-flow: row nowrap;
   justify-content: flex-end;
+  position: -webkit-sticky;
   position: sticky;
   align-items: center;
   top: 1vh;
@@ -53,7 +54,7 @@
   grid-template-rows: 1fr 1fr; */
   /* 320 */
   grid-template-columns: 1fr;
-  padding: 0 1rem 1rem 1rem;
+  padding: 1rem;
   gap: 1rem;
 }
 
@@ -65,6 +66,7 @@
   text-align: center;
   justify-content: space-between;
   border-radius: 0.25rem;
+  overflow: hidden;
 }
 
 .vehicle__card > * {
@@ -187,14 +189,15 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  flex-flow: column nowrap;
   padding: 0.5rem;
   width: 100%;
-  border-radius: 0 0 0 0.25rem;
   color: #fff; /*No cambia*/
 }
 
-.fbottom {
-  border-radius: 0 0 0.25rem 0;
+.align-items-center {
+  align-items: center;
+  display: flex;
 }
 
 .rotate {
@@ -386,6 +389,13 @@
 
 /* DESKTOP S */
 @media screen and (min-width: 1024px) {
+  .head-cont {
+    top: 0;
+    position: -webkit-sticky;
+    position: sticky;
+    z-index: 5;
+  }
+
   .form__filter {
     min-width: 600px;
   }
@@ -401,6 +411,13 @@
 
 /* DESKTOP MD */
 @media screen and (min-width: 1440px) {
+  .head-cont {
+    top: 0;
+    position: -webkit-sticky;
+    position: sticky;
+    z-index: 5;
+  }
+
   .vehicle__list {
     grid-template-columns: repeat(4, 1fr);
   }

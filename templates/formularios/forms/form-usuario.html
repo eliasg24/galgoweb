@@ -1,10 +1,16 @@
 <!-- Start input -->
 <div class="form__group field">
   <input
+    type="hidden"
+    name="id"
+    {% if usuario.id %}value="{{usuario.id}}"{% endif %}
+  />
+  <input
     class="form__field"
     type="text"
     placeholder="nombre"
     name="username"
+    {% if usuario.username %}value="{{usuario.username}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -148,13 +154,49 @@
     {% endfor %}
     </ul>
 </div> 
+
+<div class="dropdown">
+  <button class="drop-btn" id="taller" type="button">
+    Taller 
+    <span class="indicator">
+      <i class="bx bxs-right-arrow"></i>
+    </span>
+  </button>
+
+  <ul class="drop-menu" id="menu-taller">
+    <li>
+      <div class="drop-search">
+        <input type="search" id="search-taller" class="drop-input" autocomplete="off" />
+        <i class="bx bx-search"></i>
+      </div>
+    </li>
+    <li>
+      <label for="all-taller" class="input-check select-all">
+        Seleccionar todas
+        <input type="checkbox" id="all-taller" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% for taller in talleres %}
+    <li class="search-item">
+      <label for="{{taller}}" class="input-check">
+        {{taller}}
+        <input type="checkbox" name="taller" value="{{taller}}" id="{{taller}}" />
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    {% endfor %}
+    </ul>
+</div> 
+
 <!-- Start input -->
-<div class="form__group field">
+<!-- <div class="form__group field">
   <input
     class="form__field"
     type="text"
     placeholder="rol"
     name="groups"
+    {% if usuario.groups.get %}value="{{usuario.groups.get}}"{% endif %}
     autocomplete="off"
     list="rol"
     required
@@ -168,5 +210,17 @@
     <option value="Company Manager"></option>
     <option value="Fleet Manager"></option>
   </datalist>
-</div>
+</div> -->
 <!-- End input -->
+
+<label for="rol" class="select-label">Rol</label>
+<select name="groups" id="rol" class="select-input" required>
+  <option value="">Selecciona un rol...</option>
+  {% if usuario.groups.get %}
+  <option value="{{usuario.groups.get}}" selected>{{usuario.groups.get}}</option>
+  {% endif %}
+  <option value="Aeto Manager">Aeto Manager</option>
+  <option value="Galgo Manager">Galgo Manager</option>
+  <option value="Company Manager">Company Manager</option>
+  <option value="Fleet Manager">Fleet Manager</option>
+</select>

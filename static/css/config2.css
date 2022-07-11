@@ -48,6 +48,7 @@ h3 {
   gap: 1rem;
   justify-content: space-between;
   padding: 0.5rem;
+  position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 50px;
   z-index: 1;
@@ -154,20 +155,6 @@ h3 {
   overflow-y: auto;
   padding: 0.5rem;
   width: 100%;
-}
-
-.con-sec::-webkit-scrollbar {
-  width: 10px;
-}
-
-.con-sec::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: var(--colorv16);
-}
-
-.con-sec::-webkit-scrollbar-track {
-  border-radius: 5px;
-  background-color: var(--colorv17);
 }
 
 .form-group {

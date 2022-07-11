@@ -1,10 +1,16 @@
 <!-- Start input -->
 <div class="form__group field">
   <input
+    type="hidden"
+    name="id"
+    {% if sucursal.id %}value="{{sucursal.id}}"{% endif %}
+  />
+  <input
     class="form__field"
     type="text"
     placeholder="nombre"
     name="nombre"
+    {% if sucursal.nombre %}value="{{sucursal.nombre}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -15,7 +21,7 @@
 <!-- End input -->
 
 <!-- Start input -->
-<div class="form__group field">
+<!-- <div class="form__group field">
   <input
     class="form__field"
     type="text"
@@ -28,26 +34,34 @@
   <label for="compania" class="form__label">
     Compañia
   </label>
-    <datalist id="compania">
-      {% for compania in companias %}
-        <option value="{{compania}}">{{compania}}</option>
-      {% endfor %}
-    </datalist>
-</div>
+  <datalist id="compania">
+    
+  </datalist>
+</div> -->
 <!-- End input -->
+
+<label for="compania" class="select-label">Compañia</label>
+<select name="compania" id="compania" required class="select-input">
+  <option value="">Seleccione una compañia...</option>
+  {% if sucursal.compania %}<option value="{{sucursal.compania}}" selected></option>{% endif %}
+  {% for compania in companias %}
+    <option value="{{compania}}">{{compania}}</option>
+  {% endfor %}
+</select>
 
 <!-- Start input -->
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="rendimiento-nueva-1r"
+    type="number"
+    placeholder="rendimiento de nueva a 1r"
     name="rendimiento_de_nueva"
+    {% if sucursal.rendimiento_de_nueva %}value="{{sucursal.rendimiento_de_nueva}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="rendimiento-nueva-1r" class="form__label">
-    Rendimiento nueva a 1R
+  <label for="rendimiento_de_nueva" class="form__label">
+    Rendimiento de nueva a 1R
   </label>
 </div>
 <!-- End input -->
@@ -56,14 +70,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="rendimiento-1r-2r"
+    type="number"
+    placeholder="rendimiento de 1r a 2r"
     name="rendimiento_de_primera"
+    {% if sucursal.rendimiento_de_primera %}value="{{sucursal.rendimiento_de_primera}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="rendimiento-1r" class="form__label">
-    Rendimiento 1R a 2R
+  <label for="rendimiento_de_primera" class="form__label">
+    Rendimiento de 1R a 2R
   </label>
 </div>
 <!-- End input -->
@@ -72,14 +87,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="rendimiento-1r-2r"
+    type="number"
+    placeholder="rendimiento de 2r a 3r"
     name="rendimiento_de_segunda"
+    {% if sucursal.rendimiento_de_segunda %}value="{{sucursal.rendimiento_de_segunda}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="rendimiento-1r" class="form__label">
-    Rendimiento 2R a 3R
+  <label for="rendimiento_de_segunda" class="form__label">
+    Rendimiento de 2R a 3R
   </label>
 </div>
 <!-- End input -->
@@ -88,14 +104,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="rendimiento-1r-2r"
+    type="number"
+    placeholder="rendimiento de 3r a 4r"
     name="rendimiento_de_tercera"
+    {% if sucursal.rendimiento_de_tercera %}value="{{sucursal.rendimiento_de_tercera}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="rendimiento-1r" class="form__label">
-    Rendimiento 3R a 4R
+  <label for="rendimiento_de_tercera" class="form__label">
+    Rendimiento de 3R a 4R
   </label>
 </div>
 <!-- End input -->
@@ -104,14 +121,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="rendimiento-1r-2r"
+    type="number"
+    placeholder="rendimiento de 4r a 5r"
     name="rendimiento_de_cuarta"
+    {% if sucursal.rendimiento_de_cuarta %}value="{{sucursal.rendimiento_de_cuarta}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="rendimiento-1r" class="form__label">
-    Rendimiento 4R a 5R
+  <label for="rendimiento_de_cuarta" class="form__label">
+    Rendimiento de 4R a 5R
   </label>
 </div>
 <!-- End input -->
@@ -120,14 +138,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="precio-promedio-llanta-direccion"
+    type="number"
+    placeholder="precio promedio de llanta direccion"
     name="precio_nueva_direccion"
+    {% if sucursal.precio_nueva_direccion %}value="{{sucursal.precio_nueva_direccion}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="precio-promedio-llanta-direccion" class="form__label">
-    Precio promedio llanta dirección
+  <label for="precio_nueva_direccion" class="form__label">
+    Precio promedio de llanta direccion
   </label>
 </div>
 <!-- End input -->
@@ -136,14 +155,15 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="precio-promedio-llanta-nueva"
+    type="number"
+    placeholder="precio promedio de llanta nueva"
     name="precio_nueva"
+    {% if sucursal.precio_nueva %}value="{{sucursal.precio_nueva}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="precio-promedio-llanta-nueva" class="form__label">
-    Precio promedio llanta nueva
+  <label for="precio_nueva" class="form__label">
+    precio promedio de llanta nueva
   </label>
 </div>
 <!-- End input -->
@@ -152,14 +172,32 @@
 <div class="form__group field">
   <input
     class="form__field"
-    type="text"
-    placeholder="precio-promedio-llanta-renovada"
+    type="number"
+    placeholder="precio promedio de llanta renovada"
     name="precio_renovada"
+    {% if sucursal.precio_renovada %}value="{{sucursal.precio_renovada}}"{% endif %}
     autocomplete="off"
     required
   />
-  <label for="precio-promedio-llanta-renovada" class="form__label">
-    Precio promedio llanta renovada
+  <label for="precio_renovada" class="form__label">
+    Precio promedio de llanta renovada
   </label>
 </div>
 <!-- End input -->
+
+<nav class="flex-row">
+  {% if sucursal.id %}
+  <button class="btn btn-success">
+    <span class="icon-checkmark"></span>
+  </button>
+
+  <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-danger">
+    <span class="icon-cross"></span>
+  </a>
+
+  {% else %}
+  <button class="btn btn-success">
+    <span class="icon-plus6"></span>
+  </button>
+  {% endif %}
+</nav>

@@ -213,3 +213,24 @@ const onSelectTire = () => {
     });
   });
 };
+
+(() => {
+  const button = document.querySelector('.btn.modal');
+  const close = document.querySelector('#close-modal');
+  const modal = document.querySelector('.modal__container');
+
+  button.addEventListener('click', (e) => {
+    modal.classList.add('active');
+  });
+  
+  close.addEventListener('click', (e) => {
+    modal.classList.remove('active');
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === "Escape") {
+      if (modal.classList.contains('active')) modal.classList.remove('active')
+    }
+  });
+})();
+

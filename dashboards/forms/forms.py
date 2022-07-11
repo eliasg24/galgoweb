@@ -5,20 +5,29 @@ from django import forms
 from dashboards.models import Inspeccion, Vehiculo, Excel, Llanta, Producto, Renovador, Desecho, Compania, Observacion, Rechazo, Ubicacion, Taller, User, Perfil, Aplicacion
 from django.contrib.auth.models import Group
 
-
-class LlantaForm(forms.ModelForm):
-    # Model form del Llanta
-    class Meta:
-        # Configuración del Form
-        model = Llanta
-        fields = ("numero_economico",)
-
 class VehiculoForm(forms.ModelForm):
     # Model form del Vehiculo
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), to_field_name = 'nombre')
+    aplicacion = forms.ModelChoiceField(queryset=Aplicacion.objects.all(), to_field_name = 'nombre')
+    estatus_activo = forms.CharField(required=False)
+    nuevo = forms.CharField(required=False)
     class Meta:
         # Configuración del Form
         model = Vehiculo
-        fields = ("numero_economico",)
+        fields = ("numero_economico", "modelo", "marca", "compania", "aplicacion", "ubicacion", "clase", "configuracion", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7", "km_diario_maximo")
+
+class VehiculoEditForm(forms.ModelForm):
+    # Model form del Vehiculo
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), to_field_name = 'nombre')
+    aplicacion = forms.ModelChoiceField(queryset=Aplicacion.objects.all(), to_field_name = 'nombre')
+    estatus_activo = forms.CharField(required=False)
+    nuevo = forms.CharField(required=False)
+    class Meta:
+        # Configuración del Form
+        model = Vehiculo
+        fields = ("id", "numero_economico", "modelo", "marca", "compania", "aplicacion", "ubicacion", "clase", "configuracion", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7", "km_diario_maximo")
 
 class ProductoForm(forms.ModelForm):
     # Model form del Producto
@@ -50,7 +59,6 @@ class DesechoEditForm(forms.ModelForm):
         model = Desecho
         fields = ['id', 'llanta', 'zona_de_llanta', 'condicion', 'razon']
 
-
 class ObservacionForm(forms.ModelForm):
     # Model form de la Observación
     llanta = forms.ModelChoiceField(queryset=Llanta.objects.all(), to_field_name = 'numero_economico')
@@ -69,19 +77,19 @@ class ObservacionEditForm(forms.ModelForm):
 
 class RechazoForm(forms.ModelForm):
     # Model form del Rechazo
-    llanta = forms.ModelChoiceField(queryset=Llanta.objects.all(), to_field_name = 'numero_economico')
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
     class Meta:
         # Configuración del Form
         model = Rechazo
-        fields = ['llanta', 'razon']
+        fields = ['compania', 'razon']
 
 class RechazoEditForm(forms.ModelForm):
     # Model form del Rechazo
-    llanta = forms.ModelChoiceField(queryset=Llanta.objects.all(), to_field_name = 'numero_economico')
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
     class Meta:
         # Configuración del Form
         model = Rechazo
-        fields = ['id', 'llanta', 'razon']
+        fields = ['id', 'compania', 'razon']
 
 class SucursalForm(forms.ModelForm):
     # Model form de la Sucursal
@@ -91,13 +99,29 @@ class SucursalForm(forms.ModelForm):
         model = Ubicacion
         fields = ["nombre", "compania", "rendimiento_de_nueva", "rendimiento_de_primera", "rendimiento_de_segunda", "rendimiento_de_tercera", "rendimiento_de_cuarta", "precio_nueva", "precio_renovada", "precio_nueva_direccion"]
 
+class SucursalEditForm(forms.ModelForm):
+    # Model form de la Sucursal
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    class Meta:
+        # Configuración del Form
+        model = Ubicacion
+        fields = ["id", "nombre", "compania", "rendimiento_de_nueva", "rendimiento_de_primera", "rendimiento_de_segunda", "rendimiento_de_tercera", "rendimiento_de_cuarta", "precio_nueva", "precio_renovada", "precio_nueva_direccion"]
+
 class TallerForm(forms.ModelForm):
     # Model form del Taller
     compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
     class Meta:
         # Configuración del Form
         model = Taller
-        fields = ["nombre", "compania"]
+        fields = ["nombre", "compania", "codigo"]
+
+class TallerEditForm(forms.ModelForm):
+    # Model form del Taller
+    compania = forms.ModelChoiceField(queryset=Taller.objects.all(), to_field_name = 'compania')
+    class Meta:
+        # Configuración del Form
+        model = Taller
+        fields = ["id", "nombre", "compania", "codigo"]
 
 class UsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -112,6 +136,20 @@ class UsuarioForm(forms.ModelForm):
         model = User
         fields = ['username', 'password',]
 
+class UsuarioEditForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    repeat_password = forms.CharField(widget=forms.PasswordInput)
+    # Here we add the extra form fields that we will use to create another model object
+    compania = forms.CharField(required=False)
+    ubicacion = forms.CharField(required=False)
+    aplicacion = forms.CharField(required=False)
+    groups = forms.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password',]
+
+
 class AplicacionForm(forms.ModelForm):
     # Model form de la Aplicación
     compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
@@ -119,7 +157,17 @@ class AplicacionForm(forms.ModelForm):
     class Meta:
         # Configuración del Form
         model = Aplicacion
-        fields = ["nombre", "compania", "ubicacion"]
+        fields = ["nombre", "compania", "ubicacion", "parametro_desgaste_direccion", "parametro_desgaste_traccion", "parametro_desgaste_arrastre", "parametro_desgaste_loco", "parametro_desgaste_retractil"]
+
+class AplicacionEditForm(forms.ModelForm):
+    # Model form de la Aplicación
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), to_field_name = 'nombre')
+    class Meta:
+        # Configuración del Form
+        model = Aplicacion
+        fields = ["id", "nombre", "compania", "ubicacion", "parametro_desgaste_direccion", "parametro_desgaste_traccion", "parametro_desgaste_arrastre", "parametro_desgaste_loco", "parametro_desgaste_retractil"]
+
 
 class CompaniaForm(forms.ModelForm):
     # Model form de la Compania

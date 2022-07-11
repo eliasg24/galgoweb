@@ -1,9 +1,9 @@
 {% extends '../base.html' %}
 
 {% block head %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
-<title>Formulario de sucursal</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+  <title>Sucursales</title>
 {% endblock %}
 
 {% block content %}
@@ -12,31 +12,77 @@
 
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de sucursal</h1>
   </header>
 
-  <section class="form-container">
-    <form action="{% url 'dashboards:sucursalFormulario' %}" class="form-content" method="POST">
-      {% csrf_token %}
-      <fieldset class="flex-row space-between">
-        <h2 class="form-title">Nueva sucursal</h2>
+  <section class="form-body">
 
-        <nav class="flex-row">
-          <button class="btn btn-success disabled" type="submit">
-            <span class="icon-checkmark"></span>
-          </button>
-          <button class="btn btn-danger" type="reset">
-            <span class="icon-cross"></span>
-          </button>
-        </nav>
-      </fieldset>
-      <article class="form-content__grid">
-        {% include './forms/form-sucursal.html' %}
-      </article>
+    {% if sucursal.id %}
+      <form action="{% url 'dashboards:sucursalFormularioEdit' sucursal.id %}" class="form-body_form" method="POST">
+    {% else %}
+      <form action="{% url 'dashboards:sucursalFormulario' %}" class="form-body_form" method="POST">
+    {% endif %}
+      {% csrf_token %} 
+      {% include './forms/form-sucursal.html' %}
     </form>
+
+    <div class="table-container">
+      <div class="relative">
+        <div class="absolute">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th>Acciones</th>
+                <th>Nombre</th>
+                <th>Compañia</th>
+                <th>Nueva a 1R</th>
+                <th>1R a 2R</th>
+                <th>2R a 3R</th>
+                <th>3R a 4R</th>
+                <th>4R a 5R</th>
+                <th>$ llanta de dirección</th>
+                <th>$ llanta de nueva</th>
+                <th>$ llanta de renovada</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sucursal in sucursales %}
+              <tr>
+                <td>
+                  <div class="flex-row" style="flex-wrap: nowrap;">
+                    <a href="{% url 'dashboards:sucursalFormularioEdit' sucursal.id %}" class="btn btn-download">
+                      <i class="icon-pencil"></i>
+                    </a>
+                    <form action="{% url "dashboards:sucursalFormularioDelete" %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="id" value="{{sucursal.id}}">
+                      <button class="btn btn-danger">
+                        <span class="icon-trash"></span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+                <td>{{sucursal}}</td>
+                <td>{{sucursal.compania}}</td>
+                <td>{{sucursal.rendimiento_de_nueva}}</td>
+                <td>{{sucursal.rendimiento_de_primera}}</td>
+                <td>{{sucursal.rendimiento_de_segunda}}</td>
+                <td>{{sucursal.rendimiento_de_tercera}}</td>
+                <td>{{sucursal.rendimiento_de_cuarta}}</td>
+                <td>{{sucursal.precio_nueva_direccion}}</td>
+                <td>{{sucursal.precio_nueva}}</td>
+                <td>{{sucursal.precio_renovada}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </section>
 
 </main>

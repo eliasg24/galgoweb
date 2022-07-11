@@ -11,7 +11,7 @@
   <main class="all-cont">
     <div class="head-cont">
       <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+        <img src="{% static 'images/aeto.svg' %}" alt="logo" />
       </div>
       <form id="taller-form" class="title-cont" method='POST'>
         {% csrf_token %}
@@ -19,7 +19,10 @@
         <input type="hidden" name="data" value="" id="data-taller">
         <input type="hidden" name="vehiculo" value="" id="vehiculo-data">
         <input type="hidden" name="vehiculoId" value="{{vehiculo_acomodado.0.vehiculo.id}}">
-        <button type="submit" class="btn btn-success">
+        <button class="btn btn-success" name='formulario' value='agendar'>
+          <i class="icon-calendar1"></i>
+        </button>
+        <button type="submit" class="btn btn-success" name='formulario' value='realizar'>
           <span class="icon-checkmark"></span>
         </button>
       </form>
@@ -28,9 +31,9 @@
       <aside class="left-cont">
         <form class="service-page">
           <h3>Hoja de Servicio</h3>
-          <div class="form__row">
+          <!-- <div class="form__row">
             <input type="text" name="folio" value="123456789" placeholder="Folio" readonly>
-          </div>
+          </div> -->
 
           <div class="flex-row">
             <input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">
@@ -40,10 +43,16 @@
             <input type="text" name="sucursal" value="{{vehiculo.0.ubicacion}}" placeholder="Sucursal" readonly>
             <input type="text" name="aplicacion" value="{{vehiculo.0.aplicacion}}" placeholder="Aplicación" readonly>
           </div>
+          <label for="">
+            <strong>Fecha de inicio</strong>
+          </label>
           <div class="flex-row">
             <input type="date" name="fecha" id="" required>
             <input type="time" name="hora" id="" required>
           </div>
+          <label for="">
+            <strong>Fecha final</strong>
+          </label>
           <div class="flex-row">
             <input type="date" name="fecha_end" id="" required>
             <input type="time" name="hora_end" id="" required>

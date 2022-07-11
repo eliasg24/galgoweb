@@ -15,6 +15,8 @@ const template = document.getElementById('check-temp').content,
 const getCompany = async (url) => {
   const select = document.getElementById('company');
 
+  if (!select) return;
+
   try {
     const resp = await fetch(url);
     const { companias } = await resp.json();
@@ -32,7 +34,7 @@ const getCompany = async (url) => {
   }
 };
 
-buttons[0].addEventListener('click', async (e) => {
+buttons[0]?.addEventListener('click', async (e) => {
   const formData = new FormData(form);
   const data = {
     company: formData.get('company'),
@@ -63,7 +65,7 @@ buttons[0].addEventListener('click', async (e) => {
   }
 });
 
-buttons[1].addEventListener('click', async (e) => {
+buttons[1]?.addEventListener('click', async (e) => {
   const formData = new FormData(form);
   let checks = [];
   let checked = container[1].querySelectorAll('input[name="sucursal"]:checked');
@@ -110,7 +112,7 @@ buttons[1].addEventListener('click', async (e) => {
   }
 });
 
-buttons[1].addEventListener('click', async (e) => {
+buttons[1]?.addEventListener('click', async (e) => {
   const formData = new FormData(form);
 
   const data = {

@@ -18,7 +18,7 @@
 
       <header class="head-cont">
         <div class="logo">
-          <img src="{% static 'images/perro-galgo.png' %}" alt="logo aeto">
+          <img src="{% static 'images/aeto.svg' %}" alt="logo aeto">
         </div>
 
         <h1 class="main-title">Edición manual</h1>
@@ -230,71 +230,84 @@
         </div>
 
         <form method="POST" id="tire-form" class="forms__container">
-          <div class="form__container">
-            <div class="form__group field">
-              <input
-                class="form__field"
-                type="number"
-                {% if vehiculo_actual.km == None %}
-                  min="0"
-                {% else %}
-                  min="{{vehiculo_actual.km}}"
-                {% endif %}
-                step="any"
-                placeholder=""
-                name="km_vehiculo"
-                autocomplete="off"
-                value = "{% if vehiculo_actual.km == None %}{% else %}{{vehiculo_actual.km}}{% endif %}"
-              />
-              <label for="" class="form__label">
-                KM de vehículo
-              </label>
-            </div>
-
-            <!-- OBSERVACIONES VEHICULO -->
-
-            <div class="drop-form">
-              <input type="search" class="drop-input" placeholder="Observación de vehículo" id="vehiculo-search">
-              <ul class="drop-options" id="vehiculo-observaciones">
+          <div class="modal__container">
+            <div class="form__container">
+              <div class="form__group field">
+                <input
+                  class="form__field"
+                  type="number"
+                  {% if vehiculo_actual.km == None %}
+                    min="0"
+                  {% else %}
+                    min="{{vehiculo_actual.km}}"
+                  {% endif %}
+                  step="any"
+                  placeholder=""
+                  name="km_vehiculo"
+                  autocomplete="off"
+                  value = "{% if vehiculo_actual.km == None %}{% else %}{{vehiculo_actual.km}}{% endif %}"
+                />
+                <label for="" class="form__label">
+                  KM de vehículo
+                </label>
+              </div>
+  
+              <!-- OBSERVACIONES VEHICULO -->
+  
+              <div class="drop-form">
+                <input type="search" class="drop-input" placeholder="Observación de vehículo" id="vehiculo-search">
+                <ul class="drop-options" id="vehiculo-observaciones">
+                  {% for observacion in observaciones_vehiculo %}
+                    <li class="search-item">
+                      <label for="{{observacion.observacion}}" class="input-check">
+                        <i class="{{observacion.icono}}"></i>
+                        {{observacion.observacion}}
+                        <input 
+                          type="checkbox" 
+                          name="observation-vehiculo" 
+                          value="{{observacion.observacion}}" 
+                          id="{{observacion.observacion}}" 
+                          data-vehiculo-item="{{observacion.observacion}}"
+                          {% if observacion in observaciones_vehiculo_act %}
+                          checked
+                          {% endif %}
+                        />
+                        <span class="checkmark"></span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+  
+              <h3 class="text-center">
+                Observaciones
+              </h3>
+  
+              <div class="observations__container">
                 {% for observacion in observaciones_vehiculo %}
-                  <li class="search-item">
-                    <label for="{{observacion.observacion}}" class="input-check">
-                      <i class="{{observacion.icono}}"></i>
-                      {{observacion.observacion}}
-                      <input 
-                        type="checkbox" 
-                        name="observation-vehiculo" 
-                        value="{{observacion.observacion}}" 
-                        id="{{observacion.observacion}}" 
-                        data-vehiculo-item="{{observacion.observacion}}"
-                        {% if observacion in observaciones_vehiculo_act %}
-                        checked
-                        {% endif %}
-                      />
-                      <span class="checkmark"></span>
-                    </label>
-                  </li>
+                  <div data-icon-type="{{observacion.observacion}}">
+                    <i class="{{observacion.icono}}"></i>
+                    {{observacion.observacion}}
+                  </div>
                 {% endfor %}
-              </ul>
-            </div>
+              </div>
 
-            <h3 class="text-center">
-              Observaciones
-            </h3>
-
-            <div class="observations__container">
-              {% for observacion in observaciones_vehiculo %}
-                <div data-icon-type="{{observacion.observacion}}">
-                  <i class="{{observacion.icono}}"></i>
-                  {{observacion.observacion}}
-                </div>
-              {% endfor %}
+              <button type="button" class="btn close" id="close-modal">
+                Cerrar
+              </button>
             </div>
-          </div>
+          </div>          
 
           <div class="form__container">
             <div class="relative">
               <div class="absolute">
+
+                <div class="flex-row" style="justify-content: space-between;">
+                  <h3>Llanta</h3>
+                  <button class="btn modal" type="button">
+                    <i class="icon-truck"></i>
+                  </button>
+                </div>
   
                 {% for eje in ejes %}
                   {% for ej in eje %}
@@ -585,6 +598,7 @@
       </main>
 
       <script src="{% static 'js/edicion/index.js' %}" type="module"></script>
+
 
       <script>
         document.addEventListener('DOMContentLoaded', (e) => {

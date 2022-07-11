@@ -1,10 +1,16 @@
 <!-- Start input -->
 <div class="form__group field">
   <input
+    type="hidden"
+    name="id"
+    {% if compania.id %}value="{{compania.id}}"{% endif %}
+  />
+  <input
     class="form__field"
     type="text"
     placeholder="nombre"
     name="compania"
+    {% if compania.compania %}value="{{compania.compania}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -21,6 +27,7 @@
     type="text"
     placeholder="periodo-inflado-1"
     name="periodo1_inflado"
+    {% if compania.periodo1_inflado %}value="{{compania.periodo1_inflado}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -37,6 +44,7 @@
     type="text"
     placeholder="periodo-inflado-2"
     name="periodo2_inflado"
+    {% if compania.periodo2_inflado %}value="{{compania.periodo2_inflado}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -53,6 +61,7 @@
     type="text"
     placeholder="presion-fuera-rango"
     name="objetivo"
+    {% if compania.objetivo %}value="{{compania.objetivo}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -70,6 +79,7 @@
     placeholder="periodo-sin-vista-1"
     name="periodo1_inspeccion"
     autocomplete="off"
+    {% if compania.periodo1_inspeccion %}value="{{compania.periodo1_inspeccion}}"{% endif %}
     required
   />
   <label for="periodo-sin-vista-1" class="form__label">
@@ -85,6 +95,7 @@
     type="text"
     placeholder="periodo-sin-vista-2"
     name="periodo2_inspeccion"
+    {% if compania.periodo2_inspeccion %}value="{{compania.periodo2_inspeccion}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -101,6 +112,7 @@
     type="text"
     placeholder="retiro-direccion"
     name="punto_retiro_eje_direccion"
+    {% if compania.punto_retiro_eje_direccion %}value="{{compania.punto_retiro_eje_direccion}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -117,6 +129,7 @@
     type="text"
     placeholder="retiro-traccion"
     name="punto_retiro_eje_traccion"
+    {% if compania.punto_retiro_eje_traccion %}value="{{compania.punto_retiro_eje_traccion}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -133,6 +146,7 @@
     type="text"
     placeholder="retiro-arrastre"
     name="punto_retiro_eje_arrastre"
+    {% if compania.punto_retiro_eje_arrastre %}value="{{compania.punto_retiro_eje_arrastre}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -149,6 +163,7 @@
     type="text"
     placeholder="retiro-loco"
     name="punto_retiro_eje_loco"
+    {% if compania.punto_retiro_eje_loco %}value="{{compania.punto_retiro_eje_loco}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -165,6 +180,7 @@
     type="text"
     placeholder="retiro-retractil"
     name="punto_retiro_eje_retractil"
+    {% if compania.punto_retiro_eje_retractil %}value="{{compania.punto_retiro_eje_retractil}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -181,6 +197,7 @@
     type="text"
     placeholder="profundidad-descuate"
     name="mm_de_diferencia_entre_duales"
+    {% if compania.mm_de_diferencia_entre_duales %}value="{{compania.mm_de_diferencia_entre_duales}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -197,6 +214,7 @@
     type="text"
     placeholder="profundidad-descuate-irregular"
     name="mm_de_desgaste_irregular"
+    {% if compania.mm_de_desgaste_irregular %}value="{{compania.mm_de_desgaste_irregular}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -213,6 +231,7 @@
     type="text"
     placeholder="valor-casco-nuevo"
     name="valor_casco_nuevo"
+    {% if compania.valor_casco_nuevo %}value="{{compania.valor_casco_nuevo}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -229,6 +248,7 @@
     type="text"
     placeholder="valor-casco-1r"
     name="valor_casco_1r"
+    {% if compania.valor_casco_1r %}value="{{compania.valor_casco_1r}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -245,6 +265,7 @@
     type="text"
     placeholder="valor-casco-2r"
     name="valor_casco_2r"
+    {% if compania.valor_casco_2r %}value="{{compania.valor_casco_2r}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -261,6 +282,7 @@
     type="text"
     placeholder="valor-casco-3r"
     name="valor_casco_3r"
+    {% if compania.valor_casco_3r %}value="{{compania.valor_casco_3r}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -277,6 +299,7 @@
     type="text"
     placeholder="valor-casco-4r"
     name="valor_casco_4r"
+    {% if compania.valor_casco_4r %}value="{{compania.valor_casco_4r}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -293,6 +316,7 @@
     type="text"
     placeholder="valor-casco-5r"
     name="valor_casco_5r"
+    {% if compania.valor_casco_5r %}value="{{compania.valor_casco_5r}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -302,69 +326,36 @@
 </div>
 <!-- End input -->
 
-<!-- Start input -->
-<div class="form__group field">
-  <input
-    class="form__field"
-    type="text"
-    placeholder="unidades-presion"
-    name="unidades_presion"
-    list="unidades_presion"
-    autocomplete="off"
-    required
-  />
-  <label for="unidades-presion" class="form__label">
-    Unidades de presión
-  </label>
-  <datalist id="unidades_presion">
-    <option value="psi">psi</option>
-    <option value="bar">bar</option>
-    <option value="mPa">mPa</option>
-  </datalist>
-</div>
-<!-- End input -->
+<label for="presion" class="select-label">Unidades de presión</label>
+<select name="unidades_presion" class="select-input" id="presion" required>
+  <option value="">Seleccione una unidad de presión...</option>
+  {% if compania.unidades_presion %}
+  <option value="{{compania.unidades_presion}}" selected>{{compania.unidades_presion}}</option>
+  {% endif %}
+  <option value="psi">psi</option>
+  <option value="bar">bar</option>
+  <option value="mPa">mPa</option>
+</select>
 
-<!-- Start input -->
-<div class="form__group field">
-  <input
-    class="form__field"
-    type="text"
-    placeholder="unidades-distancia"
-    name="unidades_distancia"
-    list="unidades_distancia"
-    autocomplete="off"
-    required
-  />
-  <label for="unidades-distancia" class="form__label">
-    Unidades de distancia
-  </label>
-  <datalist id="unidades_distancia">
-    <option value="km">km</option>
-    <option value="mi">mi</option>
-  </datalist>
-</div>
-<!-- End input -->
+<label for="distancia" class="select-label">Unidades de distancia</label>
+<select name="unidades_distancia" class="select-input" id="distancia" required>
+  <option value="">Seleccione una unidad de distancia...</option>
+  {% if compania.unidades_distancia %}
+  <option value="{{compania.unidades_distancia}}" selected>{{compania.unidades_distancia}}</option>
+  {% endif %}
+  <option value="km">km</option>
+  <option value="mi">mi</option>
+</select>
 
-<!-- Start input -->
-<div class="form__group field">
-  <input
-    class="form__field"
-    type="text"
-    placeholder="unidades-profundidad"
-    name="unidades_profundidad"
-    list="unidades_profundidad"
-    autocomplete="off"
-    required
-  />
-  <label for="unidades-profundidad" class="form__label">
-    Unidades de profundidad
-  </label>
-  <datalist id="unidades_profundidad">
-    <option value="mm">mm</option>
-    <option value="32''">32''</option>
-  </datalist>
-</div>
-<!-- End input -->
+<label for="profundidad" class="select-label">Unidades de profundidad</label>
+<select name="unidades_profundidad" class="select-input" id="profundidad" required>
+  <option value="">Seleccione una unidad de profundidad...</option>
+  {% if compania.unidades_profundidad %}
+  <option value="{{compania.unidades_profundidad}}" selected>{{compania.unidades_profundidad}}</option>
+  {% endif %}
+  <option value="mm">mm</option>
+  <option value="32''">32"</option>
+</select>
 
 <!-- Start input -->
 <div class="form__group field">
@@ -373,6 +364,7 @@
     type="text"
     placeholder="parametro-desgaste-sospechoso"
     name="mm_parametro_sospechoso"
+    {% if compania.mm_parametro_sospechoso %}value="{{compania.mm_parametro_sospechoso}}"{% endif %}
     autocomplete="off"
     required
   />

@@ -79,23 +79,6 @@
   padding: 1rem;
   width: inherit;
 }
-.form-aeto::-webkit-scrollbar,
-.table-cont::-webkit-scrollbar {
-  width: 10px;
-}
-
-.form-aeto::-webkit-scrollbar-thumb,
-.table-cont::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: var(--colorv16);
-}
-
-.form-aeto::-webkit-scrollbar-track,
-.table-cont::-webkit-scrollbar-track {
-  border-radius: 5px;
-  background-color: var(--colorv17);
-}
-
 .main-table th {
   color: #fff; /*No se cambia*/
   border-bottom: 2px solid var(--colorv14);

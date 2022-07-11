@@ -1,44 +1,132 @@
-{% extends '../base.html' %}
-
-{% block head %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+{% extends '../base.html' %} {% block head %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}" />
 <title>Formulario de compañia</title>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 
 <main class="main-cont">
-
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo" />
     </div>
 
     <h1>Formulario de compañia</h1>
   </header>
 
-  <section class="form-container">
-    <form action="{% url 'dashboards:companyFormulario' %}" class="form-content" method="POST">
-        {% csrf_token %}
-        <fieldset class="flex-row space-between">
-        <h2 class="form-title">Nueva compañia</h2>
-
-        <nav class="flex-row">
-          <button class="btn btn-success disabled" type="submit">
-            <span class="icon-checkmark"></span>
+  <section class="form-body">
+  {% if compania.id %}
+    <form action="{% url 'dashboards:companyFormularioEdit' compania.id %}" class="form-body_form" method="POST">
+  {% else %}
+    <form action="{% url 'dashboards:companyFormulario' %}" class="form-body_form" method="POST">
+  {% endif %}
+      {% csrf_token %} 
+      
+      <div class="relative">
+        <div class="absolute">
+          {% include './forms/form-company.html' %}
+          {% if compania.id %}
+          
+          <nav class="flex-row">
+            <button class="btn btn-success">
+              <span class="icon-checkmark"></span>
+            </button>
+        
+            <a href="{% url 'dashboards:companyFormulario' %}" class="btn btn-danger">
+              <span class="icon-cross"></span>
+            </a>
+          </nav>
+      
+          {% else %}
+          <button class="btn btn-success">
+            <span class="icon-plus6"></span>
           </button>
-          <a href="{% url 'dashboards:config' %}" class="btn btn-danger" type="reset">
-            <span class="icon-cross"></span>
-          </a>
-        </nav>
-      </fieldset>
-      <article class="form-content__grid">
-        {% include './forms/form-company.html' %}
-      </article>
-    </form>
-  </section>
+          {% endif %}
+        </div>
+      </div>
 
+    </form>
+    <div class="table-container">
+      <div class="relative">
+        <div class="absolute">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th>Acciones</th>
+                <th>Compania</th>
+                <th>Periodo de inflado 1</th>
+                <th>Periodo de inflado 2</th>
+                <th>Presion fuera rango</th>
+                <th>Periodo sin vista 1</th>
+                <th>Periodo sin vista 2</th>
+                <th>Punto de retiro direccion</th>
+                <th>Punto de retiro traccion</th>
+                <th>Punto de retiro arrastre</th>
+                <th>Punto de retiro loco</th>
+                <th>Punto de retiro retractil</th>
+                <th>Profundidad de descuate</th>
+                <th>Profundidad de desgaste irregular</th>
+                <th>Valor de casco nuevo</th>
+                <th>Valor de casco 1R</th>
+                <th>Valor de casco 2R</th>
+                <th>Valor de casco 3R</th>
+                <th>Valor de casco 4R</th>
+                <th>Valor de casco 5R</th>
+                <th>Unidades de presión</th>
+                <th>Unidades de distancia</th>
+                <th>Unidades de profundidad</th>
+                <th>Parametros de desgaste sospechoso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for compania in companias %}
+              <tr>
+                <td>
+                  <div
+                    class="flex-row"
+                    style="flex-wrap: nowrap; justify-content: center"
+                  >
+                    <a href="{% url 'dashboards:companyFormularioEdit' compania.id %}" class="btn btn-download">
+                      <i class="icon-pencil"></i>
+                    </a>
+                    <form action="{% url "dashboards:companyFormularioDelete" %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="id" value="{{compania.id}}">
+                      <button class="btn btn-danger">
+                        <span class="icon-trash"></span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+                <td>{{compania}}</td>
+                <td>{{compania.periodo1_inflado}}</td>
+                <td>{{compania.periodo2_inflado}}</td>
+                <td>{{compania.objetivo}}</td>
+                <td>{{compania.periodo1_inspeccion}}</td>
+                <td>{{compania.periodo2_inspeccion}}</td>
+                <td>{{compania.punto_retiro_eje_direccion}}</td>
+                <td>{{compania.punto_retiro_eje_traccion}}</td>
+                <td>{{compania.punto_retiro_eje_arrastre}}</td>
+                <td>{{compania.punto_retiro_eje_loco}}</td>
+                <td>{{compania.punto_retiro_eje_retractil}}</td>
+                <td>{{compania.mm_de_diferencia_entre_duales}}</td>
+                <td>{{compania.mm_de_desgaste_irregular}}</td>
+                <td>{{compania.valor_casco_nuevo}}</td>
+                <td>{{compania.valor_casco_1r}}</td>
+                <td>{{compania.valor_casco_2r}}</td>
+                <td>{{compania.valor_casco_3r}}</td>
+                <td>{{compania.valor_casco_4r}}</td>
+                <td>{{compania.valor_casco_5r}}</td>
+                <td>{{compania.unidades_presion}}</td>
+                <td>{{compania.unidades_distancia}}</td>
+                <td>{{compania.unidades_profundidad}}</td>
+                <td>{{compania.mm_parametro_sospechoso}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script src="{% static 'js/inputChange.js' %}"></script>

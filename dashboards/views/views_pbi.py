@@ -16,10 +16,9 @@ class CompaniaData(View):
         usuario = kwargs['usuario']
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
-        compania = perfil.compania
-        compania = Compania.objects.filter(compania=compania)
-        #Serializar data
+        compania = perfil.companias.all()
         print(compania)
+        #Serializar data
         compania = list(compania.values())
         print(compania)
         
@@ -59,7 +58,7 @@ class AplicacionData(View):
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        aplicaciones = Aplicacion.objects.filter(compania=compania).annotate(sucursal=F("ubicacion")).values("nombre", "compania", "sucursal", "parametro_desgaste_direccion", "parametro_desgaste_traccion", "parametro_desgaste_arrastre", "parametro_desgaste_loco", "parametro_desgaste_retractil")
+        aplicaciones = Aplicacion.objects.filter(compania=compania).annotate(sucursal=F("ubicacion")).values("id", "nombre", "compania", "sucursal", "parametro_desgaste_direccion", "parametro_desgaste_traccion", "parametro_desgaste_arrastre", "parametro_desgaste_loco", "parametro_desgaste_retractil")
         #Serializar data
         print(aplicaciones)
         aplicaciones = list(aplicaciones)
@@ -183,7 +182,7 @@ class DesechoData(View):
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        desechos = Desecho.objects.filter(llanta__compania=compania)
+        desechos = Desecho.objects.filter(compania=compania)
         #Serializar data
         desechos = list(desechos.values())
         
@@ -317,9 +316,21 @@ class BitacorasData(View):
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
         bitacoras = Bitacora.objects.filter(compania=compania)
+        bitacoras_pro = Bitacora_Pro.objects.filter(compania=compania)
+
+        entradas_correctas = functions.entrada_correcta_api(bitacoras, bitacoras_pro)
+
         #Serializar data
-        bitacoras = list(bitacoras.values())
-        
+
+        whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
+        bitacoras = bitacoras.annotate(presion_de_entrada_1=F("presion_de_entrada"), presion_de_salida_1=F("presion_de_salida"), presion_de_entrada_2=Value(None, output_field=IntegerField()), presion_de_salida_2=Value(None, output_field=IntegerField()), presion_de_entrada_3=Value(None, output_field=IntegerField()), presion_de_salida_3=Value(None, output_field=IntegerField()), presion_de_entrada_4=Value(None, output_field=IntegerField()), presion_de_salida_4=Value(None, output_field=IntegerField()), presion_de_entrada_5=Value(None, output_field=IntegerField()), presion_de_salida_5=Value(None, output_field=IntegerField()), presion_de_entrada_6=Value(None, output_field=IntegerField()), presion_de_salida_6=Value(None, output_field=IntegerField()), presion_de_entrada_7=Value(None, output_field=IntegerField()), presion_de_salida_7=Value(None, output_field=IntegerField()), presion_de_entrada_8=Value(None, output_field=IntegerField()), presion_de_salida_8=Value(None, output_field=IntegerField()), presion_de_entrada_9=Value(None, output_field=IntegerField()), presion_de_salida_9=Value(None, output_field=IntegerField()), presion_de_entrada_10=Value(None, output_field=IntegerField()), presion_de_salida_10=Value(None, output_field=IntegerField()), presion_de_entrada_11=Value(None, output_field=IntegerField()), presion_de_salida_11=Value(None, output_field=IntegerField()), presion_de_entrada_12=Value(None, output_field=IntegerField()), presion_de_salida_12=Value(None, output_field=IntegerField())).annotate(estatus_pulpo=Case(*whens, output_field=CharField()))
+        bitacoras = list(bitacoras.values("id", "vehiculo__id", "compania__id", "fecha_de_inflado__date", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "estatus_pulpo"))
+
+        whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
+        bitacoras_pro = list(bitacoras_pro.annotate(estatus_pulpo=Case(*whens, output_field=CharField())).values("id", "vehiculo__id", "compania__id", "fecha_de_inflado__date", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "estatus_pulpo"))
+       
+        bitacoras.extend(bitacoras_pro)
+
         dict_context = {
             'bitacoras': bitacoras,
         }
@@ -328,25 +339,6 @@ class BitacorasData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-class BitacorasProData(View):
-    def get(self, request , *args, **kwargs):
-        #Queryparams
-        usuario = kwargs['usuario']
-        user = User.objects.get(username = usuario)
-        perfil = Perfil.objects.get(user = user)
-        compania = perfil.compania
-        bitacoras_pro = Bitacora_Pro.objects.filter(compania=compania)
-        #Serializar data
-        bitacoras_pro = list(bitacoras_pro.values())
-        
-        dict_context = {
-            'bitacoras_pro': bitacoras_pro,
-        }
-
-        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
-
-        return HttpResponse(json_context, content_type='application/json')
-    
 class AccionData(View):
     def get(self, request , *args, **kwargs):
         #Queryparams

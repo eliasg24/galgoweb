@@ -43,6 +43,109 @@ class CastDate(Func):
     function = 'date_trunc'
     template = "%(function)s('day', %(expressions)s)"    
 
+def archivar_taller(POST, pk, servicio_vehiculo):
+    vehiculo_con_ejes = vehiculo_con_ejes_acomodados(pk)
+    lista_itenciones = []
+    intenciones_acomodadas = []
+    intenciones_vehiculo = []
+    #print(POST)
+    #? Acciones del vehiculo
+    vehiculo = Vehiculo.objects.get(pk = pk)
+    try:
+        acciones_vehiculo = json.loads(POST.getlist('vehiculo')[0])
+    except:
+        acciones_vehiculo = []
+    if 'alinearVehiculo' in acciones_vehiculo:
+        intenciones_vehiculo.append({'alinearVehiculo': 'True'})
+        
+    try:
+        dataPOST = json.loads(POST.getlist('data')[0])
+    except:
+        dataPOST = []
+    for data in dataPOST:
+        if data['tipoServicio'] == 'desmontaje':
+            print('Desmontaje')
+            #? Se llama la llanta actual
+            llanta = Llanta.objects.get(pk=data['llantaId'])
+            vehiculo = llanta.vehiculo
+                            
+            #? Se llama la llanta a montar
+            nuevaLlanta = data['nuevaLlanta']
+            llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta)
+            
+            #? Se obtienen los datos del desmontaje
+            razon = data['razon']
+            almacen_desmontaje = data['almacen_desmontaje']
+            taller_desmontaje = Taller.objects.get(id = int(data['taller_desmontaje']))
+            
+            lista_itenciones.append({
+                'tipoServicio': 'desmontaje',
+                'llanta': llanta.id,
+                'llanta_nueva': llanta_nueva.id,
+                'razon': razon,
+                'taller_desmontaje': taller_desmontaje.id
+                })
+        
+     
+    for data in dataPOST:
+        if data['tipoServicio'] == 'sr':
+            print('Servicio')
+            #?Se llama la llanta
+            llanta = Llanta.objects.get(pk=data['llantaId'])
+            #? Se verifican que servicios se realizaron
+            inflar = True if data['inflar'] == 'on' else False
+            balancear = True if data['balancear'] == 'on' else False
+            reparar = True if data['reparar'] == 'on' else False
+            valvula = True if data['valvula'] == 'on' else False
+            costado = True if data['costado'] == 'on' else False
+            
+            rotar = data['rotar'] if data['rotar'] != 'no' else False
+            id_llanta_rotar = ''
+            #? Rotar en el mismo vehiculo
+            if rotar == 'mismo':
+                print('Rotar en el mismo vehiculo')
+                id_llanta_rotar = int(data['origenLlanta'])
+                llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                                  
+            #? Rotar en diferente vehiculo
+            if rotar == 'otro':
+                print('Rotar en diferentes vehiculo')
+                id_llanta_rotar = int(data['llantaOrigen'])
+                llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+            
+            lista_itenciones.append({
+                    'tipoServicio': 'sr',
+                    'llanta': llanta.id,
+                    'inflar': str(inflar),
+                    'balancear': str(balancear),
+                    'reparar': str(reparar),
+                    'valvula': str(valvula),
+                    'costado': str(costado),
+                    'rotar': str(rotar),
+                    'llanta_rotar': id_llanta_rotar
+                    })
+    print('-------------')
+    
+    for vehiculo in vehiculo_con_ejes:
+        for ejes in vehiculo['ejes']:
+            for llanta in ejes:
+                intencion_temp = {}
+                for intencion in lista_itenciones:
+                    if intencion['llanta'] == llanta['llanta'].id:
+                        intencion_temp = intencion
+                intenciones_acomodadas.append(intencion_temp)
+                
+    print(acciones_vehiculo)
+    print(dataPOST)
+    print(lista_itenciones)
+    print()
+    print(intenciones_acomodadas)
+    
+    servicio_vehiculo.preguardado_llantas = str(intenciones_acomodadas)
+    servicio_vehiculo.preguardado_vehiculo = str(intenciones_vehiculo)
+    servicio_vehiculo.save()
+    calendarioTaller(servicio_vehiculo)
+
 def acomodo_de_llantas_por_vehiculo(llantas, ids_vehiculo:list):
     """Funcion que obtiene un QuerySet de llantas y una lista de ids y los acomoda por vehiculo
 
@@ -189,6 +292,8 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                     color_dias_inflado = 'yellow'
             except:
                 pass
+        
+        sp1 = is_sp1(vehiculo_actual)
             
         vehiculos_acomodados.append(
             {
@@ -199,11 +304,24 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
                 'color_dias_inspenccion': color_dias_inspenccion,
                 'color_dias_alinear': color_dias_alinear,
                 'dias_sin_inflar': dias_sin_inflar,
-                'color_dias_inflado': color_dias_inflado
+                'color_dias_inflado': color_dias_inflado,
+                'fecha_inflado': vehiculo_actual.fecha_de_inflado,
+                'sp1': sp1
             }
         )
     return vehiculos_acomodados
 
+def is_sp1(vehiculo_actual):
+    configuracion = vehiculo_actual.configuracion
+    if 'SP1' in configuracion:
+        print(vehiculo_actual)
+        print(True)
+        return True
+    else:
+        print(vehiculo_actual)
+        print(False)
+        return False
+    
 
 def is_valid_dias_sin_inflar(vehiculo_actual):
     """Funcion que determina si la lista de dias sin inflar es valisa(Que no este vacia)
@@ -215,7 +333,7 @@ def is_valid_dias_sin_inflar(vehiculo_actual):
         _type_: Cadena o fecha que resulto
     """
     if vehiculo_actual.fecha_de_inflado != None:
-        return (date.today() - vehiculo_actual.fecha_de_inflado).days
+        return (datetime.now(timezone.utc) - vehiculo_actual.fecha_de_inflado).days
         #return max(dias_sin_inflar)
     else:
         return 'N/A'
@@ -269,9 +387,12 @@ def acomodo_pocisiones_vehicle(vehiculos):
             'color_dias_inspenccion': vehiculo['color_dias_inspenccion'],
             'color_dias_alinear': vehiculo['color_dias_alinear'],
             'dias_sin_inflar': vehiculo['dias_sin_inflar'],
-            'color_dias_inflado': vehiculo['color_dias_inflado']
+            'color_dias_inflado': vehiculo['color_dias_inflado'],
+            'fecha_inflado': vehiculo['fecha_inflado'],
+            'sp1': vehiculo['sp1']
             
         })
+        
     return vehiculos_ejes_acomodados
 
 
@@ -481,7 +602,7 @@ def clases_mas_frecuentes(vehiculo_fecha, compania):
         return None
 
 
-def check_presion_pulpo(llanta, min_presion, max_presion):
+def check_presion_pulpo(llanta, min_presion, max_presion, condicional):
     presion = int(llanta.presion_actual)
     alta = Observacion.objects.get(observacion='Alta presion')
     baja = Observacion.objects.get(observacion='Baja presión')
@@ -489,35 +610,51 @@ def check_presion_pulpo(llanta, min_presion, max_presion):
     doble_mala_entrada = Observacion.objects.get(observacion='Doble mala entrada')
     llanta.observaciones.remove(alta)
     llanta.observaciones.remove(baja)
+    print("llanta", llanta)
+    print("mala_entrada", mala_entrada)
+    print("doble_mala_entrada", doble_mala_entrada)
     print(presion)
     if presion < min_presion:
         llanta.observaciones.add(baja)
         llanta.vehiculo.observaciones_llanta.add(baja)
-        if mala_entrada in llanta.vehiculo.observaciones_llanta or doble_mala_entrada in llanta.vehiculo.observaciones_llanta :
-            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+        if mala_entrada in llanta.observaciones.all() or doble_mala_entrada in llanta.observaciones.all() :
             llanta.observaciones.add(doble_mala_entrada)
         else:
-            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
             llanta.observaciones.add(mala_entrada)
+        if mala_entrada in llanta.vehiculo.observaciones_llanta.all() or doble_mala_entrada in llanta.vehiculo.observaciones_llanta.all() :
+            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+            condicional = False
+        else:
+            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
+            condicional = False
             
     elif presion > max_presion:
         llanta.observaciones.add(alta)
         llanta.vehiculo.observaciones_llanta.add(alta)
-        if mala_entrada in llanta.vehiculo.observaciones_llanta or doble_mala_entrada in llanta.vehiculo.observaciones_llanta :
-            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+        if mala_entrada in llanta.observaciones.all() or doble_mala_entrada in llanta.observaciones.all() :
             llanta.observaciones.add(doble_mala_entrada)
         else:
+            llanta.observaciones.add(mala_entrada)
+        if mala_entrada in llanta.vehiculo.observaciones_llanta.all() or doble_mala_entrada in llanta.vehiculo.observaciones_llanta.all() :
+            condicional = False
+            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+        else:
             llanta.vehiculo.observaciones_llanta.add(mala_entrada)
+            condicional = False
             llanta.observaciones.add(mala_entrada)
         
     else:
+        if condicional:
+            llanta.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
         llanta.observaciones.remove(doble_mala_entrada)
-        llanta.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
         
+        if condicional:
+            llanta.vehiculo.observaciones_llanta.remove(mala_entrada)
         llanta.observaciones.remove(mala_entrada)
-        llanta.vehiculo.observaciones_llanta.remove(mala_entrada)
-          
+    
     llanta.save()
+
+    return condicional
 
 
 def aplicaciones_mas_frecuentes(vehiculo_fecha, vehiculos, compania):
@@ -894,13 +1031,13 @@ def contar_mala_entrada(bitacoras):
         entradas = {}
         for bitacora in bitacoras:
             presion_de_entrada = bitacora.presion_de_entrada
-            presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-            presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
-            presion_establecida_3 = bitacora.numero_economico.presion_establecida_3
-            presion_establecida_4 = bitacora.numero_economico.presion_establecida_4
-            presion_establecida_5 = bitacora.numero_economico.presion_establecida_5
-            presion_establecida_6 = bitacora.numero_economico.presion_establecida_6
-            presion_establecida_7 = bitacora.numero_economico.presion_establecida_7
+            presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+            presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+            presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+            presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+            presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+            presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+            presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
             try:
                 entrada_correcta_1 = presion_de_entrada/presion_establecida_1
             except:
@@ -943,21 +1080,21 @@ def contar_mala_entrada_pro(bitacoras):
     try:
         entradas = {}
         for bitacora in bitacoras:
-            configuracion = bitacora.numero_economico.configuracion
+            configuracion = bitacora.vehiculo.configuracion
             llantas = cantidad_llantas(configuracion)
             llantas_eje = cantidad_llantas_por_eje(configuracion)
             if llantas >= 2:
                 presion_encontrada_1 = bitacora.presion_de_entrada_1
-                presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
+                presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
                 if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
                     entrada_correcta_1 = 0
                 else:
                     entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
                 presion_encontrada_2 = bitacora.presion_de_entrada_2
                 if llantas_eje[0] >= 2:
-                    presion_establecida_2 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_2 = bitacora.vehiculo.presion_establecida_1
                 elif (llantas_eje[0] + llantas_eje[1]) >= 2:
-                    presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
                 if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
                     entrada_correcta_2 = 0
                 else:
@@ -965,18 +1102,18 @@ def contar_mala_entrada_pro(bitacoras):
                 if llantas >= 4:                    
                     presion_encontrada_3 = bitacora.presion_de_entrada_3
                     if llantas_eje[0] >= 3:
-                        presion_establecida_3 = bitacora.numero_economico.presion_establecida_1
+                        presion_establecida_3 = bitacora.vehiculo.presion_establecida_1
                     elif (llantas_eje[0] + llantas_eje[1]) >= 3:
-                        presion_establecida_3 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_3 = bitacora.vehiculo.presion_establecida_2
                     if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
                         entrada_correcta_3 = 0
                     else:
                         entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
                     presion_encontrada_4 = bitacora.presion_de_entrada_4
                     if llantas_eje[0] >= 4:
-                        presion_establecida_4 = bitacora.numero_economico.presion_establecida_1
+                        presion_establecida_4 = bitacora.vehiculo.presion_establecida_1
                     elif (llantas_eje[0] + llantas_eje[1]) >= 4:
-                        presion_establecida_4 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_4 = bitacora.vehiculo.presion_establecida_2
                     if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
                         entrada_correcta_4 = 0
                     else:
@@ -984,18 +1121,18 @@ def contar_mala_entrada_pro(bitacoras):
                     if llantas >= 6:      
                         presion_encontrada_5 = bitacora.presion_de_entrada_5
                         if (llantas_eje[0] + llantas_eje[1]) >= 5:
-                            presion_establecida_5 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_5 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
-                            presion_establecida_5 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_5 = bitacora.vehiculo.presion_establecida_3
                         if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
                             entrada_correcta_5 = 0
                         else:
                             entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
                         presion_encontrada_6 = bitacora.presion_de_entrada_6
                         if (llantas_eje[0] + llantas_eje[1]) >= 6:
-                            presion_establecida_6 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_6 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
-                            presion_establecida_6 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_6 = bitacora.vehiculo.presion_establecida_3
                         if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
                             entrada_correcta_6 = 0
                         else:
@@ -1003,22 +1140,22 @@ def contar_mala_entrada_pro(bitacoras):
                         if llantas >= 8:
                             presion_encontrada_7 = bitacora.presion_de_entrada_7
                             if (llantas_eje[0] + llantas_eje[1]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_2
+                                presion_establecida_7 = bitacora.vehiculo.presion_establecida_2
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_7 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_7 = bitacora.vehiculo.presion_establecida_4
                             if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
                                 entrada_correcta_7 = 0
                             else:
                                 entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
                             presion_encontrada_8 = bitacora.presion_de_entrada_8
                             if (llantas_eje[0] + llantas_eje[1]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_2
+                                presion_establecida_8 = bitacora.vehiculo.presion_establecida_2
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_8 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_8 = bitacora.vehiculo.presion_establecida_4
                             if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
                                 entrada_correcta_8 = 0
                             else:
@@ -1026,22 +1163,22 @@ def contar_mala_entrada_pro(bitacoras):
                             if llantas >= 10:
                                 presion_encontrada_9 = bitacora.presion_de_entrada_9
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_9 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_9 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_9 = bitacora.vehiculo.presion_establecida_5
                                 if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
                                     entrada_correcta_9 = 0
                                 else:
                                     entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
                                 presion_encontrada_10 = bitacora.presion_de_entrada_10
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_10 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_10 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_10 = bitacora.vehiculo.presion_establecida_5
                                 if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
                                     entrada_correcta_10 = 0
                                 else:
@@ -1049,26 +1186,26 @@ def contar_mala_entrada_pro(bitacoras):
                                 if llantas >= 12:
                                     presion_encontrada_11 = bitacora.presion_de_entrada_11
                                     if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_3
+                                        presion_establecida_11 = bitacora.vehiculo.presion_establecida_3
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_4
+                                        presion_establecida_11 = bitacora.vehiculo.presion_establecida_4
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_5
+                                        presion_establecida_11 = bitacora.vehiculo.presion_establecida_5
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_6
+                                        presion_establecida_11 = bitacora.vehiculo.presion_establecida_6
                                     if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
                                         entrada_correcta_11 = 0
                                     else:
                                         entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
                                     presion_encontrada_12 = bitacora.presion_de_entrada_12
                                     if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_3
+                                        presion_establecida_12 = bitacora.vehiculo.presion_establecida_3
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_4
+                                        presion_establecida_12 = bitacora.vehiculo.presion_establecida_4
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_5
+                                        presion_establecida_12 = bitacora.vehiculo.presion_establecida_5
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_6
+                                        presion_establecida_12 = bitacora.vehiculo.presion_establecida_6
                                     if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
                                         entrada_correcta_12 = 0
                                     else:
@@ -1408,13 +1545,13 @@ def doble_entrada(bitacoras, bitacoras2):
     dobles_entradas = []
     for bitacora in bitacoras:
         presion_de_entrada = bitacora.presion_de_entrada
-        presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-        presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
-        presion_establecida_3 = bitacora.numero_economico.presion_establecida_3
-        presion_establecida_4 = bitacora.numero_economico.presion_establecida_4
-        presion_establecida_5 = bitacora.numero_economico.presion_establecida_5
-        presion_establecida_6 = bitacora.numero_economico.presion_establecida_6
-        presion_establecida_7 = bitacora.numero_economico.presion_establecida_7
+        presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+        presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+        presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+        presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+        presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+        presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+        presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
         try:
             entrada_correcta_1 = presion_de_entrada/presion_establecida_1
         except:
@@ -1445,37 +1582,37 @@ def doble_entrada(bitacoras, bitacoras2):
             entrada_correcta_7 = 1
 
         if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9:
-            if bitacora.numero_economico.id in entradas:
-                entradas[bitacora.numero_economico.id] += 1
+            if bitacora.vehiculo.id in entradas:
+                entradas[bitacora.vehiculo.id] += 1
             else:
-                entradas[bitacora.numero_economico.id] = 1
+                entradas[bitacora.vehiculo.id] = 1
 
-        if bitacora.numero_economico.id in entradas:
-            if entradas[bitacora.numero_economico.id] >= 2:
+        if bitacora.vehiculo.id in entradas:
+            if entradas[bitacora.vehiculo.id] >= 2:
                 dobles_entradas.append(bitacora.id)
 
     primera_bitacora = bitacoras.filter(id__in=dobles_entradas).values("id").annotate(max=Max("fecha_de_inflado")).annotate(mes=(ExtractYear(Now()) - ExtractYear("max")) * 12 + (ExtractMonth(Now()) - ExtractMonth("max")) + 1)
     meses1 = primera_bitacora.values("mes").aggregate(mes1=Count("mes",filter=Q(mes=1)), mes2=Count("mes",filter=Q(mes=2)), mes3=Count("mes",filter=Q(mes=3)), mes4=Count("mes",filter=Q(mes=4)), mes5=Count("mes",filter=Q(mes=5)), mes6=Count("mes",filter=Q(mes=6)), mes7=Count("mes",filter=Q(mes=7)), mes8=Count("mes",filter=Q(mes=8)))
-    primera_bitacora = primera_bitacora.values("numero_economico")
+    primera_bitacora = primera_bitacora.values("vehiculo")
 
     bitacoras2 = bitacoras2.order_by("id")
     for bitacora in bitacoras2:
         mala_entrada = False
-        configuracion = bitacora.numero_economico.configuracion
+        configuracion = bitacora.vehiculo.configuracion
         llantas = cantidad_llantas(configuracion)
         llantas_eje = cantidad_llantas_por_eje(configuracion)
         if llantas >= 2:
             presion_encontrada_1 = bitacora.presion_de_entrada_1
-            presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
+            presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
             if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
                 entrada_correcta_1 = 0
             else:
                 entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
             presion_encontrada_2 = bitacora.presion_de_entrada_2
             if llantas_eje[0] >= 2:
-                presion_establecida_2 = bitacora.numero_economico.presion_establecida_1
+                presion_establecida_2 = bitacora.vehiculo.presion_establecida_1
             elif (llantas_eje[0] + llantas_eje[1]) >= 2:
-                presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
+                presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
             if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
                 entrada_correcta_2 = 0
             else:
@@ -1483,18 +1620,18 @@ def doble_entrada(bitacoras, bitacoras2):
             if llantas >= 4:                    
                 presion_encontrada_3 = bitacora.presion_de_entrada_3
                 if llantas_eje[0] >= 3:
-                    presion_establecida_3 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_3 = bitacora.vehiculo.presion_establecida_1
                 elif (llantas_eje[0] + llantas_eje[1]) >= 3:
-                    presion_establecida_3 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_3 = bitacora.vehiculo.presion_establecida_2
                 if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
                     entrada_correcta_3 = 0
                 else:
                     entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
                 presion_encontrada_4 = bitacora.presion_de_entrada_4
                 if llantas_eje[0] >= 4:
-                    presion_establecida_4 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_4 = bitacora.vehiculo.presion_establecida_1
                 elif (llantas_eje[0] + llantas_eje[1]) >= 4:
-                    presion_establecida_4 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_4 = bitacora.vehiculo.presion_establecida_2
                 if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
                     entrada_correcta_4 = 0
                 else:
@@ -1502,18 +1639,18 @@ def doble_entrada(bitacoras, bitacoras2):
                 if llantas >= 6:      
                     presion_encontrada_5 = bitacora.presion_de_entrada_5
                     if (llantas_eje[0] + llantas_eje[1]) >= 5:
-                        presion_establecida_5 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_5 = bitacora.vehiculo.presion_establecida_2
                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
-                        presion_establecida_5 = bitacora.numero_economico.presion_establecida_3
+                        presion_establecida_5 = bitacora.vehiculo.presion_establecida_3
                     if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
                         entrada_correcta_5 = 0
                     else:
                         entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
                     presion_encontrada_6 = bitacora.presion_de_entrada_6
                     if (llantas_eje[0] + llantas_eje[1]) >= 6:
-                        presion_establecida_6 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_6 = bitacora.vehiculo.presion_establecida_2
                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
-                        presion_establecida_6 = bitacora.numero_economico.presion_establecida_3
+                        presion_establecida_6 = bitacora.vehiculo.presion_establecida_3
                     if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
                         entrada_correcta_6 = 0
                     else:
@@ -1521,22 +1658,22 @@ def doble_entrada(bitacoras, bitacoras2):
                     if llantas >= 8:
                         presion_encontrada_7 = bitacora.presion_de_entrada_7
                         if (llantas_eje[0] + llantas_eje[1]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_3
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_4
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_4
                         if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
                             entrada_correcta_7 = 0
                         else:
                             entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
                         presion_encontrada_8 = bitacora.presion_de_entrada_8
                         if (llantas_eje[0] + llantas_eje[1]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_3
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_4
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_4
                         if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
                             entrada_correcta_8 = 0
                         else:
@@ -1544,22 +1681,22 @@ def doble_entrada(bitacoras, bitacoras2):
                         if llantas >= 10:
                             presion_encontrada_9 = bitacora.presion_de_entrada_9
                             if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_4
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_5
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_5
                             if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
                                 entrada_correcta_9 = 0
                             else:
                                 entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
                             presion_encontrada_10 = bitacora.presion_de_entrada_10
                             if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_4
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_5
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_5
                             if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
                                 entrada_correcta_10 = 0
                             else:
@@ -1567,26 +1704,26 @@ def doble_entrada(bitacoras, bitacoras2):
                             if llantas >= 12:
                                 presion_encontrada_11 = bitacora.presion_de_entrada_11
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_5
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_6
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_6
                                 if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
                                     entrada_correcta_11 = 0
                                 else:
                                     entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
                                 presion_encontrada_12 = bitacora.presion_de_entrada_12
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_5
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_6
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_6
                                 if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
                                     entrada_correcta_12 = 0
                                 else:
@@ -1594,55 +1731,55 @@ def doble_entrada(bitacoras, bitacoras2):
         if llantas >= 12:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9 or entrada_correcta_9 < 0.9 or entrada_correcta_10 < 0.9 or entrada_correcta_11 < 0.9 or entrada_correcta_12 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 10:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9 or entrada_correcta_9 < 0.9 or entrada_correcta_10 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 8:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 6:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 4:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 2:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         else:
-            entradas[bitacora.numero_economico.id] = 0
+            entradas[bitacora.vehiculo.id] = 0
 
-        if bitacora.numero_economico.id in entradas:
-            if entradas[bitacora.numero_economico.id] >= 2 and mala_entrada:
+        if bitacora.vehiculo.id in entradas:
+            if entradas[bitacora.vehiculo.id] >= 2 and mala_entrada:
                 dobles_entradas.append(bitacora.id)
 
     segunda_bitacora = bitacoras2.filter(id__in=dobles_entradas).values("id").annotate(max=Max("fecha_de_inflado")).annotate(mes=(ExtractYear(Now()) - ExtractYear("max")) * 12 + (ExtractMonth(Now()) - ExtractMonth("max")) + 1)
     meses2 = segunda_bitacora.values("mes").aggregate(mes1=Count("mes",filter=Q(mes=1)), mes2=Count("mes",filter=Q(mes=2)), mes3=Count("mes",filter=Q(mes=3)), mes4=Count("mes",filter=Q(mes=4)), mes5=Count("mes",filter=Q(mes=5)), mes6=Count("mes",filter=Q(mes=6)), mes7=Count("mes",filter=Q(mes=7)), mes8=Count("mes",filter=Q(mes=8)))
-    segunda_bitacora = segunda_bitacora.values("numero_economico")
+    segunda_bitacora = segunda_bitacora.values("vehiculo")
 
     return primera_bitacora, segunda_bitacora, meses1, meses2
 
@@ -1652,13 +1789,13 @@ def doble_mala_entrada(bitacoras, vehiculos):
     dobles_entradas = []
     for bitacora in bitacoras:
         presion_de_entrada = bitacora.presion_de_entrada
-        presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-        presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
-        presion_establecida_3 = bitacora.numero_economico.presion_establecida_3
-        presion_establecida_4 = bitacora.numero_economico.presion_establecida_4
-        presion_establecida_5 = bitacora.numero_economico.presion_establecida_5
-        presion_establecida_6 = bitacora.numero_economico.presion_establecida_6
-        presion_establecida_7 = bitacora.numero_economico.presion_establecida_7
+        presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+        presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+        presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+        presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+        presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+        presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+        presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
         try:
             entrada_correcta_1 = presion_de_entrada/presion_establecida_1
         except:
@@ -1689,17 +1826,17 @@ def doble_mala_entrada(bitacoras, vehiculos):
             entrada_correcta_7 = 1
 
         if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9:
-            if bitacora.numero_economico.id in entradas:
-                entradas[bitacora.numero_economico.id] += 1
+            if bitacora.vehiculo.id in entradas:
+                entradas[bitacora.vehiculo.id] += 1
             else:
-                entradas[bitacora.numero_economico.id] = 1
+                entradas[bitacora.vehiculo.id] = 1
 
-        if bitacora.numero_economico.id in entradas:
-            if entradas[bitacora.numero_economico.id] >= 2:
+        if bitacora.vehiculo.id in entradas:
+            if entradas[bitacora.vehiculo.id] >= 2:
                 dobles_entradas.append(bitacora.id)
 
     try:
-        vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("numero_economico"))
+        vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("vehiculo"))
         return vehiculos
     except:
         if len(entradas) >= 1:
@@ -1711,13 +1848,13 @@ def doble_mala_entrada2(bitacoras, vehiculos):
     dobles_entradas = []
     for bitacora in bitacoras:
         presion_de_entrada = bitacora.presion_de_entrada
-        presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-        presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
-        presion_establecida_3 = bitacora.numero_economico.presion_establecida_3
-        presion_establecida_4 = bitacora.numero_economico.presion_establecida_4
-        presion_establecida_5 = bitacora.numero_economico.presion_establecida_5
-        presion_establecida_6 = bitacora.numero_economico.presion_establecida_6
-        presion_establecida_7 = bitacora.numero_economico.presion_establecida_7
+        presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+        presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+        presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+        presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+        presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+        presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+        presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
         try:
             entrada_correcta_1 = presion_de_entrada/presion_establecida_1
         except:
@@ -1748,17 +1885,17 @@ def doble_mala_entrada2(bitacoras, vehiculos):
             entrada_correcta_7 = 1
 
         if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9:
-            if bitacora.numero_economico.id in entradas:
-                entradas[bitacora.numero_economico.id] += 1
+            if bitacora.vehiculo.id in entradas:
+                entradas[bitacora.vehiculo.id] += 1
             else:
-                entradas[bitacora.numero_economico.id] = 1
+                entradas[bitacora.vehiculo.id] = 1
 
-        if bitacora.numero_economico.id in entradas:
-            if entradas[bitacora.numero_economico.id] >= 2:
+        if bitacora.vehiculo.id in entradas:
+            if entradas[bitacora.vehiculo.id] >= 2:
                 dobles_entradas.append(bitacora.id)
 
     try:
-        vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("numero_economico"))
+        vehiculos = vehiculos.filter(id__in=Bitacora.objects.filter(id__in=dobles_entradas).values("vehiculo"))
         return vehiculos
     except:
         if len(entradas) >= 1:
@@ -1770,21 +1907,21 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
     dobles_entradas = []
     for bitacora in bitacoras:
         mala_entrada = False
-        configuracion = bitacora.numero_economico.configuracion
+        configuracion = bitacora.vehiculo.configuracion
         llantas = cantidad_llantas(configuracion)
         llantas_eje = cantidad_llantas_por_eje(configuracion)
         if llantas >= 2:
             presion_encontrada_1 = bitacora.presion_de_entrada_1
-            presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
+            presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
             if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
                 entrada_correcta_1 = 0
             else:
                 entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
             presion_encontrada_2 = bitacora.presion_de_entrada_2
             if llantas_eje[0] >= 2:
-                presion_establecida_2 = bitacora.numero_economico.presion_establecida_1
+                presion_establecida_2 = bitacora.vehiculo.presion_establecida_1
             elif (llantas_eje[0] + llantas_eje[1]) >= 2:
-                presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
+                presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
             if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
                 entrada_correcta_2 = 0
             else:
@@ -1792,18 +1929,18 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
             if llantas >= 4:                    
                 presion_encontrada_3 = bitacora.presion_de_entrada_3
                 if llantas_eje[0] >= 3:
-                    presion_establecida_3 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_3 = bitacora.vehiculo.presion_establecida_1
                 elif (llantas_eje[0] + llantas_eje[1]) >= 3:
-                    presion_establecida_3 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_3 = bitacora.vehiculo.presion_establecida_2
                 if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
                     entrada_correcta_3 = 0
                 else:
                     entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
                 presion_encontrada_4 = bitacora.presion_de_entrada_4
                 if llantas_eje[0] >= 4:
-                    presion_establecida_4 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_4 = bitacora.vehiculo.presion_establecida_1
                 elif (llantas_eje[0] + llantas_eje[1]) >= 4:
-                    presion_establecida_4 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_4 = bitacora.vehiculo.presion_establecida_2
                 if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
                     entrada_correcta_4 = 0
                 else:
@@ -1811,18 +1948,18 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
                 if llantas >= 6:      
                     presion_encontrada_5 = bitacora.presion_de_entrada_5
                     if (llantas_eje[0] + llantas_eje[1]) >= 5:
-                        presion_establecida_5 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_5 = bitacora.vehiculo.presion_establecida_2
                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
-                        presion_establecida_5 = bitacora.numero_economico.presion_establecida_3
+                        presion_establecida_5 = bitacora.vehiculo.presion_establecida_3
                     if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
                         entrada_correcta_5 = 0
                     else:
                         entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
                     presion_encontrada_6 = bitacora.presion_de_entrada_6
                     if (llantas_eje[0] + llantas_eje[1]) >= 6:
-                        presion_establecida_6 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_6 = bitacora.vehiculo.presion_establecida_2
                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
-                        presion_establecida_6 = bitacora.numero_economico.presion_establecida_3
+                        presion_establecida_6 = bitacora.vehiculo.presion_establecida_3
                     if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
                         entrada_correcta_6 = 0
                     else:
@@ -1830,22 +1967,22 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
                     if llantas >= 8:
                         presion_encontrada_7 = bitacora.presion_de_entrada_7
                         if (llantas_eje[0] + llantas_eje[1]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_3
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
-                            presion_establecida_7 = bitacora.numero_economico.presion_establecida_4
+                            presion_establecida_7 = bitacora.vehiculo.presion_establecida_4
                         if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
                             entrada_correcta_7 = 0
                         else:
                             entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
                         presion_encontrada_8 = bitacora.presion_de_entrada_8
                         if (llantas_eje[0] + llantas_eje[1]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_2
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_3
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
-                            presion_establecida_8 = bitacora.numero_economico.presion_establecida_4
+                            presion_establecida_8 = bitacora.vehiculo.presion_establecida_4
                         if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
                             entrada_correcta_8 = 0
                         else:
@@ -1853,22 +1990,22 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
                         if llantas >= 10:
                             presion_encontrada_9 = bitacora.presion_de_entrada_9
                             if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_4
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
-                                presion_establecida_9 = bitacora.numero_economico.presion_establecida_5
+                                presion_establecida_9 = bitacora.vehiculo.presion_establecida_5
                             if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
                                 entrada_correcta_9 = 0
                             else:
                                 entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
                             presion_encontrada_10 = bitacora.presion_de_entrada_10
                             if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_3
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_4
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
-                                presion_establecida_10 = bitacora.numero_economico.presion_establecida_5
+                                presion_establecida_10 = bitacora.vehiculo.presion_establecida_5
                             if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
                                 entrada_correcta_10 = 0
                             else:
@@ -1876,26 +2013,26 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
                             if llantas >= 12:
                                 presion_encontrada_11 = bitacora.presion_de_entrada_11
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_5
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
-                                    presion_establecida_11 = bitacora.numero_economico.presion_establecida_6
+                                    presion_establecida_11 = bitacora.vehiculo.presion_establecida_6
                                 if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
                                     entrada_correcta_11 = 0
                                 else:
                                     entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
                                 presion_encontrada_12 = bitacora.presion_de_entrada_12
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_3
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_4
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_5
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
-                                    presion_establecida_12 = bitacora.numero_economico.presion_establecida_6
+                                    presion_establecida_12 = bitacora.vehiculo.presion_establecida_6
                                 if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
                                     entrada_correcta_12 = 0
                                 else:
@@ -1903,53 +2040,53 @@ def doble_mala_entrada_pro(bitacoras, vehiculos):
         if llantas >= 12:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9 or entrada_correcta_9 < 0.9 or entrada_correcta_10 < 0.9 or entrada_correcta_11 < 0.9 or entrada_correcta_12 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 10:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9 or entrada_correcta_9 < 0.9 or entrada_correcta_10 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 8:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9 or entrada_correcta_7 < 0.9 or entrada_correcta_8 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 6:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9 or entrada_correcta_5 < 0.9 or entrada_correcta_6 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 4:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9 or entrada_correcta_3 < 0.9 or entrada_correcta_4 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         elif llantas >= 2:
             if entrada_correcta_1 < 0.9 or entrada_correcta_2 < 0.9:
                 mala_entrada = True
-                if bitacora.numero_economico.id in entradas:
-                    entradas[bitacora.numero_economico.id] += 1
+                if bitacora.vehiculo.id in entradas:
+                    entradas[bitacora.vehiculo.id] += 1
                 else:
-                    entradas[bitacora.numero_economico.id] = 1
+                    entradas[bitacora.vehiculo.id] = 1
         else:
-            entradas[bitacora.numero_economico.id] = 0
+            entradas[bitacora.vehiculo.id] = 0
 
-        if bitacora.numero_economico.id in entradas:
-            if entradas[bitacora.numero_economico.id] >= 2 and mala_entrada:
+        if bitacora.vehiculo.id in entradas:
+            if entradas[bitacora.vehiculo.id] >= 2 and mala_entrada:
                 dobles_entradas.append(bitacora.id)
     try:
-        vehiculos = vehiculos.filter(id__in=Bitacora_Pro.objects.filter(id__in=dobles_entradas[0]).values("numero_economico"))
+        vehiculos = vehiculos.filter(id__in=Bitacora_Pro.objects.filter(id__in=dobles_entradas[0]).values("vehiculo"))
         return vehiculos
     except:
         if dobles_entradas:
@@ -2130,16 +2267,16 @@ def entrada_correcta(vehiculos, vehiculos2):
     try:
         entradas = {}
         loop_entradas = 0
-        bitacoras = vehiculos.order_by("id")
+        bitacoras = vehiculos.order_by("-id")
         for bitacora in bitacoras:
             presion_de_entrada = bitacora.presion_de_entrada
-            presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-            presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
-            presion_establecida_3 = bitacora.numero_economico.presion_establecida_3
-            presion_establecida_4 = bitacora.numero_economico.presion_establecida_4
-            presion_establecida_5 = bitacora.numero_economico.presion_establecida_5
-            presion_establecida_6 = bitacora.numero_economico.presion_establecida_6
-            presion_establecida_7 = bitacora.numero_economico.presion_establecida_7
+            presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+            presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+            presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+            presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+            presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+            presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+            presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
             if presion_de_entrada == 0 or presion_establecida_1 == 0 or presion_establecida_2 == 0 or presion_establecida_3 == 0 or presion_establecida_4 == 0 or presion_establecida_5 == 0 or presion_establecida_6 == 0 or presion_establecida_7 == 0:
                 entrada_correcta = 0
             else:
@@ -2183,198 +2320,680 @@ def entrada_correcta(vehiculos, vehiculos2):
                 else:
                     entradas[bitacora.id] = False
 
-        bitacoras2 = vehiculos2.order_by("id")
-        for bitacora in bitacoras2:
-            configuracion = bitacora.numero_economico.configuracion
-            llantas = cantidad_llantas(configuracion)
-            llantas_eje = cantidad_llantas_por_eje(configuracion)
-            if llantas >= 2:
-                presion_encontrada_1 = bitacora.presion_de_entrada_1
-                presion_establecida_1 = bitacora.numero_economico.presion_establecida_1
-                if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
-                    entrada_correcta_1 = 0
-                else:
-                    entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
-                presion_encontrada_2 = bitacora.presion_de_entrada_2
+        try:
+            bitacoras2 = vehiculos2.order_by("-id")
+            for bitacora in bitacoras2:
+                configuracion = bitacora.vehiculo.configuracion
+                llantas = cantidad_llantas(configuracion)
+                llantas_eje = cantidad_llantas_por_eje(configuracion)
+                if llantas >= 2:
+                    presion_encontrada_1 = bitacora.presion_de_entrada_1
+                    presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+                    if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
+                        entrada_correcta_1 = 0
+                    else:
+                        entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
+                    presion_encontrada_2 = bitacora.presion_de_entrada_2
+                    if llantas_eje[0] >= 2:
+                        presion_establecida_2 = bitacora.vehiculo.presion_establecida_1
+                    elif (llantas_eje[0] + llantas_eje[1]) >= 2:
+                        presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+                    if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
+                        entrada_correcta_2 = 0
+                    else:
+                        entrada_correcta_2 = presion_encontrada_2/presion_establecida_2
+                    if llantas >= 4:                    
+                        presion_encontrada_3 = bitacora.presion_de_entrada_3
+                        if llantas_eje[0] >= 3:
+                            presion_establecida_3 = bitacora.vehiculo.presion_establecida_1
+                        elif (llantas_eje[0] + llantas_eje[1]) >= 3:
+                            presion_establecida_3 = bitacora.vehiculo.presion_establecida_2
+                        if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
+                            entrada_correcta_3 = 0
+                        else:
+                            entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
+                        presion_encontrada_4 = bitacora.presion_de_entrada_4
+                        if llantas_eje[0] >= 4:
+                            presion_establecida_4 = bitacora.vehiculo.presion_establecida_1
+                        elif (llantas_eje[0] + llantas_eje[1]) >= 4:
+                            presion_establecida_4 = bitacora.vehiculo.presion_establecida_2
+                        if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
+                            entrada_correcta_4 = 0
+                        else:
+                            entrada_correcta_4 = presion_encontrada_4/presion_establecida_4
+                        if llantas >= 6:      
+                            presion_encontrada_5 = bitacora.presion_de_entrada_5
+                            if (llantas_eje[0] + llantas_eje[1]) >= 5:
+                                presion_establecida_5 = bitacora.vehiculo.presion_establecida_2
+                            elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
+                                presion_establecida_5 = bitacora.vehiculo.presion_establecida_3
+                            if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
+                                entrada_correcta_5 = 0
+                            else:
+                                entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
+                            presion_encontrada_6 = bitacora.presion_de_entrada_6
+                            if (llantas_eje[0] + llantas_eje[1]) >= 6:
+                                presion_establecida_6 = bitacora.vehiculo.presion_establecida_2
+                            elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
+                                presion_establecida_6 = bitacora.vehiculo.presion_establecida_3
+                            if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
+                                entrada_correcta_6 = 0
+                            else:
+                                entrada_correcta_6 = presion_encontrada_6/presion_establecida_6
+                            if llantas >= 8:
+                                presion_encontrada_7 = bitacora.presion_de_entrada_7
+                                if (llantas_eje[0] + llantas_eje[1]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_2
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_3
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_4
+                                if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
+                                    entrada_correcta_7 = 0
+                                else:
+                                    entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
+                                presion_encontrada_8 = bitacora.presion_de_entrada_8
+                                if (llantas_eje[0] + llantas_eje[1]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_2
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_3
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_4
+                                if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
+                                    entrada_correcta_8 = 0
+                                else:
+                                    entrada_correcta_8 = presion_encontrada_8/presion_establecida_8
+                                if llantas >= 10:
+                                    presion_encontrada_9 = bitacora.presion_de_entrada_9
+                                    if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_3
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_4
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_5
+                                    if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
+                                        entrada_correcta_9 = 0
+                                    else:
+                                        entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
+                                    presion_encontrada_10 = bitacora.presion_de_entrada_10
+                                    if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_3
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_4
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_5
+                                    if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
+                                        entrada_correcta_10 = 0
+                                    else:
+                                        entrada_correcta_10 = presion_encontrada_10/presion_establecida_10
+                                    if llantas >= 12:
+                                        presion_encontrada_11 = bitacora.presion_de_entrada_11
+                                        if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_3
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_4
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_5
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_6
+                                        if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
+                                            entrada_correcta_11 = 0
+                                        else:
+                                            entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
+                                        presion_encontrada_12 = bitacora.presion_de_entrada_12
+                                        if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_3
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_4
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_5
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_6
+                                        if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
+                                            entrada_correcta_12 = 0
+                                        else:
+                                            entrada_correcta_12 = presion_encontrada_12/presion_establecida_12
+                if llantas >= 12:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9 and entrada_correcta_11 >= 0.9 and entrada_correcta_12 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+                elif llantas >= 10:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+                elif llantas >= 8:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+                elif llantas >= 6:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+                elif llantas >= 4:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+                elif llantas >= 2:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = True
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = False
+        except:
+            pass
+        return entradas
+    except:
+        try:
+            presion_encontrada = vehiculos.presion_de_entrada
+            presion_establecida = vehiculos.presion_establecida
+            entrada_correcta = presion_encontrada/presion_establecida
+
+            if entrada_correcta >= 0.9:
+                entradas = "good"
+            else:
+                entradas = "bad"
+            return entradas
+        except:
+            return None
+
+def entrada_correcta_ambas(bitacoras):
+    entradas = {}
+    loop_entradas = 0
+
+    for bitacora in bitacoras:
+        configuracion = bitacora["vehiculo__configuracion"]
+        llantas = cantidad_llantas(configuracion)
+        llantas_eje = cantidad_llantas_por_eje(configuracion)
+        if llantas >= 2:
+            presion_encontrada_1 = bitacora["presion_de_entrada_1"]
+            presion_establecida_1 = bitacora["vehiculo__presion_establecida_1"]
+            if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
+                entrada_correcta_1 = 0
+            else:
+                entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
+            presion_encontrada_2 = bitacora["presion_de_entrada_2"]
+
+            if presion_encontrada_2 == None:
+                llantas = 2
+            else:
                 if llantas_eje[0] >= 2:
-                    presion_establecida_2 = bitacora.numero_economico.presion_establecida_1
+                    presion_establecida_2 = bitacora["vehiculo__presion_establecida_1"]
                 elif (llantas_eje[0] + llantas_eje[1]) >= 2:
-                    presion_establecida_2 = bitacora.numero_economico.presion_establecida_2
+                    presion_establecida_2 = bitacora["vehiculo__presion_establecida_2"]
                 if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
                     entrada_correcta_2 = 0
                 else:
                     entrada_correcta_2 = presion_encontrada_2/presion_establecida_2
                 if llantas >= 4:                    
-                    presion_encontrada_3 = bitacora.presion_de_entrada_3
+                    presion_encontrada_3 = bitacora["presion_de_entrada_3"]
                     if llantas_eje[0] >= 3:
-                        presion_establecida_3 = bitacora.numero_economico.presion_establecida_1
+                        presion_establecida_3 = bitacora["vehiculo__presion_establecida_1"]
                     elif (llantas_eje[0] + llantas_eje[1]) >= 3:
-                        presion_establecida_3 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_3 = bitacora["vehiculo__presion_establecida_2"]
                     if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
                         entrada_correcta_3 = 0
                     else:
                         entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
-                    presion_encontrada_4 = bitacora.presion_de_entrada_4
+                    presion_encontrada_4 = bitacora["presion_de_entrada_4"]
                     if llantas_eje[0] >= 4:
-                        presion_establecida_4 = bitacora.numero_economico.presion_establecida_1
+                        presion_establecida_4 = bitacora["vehiculo__presion_establecida_1"]
                     elif (llantas_eje[0] + llantas_eje[1]) >= 4:
-                        presion_establecida_4 = bitacora.numero_economico.presion_establecida_2
+                        presion_establecida_4 = bitacora["vehiculo__presion_establecida_2"]
                     if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
                         entrada_correcta_4 = 0
                     else:
                         entrada_correcta_4 = presion_encontrada_4/presion_establecida_4
                     if llantas >= 6:      
-                        presion_encontrada_5 = bitacora.presion_de_entrada_5
+                        presion_encontrada_5 = bitacora["presion_de_entrada_5"]
                         if (llantas_eje[0] + llantas_eje[1]) >= 5:
-                            presion_establecida_5 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_5 = bitacora["vehiculo__presion_establecida_2"]
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
-                            presion_establecida_5 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_5 = bitacora["vehiculo__presion_establecida_3"]
                         if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
                             entrada_correcta_5 = 0
                         else:
                             entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
-                        presion_encontrada_6 = bitacora.presion_de_entrada_6
+                        presion_encontrada_6 = bitacora["presion_de_entrada_6"]
                         if (llantas_eje[0] + llantas_eje[1]) >= 6:
-                            presion_establecida_6 = bitacora.numero_economico.presion_establecida_2
+                            presion_establecida_6 = bitacora["vehiculo__presion_establecida_2"]
                         elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
-                            presion_establecida_6 = bitacora.numero_economico.presion_establecida_3
+                            presion_establecida_6 = bitacora["vehiculo__presion_establecida_3"]
                         if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
                             entrada_correcta_6 = 0
                         else:
                             entrada_correcta_6 = presion_encontrada_6/presion_establecida_6
                         if llantas >= 8:
-                            presion_encontrada_7 = bitacora.presion_de_entrada_7
+                            presion_encontrada_7 = bitacora["presion_de_entrada_7"]
                             if (llantas_eje[0] + llantas_eje[1]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_2
+                                presion_establecida_7 = bitacora["vehiculo__presion_establecida_2"]
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_7 = bitacora["vehiculo__presion_establecida_3"]
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
-                                presion_establecida_7 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_7 = bitacora["vehiculo__presion_establecida_4"]
                             if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
                                 entrada_correcta_7 = 0
                             else:
                                 entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
-                            presion_encontrada_8 = bitacora.presion_de_entrada_8
+                            presion_encontrada_8 = bitacora["presion_de_entrada_8"]
                             if (llantas_eje[0] + llantas_eje[1]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_2
+                                presion_establecida_8 = bitacora["vehiculo__presion_establecida_2"]
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_3
+                                presion_establecida_8 = bitacora["vehiculo__presion_establecida_3"]
                             elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
-                                presion_establecida_8 = bitacora.numero_economico.presion_establecida_4
+                                presion_establecida_8 = bitacora["vehiculo__presion_establecida_4"]
                             if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
                                 entrada_correcta_8 = 0
                             else:
                                 entrada_correcta_8 = presion_encontrada_8/presion_establecida_8
                             if llantas >= 10:
-                                presion_encontrada_9 = bitacora.presion_de_entrada_9
+                                presion_encontrada_9 = bitacora["presion_de_entrada_9"]
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_9 = bitacora["vehiculo__presion_establecida_3"]
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_9 = bitacora["vehiculo__presion_establecida_4"]
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
-                                    presion_establecida_9 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_9 = bitacora["vehiculo__presion_establecida_5"]
                                 if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
                                     entrada_correcta_9 = 0
                                 else:
                                     entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
-                                presion_encontrada_10 = bitacora.presion_de_entrada_10
+                                presion_encontrada_10 = bitacora["presion_de_entrada_10"]
                                 if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_3
+                                    presion_establecida_10 = bitacora["vehiculo__presion_establecida_3"]
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_4
+                                    presion_establecida_10 = bitacora["vehiculo__presion_establecida_4"]
                                 elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
-                                    presion_establecida_10 = bitacora.numero_economico.presion_establecida_5
+                                    presion_establecida_10 = bitacora["vehiculo__presion_establecida_5"]
                                 if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
                                     entrada_correcta_10 = 0
                                 else:
                                     entrada_correcta_10 = presion_encontrada_10/presion_establecida_10
                                 if llantas >= 12:
-                                    presion_encontrada_11 = bitacora.presion_de_entrada_11
+                                    presion_encontrada_11 = bitacora["presion_de_entrada_11"]
                                     if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_3
+                                        presion_establecida_11 = bitacora["vehiculo__presion_establecida_3"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_4
+                                        presion_establecida_11 = bitacora["vehiculo__presion_establecida_4"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_5
+                                        presion_establecida_11 = bitacora["vehiculo__presion_establecida_5"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
-                                        presion_establecida_11 = bitacora.numero_economico.presion_establecida_6
+                                        presion_establecida_11 = bitacora["vehiculo__presion_establecida_6"]
                                     if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
                                         entrada_correcta_11 = 0
                                     else:
                                         entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
-                                    presion_encontrada_12 = bitacora.presion_de_entrada_12
+                                    presion_encontrada_12 = bitacora["presion_de_entrada_12"]
                                     if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_3
+                                        presion_establecida_12 = bitacora["vehiculo__presion_establecida_3"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_4
+                                        presion_establecida_12 = bitacora["vehiculo__presion_establecida_4"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_5
+                                        presion_establecida_12 = bitacora["vehiculo__presion_establecida_5"]
                                     elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
-                                        presion_establecida_12 = bitacora.numero_economico.presion_establecida_6
+                                        presion_establecida_12 = bitacora["vehiculo__presion_establecida_6"]
                                     if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
                                         entrada_correcta_12 = 0
                                     else:
                                         entrada_correcta_12 = presion_encontrada_12/presion_establecida_12
-            if llantas >= 12:
-                if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9 and entrada_correcta_11 >= 0.9 and entrada_correcta_12 >= 0.9:
+        if llantas >= 12:
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9 and entrada_correcta_11 >= 0.9 and entrada_correcta_12 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora["id"]] = True
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora["id"]] = "Doble"            
+                else:
+                    entradas[bitacora["id"]] = False
+        elif llantas >= 10:
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora["id"]] = True
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora["id"]] = "Doble"            
+                else:
+                    entradas[bitacora["id"]] = False
+        elif llantas >= 8:
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora["id"]] = True
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora["id"]] = "Doble"            
+                else:
+                    entradas[bitacora["id"]] = False
+        elif llantas >= 6:
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora["id"]] = True
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora["id"]] = "Doble"            
+                else:
+                    entradas[bitacora["id"]] = False
+        elif llantas >= 4:
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora["id"]] = True
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora["id"]] = "Doble"            
+                else:
+                    entradas[bitacora["id"]] = False
+        elif llantas >= 2:
+            if presion_encontrada_2 == None:
+                if entrada_correcta_1 >= 0.9:
                     loop_entradas = 0
-                    entradas[bitacora.id] = True
+                    entradas[bitacora["id"]] = True
                 else:
                     loop_entradas += 1
                     if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
+                        entradas[bitacora["id"]] = "Doble"            
                     else:
-                        entradas[bitacora.id] = False
-            elif llantas >= 10:
-                if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9:
-                    loop_entradas = 0
-                    entradas[bitacora.id] = True
-                else:
-                    loop_entradas += 1
-                    if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
-                    else:
-                        entradas[bitacora.id] = False
-            elif llantas >= 8:
-                if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9:
-                    loop_entradas = 0
-                    entradas[bitacora.id] = True
-                else:
-                    loop_entradas += 1
-                    if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
-                    else:
-                        entradas[bitacora.id] = False
-            elif llantas >= 6:
-                if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9:
-                    loop_entradas = 0
-                    entradas[bitacora.id] = True
-                else:
-                    loop_entradas += 1
-                    if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
-                    else:
-                        entradas[bitacora.id] = False
-            elif llantas >= 4:
-                if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9:
-                    loop_entradas = 0
-                    entradas[bitacora.id] = True
-                else:
-                    loop_entradas += 1
-                    if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
-                    else:
-                        entradas[bitacora.id] = False
-            elif llantas >= 2:
+                        entradas[bitacora["id"]] = False
+            else:
                 if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9:
                     loop_entradas = 0
-                    entradas[bitacora.id] = True
+                    entradas[bitacora["id"]] = True
                 else:
                     loop_entradas += 1
                     if loop_entradas >= 2:
-                        entradas[bitacora.id] = "Doble"            
+                        entradas[bitacora["id"]] = "Doble"            
                     else:
-                        entradas[bitacora.id] = False
+                        entradas[bitacora["id"]] = False
+    return entradas
+
+def entrada_correcta_api(vehiculos, vehiculos2):
+    try:
+        entradas = {}
+        loop_entradas = 0
+        bitacoras = vehiculos.order_by("id")
+        for bitacora in bitacoras:
+            presion_de_entrada = bitacora.presion_de_entrada
+            presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+            presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+            presion_establecida_3 = bitacora.vehiculo.presion_establecida_3
+            presion_establecida_4 = bitacora.vehiculo.presion_establecida_4
+            presion_establecida_5 = bitacora.vehiculo.presion_establecida_5
+            presion_establecida_6 = bitacora.vehiculo.presion_establecida_6
+            presion_establecida_7 = bitacora.vehiculo.presion_establecida_7
+            if presion_de_entrada == 0 or presion_establecida_1 == 0 or presion_establecida_2 == 0 or presion_establecida_3 == 0 or presion_establecida_4 == 0 or presion_establecida_5 == 0 or presion_establecida_6 == 0 or presion_establecida_7 == 0:
+                entrada_correcta = 0
+            else:
+                
+                try:
+                    entrada_correcta_1 = presion_de_entrada/presion_establecida_1
+                except:
+                    entrada_correcta_1 = 1
+                try:
+                    entrada_correcta_2 = presion_de_entrada/presion_establecida_2
+                except:
+                    entrada_correcta_2 = 1
+                try:
+                    entrada_correcta_3 = presion_de_entrada/presion_establecida_3
+                except:
+                    entrada_correcta_3 = 1
+                try:
+                    entrada_correcta_4 = presion_de_entrada/presion_establecida_4
+                except:
+                    entrada_correcta_4 = 1
+                try:
+                    entrada_correcta_5 = presion_de_entrada/presion_establecida_5
+                except:
+                    entrada_correcta_5 = 1
+                try:
+                    entrada_correcta_6 = presion_de_entrada/presion_establecida_6
+                except:
+                    entrada_correcta_6 = 1
+                try:
+                    entrada_correcta_7 = presion_de_entrada/presion_establecida_7
+                except:
+                    entrada_correcta_7 = 1
+
+            if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9:
+                loop_entradas = 0
+                entradas[bitacora.id] = "Buena"
+            else:
+                loop_entradas += 1
+                if loop_entradas >= 2:
+                    entradas[bitacora.id] = "Doble"
+                else:
+                    entradas[bitacora.id] = "Mala"
+
+        try:
+            bitacoras2 = vehiculos2.order_by("id")
+            for bitacora in bitacoras2:
+                configuracion = bitacora.vehiculo.configuracion
+                llantas = cantidad_llantas(configuracion)
+                llantas_eje = cantidad_llantas_por_eje(configuracion)
+                if llantas >= 2:
+                    presion_encontrada_1 = bitacora.presion_de_entrada_1
+                    presion_establecida_1 = bitacora.vehiculo.presion_establecida_1
+                    if presion_encontrada_1 == 0 or presion_establecida_1 == 0:
+                        entrada_correcta_1 = 0
+                    else:
+                        entrada_correcta_1 = presion_encontrada_1/presion_establecida_1
+                    presion_encontrada_2 = bitacora.presion_de_entrada_2
+                    if llantas_eje[0] >= 2:
+                        presion_establecida_2 = bitacora.vehiculo.presion_establecida_1
+                    elif (llantas_eje[0] + llantas_eje[1]) >= 2:
+                        presion_establecida_2 = bitacora.vehiculo.presion_establecida_2
+                    if presion_encontrada_2 == 0 or presion_establecida_2 == 0:
+                        entrada_correcta_2 = 0
+                    else:
+                        entrada_correcta_2 = presion_encontrada_2/presion_establecida_2
+                    if llantas >= 4:                    
+                        presion_encontrada_3 = bitacora.presion_de_entrada_3
+                        if llantas_eje[0] >= 3:
+                            presion_establecida_3 = bitacora.vehiculo.presion_establecida_1
+                        elif (llantas_eje[0] + llantas_eje[1]) >= 3:
+                            presion_establecida_3 = bitacora.vehiculo.presion_establecida_2
+                        if presion_encontrada_3 == 0 or presion_establecida_3 == 0:
+                            entrada_correcta_3 = 0
+                        else:
+                            entrada_correcta_3 = presion_encontrada_3/presion_establecida_3
+                        presion_encontrada_4 = bitacora.presion_de_entrada_4
+                        if llantas_eje[0] >= 4:
+                            presion_establecida_4 = bitacora.vehiculo.presion_establecida_1
+                        elif (llantas_eje[0] + llantas_eje[1]) >= 4:
+                            presion_establecida_4 = bitacora.vehiculo.presion_establecida_2
+                        if presion_encontrada_4 == 0 or presion_establecida_4 == 0:
+                            entrada_correcta_4 = 0
+                        else:
+                            entrada_correcta_4 = presion_encontrada_4/presion_establecida_4
+                        if llantas >= 6:      
+                            presion_encontrada_5 = bitacora.presion_de_entrada_5
+                            if (llantas_eje[0] + llantas_eje[1]) >= 5:
+                                presion_establecida_5 = bitacora.vehiculo.presion_establecida_2
+                            elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 5:
+                                presion_establecida_5 = bitacora.vehiculo.presion_establecida_3
+                            if presion_encontrada_5 == 0 or presion_establecida_5 == 0:
+                                entrada_correcta_5 = 0
+                            else:
+                                entrada_correcta_5 = presion_encontrada_5/presion_establecida_5
+                            presion_encontrada_6 = bitacora.presion_de_entrada_6
+                            if (llantas_eje[0] + llantas_eje[1]) >= 6:
+                                presion_establecida_6 = bitacora.vehiculo.presion_establecida_2
+                            elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 6:
+                                presion_establecida_6 = bitacora.vehiculo.presion_establecida_3
+                            if presion_encontrada_6 == 0 or presion_establecida_6 == 0:
+                                entrada_correcta_6 = 0
+                            else:
+                                entrada_correcta_6 = presion_encontrada_6/presion_establecida_6
+                            if llantas >= 8:
+                                presion_encontrada_7 = bitacora.presion_de_entrada_7
+                                if (llantas_eje[0] + llantas_eje[1]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_2
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_3
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 7:
+                                    presion_establecida_7 = bitacora.vehiculo.presion_establecida_4
+                                if presion_encontrada_7 == 0 or presion_establecida_7 == 0:
+                                    entrada_correcta_7 = 0
+                                else:
+                                    entrada_correcta_7 = presion_encontrada_7/presion_establecida_7
+                                presion_encontrada_8 = bitacora.presion_de_entrada_8
+                                if (llantas_eje[0] + llantas_eje[1]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_2
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_3
+                                elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 8:
+                                    presion_establecida_8 = bitacora.vehiculo.presion_establecida_4
+                                if presion_encontrada_8 == 0 or presion_establecida_8 == 0:
+                                    entrada_correcta_8 = 0
+                                else:
+                                    entrada_correcta_8 = presion_encontrada_8/presion_establecida_8
+                                if llantas >= 10:
+                                    presion_encontrada_9 = bitacora.presion_de_entrada_9
+                                    if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_3
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_4
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 9:
+                                        presion_establecida_9 = bitacora.vehiculo.presion_establecida_5
+                                    if presion_encontrada_9 == 0 or presion_establecida_9 == 0:
+                                        entrada_correcta_9 = 0
+                                    else:
+                                        entrada_correcta_9 = presion_encontrada_9/presion_establecida_9
+                                    presion_encontrada_10 = bitacora.presion_de_entrada_10
+                                    if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_3
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_4
+                                    elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 10:
+                                        presion_establecida_10 = bitacora.vehiculo.presion_establecida_5
+                                    if presion_encontrada_10 == 0 or presion_establecida_10 == 0:
+                                        entrada_correcta_10 = 0
+                                    else:
+                                        entrada_correcta_10 = presion_encontrada_10/presion_establecida_10
+                                    if llantas >= 12:
+                                        presion_encontrada_11 = bitacora.presion_de_entrada_11
+                                        if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_3
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_4
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_5
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 11:
+                                            presion_establecida_11 = bitacora.vehiculo.presion_establecida_6
+                                        if presion_encontrada_11 == 0 or presion_establecida_11 == 0:
+                                            entrada_correcta_11 = 0
+                                        else:
+                                            entrada_correcta_11 = presion_encontrada_11/presion_establecida_11
+                                        presion_encontrada_12 = bitacora.presion_de_entrada_12
+                                        if (llantas_eje[0] + llantas_eje[1] + llantas_eje[2]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_3
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_4
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_5
+                                        elif (llantas_eje[0] + llantas_eje[1] + llantas_eje[2] + llantas_eje[3] + llantas_eje[4] + llantas_eje[5]) >= 12:
+                                            presion_establecida_12 = bitacora.vehiculo.presion_establecida_6
+                                        if presion_encontrada_12 == 0 or presion_establecida_12 == 0:
+                                            entrada_correcta_12 = 0
+                                        else:
+                                            entrada_correcta_12 = presion_encontrada_12/presion_establecida_12
+                if llantas >= 12:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9 and entrada_correcta_11 >= 0.9 and entrada_correcta_12 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+                elif llantas >= 10:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9 and entrada_correcta_9 >= 0.9 and entrada_correcta_10 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+                elif llantas >= 8:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9 and entrada_correcta_7 >= 0.9 and entrada_correcta_8 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+                elif llantas >= 6:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9 and entrada_correcta_5 >= 0.9 and entrada_correcta_6 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+                elif llantas >= 4:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9 and entrada_correcta_3 >= 0.9 and entrada_correcta_4 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+                elif llantas >= 2:
+                    if entrada_correcta_1 >= 0.9 and entrada_correcta_2 >= 0.9:
+                        loop_entradas = 0
+                        entradas[bitacora.id] = "Buena"
+                    else:
+                        loop_entradas += 1
+                        if loop_entradas >= 2:
+                            entradas[bitacora.id] = "Doble"            
+                        else:
+                            entradas[bitacora.id] = "Mala"
+        except:
+            pass
         return entradas
     except:
         try:
@@ -2620,17 +3239,17 @@ def juntar_bitacoras(vehiculos, bitacora, bitacora_pro):
         print(b)
 
 
-    vehiculos_bitacora = bitacora.values_list("numero_economico__numero_economico", flat=True).distinct()
-    vehiculos_bitacora_pro = bitacora_pro.values_list("numero_economico__numero_economico", flat=True).distinct()
+    vehiculos_bitacora = bitacora.values_list("vehiculo__numero_economico", flat=True).distinct()
+    vehiculos_bitacora_pro = bitacora_pro.values_list("vehiculo__numero_economico", flat=True).distinct()
     vehiculos = vehiculos.filter(numero_economico__in=vehiculos_bitacora) & vehiculos.filter(numero_economico__in=vehiculos_bitacora_pro)
 
     for vehiculo in vehiculos:
         print(vehiculo)
-        fecha_bitacora = bitacora.filter(numero_economico=vehiculo).order_by("fecha_de_inflado").values("fecha_de_inflado")
-        fecha_bitacora_pro = bitacora_pro.filter(numero_economico=vehiculo).order_by("fecha_de_inflado").values("fecha_de_inflado")
+        fecha_bitacora = bitacora.filter(vehiculo=vehiculo).order_by("fecha_de_inflado").values("fecha_de_inflado")
+        fecha_bitacora_pro = bitacora_pro.filter(vehiculo=vehiculo).order_by("fecha_de_inflado").values("fecha_de_inflado")
 
-        fecha_bitacora = bitacora.filter(numero_economico=vehiculo).order_by("fecha_de_inflado")[0].fecha_de_inflado
-        fecha_bitacora_pro = bitacora_pro.filter(numero_economico=vehiculo).order_by("fecha_de_inflado")[0].fecha_de_inflado
+        fecha_bitacora = bitacora.filter(vehiculo=vehiculo).order_by("fecha_de_inflado")[0].fecha_de_inflado
+        fecha_bitacora_pro = bitacora_pro.filter(vehiculo=vehiculo).order_by("fecha_de_inflado")[0].fecha_de_inflado
         print(fecha_bitacora)
         print(fecha_bitacora_pro)
 
@@ -3457,8 +4076,8 @@ def opciones_redireccion(inventario:str):
         ]
 
 def ordenar_por_status(vehiculos):
-    bitacora = Bitacora.objects.filter(numero_economico__in=vehiculos)
-    bitacora_pro = Bitacora_Pro.objects.filter(numero_economico__in=vehiculos)
+    bitacora = Bitacora.objects.filter(vehiculo__in=vehiculos)
+    bitacora_pro = Bitacora_Pro.objects.filter(vehiculo__in=vehiculos)
     llantas = Llanta.objects.filter(vehiculo__in=vehiculos, tirecheck=False)
     inspecciones = Inspeccion.objects.filter(llanta__in=llantas , llanta__tirecheck=False)
 
@@ -3827,6 +4446,14 @@ def bitacora_servicios(pk: int, request, acciones_vehiculo: list, dataPOST: list
     servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_de_vehiculo)
 
 
+def fecha_str_vehiculo(vehiculo_acomodado):
+    for vehiculo in vehiculo_acomodado:
+        try:
+            vehiculo['fecha_inflado'] = date.strftime(vehiculo['fecha_inflado'], '%Y-%m-%d')
+        except:
+            vehiculo['fecha_inflado'] = 'N/A'
+    return vehiculo_acomodado
+        
 def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     """Esta funcion realiza las funciones del guardado del servicio a nivel vehiculo
 
@@ -3840,6 +4467,7 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     """
     vehiculo = Vehiculo.objects.get(pk=pk)
     vehiculo_acomodado = vehiculo_con_ejes_acomodados(pk)
+    vehiculo_acomodado = fecha_str_vehiculo(vehiculo_acomodado)
     #? Se obtiene la fecha y la hora
     hoja = request.POST['hoja']
     hoja = json.loads(hoja)
@@ -3863,6 +4491,7 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
         ubicacion = vehiculo.ubicacion,
         aplicacion = vehiculo.aplicacion,
         configuracion = eje_a_str(vehiculo_acomodado),
+        estado = 'cerrado'
     )
     
     folio = f'SRP{date.today().year}{date.today().month}{date.today().day}{servicio.id}-{vehiculo.id}'
@@ -3876,17 +4505,61 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     return servicio
 
 
+def servicio_vehiculo_preguardado(pk: int, request):
+    """Esta funcion realiza las funciones del guardado del servicio a nivel vehiculo
+
+    Args:
+        pk (int): Id del vehiculo 
+        request (WSGIRequest): Request
+        acciones_vehiculo (list): Lista de las acciones del vehiculo
+
+    Returns:
+        ServicioVehiculo: Es el servicio que se creo
+    """
+    vehiculo = Vehiculo.objects.get(pk=pk)
+    #? Se obtiene la fecha y la hora
+    hoja = request.POST['hoja']
+    hoja = json.loads(hoja)
+    dateString = f"{hoja['fecha']}, {hoja['hora']}:00"
+    dateFormatter = "%Y-%m-%d, %H:%M:%S"
+    fecha = datetime.strptime(dateString, dateFormatter)
+    
+    dateStringEnd = f"{hoja['fecha_end']}, {hoja['hora_end']}:00"
+    dateFormatterEnd = "%Y-%m-%d, %H:%M:%S"
+    fecha_end = datetime.strptime(dateStringEnd, dateFormatterEnd)
+    
+    
+    #? Se guardan los servicios
+    servicio = ServicioVehiculo.objects.create(
+        vehiculo = vehiculo,
+        usuario = request.user,
+        fecha_inicio = fecha.date(),
+        horario_inicio = fecha.time(),
+        fecha_final = fecha_end.date(),
+        horario_final = fecha_end.time(),
+        ubicacion = vehiculo.ubicacion,
+        aplicacion = vehiculo.aplicacion,
+        estado ='abierto'
+    )
+    
+    folio = f'SRP{date.today().year}{date.today().month}{date.today().day}{servicio.id}-{vehiculo.id}'
+    servicio.folio = folio
+    return servicio
+
 def calendarioTaller(servicio):
     titulo = f'Servicio al vehiculo {servicio.vehiculo}'
+    dateFormatter = "%Y-%m-%d,%H:%M:%S"
+    dateStringStart = str(servicio.fecha_inicio) + ',' + str(servicio.horario_inicio)
+    start = datetime.strptime(dateStringStart, dateFormatter)
+    dateStringEnd = str(servicio.fecha_final) + ',' + str(servicio.horario_final)
+    end = datetime.strptime(dateStringEnd, dateFormatter)
     horario_start_str = str(servicio.fecha_inicio) + 'T' + str(servicio.horario_inicio) + '-05:00'
     horario_end_str = str(servicio.fecha_final) + 'T' + str(servicio.horario_final) + '-05:00'
     Calendario.objects.create(
         servicio = servicio,
         vehiculo = servicio.vehiculo,
-        start = servicio.fecha_inicio,
-        horario_start = servicio.horario_inicio,
-        end = servicio.fecha_final,
-        horario_end = servicio.horario_final,
+        start = start,
+        end = end,
         title = titulo,
         horario_start_str = horario_start_str,
         horario_end_str = horario_end_str,
@@ -3982,7 +4655,7 @@ def servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_vehiculo_id
 
 
 def mail(bitacora, tipo):
-    vehiculo = Vehiculo.objects.get(pk = bitacora.numero_economico.id)
+    vehiculo = Vehiculo.objects.get(pk = bitacora.vehiculo.id)
     llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario="Rodante")
     objetivo = vehiculo.compania.objetivo
     ubicacion = vehiculo.ubicacion
@@ -4146,7 +4819,7 @@ def sin_informacion(llantas):
     return llantas_sin_informacion
 
 def signo_pulpo(bitacora, num_eje):
-    vehiculo = bitacora.numero_economico
+    vehiculo = bitacora.vehiculo
     objetivo = vehiculo.compania.objetivo
     establecidas = [
        vehiculo.presion_establecida_1, 
@@ -4173,7 +4846,7 @@ def signo_pulpo(bitacora, num_eje):
         return 'icon-cross bad-text'
 
 def signo_pulpo_pro(bitacora, num_llanta, num_eje):
-    vehiculo = bitacora.numero_economico
+    vehiculo = bitacora.vehiculo
     objetivo = vehiculo.compania.objetivo
     establecidas = [
        vehiculo.presion_establecida_1, 

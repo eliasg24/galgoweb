@@ -72,7 +72,7 @@ fieldset {
   flex: 1 1 300px;
 }
 
-input[type="date"]::-webkit-inner-spin-button,
+input[type='date']::-webkit-inner-spin-button,
 ::-webkit-calendar-picker-indicator {
   filter: invert(100%);
 }
@@ -87,4 +87,140 @@ input[type="date"]::-webkit-inner-spin-button,
 
 .drop-menu {
   width: 100%;
+}
+
+/* 
+  * New styles
+*/
+
+.form-body {
+  display: grid;
+  margin: 1rem;
+  gap: 1rem;
+}
+
+.form-body_form {
+  background-color: var(--colorv01);
+  height: fit-content;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-width: 400px;
+  height: 100%;
+}
+
+.input-catalogo {
+  background: transparent;
+  border: none;
+  border-bottom: thin solid #fff;
+  color: #fff;
+  display: block;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  outline: none;
+  padding: 0.75rem 0.5rem;
+  width: 100%;
+  transition: all 0.2s ease-in;
+}
+
+.input-catalogo:focus {
+  border-bottom: 2px solid;
+  border-color: var(--colorv08);
+  color: var(--colorv08);
+}
+
+.input-catalogo::placeholder {
+  font-weight: bold;
+}
+
+.table-container {
+  background-color: var(--colorv01);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  overflow: auto;
+}
+
+.main-table {
+  border-collapse: collapse;
+  position: relative;
+  width: 100%;
+}
+
+.main-table thead {
+  background-color: var(--colorv01);
+  position: sticky;
+  top: 0;
+}
+
+.main-table th,
+.main-table td {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border-bottom: thin solid rgba(255, 255, 255, 0.25);
+}
+
+.main-table tbody tr:nth-child(odd) {
+  background-color: #333;
+}
+
+.form__group {
+  margin-bottom: 1rem;
+}
+
+select {
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.select-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  width: 100%;
+}
+
+.select-input {
+  outline: none;
+  padding: 0.75rem 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.select-input option {
+  color: #000;
+}
+
+.dropdown {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.drop-btn {
+  font-size: 0.95rem;
+  padding: 1rem 0.25rem;
+}
+
+.relative {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+}
+
+.absolute {
+  width: 100%;
+}
+
+@media screen and (min-width: 1024px) {
+  .form-body {
+    grid-template-columns: auto 1fr;
+  }
+
+  .absolute {
+    position: absolute;
+    padding-right: 1rem;
+  }
 }

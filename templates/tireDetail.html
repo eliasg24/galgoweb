@@ -24,7 +24,7 @@
 <main class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}">
+      <img src="{% static 'images/aeto.svg' %}">
     </div>
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
       <h1>{{vehiculo.numero_economico}}</h1>
@@ -224,6 +224,19 @@
                         </a>
                       </td>
                     </tr>
+                    {% elif evento.2 == 'servicio'%}  
+                                            
+                      <tr id="paragraph {{evento.1.id}}">
+                          <td class="td-table4"><span class="icon-tools1"></span></td>
+                          <td class="td-table4">{{evento.0.day}}/{{evento.0.month}}/{{evento.0.year}}</td>
+                          <td class="td-table4"><span class="{{evento.3}}"></span></td>
+                          <td class="td-table4">
+                              <a href="{% url 'dashboards:reporteTaller' evento.1.id %}" rel="noopener" target="_blank">
+                                  <span class="icon-file-pdf" ></span>
+                              </a>
+                          </td>
+                      </tr>
+
                   {% endif %}
 
                   {% endfor %}
@@ -574,24 +587,6 @@
     // set container id for the chart
     chart.container('lineChart');
 
-    // set chart axes settings
-    // adjust x axis
-    chart.xAxis()
-            .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
-            
-    // adjust y axis       
-    chart.yAxis()
-            .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
-
-var legend = chart.legend();
-    legend.enabled(true)
-            .fontColor("#000")
-            .fontSize(12);
-
     //Set Background
     var background = chart.background();
     background.stroke('0 #000');
@@ -651,16 +646,11 @@ var legend = chart.legend();
     chart.xGrid().enabled(true);
     chart.yGrid().enabled(true);
 
-    // set grid stroke appearance
-    chart.xGrid().stroke({color: "#000"});
-    // set grid stroke appearance
-    chart.yGrid().stroke({color: "#000"});
-
     // set the chart title
     chart.title('Comportamiento de Desgaste');
     var title = chart.title();
     title.align('center');
-    title.fontColor('#000');
+    title.fontColor('#fff');
     title.fontSize(18);
     title.fontWeight(600);
 
@@ -684,18 +674,6 @@ var legend = chart.legend();
     // set the container id
     chart.container('spline-chart');
 
-    // set chart axes settings
-    // adjust x axis
-    chart.xAxis()
-            .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
-            
-    // adjust y axis       
-    chart.yAxis()
-            .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
 
     //Set Background
     var background = chart.background();

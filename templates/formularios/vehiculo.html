@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+  <title>Formulario de vehículo</title>
+{% endblock head %}
+
+{% block content %}
+
+<main class="main-cont">
+
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+
+    <h1>Formulario de vehiculo</h1>
+  </header>
+
+  <section class="form-body">
+
+    {% if vehiculo.id %}
+      <form action="{% url 'dashboards:nuevoVehiculoEdit' vehiculo.id %}" class="form-body_form" method="POST">
+    {% else %}
+      <form action="{% url 'dashboards:nuevoVehiculo' %}" class="form-body_form" method="POST">
+    {% endif %}
+      {% csrf_token %}
+      <div class="relative">
+        <div class="absolute">
+          {% include './forms/formVehiculo.html' %}
+        </div>
+      </div>
+    </form>
+
+    <div class="table-container">
+      <div class="relative">
+        <div class="absolute">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th>Acciones</th>
+                <th>Número económico</th>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Aplicación</th>
+                <th>Clase</th>
+                <th>Configuración</th>
+                <th>Presión establecida 1</th>
+                <th>Presión establecida 2</th>
+                <th>Presión establecida 3</th>
+                <th>Presión establecida 4</th>
+                <th>Presión establecida 5</th>
+                <th>Presión establecida 6</th>
+                <th>Presión establecida 7</th>
+                <th>KM diario máximo</th>
+                <th>Estatus</th>
+                <th>Nuevo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for vehiculo in vehiculos %}
+              <tr>
+                <td>
+                  <div class="flex-row" style="flex-wrap: nowrap; justify-content: center;">
+                    <a href="{% url 'dashboards:nuevoVehiculoEdit' vehiculo.id %}" class="btn btn-download">
+                      <i class="icon-pencil"></i>
+                    </a>
+                    <form action="{% url "dashboards:nuevoVehiculoDelete" %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="id" value="{{vehiculo.id}}">
+                      <button class="btn btn-danger">
+                        <span class="icon-trash"></span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+                <td>{{vehiculo.numero_economico}}</td>
+                <td>{{vehiculo.modelo}}</td>
+                <td>{{vehiculo.marca}}</td>
+                <td>{{vehiculo.aplicacion}}</td>
+                <td>{{vehiculo.clase}}</td>
+                <td>{{vehiculo.configuracion}}</td>
+                <td>{{vehiculo.presion_establecida_1}}</td>
+                <td>{{vehiculo.presion_establecida_2}}</td>
+                <td>{{vehiculo.presion_establecida_3}}</td>
+                <td>{{vehiculo.presion_establecida_4}}</td>
+                <td>{{vehiculo.presion_establecida_5}}</td>
+                <td>{{vehiculo.presion_establecida_6}}</td>
+                <td>{{vehiculo.presion_establecida_7}}</td>
+                <td>{{vehiculo.km_diario_maximo}}</td>
+                <td>{{vehiculo.estatus_activo}}</td>
+                <td>{{vehiculo.nuevo}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="{% static 'js/inputChange.js' %}"></script>
+
+{% endblock content %}

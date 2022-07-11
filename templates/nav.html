@@ -1,7 +1,7 @@
 {% load static %}
 <aside class="nav-cont animate__animated animate__fadeIn">
   <nav class="navbar">
-    <button class="btn btn-menu">
+    <button class="btn btn-menu" style="font-size: 2rem;">
       <span class="icon-menu"></span>
     </button>
     <div class="logo-aeto">
@@ -16,6 +16,7 @@
           <span class="text">Home</span>
         </a>
       </li>
+      {% if request.user.perfil.compania %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:hub' %}">
           <span class="icon-dashboard"></span>
@@ -28,24 +29,29 @@
           <div class="text">Vehiculos</div>
         </a>
       </li>
+      {% if request.user.perfil.groups.get != "Pulpo Manager" %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:almacen' %}">
           <span class="icon-warehouse"></span>
           <span class="text">Almacen</span>
         </a>
       </li>
+      {% endif %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:config' %}">
           <span class="icon-settings"></span>
           <span class="text">Configuracion</span>
         </a>
       </li>
+      {% if request.user.perfil.groups.get != "Pulpo Manager" %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:calendario' %}">
           <span class="icon-calendar1"></span>
           <span class="text">Calendario</span>
         </a>
       </li>
+      {% endif %}
+      {% endif %}
     </ul>
     <button class="btn btn-menu">
       <a class="logout" href="{% url 'dashboards:logout' %}">

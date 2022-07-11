@@ -10,6 +10,8 @@
 {% block content %}
 
 <main class="main__container">
+  {% if compania == None %}
+  
   <form class="context__form" method='POST'>
     {% csrf_token %}
     <div class="context__wrapper">
@@ -73,6 +75,12 @@
     </div>
     
   </form>
+  {% else %}
+  
+  <!-- CONTEXTO -->
+  {% include './contextReport.html' %}
+
+  {% endif %}
 </main>
 
 <template id="check-temp">

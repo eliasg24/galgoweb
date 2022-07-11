@@ -52,6 +52,7 @@
         </div>
       </div>
 
+      {% if grupo != "Pulpo Manager" %}
       <div class="filter__row">
         <div class="filter__row-header">
           <h3>Inspección por fecha</h3>
@@ -110,6 +111,8 @@
         </div>
       </div>
 
+      {% endif %}
+
       <div class="filter__row">
         <div class="filter__row-header">
           <h3>TIPO DE EJE</h3>
@@ -160,6 +163,7 @@
         </div>
       </div>
 
+      {% if grupo != "Pulpo Manager" %}
       <div class="filter__row">
         <div class="filter__row-header">
           <h3>PROFUNDIDADES</h3>
@@ -207,6 +211,7 @@
           </label>
         </div>
       </div>
+      {% endif %}
     </div>
 
     <div class="filter__footer">

@@ -11,6 +11,12 @@ urlpatterns = [
     
     #-----------------------B-----------------------
     
+    path(
+        route="api/cerrartaller",
+        view=views.CerrarServicioApi.as_view(),
+        name="cerrartaller"
+    ),
+    
     #-----------------------C-----------------------
         
     path(

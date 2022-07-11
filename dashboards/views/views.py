@@ -16,6 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db.models import Q, F, ExpressionWrapper, IntegerField, Value
 from django.forms import DateField, DateTimeField, DurationField
+from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func
 from django.db.models.functions import Least
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse, HttpResponse
@@ -23,6 +24,7 @@ from django.db.models.aggregates import Min, Max, Count
 from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, TemplateView, DetailView, DeleteView, UpdateView, FormView
@@ -34,15 +36,15 @@ from requests import request
 
 # Functions
 from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
-from dashboards.functions.functions import DiffDays, CastDate
+from dashboards.functions.functions import DiffDays, CastDate, presion_establecida
 from aeto import settings
 
 # Forms
-from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, LlantaForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm
+from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm, SucursalEditForm, TallerEditForm, AplicacionEditForm, VehiculoEditForm
 
 # Models
 from django.contrib.auth.models import User, Group
-from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Orden, OrdenDesecho, Producto, ServicioLlanta, ServicioVehiculo, Taller, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion
+from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Orden, OrdenDesecho, Producto, Servicio, ServicioLlanta, ServicioVehiculo, Taller, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion
 
 
 # Utilities
@@ -86,13 +88,16 @@ class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "home.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = User.objects.get(username=self.request.user)
-        flotas = Ubicacion.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))
-        aplicaciones = Aplicacion.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))
-        functions.exist_context(user)
-        context["user"] = user
-        context["flotas"] = flotas
-        context["aplicaciones"] = aplicaciones
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        compania = perfil.compania
+        ubicacion = perfil.ubicacion.all()
+        aplicacion = perfil.aplicacion.all()
+        taller = perfil.taller.all()
+        context["compania"] = compania
+        context["ubicacion"] = ubicacion
+        context["aplicacion"] = aplicacion
+        context["taller"] = taller
         return context
     
     def post(self, request, *args, **kwargs):
@@ -179,7 +184,7 @@ class TireDBView(LoginRequiredMixin, TemplateView):
         else:
             clases = vehiculo.values("clase").distinct()
 
-        bitacora = Bitacora.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania), numero_economico__in=vehiculo)
+        bitacora = Bitacora.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania), vehiculo__in=vehiculo)
         llantas = Llanta.objects.filter(vehiculo__compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         inspecciones = Inspeccion.objects.filter(llanta__vehiculo__compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         ultimas_inspecciones = inspecciones.values("llanta")
@@ -833,6 +838,13 @@ class hubView(LoginRequiredMixin, TemplateView):
     # Vista de hubView
 
     template_name = "hub.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        grupo = str(User.objects.get(username=self.request.user).groups.get())
+
+        context["grupo"] = grupo
+        return context
 
 class diagramaView(LoginRequiredMixin, TemplateView):
     # Vista de diagramaView
@@ -1620,7 +1632,7 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
         #Tire Diagrama
         functions.observaciones_vehiculo(llanta.vehiculo)
         return redirect('dashboards:tireDetail', self.kwargs['pk'])
-        
+
 class inspeccionLlantaView(LoginRequiredMixin, TemplateView):
     # Vista de inspeccionLlantaView
 
@@ -1716,15 +1728,7 @@ class catalogoProductoView(LoginRequiredMixin, MultiModelFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        productos = Producto.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))[::-1]
-        compania = Compania.objects.get(compania=self.request.user.perfil.compania)
-        context["compania"] = compania
-        context["productos"] = productos
-
-        print(self.request.POST)
         if self.request.method =='POST':
-            print("hola")
-            print("hola2")
             Producto.objects.create(producto=self.request.POST.get("producto"),
                                     compania=self.request.user.perfil.compania,
                                     marca=self.request.POST.get("marca"),
@@ -1737,7 +1741,11 @@ class catalogoProductoView(LoginRequiredMixin, MultiModelFormView):
                                     precio=self.request.POST.get("precio"),
                                     km_esperado=self.request.POST.get("km_esperado"),
             )
-            print("hola3")
+
+        productos = Producto.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))[::-1]
+        compania = Compania.objects.get(compania=self.request.user.perfil.compania)
+        context["compania"] = compania
+        context["productos"] = productos
 
         return context
     
@@ -1929,9 +1937,10 @@ class catalogoRechazosView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         rechazos = Rechazo.objects.all()[::-1]
-        llantas = Llanta.objects.filter(vehiculo__compania=Compania.objects.get(compania=self.request.user.perfil.compania))
+        companias = self.request.user.perfil.companias.all()
+
         context["rechazos"] = rechazos
-        context["llantas"] = llantas
+        context["companias"] = companias
 
         return context
     
@@ -1951,9 +1960,10 @@ class catalogoRechazosEditView(LoginRequiredMixin, DetailView, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         rechazos = Rechazo.objects.all()[::-1]
-        llantas = Llanta.objects.filter(vehiculo__compania=Compania.objects.get(compania=self.request.user.perfil.compania))
+        companias = self.request.user.perfil.companias.all()
+
         context["rechazos"] = rechazos
-        context["llantas"] = llantas
+        context["companias"] = companias
 
         return context
 
@@ -1974,8 +1984,46 @@ class companyFormularioView(LoginRequiredMixin, CreateView):
     model = Compania
     fields = ["compania", "periodo1_inflado", "periodo2_inflado", "objetivo", "periodo1_inspeccion", "periodo2_inspeccion", "punto_retiro_eje_direccion", "punto_retiro_eje_traccion", "punto_retiro_eje_arrastre", "punto_retiro_eje_loco", "punto_retiro_eje_retractil", "mm_de_desgaste_irregular", "mm_de_diferencia_entre_duales", "mm_parametro_sospechoso", "unidades_presion", "unidades_distancia", "unidades_profundidad", "valor_casco_nuevo", "valor_casco_1r", "valor_casco_2r", "valor_casco_3r", "valor_casco_4r", "valor_casco_5r"]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        companias = self.request.user.perfil.companias.all()
+        context["companias"] = companias
+
+        return context
+
     def get_success_url(self):
-        return reverse_lazy("dashboards:config")
+        user = self.request.user.perfil
+        user.companias.add(Compania.objects.get(compania=self.request.POST.get("compania")))
+        user.save()
+        return reverse_lazy("dashboards:companyFormulario")
+
+class companyFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogoCompanyEditView
+
+    template_name = "formularios/company.html"
+    slug_field = "compania"
+    slug_url_kwarg = "compania"
+    queryset = Compania.objects.all()
+    context_object_name = "compania"
+    model = Compania
+    fields = ["id", "compania", "periodo1_inflado", "periodo2_inflado", "objetivo", "periodo1_inspeccion", "periodo2_inspeccion", "punto_retiro_eje_direccion", "punto_retiro_eje_traccion", "punto_retiro_eje_arrastre", "punto_retiro_eje_loco", "punto_retiro_eje_retractil", "mm_de_desgaste_irregular", "mm_de_diferencia_entre_duales", "mm_parametro_sospechoso", "unidades_presion", "unidades_distancia", "unidades_profundidad", "valor_casco_nuevo", "valor_casco_1r", "valor_casco_2r", "valor_casco_3r", "valor_casco_4r", "valor_casco_5r"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        companias = self.request.user.perfil.companias.all()
+        context["companias"] = companias
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:companyFormulario")
+
+def companyFormularioDeleteView(request):
+    if request.method =="POST":
+        rechazo = Compania.objects.get(id=request.POST.get("id"))
+        rechazo.delete()
+        return redirect("dashboards:companyFormulario")
+    return redirect("dashboards:companyFormulario")
 
 class sucursalFormularioView(LoginRequiredMixin, CreateView):
     # Vista de sucursalFormularioView
@@ -1985,13 +2033,48 @@ class sucursalFormularioView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        companias = Compania.objects.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        companias = self.request.user.perfil.companias.all()
 
         context["companias"] = companias
+        context["sucursales"] = sucursales
         return context
 
     def get_success_url(self):
-        return reverse_lazy("dashboards:config")
+        user = self.request.user.perfil
+        user.ubicaciones.add(Ubicacion.objects.get(nombre=self.request.POST.get("nombre")))
+        user.save()
+        return reverse_lazy("dashboards:sucursalFormulario")
+
+class sucursalFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogoSucursalesEditView
+
+    template_name = "formularios/sucursal.html"
+    slug_field = "sucursal"
+    slug_url_kwarg = "sucursal"
+    queryset = Ubicacion.objects.all()
+    context_object_name = "sucursal"
+    form_class = SucursalEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        companias = self.request.user.perfil.companias.all()
+        
+        context["companias"] = companias
+        context["sucursales"] = sucursales
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:sucursalFormulario")
+
+def sucursalFormularioDeleteView(request):
+    if request.method =="POST":
+        sucursal = Ubicacion.objects.get(id=request.POST.get("id"))
+        sucursal.delete()
+        return redirect("dashboards:sucursalFormulario")
+    return redirect("dashboards:sucursalFormulario")
 
 class inpeccionesView(TemplateView):
     # Vista de vehiculosView
@@ -2027,13 +2110,66 @@ class tallerFormularioView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        companias = Compania.objects.all()
+        talleres = self.request.user.perfil.talleres.all()
+        companias = self.request.user.perfil.companias.all()
 
         context["companias"] = companias
+        context["talleres"] = talleres
         return context
 
     def get_success_url(self):
-        return reverse_lazy("dashboards:config")
+        user = self.request.user.perfil
+        user.talleres.add(Taller.objects.get(nombre=self.request.POST.get("nombre")))
+        user.save()
+        return reverse_lazy("dashboards:tallerFormulario")
+
+class tallerFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogoTalleresEditView
+
+    template_name = "formularios/taller.html"
+    slug_field = "taller"
+    slug_url_kwarg = "taller"
+    queryset = Taller.objects.all()
+    context_object_name = "taller"
+    form_class = TallerEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        talleres = self.request.user.perfil.talleres.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        companias = self.request.user.perfil.companias.all()
+
+        context["companias"] = companias
+        context["sucursales"] = sucursales
+        context["talleres"] = talleres
+
+        return context
+    
+    def post(self, request, pk):
+        print(request.POST)
+        nombre = request.POST.getlist('nombre')[0]
+        compania = request.POST.getlist('compania')[0]
+        compania = Compania.objects.get(compania=compania)
+        codigo = request.POST.getlist('codigo')[0]
+        taller = Taller.objects.get(pk=pk)
+        
+        taller.nombre = nombre
+        taller.compania = compania
+        taller.codigo = codigo
+        taller.save()
+        return redirect("dashboards:tallerFormularioEdit", pk)
+    
+    #def get_success_url(self):
+    #    print("hola")
+    #    print(self.request.POST)
+    #    return reverse_lazy("dashboards:tallerFormulario")
+
+def tallerFormularioDeleteView(request):
+    if request.method =="POST":
+        taller = Taller.objects.get(id=request.POST.get("id"))
+        taller.delete()
+        return redirect("dashboards:tallerFormulario")
+    return redirect("dashboards:tallerFormulario")
 
 class usuarioFormularioView(LoginRequiredMixin, CreateView):
     # Vista de usuarioFormularioView
@@ -2046,38 +2182,277 @@ class usuarioFormularioView(LoginRequiredMixin, CreateView):
         companias = Compania.objects.all()
         ubicaciones = Ubicacion.objects.all()
         aplicaciones = Aplicacion.objects.all()
+        talleres = Taller.objects.all()
+        usuarios = User.objects.all()
+        for usuario in usuarios:
+            print(usuario)
+            print(usuario.perfil.companias.all())
         context["aplicaciones"] = aplicaciones
         context["companias"] = companias
         context["sucursales"] = ubicaciones
+        context["talleres"] = talleres
+        context["usuarios"] = usuarios
         return context
 
     def form_valid(self, form):
         # Save form data
+        print(form.cleaned_data)
         c = {'form': form, }
         user = form.save(commit=False)
         groups = form.cleaned_data['groups']
         groups = Group.objects.get(name=groups)
-        compania = form.cleaned_data['compania']
-        compania = Compania.objects.get(compania=compania)
-        ubicacion = form.cleaned_data['ubicacion']
-        ubicacion = Ubicacion.objects.get(nombre=ubicacion)
-        aplicacion = form.cleaned_data['aplicacion']
-        aplicacion = Aplicacion.objects.get(nombre=aplicacion)
+        compania = self.request.POST.getlist("compania")
+        compania = Compania.objects.filter(compania__in=compania)
+        ubicacion = self.request.POST.getlist("ubicacion")
+        ubicacion = Ubicacion.objects.filter(nombre__in=ubicacion)
+        aplicacion = self.request.POST.getlist("aplicacion")
+        aplicacion = Aplicacion.objects.filter(nombre__in=aplicacion)
+        taller = self.request.POST.getlist("taller")
+        taller = Taller.objects.filter(nombre__in=taller)
         password = form.cleaned_data['password']
         repeat_password = form.cleaned_data['repeat_password']
+        print(compania)
+        print(ubicacion)
+        print(aplicacion)
         if password != repeat_password:
             messages.error(self.request, "Passwords do not Match", extra_tags='alert alert-danger')
             return render(self.request, self.template_name, c)
         user.set_password(password)
         user.save()
         
-        Perfil.objects.create(user=user, compania=compania, ubicacion=ubicacion, aplicacion=aplicacion)
+        perfil = Perfil.objects.create(user=user)
+        for comp in compania:
+            perfil.companias.add(comp)
+        for ubi in ubicacion:
+            perfil.ubicaciones.add(ubi)
+        for apli in aplicacion:
+            perfil.aplicaciones.add(apli)
+        for tall in taller:
+            perfil.talleres.add(tall)
         user.groups.add(groups)
-        
+        perfil.save()
         return super(usuarioFormularioView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("dashboards:config")
+        return reverse_lazy("dashboards:usuarioFormulario")
+
+class usuarioFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de usuarioFormularioEditView
+
+    template_name = "formularios/usuario.html"
+    slug_field = "usuario"
+    slug_url_kwarg = "usuario"
+    queryset = User.objects.all()
+    context_object_name = "usuario"
+    form_class = UsuarioEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        companias = Compania.objects.all()
+        ubicaciones = Ubicacion.objects.all()
+        aplicaciones = Aplicacion.objects.all()
+        talleres = Taller.objects.all()
+        usuarios = User.objects.all()
+        context["aplicaciones"] = aplicaciones
+        context["companias"] = companias
+        context["sucursales"] = ubicaciones
+        context["talleres"] = talleres
+        context["usuarios"] = usuarios
+        return context
+
+    def form_valid(self, form):
+        # Save form data
+        print(form.cleaned_data)
+        c = {'form': form, }
+        user = form.save(commit=False)
+        groups = form.cleaned_data['groups']
+        groups = Group.objects.get(name=groups)
+        compania = self.request.POST.getlist("compania")
+        compania = Compania.objects.filter(compania__in=compania)
+        ubicacion = self.request.POST.getlist("ubicacion")
+        ubicacion = Ubicacion.objects.filter(nombre__in=ubicacion)
+        aplicacion = self.request.POST.getlist("aplicacion")
+        aplicacion = Aplicacion.objects.filter(nombre__in=aplicacion)
+        taller = self.request.POST.getlist("taller")
+        taller = Taller.objects.filter(nombre__in=taller)
+        password = form.cleaned_data['password']
+        repeat_password = form.cleaned_data['repeat_password']
+        print(compania)
+        print(ubicacion)
+        print(aplicacion)
+        if password != repeat_password:
+            messages.error(self.request, "Passwords do not Match", extra_tags='alert alert-danger')
+            return render(self.request, self.template_name, c)
+        user.set_password(password)
+        user.save()
+        
+        perfil = Perfil.objects.create(user=user)
+        for comp in compania:
+            perfil.companias.add(comp)
+        for ubi in ubicacion:
+            perfil.ubicaciones.add(ubi)
+        for apli in aplicacion:
+            perfil.aplicaciones.add(apli)
+        for tall in taller:
+            perfil.talleres.add(tall)
+        user.groups.add(groups)
+        perfil.save()
+        return super(usuarioFormularioEditView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:usuarioFormulario")
+
+def usuarioFormularioDeleteView(request):
+    if request.method =="POST":
+        usuario = User.objects.get(id=request.POST.get("id"))
+        usuario.delete()
+        return redirect("dashboards:usuarioFormulario")
+    return redirect("dashboards:usuarioFormulario")
+
+class nuevoVehiculoView(LoginRequiredMixin, CreateView):
+    # Vista de nuevoVehiculoView
+
+    template_name = "formularios/vehiculo.html"
+    form_class = VehiculoForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        aplicaciones = self.request.user.perfil.aplicaciones.all()
+        compania = self.request.user.perfil.compania
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        clases = Vehiculo.opciones_clase
+        configuraciones = Vehiculo.opciones_configuracion
+        vehiculos = Vehiculo.objects.filter(compania=self.request.user.perfil.compania)
+
+        context["aplicaciones"] = aplicaciones
+        context["clases"] = clases
+        context["compania"] = compania
+        context["configuraciones"] = configuraciones
+        context["sucursales"] = sucursales
+        context["vehiculos"] = vehiculos
+
+        return context
+
+    def form_valid(self, form):
+        # Save form data
+        print("hola")
+        print(form.cleaned_data)
+        c = {'form': form, }
+        vehiculo = form.save(commit=False)
+        estatus_activo = form.cleaned_data['estatus_activo']
+        nuevo = form.cleaned_data['nuevo']
+        if estatus_activo == "activo":
+            vehiculo.estatus_activo = True
+        else:
+            vehiculo.estatus_activo = False
+        if nuevo == "nuevo":
+            vehiculo.nuevo = True
+        else:
+            vehiculo.nuevo = False
+        configuracion = vehiculo.configuracion
+        numero_de_llantas = functions.cantidad_llantas(configuracion)
+        vehiculo.numero_de_llantas = numero_de_llantas
+        vehiculo.save()
+        
+        return super(nuevoVehiculoView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:nuevoVehiculo")
+
+class nuevoVehiculoEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de nuevoVehiculoView
+
+    template_name = "formularios/vehiculo.html"
+    slug_field = "vehiculo"
+    slug_url_kwarg = "vehiculo"
+    queryset = Vehiculo.objects.all()
+    context_object_name = "vehiculo"
+    form_class = VehiculoEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        if self.request.method == 'POST':
+
+            vehiculo = Vehiculo.objects.get(id=self.kwargs['pk'])
+            numero_economico = self.request.POST.get("numero_economico")
+            modelo = self.request.POST.get("modelo")
+            marca = self.request.POST.get("marca")
+            aplicacion = self.request.POST.get("aplicacion")
+            ubicacion = self.request.POST.get("ubicacion")
+            clase = self.request.POST.get("clase")
+            configuracion = self.request.POST.get("configuracion")
+            presion_establecida_1 = self.request.POST.get("presion_establecida_1")
+            presion_establecida_2 = self.request.POST.get("presion_establecida_2")
+            presion_establecida_3 = self.request.POST.get("presion_establecida_3")
+            presion_establecida_4 = self.request.POST.get("presion_establecida_4")
+            presion_establecida_5 = self.request.POST.get("presion_establecida_5")
+            presion_establecida_6 = self.request.POST.get("presion_establecida_6")
+            presion_establecida_7 = self.request.POST.get("presion_establecida_7")
+            km_diario_maximo = self.request.POST.get("km_diario_maximo")
+            estatus_activo = self.request.POST.get("estatus_activo")
+            nuevo = self.request.POST.get("nuevo")
+            vehiculo.numero_economico = numero_economico
+            vehiculo.modelo = modelo
+            vehiculo.marca = marca
+            vehiculo.aplicacion = Aplicacion.objects.get(nombre=aplicacion)
+            vehiculo.ubicacion = Ubicacion.objects.get(nombre=ubicacion)
+            vehiculo.clase = clase
+            vehiculo.configuracion = configuracion
+            if presion_establecida_1:
+                vehiculo.presion_establecida_1 = presion_establecida_1
+            if presion_establecida_2:
+                vehiculo.presion_establecida_2 = presion_establecida_2
+            if presion_establecida_3:
+                vehiculo.presion_establecida_3 = presion_establecida_3
+            if presion_establecida_4:
+                vehiculo.presion_establecida_4 = presion_establecida_4
+            if presion_establecida_5:
+                vehiculo.presion_establecida_5 = presion_establecida_5
+            if presion_establecida_6:
+                vehiculo.presion_establecida_6 = presion_establecida_6
+            if presion_establecida_7:
+                vehiculo.presion_establecida_7 = presion_establecida_7
+            vehiculo.km_diario_maximo = km_diario_maximo
+            if estatus_activo == "activo":
+                vehiculo.estatus_activo = True
+            else:
+                vehiculo.estatus_activo = False
+            if nuevo == "nuevo":
+                vehiculo.nuevo = True
+            else:
+                vehiculo.nuevo = False
+            configuracion = vehiculo.configuracion
+            numero_de_llantas = functions.cantidad_llantas(configuracion)
+            vehiculo.numero_de_llantas = numero_de_llantas
+            vehiculo.save()
+
+        aplicaciones = self.request.user.perfil.aplicaciones.all()
+        companias = self.request.user.perfil.companias.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        clases = Vehiculo.opciones_clase
+        configuraciones = Vehiculo.opciones_configuracion
+        vehiculos = Vehiculo.objects.filter(compania=self.request.user.perfil.compania)
+
+        context["aplicaciones"] = aplicaciones
+        context["clases"] = clases
+        context["companias"] = companias
+        context["configuraciones"] = configuraciones
+        context["sucursales"] = sucursales
+        context["vehiculos"] = vehiculos
+        return context
+        
+        return super(nuevoVehiculoEditView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:nuevoVehiculo")
+
+def nuevoVehiculoDeleteView(request):
+    if request.method =="POST":
+        vehiculo = Vehiculo.objects.get(id=request.POST.get("id"))
+        vehiculo.delete()
+        return redirect("dashboards:nuevoVehiculo")
+    return redirect("dashboards:nuevoVehiculo")
 
 class aplicacionFormularioView(LoginRequiredMixin, CreateView):
     # Vista de aplicacionFormularioView
@@ -2087,15 +2462,52 @@ class aplicacionFormularioView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        companias = Compania.objects.all()
-        ubicaciones = Ubicacion.objects.all()
+        companias = self.request.user.perfil.companias.all()
+        aplicaciones = self.request.user.perfil.aplicaciones.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
 
+        context["aplicaciones"] = aplicaciones
         context["companias"] = companias
-        context["sucursales"] = ubicaciones
+        context["sucursales"] = sucursales
         return context
 
     def get_success_url(self):
-        return reverse_lazy("dashboards:config")
+        user = self.request.user.perfil
+        user.aplicaciones.add(Aplicacion.objects.get(nombre=self.request.POST.get("nombre")))
+        user.save()
+        return reverse_lazy("dashboards:aplicacionFormulario")
+
+class aplicacionFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogoTalleresEditView
+
+    template_name = "formularios/aplicacion.html"
+    slug_field = "aplicacion"
+    slug_url_kwarg = "aplicacion"
+    queryset = Aplicacion.objects.all()
+    context_object_name = "aplicacion"
+    form_class = AplicacionEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        companias = self.request.user.perfil.companias.all()
+        aplicaciones = self.request.user.perfil.aplicaciones.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
+
+        context["aplicaciones"] = aplicaciones
+        context["companias"] = companias
+        context["sucursales"] = sucursales
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:aplicacionFormulario")
+
+def aplicacionFormularioDeleteView(request):
+    if request.method =="POST":
+        aplicacion = Aplicacion.objects.get(id=request.POST.get("id"))
+        aplicacion.delete()
+        return redirect("dashboards:aplicacionFormulario")
+    return redirect("dashboards:aplicacionFormulario")
 
 class perdidaRendimientoView(LoginRequiredMixin, TemplateView):
 # Vista de perdidaRendimientoView
@@ -2227,7 +2639,7 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
         context['cant_ejes'] = cant_ejes
         context['llantas_actuales'] = llantas_actuales
         #Generacion de productos
-        productos = Producto.objects.all()
+        productos = Producto.objects.filter(compania=vehiculo_actual.compania)
         context['productos'] = productos
         context['vehiculo_actual'] = vehiculo_actual
         context['observaciones_manuales'] = observaciones_manuales
@@ -3703,7 +4115,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
             tipo_bit = 'pulpopro'
         hoy = date.today()
         user = User.objects.get(username=self.request.user)
-        vehiculo = bitacora.numero_economico
+        vehiculo = bitacora.vehiculo
         llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario="Rodante")
         
         objetivo = vehiculo.compania.objetivo
@@ -5421,6 +5833,12 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         
         talleres = Taller.objects.filter(compania = vehiculo[0].compania)
         
+        
+        
+        #? Checar si existe un taller abierto
+        #servicios = Servicio.objects.filter(vehiculo = vehiculo, estado = 'abierto')
+        
+        
         context['vehiculo_acomodado'] = vehiculo_acomodado
         context['talleres'] = talleres
         context['vehiculo'] = vehiculo
@@ -5429,6 +5847,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         return context
     
     def post(self, request, pk):
+        print(request.POST.getlist('formulario')[0])
+        if request.POST.getlist('formulario')[0] == 'agendar':
+            servicio_vehiculo = functions.servicio_vehiculo_preguardado(pk, request)
+            functions.archivar_taller(request.POST, pk, servicio_vehiculo)
+            return redirect('dashboards:calendario')
         print(request.POST)
         #? Acciones del vehiculo
         vehiculo = Vehiculo.objects.get(pk = pk)
@@ -5790,8 +6213,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         
         prev = functions.pagination_prev(page, pages, url_complemento)
         next = functions.pagination_next(page, pages, url_complemento)
-        
-        
+
         self.limit = limit
         self.offset = offset
         self.prev = prev
@@ -5825,11 +6247,13 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
         acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
         vehiculos = acomodo_posicion_ejes_vehicle
         
+        grupo = str(User.objects.get(username=self.request.user).groups.get())
 
         
         """print(llantas.count())
         print(len(current_vehiculos))"""
 
+        context['grupo'] = grupo
         context['ejes'] = self.ejes
         context['exclude'] = self.exclude
         context['filtro'] = self.filtro
@@ -5900,32 +6324,36 @@ class VehiculoAPI(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request):
+    def post(self, request):
         jd = json.loads(request.body)
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
-        vehiculo.fecha_de_inflado=date.today()
+        vehiculo.fecha_de_inflado=datetime.now()
         vehiculo.tiempo_de_inflado=jd['tiempo_de_inflado']
         vehiculo.presion_de_entrada=jd['presion_de_entrada']
         vehiculo.presion_de_salida=jd['presion_de_salida']
         vehiculo.save()
-        bi = Bitacora.objects.create(numero_economico=vehiculo,
+        bi = Bitacora.objects.create(vehiculo=vehiculo,
                 compania=Compania.objects.get(compania=jd['compania']),
-                fecha_de_inflado=date.today(),
+                fecha_de_inflado=datetime.now(),
                 tiempo_de_inflado=jd['tiempo_de_inflado'],
                 presion_de_entrada=jd['presion_de_entrada'],
                 presion_de_salida=jd['presion_de_salida']
                 )
         bi.save()
         llantas = Llanta.objects.filter(vehiculo=vehiculo)
+        condicional = True
         for llanta in llantas:
-            llanta.fecha_de_inflado=date.today()
-            llanta.presion_de_entrada=jd['presion_de_entrada']
-            llanta.presion_de_salida=jd['presion_de_salida']
-            llanta.presion_actual=jd['presion_de_salida']
-            min_presion = functions.min_presion(llanta)
-            max_presion = functions.max_presion(llanta)
-            functions.check_presion_pulpo(llanta, min_presion, max_presion)
-            llanta.save()
+            if llanta.tipo_de_eje != "SP1":
+
+                llanta.fecha_de_inflado=datetime.now()
+                llanta.presion_de_entrada=jd['presion_de_entrada']
+                llanta.presion_de_salida=jd['presion_de_salida']
+                llanta.presion_actual=jd['presion_de_salida']
+                min_presion = functions.min_presion(llanta)
+                max_presion = functions.max_presion(llanta)
+                nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
+                condicional = nueva_condicional
+                llanta.save()
         functions.send_mail(bi, 'pulpo')
         return JsonResponse(jd)
 
@@ -5939,23 +6367,28 @@ class PulpoProAPI(View):
     def post(self, request):
         jd = json.loads(request.body)
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
-        vehiculo.fecha_de_inflado=date.today()
+        vehiculo.fecha_de_inflado=datetime.now()
         llantas = Llanta.objects.filter(vehiculo=vehiculo)
         presiones_de_entrada = eval(jd['presiones_de_entrada'])
         presiones_de_salida = eval(jd['presiones_de_salida'])
         numero_de_llantas = vehiculo.numero_de_llantas
+        num_ejes = vehiculo.configuracion.split('.')
+        if num_ejes[-1] == "SP1":
+            numero_de_llantas = numero_de_llantas - 1
+
         if numero_de_llantas == len(presiones_de_entrada):
             num_ejes = vehiculo.configuracion.split('.')
             ejes_no_ordenados = []
             ejes = []
             eje = 1
             for num in num_ejes:
-                list_temp = []
-                for llanta in llantas:
-                    if llanta.eje == eje:
-                        list_temp.append([llanta])
-                eje += 1
-                ejes_no_ordenados.append(list_temp)
+                if num != "SP1":
+                    list_temp = []
+                    for llanta in llantas:
+                        if llanta.eje == eje:
+                            list_temp.append([llanta])
+                    eje += 1
+                    ejes_no_ordenados.append(list_temp)
             
             for eje in ejes_no_ordenados:
                 if len(eje) == 2:
@@ -5989,12 +6422,13 @@ class PulpoProAPI(View):
                     llanta[0].presion_de_entrada = presiones_de_entrada[loop_llantas]
                     llanta[0].presion_de_salida = presiones_de_salida[loop_llantas]
                     llanta[0].presion_actual = presiones_de_salida[loop_llantas]
+                    llanta[0].fecha_de_inflado=datetime.now()
                     llanta[0].save()
                     loop_llantas += 1
                     
-            bi = Bitacora_Pro.objects.create(numero_economico=vehiculo,
+            bi = Bitacora_Pro.objects.create(vehiculo=vehiculo,
                                     compania=Compania.objects.get(compania=jd['compania']),
-                                    fecha_de_inflado=date.today(),
+                                    fecha_de_inflado=datetime.now(),
                                     tiempo_de_inflado=jd['tiempo_de_inflado'],
             )
             print("jd['presiones_de_entrada']", jd['presiones_de_entrada'])
@@ -6042,10 +6476,14 @@ class PulpoProAPI(View):
         
                 vehiculo.ultima_bitacora_pro= bi
                 vehiculo.save()
+                condicional = True
                 for llanta in llantas:
                     min_presion = functions.min_presion(llanta)
                     max_presion = functions.max_presion(llanta)
-                    functions.check_presion_pulpo(llanta, min_presion, max_presion)
+                    print("min_presion", min_presion)
+                    print("max_presion", max_presion)
+                    nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
+                    condicional = nueva_condicional
                 functions.send_mail(bi, 'pulpopro')
                 return JsonResponse(jd)
 
@@ -6066,7 +6504,6 @@ class TireEyeAPI(View):
         )
         return JsonResponse(jd)
 
-
 class PulpoView(LoginRequiredMixin, ListView):
     # Vista del dashboard pulpo
     template_name = "pulpo.html"
@@ -6086,13 +6523,13 @@ class PulpoView(LoginRequiredMixin, ListView):
         #functions_excel.excel_observaciones()
         #functions_create.borrar_ultima_inspeccion_vehiculo()
         #functions_create.convertir_vehiculos()
-        #functions_create.borrar_km_actuales()
+        #functions_create.asignar_ultima_fecha_de_inflado()
         #functions_ftp.ftp_diario()
         ultimo_mes = hoy - timedelta(days=31)
 
         #functions_create.tirecheck_llanta()
         #functions_create.borrar_ultima_inspeccion_vehiculo()
-        #functions_excel.excel_vehiculos()
+        #functions_create.crear_llantas()
         #functions_excel.excel_llantas(User.objects.get(username="equipo-logistico"))
         #functions_excel.excel_inspecciones()
 
@@ -6299,8 +6736,8 @@ def buscar(request):
         vehiculo_fecha_pro = vehiculo.filter(ultima_bitacora_pro__fecha_de_inflado__range=[ultimo_mes, hoy])
         vehiculo_fecha_total = vehiculo.filter(fecha_de_inflado__range=[ultimo_mes, hoy]) | vehiculo.filter(ultima_bitacora_pro__fecha_de_inflado__range=[ultimo_mes, hoy])
     
-    bitacora = bitacora.filter(numero_economico__in=vehiculo)
-    bitacora_pro = bitacora_pro.filter(numero_economico__in=vehiculo)
+    bitacora = bitacora.filter(vehiculo__in=vehiculo)
+    bitacora_pro = bitacora_pro.filter(vehiculo__in=vehiculo)
 
 
     mes_1 = hoy.strftime("%b")
@@ -6476,6 +6913,11 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
         groups_names = Group.objects.all()
         compania = Compania.objects.get(compania=self.request.user.perfil.compania)
         
+        separador = os.path.sep
+        dir_actual = os.path.dirname(os.path.abspath(__file__))
+        dir = separador.join(dir_actual.split(separador)[:-2])
+        print(dir)
+
         if self.request.method=='POST' and 'periodo1_inflado' in self.request.POST:
             compania.periodo1_inflado = self.request.POST.get("periodo1_inflado")
             compania.periodo2_inflado = self.request.POST.get("periodo2_inflado")
@@ -6498,19 +6940,18 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
             user.save()
         elif self.request.method=='POST' and self.request.FILES.get("file"):
             file = self.request.FILES.get("file")
-            print("hola")
-            archivo = os.path.abspath(os.getcwd()) + r"\files.xlsx"
+            archivo = dir + r"\files.xlsx"
             fp = open(archivo,'wb')
             for chunk in file.chunks():
                 fp.write(chunk)
-            print("hola2")
   
-            wb_obj = openpyxl.load_workbook(archivo)
+            wb_obj = openpyxl.load_workbook(file)
             sheet_obj = wb_obj.active
             print("hola3")
             
             for i in range(sheet_obj.max_row):
                 numero_economico = sheet_obj.cell(row=i + 2, column=1).value
+                print(numero_economico)
                 try:
                     try:
                         vehiculo = Vehiculo.objects.get(numero_economico=numero_economico, compania=Compania.objects.get(compania=compania))
@@ -6614,7 +7055,7 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
             os.remove(os.path.abspath(archivo))
         elif self.request.method=='POST' and self.request.FILES.get("file2"):
             file = self.request.FILES.get("file2")
-            archivo = os.path.abspath(os.getcwd()) + r"\files.xlsx"
+            archivo = dir + r"\files.xlsx"
             fp = open(archivo,'wb')
             for chunk in file.chunks():
                 fp.write(chunk)
@@ -6647,7 +7088,9 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
                         aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
                         tipo_de_eje = vehiculo.configuracion.split(".")[int(posicion[0]) - 1]
                         eje = posicion[0]
-                        if tipo_de_eje[0] == "S":
+                        if tipo_de_eje == "SP1":
+                            nombre_de_eje = "Refacción"
+                        elif tipo_de_eje[0] == "S":
                             nombre_de_eje = "Dirección"
                         elif tipo_de_eje[0] == "D":
                             nombre_de_eje = "Tracción"
@@ -6657,7 +7100,7 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
                             nombre_de_eje = "Loco"
                         elif tipo_de_eje[0] == "L":
                             nombre_de_eje = "Retractil"
-                        producto = Producto.objects.get(producto=producto)
+                        producto = Producto.objects.get(producto=producto, compania=Compania.objects.get(compania=compania))
                         inventario = "Rodante"
 
                         try:
@@ -6717,12 +7160,13 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
         context["groups_names"] = groups_names
         return context
 
+
+
 class SearchView(LoginRequiredMixin, ListView):
     # Vista del dashboard buscar_vehiculos
     template_name = "buscar_vehiculos.html"
     model = Vehiculo
     ordering = ("-fecha_de_creacion")
-    form_class = VehiculoForm
 
     def get_context_data(self, **kwargs):
 
@@ -6885,12 +7329,12 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
 
         try:
-            bitacora = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania))
+            bitacora = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         except:
             bitacora = None
         try:
-            bitacora_normal = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
-            bitacora_pro = Bitacora_Pro.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
+            bitacora_normal = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
+            bitacora_pro = Bitacora_Pro.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
         except:
             bitacora_normal = None 
             bitacora_pro = None
@@ -7184,6 +7628,10 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         numero_eje_check = None
         for eje in ejes:
             for ej in eje:
+                print(llanta_actual)
+                print(ej)
+                print(eje)
+                print(ejes)
                 if llanta_actual in ej:
                     numero_llanta_check = numero_llanta
                     numero_eje_check = numero_eje
@@ -7242,6 +7690,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         inpecciones_llanta_act = Inspeccion.objects.filter(llanta = llanta_info[0])
         eventos = []
         inspecciones_list = []
+        servicios = ServicioLlanta.objects.filter(llanta = llanta_info[0]).order_by('-id')
         for bit in bitacora:
             signo = functions.signo_pulpo(bit, numero_eje_check)
             eventos.append([bit.fecha_de_inflado, bit, 'pulpo', signo])
@@ -7264,6 +7713,8 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         inspecciones_list = sorted(inspecciones_list, key=lambda x:x[1].id, reverse=True)
         for ins in inspecciones_list:
             eventos.append([ins[0].date(), ins[1], ins[2], ins[3]])
+        for servicio in servicios:
+            eventos.append([servicio.serviciovehiculo.fecha_inicio, servicio, 'servicio', 'icon-checkmark good-text'])
         eventos = sorted(eventos, key=lambda x:x[0], reverse=True)
         
         context['eventos'] = eventos
@@ -7289,11 +7740,22 @@ class DetailView(LoginRequiredMixin, DetailView):
         llantas = Llanta.objects.filter(vehiculo=vehiculo, tirecheck=False, inventario = 'Rodante')
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
         inspecciones_vehiculo = InspeccionVehiculo.objects.filter(vehiculo=vehiculo)
-        bitacora = Bitacora.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
-        bitacora_pro = Bitacora_Pro.objects.filter(numero_economico=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("-id")
-        entradas_correctas = functions.entrada_correcta(bitacora, bitacora_pro)
+        bitacora = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+        bitacora_pro = Bitacora_Pro.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+
+        bitacoras = bitacora.annotate(presion_de_entrada_1=F("presion_de_entrada"), presion_de_salida_1=F("presion_de_salida"), presion_de_entrada_2=Value(None, output_field=IntegerField()), presion_de_salida_2=Value(None, output_field=IntegerField()), presion_de_entrada_3=Value(None, output_field=IntegerField()), presion_de_salida_3=Value(None, output_field=IntegerField()), presion_de_entrada_4=Value(None, output_field=IntegerField()), presion_de_salida_4=Value(None, output_field=IntegerField()), presion_de_entrada_5=Value(None, output_field=IntegerField()), presion_de_salida_5=Value(None, output_field=IntegerField()), presion_de_entrada_6=Value(None, output_field=IntegerField()), presion_de_salida_6=Value(None, output_field=IntegerField()), presion_de_entrada_7=Value(None, output_field=IntegerField()), presion_de_salida_7=Value(None, output_field=IntegerField()), presion_de_entrada_8=Value(None, output_field=IntegerField()), presion_de_salida_8=Value(None, output_field=IntegerField()), presion_de_entrada_9=Value(None, output_field=IntegerField()), presion_de_salida_9=Value(None, output_field=IntegerField()), presion_de_entrada_10=Value(None, output_field=IntegerField()), presion_de_salida_10=Value(None, output_field=IntegerField()), presion_de_entrada_11=Value(None, output_field=IntegerField()), presion_de_salida_11=Value(None, output_field=IntegerField()), presion_de_entrada_12=Value(None, output_field=IntegerField()), presion_de_salida_12=Value(None, output_field=IntegerField())).order_by("id")
+        bitacoras = list(bitacoras.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+
+        bitacoras_pro = list(bitacora_pro.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+       
+        bitacoras.extend(bitacoras_pro)
+
+        bitacoras = sorted(bitacoras, key=lambda x:x["fecha_de_inflado"], reverse=False)
+
+        entradas_correctas = functions.entrada_correcta_ambas(bitacoras)
+        print(entradas_correctas)
         fecha = functions.convertir_fecha(str(vehiculo.fecha_de_inflado))
-        servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo).order_by('-id')
+        servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo).order_by('-id').exclude(estado='abierto')
         print(vehiculo)
         print(servicios)
         if vehiculo.fecha_de_inflado:
@@ -7304,8 +7766,10 @@ class DetailView(LoginRequiredMixin, DetailView):
         eventos = []
         inspecciones_list = []
         for bit in bitacora:
+            print("bit", bit.id)
             eventos.append([bit.fecha_de_inflado, bit, 'pulpo'])
         for bit in bitacora_pro:
+            print("bit", bit.id)
             eventos.append([bit.fecha_de_inflado, bit, 'pulpopro'])
 
         for inspeccion in inspecciones_vehiculo:
@@ -7321,9 +7785,9 @@ class DetailView(LoginRequiredMixin, DetailView):
             inspecciones_list.append([inspeccion.fecha, inspeccion, 'inspeccion', signo])
         inspecciones_list = sorted(inspecciones_list, key=lambda x:x[1].id, reverse=True)
         for ins in inspecciones_list:
-            eventos.append([ins[0].date(), ins[1], ins[2], ins[3]])
+            eventos.append([ins[0], ins[1], ins[2], ins[3]])
         for servicio in servicios:
-            eventos.append([servicio.fecha_inicio, servicio, 'servicio', 'icon-checkmark good-text'])
+            eventos.append([datetime.combine(servicio.fecha_inicio, datetime.min.time()), servicio, 'servicio', 'icon-checkmark good-text'])
         eventos = sorted(eventos, key=lambda x:x[0], reverse=True)
         context["eventos"] = eventos
         print(eventos)
@@ -7453,6 +7917,8 @@ class DetailView(LoginRequiredMixin, DetailView):
             reemplazo_actual = functions.reemplazo_actual2(llantas)
             reemplazo_actual_ejes = {k: v for k, v in reemplazo_actual.items() if v != 0}
 
+            grupo = str(User.objects.get(username=self.request.user).groups.get())
+
             context["bitacoras"] = bitacora
             context["cantidad_doble_entrada_mes1"] = doble_entrada[2]["mes1"] + doble_entrada[3]["mes1"]
             context["cantidad_doble_entrada_mes2"] = doble_entrada[2]["mes2"] + doble_entrada[3]["mes2"]
@@ -7480,8 +7946,8 @@ class DetailView(LoginRequiredMixin, DetailView):
             context["doble_entrada"] = doble_entrada
             context["entradas"] = entradas_correctas
             context["fecha"] = fecha
+            context["grupo"] = grupo
             context["hoy"] = hoy
-            context["llantas"] = llantas
             context["mes_1"] = mes_1
             context["mes_2"] = mes_2.strftime("%b")
             context["mes_3"] = mes_3.strftime("%b")
@@ -7576,7 +8042,7 @@ class DetailView(LoginRequiredMixin, DetailView):
             eje += 1
             ejes_no_ordenados.append(list_temp)
             numero += 1
-
+        
         ejes = functions.acomodo_ejes(ejes_no_ordenados)
         color = functions.entrada_correcta_actual(vehiculo_actual)
         #print(color)
@@ -7739,6 +8205,7 @@ class DetailView(LoginRequiredMixin, DetailView):
                 problemas.append([llanta.posicion, observacion, signo])
         print(vehiculo.observaciones.all())
         context['problemas'] = problemas
+        context["llantas"] = llantas
         return context
 
 class reporteEdicionLlanta(ListView):

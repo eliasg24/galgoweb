@@ -124,6 +124,12 @@
   border-radius: 0.25rem;
 }
 
+.title-cont {
+  display: flex;
+  gap: 1rem;
+  flex-flow: row wrap;
+}
+
 .close-modal {
   background-color: var(--colorv07);
   color: #fff;

@@ -1,0 +1,265 @@
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    type="hidden"
+    name="id"
+    {% if vehiculo.id %}
+    value="{{vehiculo.id}}"
+    {% endif %}
+  />
+  <input
+    type="hidden"
+    name="compania"
+    value="{{compania}}"
+  />
+  <input
+    class="form__field"
+    type="text"
+    placeholder="Número económico"
+    name="numero_economico"
+    {% if vehiculo.numero_economico %}
+    value="{{vehiculo.numero_economico}}"
+    {% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="numero_economico" class="form__label"> Número económico </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="Modelo"
+    name="modelo"
+    {% if vehiculo.modelo %}
+    value="{{vehiculo.modelo}}"
+    {% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="modelo" class="form__label"> Modelo </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="Marca"
+    name="marca"
+    {% if vehiculo.marca %}
+    value="{{vehiculo.marca}}"
+    {% endif %}
+    autocomplete="off"
+    required
+    list=""
+  />
+  <label for="marca" class="form__label"> Marca </label>
+</div>
+<!-- End input -->
+
+
+<!-- Start input -->
+<!-- <div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="sucursal"
+    name="sucursal"
+    list="sucursal"
+    {% if vehiculo.ubicacion %} value="{{vehiculo.ubicacion}}" {%endif%}
+    autocomplete="off"
+    required
+  />
+  <label for="ubicacion" class="form__label"> Ubicaciones </label>
+  <datalist id="ubicacion">
+    {% for ubicacion in ubicaciones %}
+    <option value="{{ubicacion}}">{{ubicacion}}</option>
+    {% endfor %}
+  </datalist>
+</div> -->
+<!-- End input -->
+
+  <label for="aplicacion" class="select-label"> Aplicacion </label>
+  <select name="aplicacion" id="aplicacion" class="select-input">
+    <option value="">Selecciona una aplicación...</option>
+    {% for aplicacion in aplicaciones %}
+    <option value="{{aplicacion}}" {% if vehiculo.aplicacion == aplicacion %}selected="selected"{% endif %}>{{aplicacion}}</option>
+    {% endfor %}
+  </select>
+
+  <label for="sucursal" class="select-label"> Sucursal </label>
+  <select name="ubicacion" id="sucursal" class="select-input">
+    <option value="">Selecciona una sucursal...</option>
+    {% for sucursal in sucursales %}
+    <option value="{{sucursal}}" {% if vehiculo.ubicacion == sucursal %}selected="selected"{% endif %}>{{sucursal}}</option>
+    {% endfor %}
+  </select>
+
+  <label for="clase" class="select-label"> Clase </label>
+  <select name="clase" id="clase" class="select-input">
+    <option value="">Selecciona una clase...</option>
+    {% for clase in clases %}
+    <option value="{{clase.0}}" {% if vehiculo.clase == clase.0 %}selected="selected"{% endif %}>{{clase.0}}</option>
+    {% endfor %}
+  </select>
+
+  <label for="configuracion" class="select-label"> Configuración </label>
+  <select name="configuracion" id="configuracion" class="select-input">
+    <option value="">Selecciona una configuración...</option>
+    {% for configuracion in configuraciones %}
+    <option value="{{configuracion.0}}" {% if vehiculo.configuracion == configuracion.0 %}selected="selected"{% endif %}>{{configuracion.0}}</option>
+    {% endfor %}
+  </select>
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 1"
+        name="presion_establecida_1"
+        {% if vehiculo.presion_establecida_1 %}value="{{vehiculo.presion_establecida_1}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_1" class="form__label"> Presión establecida 1</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 2"
+        name="presion_establecida_2"
+        {% if vehiculo.presion_establecida_2 %}value="{{vehiculo.presion_establecida_2}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_2" class="form__label"> Presión establecida 2</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 3"
+        name="presion_establecida_3"
+        {% if vehiculo.presion_establecida_3 %}value="{{vehiculo.presion_establecida_3}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_3" class="form__label"> Presión establecida 3</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 4"
+        name="presion_establecida_4"
+        {% if vehiculo.presion_establecida_4 %}value="{{vehiculo.presion_establecida_4}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_4" class="form__label"> Presión establecida 4</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 5"
+        name="presion_establecida_5"
+        {% if vehiculo.presion_establecida_5 %}value="{{vehiculo.presion_establecida_5}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_5" class="form__label"> Presión establecida 5</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 6"
+        name="presion_establecida_6"
+        {% if vehiculo.presion_establecida_6 %}value="{{vehiculo.presion_establecida_6}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_6" class="form__label"> Presión establecida 6</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="Presión establecida 7"
+        name="presion_establecida_7"
+        {% if vehiculo.presion_establecida_7 %}value="{{vehiculo.presion_establecida_7}}"{% endif %}
+        autocomplete="off"
+      />
+      <label for="presion_establecida_7" class="form__label"> Presión establecida 7</label>
+    </div>
+    <!-- End input -->
+
+    <!-- Start input -->
+    <div class="form__group field">
+      <input
+        class="form__field"
+        type="number"
+        placeholder="KM diario máximo"
+        name="km_diario_maximo"
+        {% if vehiculo.km_diario_maximo %}value="{{vehiculo.km_diario_maximo}}"{% endif %}
+        autocomplete="off"
+        required
+      />
+      <label for="km_diario_maximo" class="form__label"> KM diario máximo</label>
+    </div>
+    <!-- End input -->
+
+  <p>
+    <strong>Estatus</strong>
+  </p>
+
+  <label for="activo">
+    Activo
+        <input type="radio" name="estatus_activo" id="activo" value="activo" {% if vehiculo.estatus_activo %}checked{% endif %} />
+  </label>
+
+  <label for="inactivo">
+    Inactivo
+    <input type="radio" name="estatus_activo" id="inactivo" value="inactivo" {% if vehiculo.estatus_activo == False %}checked{% endif %} />
+  </label>
+
+  <p>
+    <strong>¿Es nuevo o usado?</strong>
+  </p>
+
+  <label for="nuevo">
+    Nuevo
+    <input type="radio" name="nuevo" id="nuevo" value="nuevo" {% if vehiculo.nuevo %}checked{% endif %} required />
+  </label>
+
+  <label for="usado">
+    Usado
+    <input type="radio" name="nuevo" id="usado" value="usado" {% if vehiculo.nuevo == False %}checked{% endif %} required />
+  </label>
+
+  <nav style="margin-top: 1rem">
+    <button type="submit" class="btn btn-success">
+      <i class="icon-checkmark"></i>
+    </button>
+  </nav>
+</div>

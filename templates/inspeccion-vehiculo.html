@@ -16,18 +16,94 @@
 <div class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+        <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
   
     <h1>Inspección de vehículo</h1>
   </header>
 
-  <main class="main__container">
+  <form class="main__container" method="POST" id="tire-form">
     {% include 'inspeccion/config.html' %}
 
     {% include 'inspeccion/formulario.html' %}
-  </main>
+    
+    <div class="modal__container">
+      <div class="form__container">
+        <h3>Vehículo</h3>
+    
+        <!-- Start input -->
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="number"
+            {% if vehiculo_actual.km == None %}
+              min="0"
+            {% else %}
+              min="{{vehiculo_actual.km}}"
+            {% endif %}
+            max="{{km_max}}"
+            placeholder="producto"
+            name="kilometraje"
+            autocomplete="off"
+            {% if vehiculo_actual.km == None %}
+              value = ""
+            {% else %}
+              value = "{{vehiculo_actual.km}}"
+            {% endif %}
+            
+          />
+          <label for="kilometraje" class="form__label">
+            Kilometraje
+          </label>
+        </div>
+        <!-- End input -->
+    
+        <!-- OBSERVACIONES VEHICULO -->
+    
+        <div class="drop-form">
+          <input type="search" class="drop-input" placeholder="Observación de vehículo" id="vehiculo-search">
+          <ul class="drop-options" id="vehiculo-observaciones">
+            {% for observacion in observaciones_vehiculo %}
+              <li class="search-item">
+                <label for="{{observacion.observacion}}" class="input-check">
+                  <i class="{{observacion.icono}}"></i>
+                  {{observacion.observacion}}
+                  <input 
+                    type="checkbox" 
+                    name="observation-vehiculo" 
+                    value="{{observacion.observacion}}" 
+                    id="{{observacion.observacion}}" 
+                    data-vehiculo-item="{{observacion.observacion}}"
+                  />
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+    
+        <h3 class="text-center">
+          Observaciones
+        </h3>
+    
+        <div class="observations__container">
+          {% for observacion in observaciones_vehiculo %}
+            <div data-icon-type="{{observacion.observacion}}">
+              <i class="{{observacion.icono}}"></i>
+              {{observacion.observacion}}
+            </div>
+          {% endfor %}
+        </div>
+    
+        <button type="button" class="btn close" id="close-modal">
+          Cerrar
+        </button>
+    
+      </div>
+    </div>
+  </form>
 </div>
+
 
 <script src="{% static 'js/inspeccion/index.js' %}" type="module"></script>
 

@@ -1,10 +1,16 @@
 <!-- Start input -->
 <div class="form__group field">
   <input
+    type="hidden"
+    name="id"
+    {% if aplicacion.id %}value="{{aplicacion.id}}"{% endif %}
+  />
+  <input
     class="form__field"
     type="text"
     placeholder="nombre"
     name="nombre"
+    {% if aplicacion.nombre %}value="{{aplicacion.nombre}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -15,13 +21,14 @@
 <!-- End input -->
 
 <!-- Start input -->
-<div class="form__group field">
+<!-- <div class="form__group field">
   <input
     class="form__field"
     type="text"
     placeholder="company"
     name="compania"
     list="company"
+    {% if aplicacion.compania %}value="{{aplicacion.compania}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -33,17 +40,27 @@
       <option value="{{compania}}">{{compania}}</option>
     {% endfor %}
   </datalist>
-</div>
+</div> -->
 <!-- End input -->
 
+<label for="compania" class="select-label">Compañia</label>
+<select name="compania" id="compania" required class="select-input">
+  <option value="">Seleccione una compañia...</option>
+  {% if aplicacion.compania %}<option value="{{aplicacion.compania}}" selected>{{aplicacion.compania}}</option>{% endif %}
+  {% for compania in companias %}
+    <option value="{{compania}}">{{compania}}</option>
+  {% endfor %}
+</select>
+
 <!-- Start input -->
-<div class="form__group field">
+<!-- <div class="form__group field">
   <input
     class="form__field"
     type="text"
     placeholder="sucursal"
     name="ubicacion"
     list="sucursal"
+    {% if aplicacion.ubicacion %}value="{{aplicacion.ubicacion}}"{% endif %}
     autocomplete="off"
     required
   />
@@ -55,5 +72,99 @@
       <option value="{{sucursal}}">{{sucursal}}</option>
     {% endfor %}
   </datalist>
+</div> -->
+<!-- End input -->
+
+<label for="sucursal" class="select-label">Sucursal</label>
+<select name="ubicacion" id="sucursal" required class="select-input">
+  <option value="">Seleccione una sucursal...</option>
+  {% if aplicacion.sucursal %}<option value="{{aplicacion.sucursal}}" selected>{{aplicacion.sucursal}}</option>{% endif %}
+  {% for sucursal in sucursales %}
+    <option value="{{sucursal}}">{{sucursal}}</option>
+  {% endfor %}
+</select>
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="number"
+    placeholder="parametro_desgaste_direccion"
+    name="parametro_desgaste_direccion"
+    {% if aplicacion.parametro_desgaste_direccion %}value="{{aplicacion.parametro_desgaste_direccion}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Parámetro de desgaste de dirección
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="number"
+    placeholder="parametro_desgaste_traccion"
+    name="parametro_desgaste_traccion"
+    {% if aplicacion.parametro_desgaste_traccion %}value="{{aplicacion.parametro_desgaste_traccion}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Parámetro de desgaste de traccion
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="number"
+    placeholder="parametro_desgaste_arrastre"
+    name="parametro_desgaste_arrastre"
+    {% if aplicacion.parametro_desgaste_arrastre %}value="{{aplicacion.parametro_desgaste_arrastre}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Parámetro de desgaste de arrastre
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="number"
+    placeholder="parametro_desgaste_loco"
+    name="parametro_desgaste_loco"
+    {% if aplicacion.parametro_desgaste_loco %}value="{{aplicacion.parametro_desgaste_loco}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Parámetro de desgaste de loco
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="number"
+    placeholder="parametro_desgaste_retractil"
+    name="parametro_desgaste_retractil"
+    {% if aplicacion.parametro_desgaste_retractil %}value="{{aplicacion.parametro_desgaste_retractil}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="sucursal" class="form__label">
+    Parámetro de desgaste de retractil
+  </label>
 </div>
 <!-- End input -->

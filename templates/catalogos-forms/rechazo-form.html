@@ -16,19 +16,19 @@
         <input
           class="form__field"
           type="text"
-          placeholder="llanta"
-          name="llanta"
-          list="llanta"
-          {% if rechazo.llanta %}value="{{rechazo.llanta}}"{% endif %}
+          placeholder="compania"
+          name="compania"
+          list="compania"
+          {% if rechazo.compania %}value="{{rechazo.compania}}"{% endif %}
           autocomplete="off"
           required
         />
-        <label for="llanta" class="form__label">
-          Llanta
+        <label for="compania" class="form__label">
+          Compania
         </label>
-        <datalist id="llanta">
-          {% for llanta in llantas %}
-            <option value="{{llanta}}">{{llanta}}</option>
+        <datalist id="compania">
+          {% for compania in companias %}
+            <option value="{{compania}}">{{compania}}</option>
           {% endfor %}
         </datalist>
       </div>

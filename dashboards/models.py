@@ -226,7 +226,7 @@ class Vehiculo(models.Model):
                             ("T4.T4.T4.SP2", "T4.T4.T4.SP2")
                 )
     configuracion = models.CharField(max_length=200, choices=opciones_configuracion, null=True, blank=True)
-    fecha_de_inflado = models.DateField(null=True, blank=True)
+    fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     tiempo_de_inflado = models.FloatField(blank=True, null=True)
     presion_de_entrada = models.IntegerField(blank=True, null=True)
     presion_de_salida = models.IntegerField(blank=True, null=True)
@@ -359,13 +359,14 @@ class Llanta(models.Model):
                         ("Tracción", "Tracción"),
                         ("Arrastre", "Arrastre"),
                         ("Loco", "Loco"),
-                        ("Retractil", "Retractil")
+                        ("Retractil", "Retractil"),
+                        ("Refacción", "Refacción")
                 )
     nombre_de_eje = models.CharField(max_length=200, choices=opciones_de_eje, null=True, blank=True)
     presion_de_entrada = models.IntegerField(blank=True, null=True)
     presion_de_salida = models.IntegerField(blank=True, null=True)
     presion_actual = models.IntegerField(blank=True, null=True)
-    fecha_de_inflado = models.DateField(null=True, blank=True)
+    fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     ultima_inspeccion = models.ForeignKey(Inspeccion, null=True, blank=True, on_delete=models.SET_NULL, related_name="inspecciones")
     profundidad_izquierda = models.FloatField(blank=True, null=True)
     profundidad_central = models.FloatField(blank=True, null=True)
@@ -398,23 +399,23 @@ class Llanta(models.Model):
 class Bitacora(models.Model):
     # Modelo de la Bitácora
 
-    numero_economico = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
-    fecha_de_inflado = models.DateField(null=True, blank=True)
+    fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     tiempo_de_inflado = models.FloatField(blank=True, null=True, default=2)
     presion_de_entrada = models.IntegerField(blank=True, null=True, default=100)
     presion_de_salida = models.IntegerField(blank=True, null=True, default=100)
 
     def __str__(self):
         # Retorna el número económico
-        return f"{self.numero_economico}"
+        return f"{self.vehiculo}"
 
 class Bitacora_Pro(models.Model):
     # Modelo de la Bitácora del Pulpo Pro
 
-    numero_economico = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
-    fecha_de_inflado = models.DateField(null=True, blank=True)
+    fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     tiempo_de_inflado = models.FloatField(blank=True, null=True)
     presion_de_entrada_1 = models.IntegerField(blank=True, null=True)
     presion_de_salida_1 = models.IntegerField(blank=True, null=True)
@@ -443,7 +444,7 @@ class Bitacora_Pro(models.Model):
 
     def __str__(self):
         # Retorna el número económico
-        return f"{self.numero_economico}"
+        return f"{self.vehiculo}"
     class Meta:
         verbose_name_plural = "Bitacoras Pro"
 
@@ -574,7 +575,6 @@ class Rechazo(models.Model):
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
     razon = models.CharField(max_length=200)
 
-
 class HistoricoLlanta(models.Model):
     num_eco = models.ForeignKey(Llanta, on_delete=models.CASCADE)
     casco_nuevo	= models.ForeignKey(Producto, on_delete=models.CASCADE, related_name="casco_nuevo", null=True)
@@ -612,6 +612,15 @@ class ServicioVehiculo(models.Model):
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, blank=True, null=True)
     configuracion = models.CharField(max_length=5000)
     alineacion = models.BooleanField(default=False)
+    preguardado_vehiculo = models.CharField(max_length=5000, null=True, blank=True)
+    preguardado_llantas = models.CharField(max_length=5000, null=True, blank=True)
+    estatus = (
+        ("abierto", "abierto"),
+        ("programado", "programado"),
+        ("cerrado", "cerrado"),
+        )
+    estado = models.CharField(max_length=255, null=True, blank=True, choices=estatus)
+
 
 class ServicioLlanta(models.Model):
     serviciovehiculo = models.ForeignKey(ServicioVehiculo, null=True, on_delete=models.SET_NULL)

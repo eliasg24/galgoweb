@@ -89,7 +89,7 @@ const vehiculoManual = (item = '') => {
 
   observations.forEach((observation) => {
     observation.addEventListener('input', () => {
-      let container = document.querySelector('.observations__container');
+      let container = document.querySelector('.modal__container .observations__container');
       if (observation.checked) {
         container
           .querySelector(`[data-icon-type="${observation.value}"]`)
@@ -214,3 +214,24 @@ const onSelectTire = () => {
     });
   });
 };
+
+
+(() => {
+  const button = document.querySelector('.btn.modal');
+  const close = document.querySelector('#close-modal');
+  const modal = document.querySelector('.modal__container');
+
+  button.addEventListener('click', (e) => {
+    modal.classList.add('active');
+  });
+  
+  close.addEventListener('click', (e) => {
+    modal.classList.remove('active');
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === "Escape") {
+      if (modal.classList.contains('active')) modal.classList.remove('active')
+    }
+  });
+})();

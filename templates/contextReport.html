@@ -1,0 +1,45 @@
+<section class="context-container">
+  <h1>Contexto</h1>
+  <hr />
+
+  <article class="context-context">
+    <table>
+      <thead>
+        <tr>
+          <th>Compañias</th>
+          <th>Sucursales</th>
+          <th>Aplicaciones</th>
+          <th>Talleres</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="item">{{compania}}</div>
+          </td>
+          <td>
+            {% for i in ubicacion %}
+              <div class="item">{{i}}</div>
+            {% endfor %}
+          </td>
+          <td>
+            {% for i in aplicacion %}
+              <div class="item">{{i}}</div>
+            {% endfor %}
+          </td>
+          <td>
+            {% for i in taller %}
+              <div class="item">{{i}}</div>
+            {% endfor %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+
+  <hr />
+
+  <nav class="flex-row justify-content-end">
+    <button class="btn btn-context">Cambiar contexto</button>
+  </nav>
+</section>

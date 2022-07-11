@@ -28,7 +28,9 @@
       </div>
     
       <nav class="flex-row">
+        {% include 'vehicleList/navegacion.html' %}
         <a href="{% url 'dashboards:resumen' %}" class="btn next">Resumen</a>
+
         <button class="btn btn-download" type="button" id="filter-btn">
           <span class="icon-filter"></span>
         </button>
@@ -37,11 +39,10 @@
 
     <main class="main__content">
 
-      <nav class="nav__pages">
+<!--       <nav class="nav__pages">
 
-        {% include 'vehicleList/navegacion.html' %}
 
-      </nav>
+      </nav> -->
 
       <section class="vehicle__list">
 

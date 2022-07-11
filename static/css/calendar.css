@@ -10,3 +10,94 @@
 .fc-view-harness {
   background-color: var(--colorv01);
 }
+
+.modal__container {
+  align-items: center;
+  backdrop-filter: blur(1px);
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  transition: all .3s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal__container.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.modal__content {
+  background-color: var(--colorv00);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.modal__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.modal__nav {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+}
+
+/* 
+  * Buttons 
+*/
+
+.btn {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.btn.close {
+  align-items: flex-end;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 2rem;
+  height: 3rem;
+  width: 3rem;
+}
+
+.btn.gray,
+.btn.green,
+.btn.blue {
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  margin-left: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.btn.gray {
+  background-color: #989898;
+}
+
+.btn.green {
+  background-color: #009345;
+}
+
+.btn.blue {
+  background-color: #026cf5;
+}
+
+@media screen and (min-width: 1024px) {
+  .modal__content {
+    max-width: 600px;
+    min-width: 400px;
+  }
+}
