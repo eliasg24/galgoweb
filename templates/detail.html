@@ -15,7 +15,7 @@
 <main class="main-cont">
     <header class="head-cont animate__animated animate__fadeIn">
         <div class="logo">
-            <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+            <img src="{% static 'images/aeto.svg' %}" alt="logo">
         </div>
 
         <nav class="flex-row" id="nav-dash">
@@ -138,7 +138,7 @@
                                             </a>
                                         </div>
                                         
-                                    {% else %}
+                                    {% elif eje|length == 4 %}
 
                                         <div class="par-doble-llanta ejes__{{cant_ejes|safe}}">
                             
@@ -240,8 +240,33 @@
 
                                         </div>
 
-                                    {% endif %}
+                                    {% else %}
+                                        <div class="par-llantas ejes__{{cant_ejes|safe}}">
+                                            <a href="{% url 'dashboards:tireDetail' eje.0.0.id %}" class="tire">
+                                                <div class="tire__top {{eje.0.2}}">
+                                                    <span class="tire__data">
+                                                        {{eje.0.0.presion_actual}}
+                                                    </span>
+                                                </div>
 
+                                                <div class="tire__medium {{eje.0.4}}">
+                                                    <span class="tire__data">
+                                                        {{eje.0.0.posicion}}
+                                                    </span>
+                                                </div>
+                                                
+                                                <span class="icon-tire2"></span>
+                                                
+                                                <div class="tire__bottom {{eje.0.1}}">
+                                                    <span class="tire__data">
+                                                        {{eje.0.3}}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                            
+                                        </div>
+                                    {% endif %}
+                                    
                                 
                                 {% endfor %}
                                         <!-- <div class="sp1">
@@ -390,7 +415,7 @@
                                                 <tr id="paragraph {{evento.1.id}}">
                                                     <td class="td-table4"><span class="icon-magnifier"></span></td>
                                                     <td class="td-table4">{{evento.1.fecha.day}}/{{evento.1.fecha.month}}/{{evento.1.fecha.year}}</td>
-                                                    <td class="td-table4"><span class="{{evento.3}}"></span><span id="icon2 {{evento.1.id}}"></span></td>
+                                                    <td class="td-table4"><span class="{{evento.3}}"></span></span></td>
                                                     <td class="td-table4">{{evento.1.id}}</td>
                                                     <td class="td-table4">
                                                         <a href="{% url 'dashboards:reporteInspeccion' evento.1.id evento.2 %}" rel="noopener" target="_blank">
@@ -1057,18 +1082,18 @@ anychart.onDocumentReady(function () {
     // adjust x axis
     chart.xAxis()
             .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
+            .stroke("#fff")
+            .labels().fontColor("#fff");
             
     // adjust y axis       
     chart.yAxis()
             .title('')
-            .stroke("#000")
-            .labels().fontColor("#000");
+            .stroke("#fff")
+            .labels().fontColor("#fff");
 
 var legend = chart.legend();
     legend.enabled(true)
-            .fontColor("#000")
+            .fontColor("#fff")
             .fontSize(12);
 
     // set container id for the chart
@@ -1115,9 +1140,9 @@ anychart.onDocumentReady(function () {
 var data = anychart.data.set([
 {% for eje, kmxmm in comparativa_de_ejes.items %}
 {x: "{{eje}}", value: {{kmxmm}},
-normal:   {fill: "#4a73f2", stroke: "#4a73f2"},
-hovered:  {fill: "#4a73f2 0.1", stroke: "2 #4a73f2"},
-selected: {fill: "#4a73f2 0.5",stroke: "4 #4a73f2"}
+normal:   {fill: "#0097fc", stroke: "#0097fc"},
+hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
+selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
 },
 {% endfor %}
 ]);
@@ -1133,7 +1158,7 @@ series.name('Km');
 // set the chart title
 chart.title("");
 var title = chart.title();
-    title.fontColor('#000');
+    title.fontColor('#fff');
     title.fontSize('1vw');
     title.fontWeight(600);
 
@@ -1145,14 +1170,14 @@ chart.yAxis().title("");
 // adjust x axis
 chart.xAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
 
 // adjust y axis       
 chart.yAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
 
 // set function to format y axis labels
 var yLabels = chart.yAxis(0).labels();
@@ -1187,9 +1212,9 @@ anychart.onDocumentReady(function () {
 var data = anychart.data.set([
     {% for posicion, profundidad in comparativa_de_posiciones.items %}
         {x: "{{posicion}}", value: {{profundidad.0}},
-        normal:   {fill: "#4973f2", stroke: "#4973f2"},
-        hovered:  {fill: "#4973f2 0.1", stroke: "2 #4973f2"},
-        selected: {fill: "#4973f2 0.5",stroke: "4 #4973f2"}
+        normal:   {fill: "#0097fc", stroke: "#0097fc"},
+        hovered:  {fill: "#0097fc 0.1", stroke: "2 #0097fc"},
+        selected: {fill: "#0097fc 0.5",stroke: "4 #0097fc"}
         },
     {% endfor %}
 
@@ -1205,7 +1230,7 @@ series.name('Km');
 // set the chart title
 chart1.title(""); /* Pendiente de cambiar */
 var title = chart1.title();
-    title.fontColor('#000');
+    title.fontColor('#fff');
     title.fontSize('1vw');
     title.fontWeight(600);
 
@@ -1218,14 +1243,14 @@ chart1.yAxis().title("");
 // adjust x axis
 chart1.xAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
         
 // adjust y axis       
 chart1.yAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
 
 
 // set function to format y axis labels
@@ -1262,9 +1287,9 @@ anychart.onDocumentReady(function () {
 var data = [
     {% for posicion, profundidad in comparativa_de_posiciones.items %}
         {x: "{{posicion}}", value: {{profundidad.1}}, markerSize:12,
-        normal:   {fill: "#4973f2", stroke: "#4973f2", type: "circle"},
-        hovered:  {fill: "#4973f2 0.3", stroke: "4 #4973f2"},
-        selected: {fill: "#4973f2 0.5",stroke: "6 #4973f2"}
+        normal:   {fill: "#A349A4", stroke: "#A349A4", type: "circle"},
+        hovered:  {fill: "#A349A4 0.3", stroke: "4 #A349A4"},
+        selected: {fill: "#A349A4 0.5",stroke: "6 #A349A4"}
         },
     {% endfor %}
 ];
@@ -1293,9 +1318,9 @@ chart.yGrid(true);
 
 
 // set grid stroke appearance
-chart.xGrid().stroke({color: "#000"});
+chart.xGrid().stroke({color: "#fff"});
 // set grid stroke appearance
-chart.yGrid().stroke({color: "#000"});
+chart.yGrid().stroke({color: "#fff"});
 
 //turn on chart animation
 chart.animation(true);
@@ -1303,7 +1328,7 @@ chart.animation(true);
 // set chart title text settings
 chart.title('');
 var title = chart.title();
-title.fontColor('#000');
+title.fontColor('#fff');
 title.fontSize(18);
 title.fontWeight(600);
 
@@ -1314,14 +1339,14 @@ tooltip.positionMode("point");
 // adjust x axis
 chart.xAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
         
 // adjust y axis       
 chart.yAxis()
         .title('')
-        .stroke("#000")
-        .labels().fontColor("#000");
+        .stroke("#fff")
+        .labels().fontColor("#fff");
 
 // set the container id
 chart.container("chart-scatter");

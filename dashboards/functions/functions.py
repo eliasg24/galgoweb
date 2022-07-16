@@ -57,11 +57,67 @@ def archivar_taller(POST, pk, servicio_vehiculo):
         acciones_vehiculo = []
     if 'alinearVehiculo' in acciones_vehiculo:
         intenciones_vehiculo.append({'alinearVehiculo': 'True'})
-        
+    inflarVehiculo = True if 'inflarVehiculo' in acciones_vehiculo else False
     try:
         dataPOST = json.loads(POST.getlist('data')[0])
     except:
         dataPOST = []
+        
+    if len(dataPOST) == 0 and inflarVehiculo == True:
+        llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante')
+        for llanta in llantas:
+            dataPOST.append(
+                {
+                "tipoServicio":"sr",
+                "inflar":"on",
+                "balancear":"",
+                "reparar":"",
+                "valvula":"",
+                "costado":"",
+                "rotar":"no",
+                "otroVehiculo":"",
+                "llantaOrigen":"",
+                "kmMontadoOtro":"",
+                "stock":"",
+                "nuevaLlanta":"",
+                "razon":"",
+                "almacen_desmontaje":"",
+                "taller_desmontaje":"",
+                "llantaId":llanta.id,
+                "numero_economico":"",
+                "posicion":"",
+                "id_servicio":""}
+            )
+    if len(dataPOST) != 0 and inflarVehiculo == True:
+        id_in_data = ids_in_data(dataPOST)
+        llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante').exclude(id__in = id_in_data)
+        
+        for data in dataPOST:
+            if data['tipoServicio'] == 'sr':
+                data['inflar'] = 'on'
+        for llanta in llantas:
+            dataPOST.append(
+                {
+                "tipoServicio":"sr",
+                "inflar":"on",
+                "balancear":"",
+                "reparar":"",
+                "valvula":"",
+                "costado":"",
+                "rotar":"no",
+                "otroVehiculo":"",
+                "llantaOrigen":"",
+                "kmMontadoOtro":"",
+                "stock":"",
+                "nuevaLlanta":"",
+                "razon":"",
+                "almacen_desmontaje":"",
+                "taller_desmontaje":"",
+                "llantaId":llanta.id,
+                "numero_economico":"",
+                "posicion":"",
+                "id_servicio":""}
+            )
     for data in dataPOST:
         if data['tipoServicio'] == 'desmontaje':
             print('Desmontaje')
@@ -83,7 +139,8 @@ def archivar_taller(POST, pk, servicio_vehiculo):
                 'llanta': llanta.id,
                 'llanta_nueva': llanta_nueva.id,
                 'razon': razon,
-                'taller_desmontaje': taller_desmontaje.id
+                'taller_desmontaje': taller_desmontaje.id,
+                'almacen_desmontaje': almacen_desmontaje
                 })
         
      
@@ -314,12 +371,8 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
 def is_sp1(vehiculo_actual):
     configuracion = vehiculo_actual.configuracion
     if 'SP1' in configuracion:
-        print(vehiculo_actual)
-        print(True)
         return True
     else:
-        print(vehiculo_actual)
-        print(False)
         return False
     
 
@@ -395,7 +448,6 @@ def acomodo_pocisiones_vehicle(vehiculos):
         
     return vehiculos_ejes_acomodados
 
-
 def acomodo_ejes(ejes_no_ordenados):
     ejes = []
     for eje in ejes_no_ordenados:
@@ -410,7 +462,7 @@ def acomodo_ejes(ejes_no_ordenados):
             ejes.append(lista_temp)
             print(' 0---0')
         
-        else:
+        elif len(eje) == 4:
             lista_temp = ['', '', '', '']
             for llanta_act in eje:
                 if 'LO' in llanta_act[0].posicion:
@@ -423,6 +475,13 @@ def acomodo_ejes(ejes_no_ordenados):
                     lista_temp[3] = llanta_act
             ejes.append(lista_temp)
             print('00---00')
+        elif len(eje) == 1:
+            lista_temp = ['']
+            for llanta_act in eje:
+                if 'SP1' in llanta_act[0].tipo_de_eje:
+                    lista_temp[0] = llanta_act
+            ejes.append(lista_temp)
+            print('---0---')
     return ejes
 
 def actualizar_km_actual(llanta_actual, llanta_referencia, vehiculo, vehiculo_referencia):
@@ -480,64 +539,46 @@ def actualizar_vida(llanta):
     elif vida == '4R':
         return '5R'
 
+def suma_km_vidas(historico):
+    km_nuevo = historico.km_recorrido_nuevo if historico.km_recorrido_nuevo != None else 0
+    km_renovado_1 = historico.km_recorrido_1 if historico.km_recorrido_1 != None else 0
+    km_renovado_2 = historico.km_recorrido_2 if historico.km_recorrido_2 != None else 0
+    km_renovado_3 = historico.km_recorrido_3 if historico.km_recorrido_3 != None else 0
+    km_renovado_4 = historico.km_recorrido_4 if historico.km_recorrido_4 != None else 0
+    km_renovado_5 = historico.km_recorrido_5 if historico.km_recorrido_5 != None else 0
+    return km_nuevo + km_renovado_1 + km_renovado_2 + km_renovado_3 + km_renovado_4 + km_renovado_5
+
 def cambio_de_vida(llanta, llanta_futuro):
     try:
         historico_llanta = HistoricoLlanta.objects.get(num_eco = llanta)
         if llanta.vida == 'Nueva':
             historico_llanta.casco_nuevo = llanta.producto
             historico_llanta.km_recorrido_nuevo = llanta_futuro.km_actual
-            historico_llanta.km_total = llanta_futuro.km_actual
             
         elif llanta.vida == '1R':
-            if historico_llanta.km_recorrido_nuevo == None:
-                historico_llanta.renovado_1 = llanta.producto
-                historico_llanta.km_recorrido_1 = llanta_futuro.km_actual
-                historico_llanta.km_total = llanta_futuro.km_actual
-            else:
-                historico_llanta.renovado_1 = llanta.producto
-                historico_llanta.km_recorrido_1 = llanta_futuro.km_actual - historico_llanta.km_total
-                historico_llanta.km_total = llanta_futuro.km_actual
+            historico_llanta.renovado_1 = llanta.producto
+            historico_llanta.km_recorrido_1 = llanta_futuro.km_actual
                 
         elif llanta.vida == '2R':
-            if historico_llanta.km_recorrido_1 == None:
-                historico_llanta.renovado_2 = llanta.producto
-                historico_llanta.km_recorrido_2 = llanta_futuro.km_actual
-                historico_llanta.km_total = llanta_futuro.km_actual
-            else:
-                historico_llanta.renovado_2 = llanta.producto
-                historico_llanta.km_recorrido_2 = llanta_futuro.km_actual  - historico_llanta.km_total
-                historico_llanta.km_total = llanta_futuro.km_actual
+            historico_llanta.renovado_2 = llanta.producto
+            historico_llanta.km_recorrido_2 = llanta_futuro.km_actual 
             
         elif llanta.vida == '3R':
-            if historico_llanta.km_recorrido_2 == None:
-                historico_llanta.renovado_3 = llanta.producto
-                historico_llanta.km_recorrido_3 = llanta_futuro.km_actual
-                historico_llanta.km_total = llanta_futuro.km_actual
-            else:
-                historico_llanta.renovado_3 = llanta.producto
-                historico_llanta.km_recorrido_3 = llanta_futuro.km_actual - historico_llanta.km_total
-                historico_llanta.km_total = llanta_futuro.km_actual
+            historico_llanta.renovado_3 = llanta.producto
+            historico_llanta.km_recorrido_3 = llanta_futuro.km_actual
             
         elif llanta.vida == '4R':
-            if historico_llanta.km_recorrido_3 == None:
-                historico_llanta.renovado_4 = llanta.producto
-                historico_llanta.km_recorrido_4 = llanta_futuro.km_actual
-                historico_llanta.km_total = llanta_futuro.km_actual
-            else:
-                historico_llanta.renovado_4 = llanta.producto
-                historico_llanta.km_recorrido_4 = llanta_futuro.km_actual - historico_llanta.km_total
-                historico_llanta.km_total = llanta_futuro.km_actual
+            historico_llanta.renovado_4 = llanta.producto
+            historico_llanta.km_recorrido_4 = llanta_futuro.km_actual
             
         elif llanta.vida == '5R':
-            if historico_llanta.km_recorrido_4 == None:
-                historico_llanta.renovado_5 = llanta.producto
-                historico_llanta.km_recorrido_5 = llanta_futuro.km_actual
-                historico_llanta.km_total = llanta_futuro.km_actual
-            else:
-                historico_llanta.renovado_5 = llanta.producto
-                historico_llanta.km_recorrido_5 = llanta_futuro.km_actual - historico_llanta.km_total
-                historico_llanta.km_total = llanta_futuro.km_actual
+            historico_llanta.renovado_5 = llanta.producto
+            historico_llanta.km_recorrido_5 = llanta_futuro.km_actual
+        historico_llanta.km_total = suma_km_vidas(historico_llanta)
         historico_llanta.save()
+        llanta.km_actual = 0
+        llanta.save()
+        
     except:
         historico_llanta = HistoricoLlanta.objects.create(num_eco = llanta)
         print('crear')
@@ -567,6 +608,8 @@ def cambio_de_vida(llanta, llanta_futuro):
             historico_llanta.km_recorrido_5 = llanta_futuro.km_actual
             historico_llanta.km_total = llanta_futuro.km_actual
         historico_llanta.save()
+        llanta.km_actual = 0
+        llanta.save()
     
 def clases_mas_frecuentes(vehiculo_fecha, compania):
     try:
@@ -763,7 +806,7 @@ def color_profundidad(profundidad, punto_de_retiro):
             color = 'good'
         return color
     else:
-        return 'bad'
+        return 'good'
 
 def color_observaciones(observaciones):
     rojo = 0
@@ -1343,6 +1386,10 @@ def cpk_vehiculo_cantidad(cpk_vehiculos):
         valores = [0, 0, 0, 0, 0, 0, 0, 0]
         rangos = [0, 0, 0, 0, 0, 0, 0, 0]
     return valores, rangos
+
+
+def dataPOST(dataPOST, inflarVehiculo):
+    pass
 
 
 def desdualizacion(llantas, periodo):
@@ -3116,6 +3163,13 @@ def exist_context(user):
 def folio():
     pass
 
+
+def ids_in_data(dataPOST):
+    ids = []
+    for data in dataPOST:
+        ids.append(int(data['llantaId']))
+    return ids
+
 def inflado_inicio(POST):
     #? Lista de ids
     fecha = ''
@@ -3609,9 +3663,9 @@ def lista_problemas_taller(servicios_llanta, servicio):
         if servicio.costado_reparado == True:
             problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se reparo el costado de la llanta'})
         if servicio.rotar == True:
-            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Se roto la llanta por {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'{servicio.llanta}-{servicio.llanta.producto} roto la llanta por {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
         if servicio.desmontaje == True:
-            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'Esta llanta se desmonto por la {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
+            problemas.append({'posicion': servicio.llanta.posicion, 'icono': '', 'accion': f'{servicio.llanta}-{servicio.llanta.producto} llanta se desmonto por la {servicio.llanta_cambio}-{servicio.llanta_cambio.producto}'})
     return problemas
 
 def list_vehicles_valid_filter(vehiculos, filtro, query2):
@@ -4268,8 +4322,6 @@ def punto_de_retiro(llanta_actual):
         punto_retiro = compania.punto_retiro_eje_retractil
     return(punto_retiro)
 
-
-
 def quitar_desgaste(llanta, llanta_rotar):
     d_alta_presion = Observacion.objects.get(observacion = 'Desgaste alta presión') #?Amarillo
     d_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna') #?Amarillo
@@ -4409,6 +4461,10 @@ def eje_a_str(vehiculo_acomodado):
         for llanta in eje:
             id_llanta = llanta['llanta'].id
             llanta['llanta'] = id_llanta
+    if vehiculo_acomodado[0]['sp1'] == True:
+        vehiculo_acomodado[0]['sp1'] = 'True'
+    elif vehiculo_acomodado[0]['sp1'] == False:
+        vehiculo_acomodado[0]['sp1'] = 'False'
     return str(vehiculo_acomodado)
 
 
@@ -4443,7 +4499,7 @@ def bitacora_servicios(pk: int, request, acciones_vehiculo: list, dataPOST: list
     """
     servicio_de_vehiculo = servicio_vehiculo(pk, request, acciones_vehiculo)
     servicio_llanta_desmomtaje(dataPOST, servicio_de_vehiculo)
-    servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_de_vehiculo)
+    servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_de_vehiculo, request)
 
 
 def fecha_str_vehiculo(vehiculo_acomodado):
@@ -4479,11 +4535,13 @@ def servicio_vehiculo(pk: int, request, acciones_vehiculo: list):
     dateFormatterEnd = "%Y-%m-%d, %H:%M:%S"
     fecha_end = datetime.strptime(dateStringEnd, dateFormatterEnd)
     
-    
+    usuario = int(hoja['usuario'])
+    usuario = Perfil.objects.get(pk = usuario)
+    print(usuario)
     #? Se guardan los servicios
     servicio = ServicioVehiculo.objects.create(
         vehiculo = vehiculo,
-        usuario = request.user,
+        usuario = usuario.user,
         fecha_inicio = fecha.date(),
         horario_inicio = fecha.time(),
         fecha_final = fecha_end.date(),
@@ -4560,7 +4618,7 @@ def calendarioTaller(servicio):
         vehiculo = servicio.vehiculo,
         start = start,
         end = end,
-        title = titulo,
+        title_current = titulo,
         horario_start_str = horario_start_str,
         horario_end_str = horario_end_str,
         compania = servicio.vehiculo.compania
@@ -4594,7 +4652,7 @@ def servicio_llanta_desmomtaje(dataPOST, servicio_vehiculo_id):
             )
 
 
-def servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_vehiculo_id):
+def servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_vehiculo_id, request):
         llantas_rotadas = []
         for data in dataPOST:
             if data['tipoServicio'] == 'sr':
@@ -5150,14 +5208,14 @@ def vehiculo_sospechoso_llanta(inspecciones):
         ultima_profundidad = min_profundidad(sin_regresion.filter(llanta=llanta["llanta"]).order_by("fecha_hora").last())
         #print("primera_profundidad: ", primera_profundidad)
         #print("ultima_profundidad: ", ultima_profundidad)
-        llanta_sospechosa = sin_regresion.filter(llanta=llanta["llanta"]).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__lt = primera_profundidad - (F("llanta__vehiculo__compania__mm_parametro_sospechoso") * dias)).values("llanta").distinct()
+        llanta_sospechosa = sin_regresion.select_related('llanta').filter(llanta=llanta["llanta"]).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField())).filter(min_profundidad__lt = primera_profundidad - (F("llanta__vehiculo__compania__mm_parametro_sospechoso") * dias)).values("llanta__numero_economico").distinct()
         if llanta_sospechosa:
-            if not(llanta_sospechosa[0]["llanta"] in llantas_lista):
+            if not(llanta_sospechosa[0] in llantas_lista):
                 if llantas_sospechosas_iteracion:
                     llantas_sospechosas = llantas_sospechosas | llanta_sospechosa
                 else:
                     llantas_sospechosas = llanta_sospechosa
                     llantas_sospechosas_iteracion = True
-                llantas_lista.append(llanta_sospechosa[0]["llanta"])
+                llantas_lista.append(llanta_sospechosa[0])
     #print(vehiculos_sospechosos)
     return llantas_sospechosas

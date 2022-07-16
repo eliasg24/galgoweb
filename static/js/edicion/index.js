@@ -234,3 +234,16 @@ const onSelectTire = () => {
   });
 })();
 
+(() => {
+  document.addEventListener('submit', (e) => {
+    const campos = e.target.querySelectorAll('[data-required]');
+
+    campos.forEach(item => {
+      if (item.value.length <= 0) {
+        Swal.fire('Erro en el formulario', `El campo ${item.name} de la posición ${ item.dataset.posicion } esta vacío`, 'error');
+        return;
+      }
+    })
+  })
+})()
+

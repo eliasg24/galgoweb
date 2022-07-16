@@ -2,13 +2,14 @@ import json
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.contrib.auth.models import User, Group
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.fields import ArrayField
-from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func
+from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func, OuterRef, Subquery
 from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest
 
 from dashboards.functions import functions
 from dashboards.functions.functions import DiffDays, CastDate
-from dashboards.models import Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
+from dashboards.models import Observacion, Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
 
 class CompaniaData(View):
     def get(self, request , *args, **kwargs):
@@ -125,9 +126,10 @@ class VehicleData(View):
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        vehiculos = Vehiculo.objects.filter(compania=compania).select_related("compania").annotate(dias_sin_inspeccion=DiffDays(CastDate(Now())-CastDate(F('fecha_ultima_inspeccion')), output_field=IntegerField()), dias_sin_inflar=DiffDays(CastDate(Now())-CastDate(F('fecha_de_inflado')), output_field=IntegerField()), vencido=Case(When(dias_sin_inspeccion__gt=F("compania__periodo2_inspeccion"), then=True), When(fecha_ultima_inspeccion=None, then=True), default=False), estatus_pulpo=Case(When(observaciones_llanta__observacion__in=["Doble mala entrada"], then=Value("Doble mala entrada")), When(observaciones_llanta__observacion__in=["Mala entrada"], then=Value("Mala entrada")), default=Value("Entrada Correcta")))
+        vehiculos = Vehiculo.objects.filter(compania=compania).select_related("compania").annotate(dias_sin_inspeccion=DiffDays(CastDate(Now())-CastDate(F('fecha_ultima_inspeccion')), output_field=IntegerField()), dias_sin_inflar=DiffDays(CastDate(Now())-CastDate(F('fecha_de_inflado')), output_field=IntegerField()), vencido=Case(When(dias_sin_inspeccion__gt=F("compania__periodo2_inspeccion"), then=True), When(fecha_ultima_inspeccion=None, then=True), default=False)).annotate(lista_observaciones=ArrayAgg(Observacion.objects.filter(id=OuterRef("observaciones_llanta")).values("observacion"))).annotate(estatus_pulpo=Case(When(lista_observaciones__icontains="Doble mala entrada", then=Value("Doble")), When(lista_observaciones__icontains="Mala entrada", then=Value("Mala")), default=Value("Correcta")))
         #Serializar data
-        vehiculos = list(vehiculos.values())
+
+        vehiculos = list(vehiculos.values("id", "numero_economico", "modelo", "marca", "compania_id", "ubicacion_id", "aplicacion_id", "numero_de_llantas", "clase", "configuracion", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada", "presion_de_salida", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7", "km", "km_diario_maximo", "ultima_bitacora_pro_id", "estatus_activo", "tirecheck", "nuevo", "fecha_de_creacion", "dias_sin_inflar", "dias_inspeccion", "dias_sin_inspeccion", "fecha_ultima_inspeccion", "dias_alinear", "fecha_ultima_alineacion", "estatus_pulpo"))
         
         dict_context = {
             'vehiculos': vehiculos,

@@ -1,3 +1,26 @@
+interface Servicio {
+  almacen_desmontaje: string;
+  balancear: string;
+  costado: string;
+  id_servicio: string;
+  inflar: string;
+  llantaId: string;
+  llantaOrigen: string;
+  nuevaLlanta: string;
+  otroVehiculo: string;
+  razon: string;
+  reparar: string;
+  rotar: string;
+  stock: string;
+  taller_desmontaje: string;
+  tipoServicio: string;
+  valvula: string;
+  numero_economico: string;
+  posicion: string;
+}
+
+// * Modal
+
 (() => {
   const tires = document.querySelectorAll('.tire');
 
@@ -19,11 +42,159 @@
   });
 })();
 
+// * Manejo de información
+
 (() => {
-  const saveData: any[] = [];
+  let saveData: any[] = [];
+
+  /*
+   * Methods
+   */
+
+  const eventList = document.querySelector('.tire-list') as HTMLElement;
+  const formHidden = document.getElementById(
+    'data-taller'
+  ) as unknown as HTMLInputElement;
+
+  const addEvent = (servicio: Servicio) => {
+    eventList.insertAdjacentHTML(
+      'afterbegin',
+      `
+    <div class="tire-item" data-servicioid="${servicio.id_servicio}" >
+        <span class="delete" data-delete="${
+          servicio.id_servicio
+        }" data-tireown="${servicio.llantaId}">
+            &times;
+          </span>
+          <div class="service__img">
+            <span class="icon-llanta-outline"></span>
+          </div>
+          <div class="service__body">
+          ${
+            servicio.tipoServicio === 'desmontaje'
+              ? `
+              <h3 class="service__title">
+              Desmontaje
+            </h3>
+          `
+              : ''
+          }
+              ${servicio.inflar !== '' ? `
+              <h3 class="service__title">
+                Inflado
+              </h3>
+              ` : ''}
+              ${servicio.balancear !== '' ? `
+              <h3 class="service__title">
+              Balanceo
+            </h3>
+              ` : ''}
+              ${servicio.reparar !== '' ? `
+              <h3 class="service__title">
+                Reparación
+              </h3>
+              ` : ''}
+              ${servicio.valvula !== '' ? `
+              <h3 class="service__title">
+                Reparación de valvula
+              </h3>
+              ` : ''}
+              ${servicio.costado !== '' ? `
+              <h3 class="service__title">
+                Reparación de costado
+              </h3>
+              ` : ''}
+            <p><strong>Llanta:</strong> ${servicio.numero_economico}</p>
+            <p><strong>Posición:</strong> ${servicio.posicion}</p>
+            ${
+              servicio.razon.length >= 1
+                ? `
+            <p>
+              <strong>Razón de desmontaje:</strong> 
+              ${servicio.razon}
+            </p>
+            `
+                : ''
+            }
+            ${
+              servicio.nuevaLlanta.length >= 1
+                ? `<p><strong>Nueva llanta</strong>: ${servicio.nuevaLlanta}</p>`
+                : ''
+            }
+            ${
+              servicio.stock.length >= 1
+                ? `<p><strong>Stock origen</strong>: ${servicio.stock}</p>`
+                : ''
+            }
+            ${
+              servicio.almacen_desmontaje.length >= 1
+                ? `<p><strong>Stock origen</strong>: ${servicio.almacen_desmontaje}</p>`
+                : ''
+            }
+          </div>
+      </div>
+      `
+    );
+  };
+
+  type DeleteEvent = {
+    serviceId: string | undefined;
+    tireId: string | undefined;
+  };
+
+  const deleteEvent = ({ serviceId, tireId }: DeleteEvent) => {
+    if (serviceId === undefined || tireId === undefined) return;
+
+    const card = document.querySelector(
+      `[data-servicioid="${serviceId}"]`
+    ) as HTMLDivElement;
+    const modal = document.querySelector(
+      `[data-modal="${tireId}"] form`
+    ) as HTMLDivElement;
+
+    // * Clean
+    saveData = saveData.filter((item) => item.id_servicio !== serviceId);
+    card?.remove();
+    modal
+      ?.querySelectorAll<HTMLSelectElement | HTMLInputElement>(
+        'input, select, button'
+      )
+      .forEach((item) => {
+        item.disabled = false;
+      });
+
+    modal
+      ?.querySelectorAll<HTMLInputElement>('.form__services input')
+      .forEach((item) => {
+        item.checked = false;
+      });
+
+    modal
+      ?.querySelectorAll<HTMLInputElement>('.card__config-modal input')
+      .forEach((item) => {
+        if (item.type === 'radio') {
+          item.checked = false;
+        }
+        const tires = document.querySelector(
+          `[data-rotar-id="${tireId}"] input[value="${tireId}"]`
+        ) as HTMLInputElement;
+        tires.disabled = true;
+      });
+
+    modal
+      ?.querySelectorAll<HTMLSelectElement>('.form__view-body select')
+      .forEach((item) => {
+        item.value = '';
+      });
+
+    formHidden.value = JSON.stringify(saveData);
+  };
+
+  // * Events
 
   document.addEventListener('submit', (e) => {
     const target = e.target as HTMLFormElement;
+
     if (target.matches('#taller-form')) {
       const date = document.querySelector(
           'input[type="date"]'
@@ -71,179 +242,21 @@
       return;
     }
 
-    e.preventDefault();
+    e.preventDefault(); // prevenimos el evento
+
     const form: HTMLFormElement = e.target as HTMLFormElement;
-    const data = Object.fromEntries(new FormData(form));
-    const eventList = document.querySelector('.tire-list') as HTMLElement;
+    const dataForm = new FormData(form);
+    dataForm.append('id_servicio', String(Math.floor(Math.random() * 10000)));
+    const data = Object.fromEntries(dataForm) as unknown as Servicio;
 
-    switch (data.tipoServicio) {
-      case 'desmontaje':
-        const $div = document.createElement('div');
-        $div.classList.add('tire-item');
-        $div.innerHTML = `
-          <div class="service__img">
-            <span class="icon-llanta-outline"></span>
-          </div>
-          <div>
-            <h3>Desmontaje</h3>
-            <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            <p>
-              <strong>Razón de desmontaje:</strong> 
-              ${data.razon}
-            </p>
-            <p><strong>Nueva llanta</strong>: ${data.nuevaLlanta}</p>
-            <p><strong>Stock origen</strong>: ${data.stock}</p>
-          </div>
-        `;
-
-        eventList.appendChild($div);
-
-        break;
-
-      case 'sr':
-        if (data.inflar) {
-          const $div = document.createElement('div');
-          $div.classList.add('tire-item');
-
-          $div.innerHTML = `
-            <div class="service__img">
-              <span class="icon-llanta-outline"></span>
-            </div>
-            <div>
-              <h3>Inflado</h3>
-              <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            </div>
-          `;
-
-          eventList.appendChild($div);
-        }
-
-        if (data.balancear) {
-          const $div = document.createElement('div');
-          $div.classList.add('tire-item');
-
-          $div.innerHTML = `
-            <div class="service__img">
-              <span class="icon-llanta-outline"></span>
-            </div>
-            <div>
-              <h3>Balanceado</h3>
-              <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            </div>
-          `;
-
-          eventList.appendChild($div);
-        }
-
-        if (data.reparar) {
-          const $div = document.createElement('div');
-          $div.classList.add('tire-item');
-
-          $div.innerHTML = `
-            <div class="service__img">
-              <span class="icon-llanta-outline"></span>
-            </div>
-            <div>
-              <h3>Reparación</h3>
-              <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            </div>
-          `;
-
-          eventList.appendChild($div);
-        }
-
-        if (data.costado) {
-          const $div = document.createElement('div');
-          $div.classList.add('tire-item');
-
-          $div.innerHTML = `
-            <div class="service__img">
-              <span class="icon-llanta-outline"></span>
-            </div>
-            <div>
-              <h3>Reparación de costado</h3>
-              <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            </div>
-          `;
-
-          eventList.appendChild($div);
-        }
-
-        if (data.valvula) {
-          const $div = document.createElement('div');
-          $div.classList.add('tire-item');
-
-          $div.innerHTML = `
-            <div class="service__img">
-              <span class="icon-llanta-outline"></span>
-            </div>
-            <div>
-              <h3>Reparación de valvula</h3>
-              <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-            </div>
-          `;
-
-          eventList.appendChild($div);
-        }
-
-        if (data.rotar) {
-          let $div = document.createElement('div');
-          $div.classList.add('tire-item');
-          switch (data.rotar) {
-            case 'no':
-              break;
-            case 'mismo':
-              $div.innerHTML = `
-                <div class="service__img">
-                  <span class="icon-llanta-outline"></span>
-                </div>
-                <div>
-                  <h3>Rotación</h3>
-                  <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-                  <p><strong>Rotada por:</strong> ${data.llantaOrigen}</p>
-                </div>
-              `;
-
-              eventList.appendChild($div);
-              break;
-
-            case 'otro':
-              console.log(data);
-              $div.innerHTML = `
-                <div class="service__img">
-                  <span class="icon-llanta-outline"></span>
-                </div>
-                <div>
-                  <h3>Rotación entre vehiculos</h3>
-                  <p><strong>Llanta ID:</strong> ${data.llantaId}</p>
-                  <p><strong>Vehiculo origen:</strong> ${data.otroVehiculo}</p>
-                  <p><strong>Rotada por:</strong> ${data.llantaOrigen}</p>
-                </div>
-              `;
-
-              eventList.appendChild($div);
-              break;
-
-            default:
-              break;
-          }
-        }
-
-        break;
-
-      default:
-        break;
-    }
+    addEvent(data);
 
     form
-      .querySelectorAll('input, select, .btn-submit')
-      .forEach((input) => input.setAttribute('disabled', ''));
+      .querySelectorAll<HTMLInputElement>('input, select, .btn-taller')
+      .forEach((input) => (input.disabled = true));
 
     saveData.push(data);
 
-    const formHidden = document.getElementById(
-      'data-taller'
-    ) as unknown as HTMLInputElement;
     formHidden.value = JSON.stringify(saveData);
 
     document
@@ -260,7 +273,11 @@
   document.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement;
 
-    if (target.type === 'date' || target.type === 'time') {
+    if (
+      target.type === 'date' ||
+      target.type === 'time' ||
+      target.name === 'usuario'
+    ) {
       const form = document.querySelector('.service-page') as HTMLFormElement;
       const data = Object.fromEntries(new FormData(form));
 
@@ -293,8 +310,6 @@
       } else {
         target.value = '';
       }
-
-      console.log(formData);
 
       formHidden.value = JSON.stringify(formData);
     }
@@ -367,6 +382,50 @@
         )[0].style.display = 'block';
       }
     }
+
+    if (target.name === 'inflarVehiculo') {
+      if (target.value.length >= 0) {
+        const inflar =
+        document.querySelectorAll<HTMLInputElement>('[name="inflar"]');
+
+        inflar.forEach((item) => {
+          if (item.type === 'checkbox') {
+            item.checked = true;
+            saveData = [
+              ...saveData,
+              {
+                id: item.dataset.tireid,
+                inflar: 'on',
+              },
+            ];
+          }
+        });
+      }
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const target = e.target as HTMLInputElement;
+
+    const form = document.querySelector('.service-page') as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form));
+
+    const formHidden = document.getElementById(
+      'hoja-servicio'
+    ) as unknown as HTMLInputElement;
+    formHidden.value = JSON.stringify(data);
+  });
+
+  // * Eliminar evento
+  document.addEventListener('click', (e) => {
+    const event = e.target as HTMLElement;
+
+    if (event.matches('.delete')) {
+      deleteEvent({
+        serviceId: event.dataset.delete,
+        tireId: event.dataset.tireown,
+      });
+    }
   });
 })();
 
@@ -382,7 +441,6 @@
           fetch('/api/tiresearchtaller?inventario=Nueva')
             .then((res) => res.json())
             .then((json) => {
-              console.log(json);
               let options = `<option value="">Seleccione una llanta</option>`;
 
               json.result.forEach((item: any) => {
@@ -398,7 +456,6 @@
           fetch('/api/tiresearchtaller?inventario=Renovada')
             .then((res) => res.json())
             .then((json) => {
-              console.log(json);
               let options = `<option value="">Seleccione una llanta</option>`;
 
               json.result.forEach((item: any) => {
@@ -414,7 +471,6 @@
           fetch('/api/tiresearchtaller?inventario=Servicio')
             .then((res) => res.json())
             .then((json) => {
-              console.log(json);
               let options = `<option value="">Seleccione una llanta</option>`;
 
               json.result.forEach((item: any) => {
@@ -448,23 +504,6 @@
     /* Filtering the array of objects and returning the objects that do not have the same id as the
     target.dataset.radioid. */
     if (target.value === 'mismo') {
-      let data = Array.from(
-        document.querySelectorAll<HTMLDivElement>('[data-pos]')
-      );
-
-      /* Creating an array of objects. */
-      const positions = data.map((item) => {
-        return {
-          position: item.getAttribute('data-pos'),
-          id: item.getAttribute('data-id'),
-        };
-      });
-
-      /* Filtering out the item that was clicked on. */
-      let allPos = positions.filter(
-        (item) => item.id !== target.dataset.radioid
-      );
-
       const tires = document.querySelector(
         `[data-rotar-id="${target.dataset.radioid}"] input[value="${target.dataset.radioid}"]`
       ) as HTMLInputElement;

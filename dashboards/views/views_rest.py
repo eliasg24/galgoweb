@@ -573,7 +573,7 @@ class OrdenLlantaNuevaView(LoginRequiredMixin, View):
     def get(self, request):
 
         usuario = self.request.user
-        talleres = list(Taller.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania)).values("nombre"))
+        talleres = list(Taller.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania)).values("id", "nombre"))
         productos = list(Producto.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania)).values("producto"))
 
         dict_context = {"usuario": usuario,
@@ -616,7 +616,7 @@ class GeneracionLlantaNuevaView(LoginRequiredMixin, View):
         else:
             month = str(date.month)
 
-        taller = Taller.objects.get(nombre=destino, compania=self.request.user.perfil.compania)
+        taller = Taller.objects.get(id=destino, compania=self.request.user.perfil.compania)
         codigo_taller = taller.codigo
     
         print(destino)
@@ -1041,7 +1041,8 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
         #Llantas
         
         llantas = Llanta.objects.filter(
-            **id_seletct_query
+            **id_seletct_query,
+            inventario = 'Rodante'
         )
 
         #Color de llanta

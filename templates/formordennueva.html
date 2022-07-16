@@ -3,6 +3,7 @@
 {% block head %}
 
 {% load static %}
+<link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/formordennueva.css' %}">
 <title>Formulario de orden llanta nueva</title>
 
@@ -10,60 +11,82 @@
 
 {% block content %}
 
-<section class="form__container">
+<main class="form__container">
+  <header class="head-cont">
+    <h1>Orden de llanta nueva</h1>
+  </header>
   {% if ordenes|length == 0 %}
   
-  <form class="form" id="form">
+  <form class="main-form" id="form">
     {% csrf_token %}
 
-    <div class="col-2">
-      <header>
-        <img src="{% static 'images/logo-aeto.png' %}" alt="aeto">
-        <h2>ORDEN DE NUEVA LLANTA</h2>
-      </header>
+    <aside class="add-form">
+     <div class="input__group">
 
-     <div class="input__group"> 
-        <div class="input__label">
-          <label class="label__item" for="">
-            Usuario
+        <div class="flex-row">
+          <div class="input__label">
+            <label class="label__item" for="">
+              Usuario
+            </label>
             <input class="input__item" type="text" placeholder="Usuario" name="usuario" value="" id="user" readonly>
-          </label>
-        </div>
-        <div class="input__label">
-          <label class="label__item" for="">
-            Fecha
+          </div>
+          <div class="input__label">
+            <label class="label__item" for="">
+              Fecha
+            </label>
             <input class="input__item" type="date" placeholder="" value="" id="date" readonly>
-          </label>
+          </div>
         </div>
+
         <div class="cont__select">
           <label class="label__item" for="destino">
             Destino
-            <select class="select__item" name="destino" id="destino" required>
-              <option value="" selected></option>
-            </select>
           </label>
+          <select class="select__item" name="destino" id="destino" required>
+            <option value="" selected>Seleccione un taller destino...</option>
+          </select>
         </div>
       </div>
-      <button class="add" type="button">Agregar producto</button>
-      <small>Antes de modificar un elemento, agregue los productos que necesita</small>
-
-      <div class="list__inputs"></div>
-
-    </div>
-
-    <aside class="aside">
-      <button class="btn btn-success" type="submit">
-        <i class="icon-checkmark"></i>
-      </button>
+      <button class="btn add" type="button">Agregar producto</button>
     </aside>
+
+    <div class="items-container">
+      <div class="list__inputs">
+
+        <div class="relative">
+          <div class="absolute">
+            <div class="order-item" id="1">
+              <select name="producto" required>
+                <option value="">Seleccione un producto...</option>
+              </select>
+    
+              <input type="number" name="cantidad" placeholder="Cantidad" required>
+    
+              <button type="button" class="btn delete" data-id="1">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <nav class="nav-footer">
+        <button type="submit" class="btn btn-submit">
+          <i class="icon-checkmark"></i> Enviar
+        </button>
+      </nav>
+    </div>
 
   </form>
 
   {% else %}
-  Cierre la Pre Orden pendiete
+    <h2>
+      Cierre la Pre Orden pendiete
+    </h2>
   {% endif %}
-</section>
+</main>
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <script src="{% static 'js/orden-nueva/index.js' %}" type="module"></script>
 
 {% endblock %}

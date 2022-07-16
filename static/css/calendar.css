@@ -54,6 +54,11 @@
   justify-content: flex-end;
 }
 
+.fc-event-title-container {
+  font-size: 0.90rem;
+  font-weight: 600;
+}
+
 /* 
   * Buttons 
 */

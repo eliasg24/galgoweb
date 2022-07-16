@@ -8,10 +8,12 @@
   <title>Taller</title>
 {% endblock head %}
 {% block content %}
+
+
   <main class="all-cont">
     <div class="head-cont">
       <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+        <img src="{% static 'images/aeto.svg' %}" alt="logo" />
       </div>
       <form id="taller-form" class="title-cont" method='POST'>
         {% csrf_token %}
@@ -36,7 +38,13 @@
           </div> -->
 
           <div class="flex-row">
-            <input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">
+            <select name="usuario" id="usuario" required>
+              <option value="" selected disabled>Selecciona un usuario</option>
+              {% for usuario in usuarios %}
+                <option value="{{usuario.id}}">{{usuario}}</option>
+              {% endfor %}
+            </select>
+            <!--<input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">-->
             <input type="text" name="vehiculoEconomico" value="{{vehiculo.0}}" placeholder="Número económico" readonly>
           </div>
           <div class="flex-row">
@@ -57,6 +65,9 @@
             <input type="date" name="fecha_end" id="" required>
             <input type="time" name="hora_end" id="" required>
           </div>
+          <div class="flex-row">
+            <input type="number" name="km_montado" value="" placeholder="Km de montado">
+          </div>
 
           <!-- <div class="form__row">
             <button type="submit" class="btn btn-taller">
@@ -74,11 +85,17 @@
       </aside>
       <div class="main-cont">
 
-        <form id="vehicle-form" class="flex-row">
-          <label for="alinearVehiculo" class="label-check">
+        <form id="vehicle-form" class="flex-row" style="width: 100%; justify-content: center;">
+          <label for="alinearVehiculo" class="label-check" style="width: auto;">
             <input type="checkbox" name="alinearVehiculo" id="alinearVehiculo" data-vehicleFix>
             <div class="btn-filter">
               Alinear Vehículo
+            </div>
+          </label>
+          <label for="inflarVehiculo" class="label-check" style="width: auto;">
+            <input type="checkbox" name="inflarVehiculo" id="inflarVehiculo" data-vehicleFix>
+            <div class="btn-filter">
+              Inflar Vehículo
             </div>
           </label>
         </form>
@@ -89,14 +106,23 @@
 
       </div>
     </div>
-
-    {% for vehiculo in vehiculo_acomodado %}
-      {% for eje in vehiculo.ejes %}
-        {% for llanta in eje %}
-          {% include 'taller/modal.html' %}
-        {% endfor %} 
+    {% if servicios > 0 %}
+      
+      {% for llanta in servicio %}
+        {% include 'taller/modal-full.html' %}
       {% endfor %}
-    {% endfor %}
+
+    {% else %}
+
+      {% for vehiculo in vehiculo_acomodado %}
+        {% for eje in vehiculo.ejes %}
+          {% for llanta in eje %}
+            {% include 'taller/modal.html' %}
+          {% endfor %} 
+        {% endfor %}
+      {% endfor %}
+
+    {% endif %}
     
   </main>
 

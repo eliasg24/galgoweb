@@ -3,7 +3,7 @@ export const getData = async () => {
   const user = document.getElementById('user');
 
   try {
-    const resp = await fetch(`${window.location.origin}/api/ordenllantanueva`);
+    const resp = await fetch(`/api/ordenllantanueva`);
     const json = await resp.json();
     const { talleres, usuario } = json;
 
@@ -11,7 +11,7 @@ export const getData = async () => {
 
     talleres.forEach((taller) => {
       destino.innerHTML += `
-        <option value="${taller.nombre}">${taller.nombre}</option>
+        <option value="${taller.id}">${taller.nombre}</option>
       `;
     });
 

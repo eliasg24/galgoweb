@@ -3,7 +3,7 @@ export const form = () => {
     if (e.target.matches('#form')) {
       e.preventDefault();
 
-      const productos = document.querySelectorAll('[name="productos"]');
+      const productos = document.querySelectorAll('[name="producto"]');
       const cantidades = document.querySelectorAll('[name="cantidad"]');
       
       let valuesP = [];

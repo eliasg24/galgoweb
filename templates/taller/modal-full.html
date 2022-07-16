@@ -1,4 +1,4 @@
-<div class="modal__bg" data-modal="{{ llanta.llanta.id }}">
+<div class="modal__bg" data-modal="{{ llanta.llanta }}">
   <form class="modal__form">
     <nav class="flex-row">
       <button class="btn btn-taller">Guardar</button>
@@ -6,24 +6,24 @@
     </nav>
 
     <header class="flex-row">
-      <label for="sr-{{ llanta.llanta.id }}" class="label-check">
+      <label for="sr-{{ llanta.llanta }}" class="label-check">
         <input
           type="radio"
           name="tipoServicio"
-          id="sr-{{ llanta.llanta.id }}"
+          id="sr-{{ llanta.llanta }}"
           value="sr"
           checked
-          data-nav="{{ llanta.llanta.id }}"
+          data-nav="{{ llanta.llanta }}"
         />
         <div class="btn-filter head">Servicios</div>
       </label>
-      <label for="desmontaje-{{ llanta.llanta.id }}" class="label-check">
+      <label for="desmontaje-{{ llanta.llanta }}" class="label-check">
         <input
           type="radio"
           name="tipoServicio"
-          id="desmontaje-{{ llanta.llanta.id }}"
+          id="desmontaje-{{ llanta.llanta }}"
           value="desmontaje"
-          data-nav="{{ llanta.llanta.id }}"
+          data-nav="{{ llanta.llanta }}"
         />
         <div class="btn-filter head">Montaje</div>
       </label>
@@ -32,53 +32,72 @@
     <div
       class="form__view visible"
       style="display: block"
-      data-view="{{ llanta.llanta.id }}"
+      data-view="{{ llanta.llanta }}"
     >
       <legend>Servicios</legend>
       <nav class="form__services">
-        <label for="inflar-{{ llanta.llanta.id }}" class="label-check">
+        <label for="inflar-{{ llanta.llanta }}" class="label-check">
           <input type="hidden" name="inflar" value="" />
           <input
             type="checkbox"
             name="inflar"
-            id="inflar-{{ llanta.llanta.id }}"
-            data-tireid="{{ llanta.llanta.id }}"
+            id="inflar-{{ llanta.llanta }}"
+            {% if llanta.inflar == 'True' %}
+              checked
+            {% else %}
+            {% endif %}
           />
           <div class="btn-filter">Inflar</div>
         </label>
-        <label for="balancear-{{ llanta.llanta.id }}" class="label-check">
+        <label for="balancear-{{ llanta.llanta }}" class="label-check">
           <input type="hidden" name="balancear" value="" />
           <input
             type="checkbox"
             name="balancear"
-            id="balancear-{{ llanta.llanta.id }}"
+            id="balancear-{{ llanta.llanta }}"
+            {% if llanta.balancear == 'True' %}
+              checked
+            {% else %}
+            {% endif %}
           />
           <div class="btn-filter">Balancear</div>
         </label>
-        <label for="reparar-{{ llanta.llanta.id }}" class="label-check">
+        <label for="reparar-{{ llanta.llanta }}" class="label-check">
           <input type="hidden" name="reparar" value="" />
           <input
             type="checkbox"
             name="reparar"
-            id="reparar-{{ llanta.llanta.id }}"
+            id="reparar-{{ llanta.llanta }}"
+            {% if llanta.reparar == 'True' %}
+              checked
+            {% else %}
+            {% endif %}
           />
           <div class="btn-filter">Reparar</div>
         </label>
-        <label for="valvula-{{ llanta.llanta.id }}" class="label-check">
+        <label for="valvula-{{ llanta.llanta }}" class="label-check">
           <input type="hidden" name="valvula" value="" />
           <input
             type="checkbox"
             name="valvula"
-            id="valvula-{{ llanta.llanta.id }}"
+            id="valvula-{{ llanta.llanta }}"
+            {% if llanta.valvula == 'True' %}
+              checked
+            {% else %}
+            {% endif %}
           />
           <div class="btn-filter">Reparación de valvula</div>
         </label>
-        <label for="costado-{{ llanta.llanta.id }}" class="label-check">
+        <label for="costado-{{ llanta.llanta }}" class="label-check">
           <input type="hidden" name="costado" value="" />
           <input
             type="checkbox"
             name="costado"
-            id="costado-{{ llanta.llanta.id }}"
+            id="costado-{{ llanta.llanta }}"
+            {% if llanta.costado == 'True' %}
+              checked
+            {% else %}
+            {% endif %}
           />
           <div class="btn-filter">Reparación de costado</div>
         </label>
@@ -89,33 +108,33 @@
           <legend>Rotar</legend>
 
           <div class="flex-row">
-            <label for="no-{{ llanta.llanta.id }}" class="label-check">
+            <label for="no-{{ llanta.llanta }}" class="label-check">
               <input
                 type="radio"
                 name="rotar"
-                id="no-{{ llanta.llanta.id }}"
-                data-radioId="{{ llanta.llanta.id }}"
+                id="no-{{ llanta.llanta }}"
+                data-radioId="{{ llanta.llanta }}"
                 value="no"
                 checked
               />
               <div class="btn-filter rotar">No rotar</div>
             </label>
-            <label for="t-vehicle-{{ llanta.llanta.id }}" data-btnId="{{ llanta.llanta.id }}" class="label-check">
+            <label for="t-vehicle-{{ llanta.llanta }}" data-="" class="label-check">
               <input
                 type="radio"
                 name="rotar"
-                id="t-vehicle-{{ llanta.llanta.id }}"
-                data-radioId="{{ llanta.llanta.id }}"
+                id="t-vehicle-{{ llanta.llanta }}"
+                data-radioId="{{ llanta.llanta }}"
                 value="mismo"
               />
               <div class="btn-filter rotar">Vehiculo</div>
             </label>
-            <label for="otros-{{ llanta.llanta.id }}" class="label-check">
+            <label for="otros-{{ llanta.llanta }}" class="label-check">
               <input
                 type="radio"
                 name="rotar"
-                id="otros-{{ llanta.llanta.id }}"
-                data-radioId="{{ llanta.llanta.id }}"
+                id="otros-{{ llanta.llanta }}"
+                data-radioId="{{ llanta.llanta }}"
                 value="otro"
               />
               <div class="btn-filter rotar">Otro vehículo</div>
@@ -123,33 +142,26 @@
           </div>
 
           <div style="margin: 1rem 0;">
-            
-            <div style="display: none" data-rotar-id="{{ llanta.llanta.id }}">
-              <label for="origen-vehiculo-{{ llanta.llanta.id }}">
+
+            <div style="display: none" data-rotar-id="{{ llanta.llanta }}">
+              <label for="origen-vehiculo-{{ llanta.llanta }}">
                 Vehiculo origen
                 <select
                   name="otroVehiculo"
-                  id="origen-vehiculo-{{ llanta.llanta.id }}"
+                  id="origen-vehiculo-{{ llanta.llanta }}"
                 >
                   <option value="">Elige un vehículo...</option>
                 </select>
               </label>
 
-              <label for="origen-llanta-{{ llanta.llanta.id }}">
+              <label for="origen-llanta-{{ llanta.llanta }}">
                 Llanta de origen
                 <select
                   name="llantaOrigen"
-                  id="origen-llanta-{{ llanta.llanta.id }}"
+                  id="origen-llanta-{{ llanta.llanta }}"
                 >
                   <option value="">Elige una llanta...</option>
                 </select>
-              </label>
-              
-              <label for="origen-km_montadoo-{{ llanta.llanta.id }}">
-                Km montado
-
-                <input type="number" name="kmMontadoOtro" value="" placeholder="Km de montado" id="origen-km_montadoo-{{ llanta.llanta.id }}">
-                
               </label>
             </div>
 
@@ -162,7 +174,7 @@
     <div
       class="form__view"
       style="display: none"
-      data-view="{{ llanta.llanta.id }}"
+      data-view="{{ llanta.llanta }}"
     >
       <label for="">Stock origen</label>
       <select name="stock" id="">
@@ -204,8 +216,6 @@
       </select>
     </div>
 
-    <input type="hidden" name="llantaId" value="{{ llanta.llanta.id }}" />
-    <input type="hidden" name="numero_economico" value="{{ llanta.llanta.numero_economico }}" />
-    <input type="hidden" name="posicion" value="{{ llanta.llanta.posicion }}" />
+    <input type="hidden" name="llantaId" value="{{ llanta.llanta }}" />
   </form>
 </div>

@@ -3,12 +3,9 @@
     <div class="form__container">
       <div class="relative">
         <div class="absolute">
-          <div class="flex-row" style="justify-content: space-between;">
-            <h3>Llanta</h3>
-            <button class="btn modal" type="button">
-              <i class="icon-truck"></i>
-            </button>
-          </div>
+          <header class="config__header">
+            <h2>Llanta</h2>
+          </header>
       {% for eje in ejes %}
         {% for ej in eje %}
           <div class="form__wrapper" data-item-id="{{ej.0.id}}">
@@ -22,10 +19,9 @@
                   name="llanta"
                   autocomplete="off"
                   list="llanta"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                   value = "{{ej.0.numero_economico}}"
-                  required
-                  
                 />
                 <label for="llanta" class="form__label">
                   Llanta
@@ -58,7 +54,8 @@
                   name="llanta"
                   autocomplete="off"
                   list="llanta"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                   value = "{{ej.0.numero_economico}}"
                   readonly
                 />
@@ -74,8 +71,22 @@
 
             {% if ej.0.ultima_inspeccion == None %}
 
+              <label for="producto">
+                Producto
+              </label>
+              <select name="producto" class="select-input" id="producto" data-required 
+              data-vehiculo="{{ ej.0.posicion }}" >
+                <option value="">Seleccione un producto...</option>
+                {% for producto in productos %}
+                  <option value="{{producto}}" {% if producto == ej.0.producto %} selected {% endif %} >{{producto}}</option>  
+                {% endfor %}
+              </select>
+              <div class="alert__warn">
+                El campo no puede estar vacio 
+              </div>
+
               <!-- Start input -->
-              <div class="form__group field">
+              <!-- <div class="form__group field">
                 <input
                   class="form__field"
                   type="text"
@@ -84,18 +95,10 @@
                   autocomplete="off"
                   list="producto"
                   value = "{{ej.0.producto}}"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                 />
-                <label for="producto" class="form__label">
-                  Producto
-                </label>
-
-                <div class="alert__error">
-                  El valor no se encuentra en la lista de productos, por favor seleccione una opción valida.
-                </div>
-                <div class="alert__warn">
-                  El campo no puede estar vacio 
-                </div>
+                 
                 <datalist id="producto">
                   
                   {% for producto in productos %}
@@ -105,7 +108,7 @@
                   {% endfor %}
           
                 </datalist>
-              </div>
+              </div> -->
               <!-- End input -->
 
             {% else %}
@@ -119,7 +122,8 @@
                   name="producto"
                   autocomplete="off"
                   value = "{{ej.0.producto}}"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                   readonly
                 />
                 <label for="producto" class="form__label">
@@ -138,7 +142,8 @@
                   class="form__field"
                   type="text"
                   placeholder="vida"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                   name="vida"
                   autocomplete="off"
                   list="vida"
@@ -167,7 +172,8 @@
                   class="form__field"
                   type="text"
                   placeholder="vida"
-                  required
+                  data-required 
+                  data-vehiculo="{{ ej.0.posicion }}"
                   name="vida"
                   autocomplete="off"
                   list="vida"
@@ -195,6 +201,8 @@
             <h3>Profundidades</h3>
 
             <div class="form__prof" data-punto-retiro="{{ ej.6.punto_retiro }}" data-profundidad-id="{{ ej.0.id }}">
+
+            {% if ej.0.tipo_de_eje != 'SP1'  %}
 
               <div class="form__group field">
                 <input
@@ -243,6 +251,59 @@
                   {{ej.0.profundidad_derecha}} (Derecha)
                 </label>
               </div>
+
+            {% else %}
+              <div class="form__group field">
+                <input
+                  class="form__field"
+                  type="number"
+                  max = {{ ej.6.min_izquierda }}
+                  min="0"
+                  step="any"
+                  placeholder="Profundidad izquierda"
+                  name="profundidad_izquierda"
+                  autocomplete="off"
+                  value = {{ej.0.profundidad_izquierda}}
+                />
+                <label for="min_profundidad" class="form__label">
+                  {{ej.0.profundidad_izquierda}}(Izquierda)
+                </label>
+              </div>
+
+              <div class="form__group field">
+                <input
+                  class="form__field"
+                  type="number"
+                  min="0"
+                  max = {{ ej.6.min_central }}
+                  step="any"
+                  placeholder="Profundidad central"
+                  name="profundidad_central"
+                  autocomplete="off" 
+                  value = {{ej.0.profundidad_central}}
+                />
+                <label for="min_profundidad" class="form__label">
+                  {{ej.0.profundidad_central}}(Central)
+                </label>
+              </div>
+            
+              <div class="form__group field">
+                <input
+                  class="form__field"
+                  type="number"
+                  min="0"
+                  max = {{ ej.6.min_derecha }}
+                  step="any"
+                  placeholder="Profundidad derecha"
+                  name="profundidad_derecha"
+                  autocomplete="off"   
+                  value = {{ej.0.profundidad_derecha}}               
+                />
+                <label for="min_profundidad" class="form__label">
+                  {{ej.0.profundidad_derecha}} (Derecha)
+                </label>
+              </div>
+            {% endif %}
               
             </div>
 
@@ -336,9 +397,9 @@
             <input type="hidden" name="id" value="">
             
           </div>
-          {% endfor %}
         {% endfor %}
-        {% csrf_token %}
+      {% endfor %}
+      {% csrf_token %}
         </div>
       </div>
     </div>

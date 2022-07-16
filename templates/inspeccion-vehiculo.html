@@ -16,7 +16,7 @@
 <div class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-        <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+        <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
   
     <h1>Inspección de vehículo</h1>
@@ -190,8 +190,6 @@ const emptyProfs = () => {
     }
   });
 
-  console.log(counter);
-
   if (counter >= inputs.length) {
     return true;
   }
@@ -207,7 +205,6 @@ const confirmAlert = () => {
     const duplicate = noDoubleValues('llanta');
     const empty = emptyProfs();
     const economic = validateEconomic();
-    console.log('economic', economic)
 
     if (duplicate) return;
 

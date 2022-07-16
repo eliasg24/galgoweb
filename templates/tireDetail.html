@@ -26,9 +26,11 @@
     <div class="logo">
       <img src="{% static 'images/aeto.svg' %}">
     </div>
+    {% if vehiculo_boolean %}
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
       <h1>{{vehiculo.numero_economico}}</h1>
     </a>
+    {% endif %}
     <nav class="flex-row" id="nav-dash">
       <button class="btn btn-aeto-crunch active" id="btn-pulpo">
         <span class="icon-pulpo"></span>

@@ -13,7 +13,7 @@ class Calendario(models.Model):
     
     horario_start_str = models.CharField(max_length=255, null=True, blank=True)
     horario_end_str = models.CharField(max_length=255, null=True, blank=True)
-    title = models.CharField(max_length=255, null=True, blank=True)
+    title_current = models.CharField(max_length=255, null=True, blank=True)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True)
 
     def __str__(self):

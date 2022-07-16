@@ -311,7 +311,7 @@
   //licencia de anyChart
   anychart.licenseKey("aeto.com.mx-16056097-34281685");
 
- // LINE COLUMN CHART TENDENCIA - DESECHO
+  // LINE COLUMN CHART TENDENCIA - DESECHO
   anychart.onDocumentReady(function () {
     // set the default types of legend icons
     anychart.theme({
@@ -351,7 +351,7 @@
     // set chart title text settings
     chart.title("TENDENCIA");
     var title = chart.title();
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
@@ -392,12 +392,12 @@
     columnSeries.name("$");
 
     // configure the visual settings of the second series
-    columnSeries.normal().fill("#4973f2");
-    columnSeries.hovered().fill("#4973f2", 0.1);
-    columnSeries.selected().fill("#4973f2", 0.5);
-    columnSeries.normal().stroke("#4973f2", 2);
-    columnSeries.hovered().stroke("#4973f2", 4);
-    columnSeries.selected().stroke("#4973f2", 6);
+    columnSeries.normal().fill("#0071bc");
+    columnSeries.hovered().fill("#0071bc", 0.1);
+    columnSeries.selected().fill("#0071bc", 0.5);
+    columnSeries.normal().stroke("#0071bc", 2);
+    columnSeries.hovered().stroke("#0071bc", 4);
+    columnSeries.selected().stroke("#0071bc", 6);
 
     //tooltip
     columnSeries
@@ -409,7 +409,7 @@
     columnLabels.enabled(false);
     columnLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
     columnLabels.position("top");
-    columnLabels.fontColor("#000");
+    columnLabels.fontColor("#fff");
     columnLabels.fontWeight("bold");
 
     // create line series and set scale for it
@@ -418,14 +418,14 @@
     lineSeries.name("%");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#051026", 6);
-    lineSeries.hovered().stroke("#051026", 4);
-    lineSeries.selected().stroke("#051026", 8);
+    lineSeries.normal().stroke("#13bcc9", 6);
+    lineSeries.hovered().stroke("#13bcc9", 4);
+    lineSeries.selected().stroke("#13bcc9", 8);
 
     // enable and configure markers on the first series
     lineSeries.markers(true);
     lineSeries.markers().type("circle");
-    lineSeries.markers().fill("#051026");
+    lineSeries.markers().fill("#13bcc9");
     lineSeries.markers().size(5);
 
     //tooltip
@@ -440,14 +440,14 @@
     chart.legend().iconSize(15);
 
     // configure the font of legend items
-    chart.legend().fontColor("#000");
+    chart.legend().fontColor("#fff");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -463,18 +463,18 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust y axis
-    chart.yAxis(1).stroke("#000");
+    chart.yAxis(1).stroke("#DCDCDC");
     chart.yAxis(1).ticks(false);
-    chart.yAxis(1).labels().fontColor("#000");
+    chart.yAxis(1).labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set container id for the chart
     chart.container("line-column-chart-tendencia");
@@ -556,12 +556,12 @@
     columnSeries.name("$");
 
     // configure the visual settings of the second series
-    columnSeries.normal().fill("#051026");
-    columnSeries.hovered().fill("#051026", 0.1);
-    columnSeries.selected().fill("#051026", 0.5);
-    columnSeries.normal().stroke("#051026", 2);
-    columnSeries.hovered().stroke("#051026", 4);
-    columnSeries.selected().stroke("#051026", 6);
+    columnSeries.normal().fill("#0071bc");
+    columnSeries.hovered().fill("#0071bc", 0.1);
+    columnSeries.selected().fill("#0071bc", 0.5);
+    columnSeries.normal().stroke("#0071bc", 2);
+    columnSeries.hovered().stroke("#0071bc", 4);
+    columnSeries.selected().stroke("#0071bc", 6);
 
     //tooltip
     columnSeries
@@ -573,13 +573,13 @@
     columnLabels.enabled(true);
     columnLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
     columnLabels.position("top");
-    columnLabels.fontColor("#fff");
+    columnLabels.fontColor("#000");
     columnLabels.fontWeight("bold");
 
     // background settings
     var backgroundl = columnSeries.labels().background();
     backgroundl.enabled(true);
-    backgroundl.fill("#000");
+    backgroundl.fill("#fff");
     backgroundl.stroke("#717171");
     backgroundl.corners(5);
 
@@ -589,9 +589,9 @@
     lineSeries.name("%");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#4973f2", 6);
-    lineSeries.hovered().stroke("#4973f2", 4);
-    lineSeries.selected().stroke("#4973f2", 8);
+    lineSeries.normal().stroke("#13bcc9", 6);
+    lineSeries.hovered().stroke("#13bcc9", 4);
+    lineSeries.selected().stroke("#13bcc9", 8);
 
     //tooltip
     lineSeries
@@ -605,14 +605,14 @@
     chart.legend().iconSize(15);
 
     // configure the font of legend items
-    chart.legend().fontColor("#000");
+    chart.legend().fontColor("#fff");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -628,18 +628,18 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust y axis
-    chart.yAxis(1).stroke("#000");
+    chart.yAxis(1).stroke("#DCDCDC");
     chart.yAxis(1).ticks(false);
-    chart.yAxis(1).labels().fontColor("#000");
+    chart.yAxis(1).labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set container id for the chart
     chart.container("line-column-chart");
@@ -659,37 +659,37 @@
       {
         x: "NUEVA",
         value: 2.5,
-        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
-        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
-        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+        normal: { fill: "#13bcc9", stroke: "#13bcc9" },
+        hovered: { fill: "#13bcc9 0.3", stroke: "2 #13bcc9" },
+        selected: { fill: "#13bcc9 0.5", stroke: "4 #13bcc9" },
       },
       {
         x: "1R",
         value: 4,
-        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
-        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
-        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+        normal: { fill: "#13bcc9", stroke: "#13bcc9" },
+        hovered: { fill: "#13bcc9 0.3", stroke: "2 #13bcc9" },
+        selected: { fill: "#13bcc9 0.5", stroke: "4 #13bcc9" },
       },
       {
         x: "2R",
         value: 4.5,
-        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
-        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
-        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+        normal: { fill: "#13bcc9", stroke: "#13bcc9" },
+        hovered: { fill: "#13bcc9 0.3", stroke: "2 #13bcc9" },
+        selected: { fill: "#13bcc9 0.5", stroke: "4 #13bcc9" },
       },
       {
         x: "3R",
         value: 5,
-        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
-        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
-        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+        normal: { fill: "#13bcc9", stroke: "#13bcc9" },
+        hovered: { fill: "#13bcc9 0.3", stroke: "2 #13bcc9" },
+        selected: { fill: "#13bcc9 0.5", stroke: "4 #13bcc9" },
       },
       {
         x: "4R",
         value: 6,
-        normal: { fill: "#ed2a3d", stroke: "#ed2a3d" },
-        hovered: { fill: "#ed2a3d 0.3", stroke: "2 #ed2a3d" },
-        selected: { fill: "#ed2a3d 0.5", stroke: "4 #ed2a3d" },
+        normal: { fill: "#13bcc9", stroke: "#13bcc9" },
+        hovered: { fill: "#13bcc9 0.3", stroke: "2 #13bcc9" },
+        selected: { fill: "#13bcc9 0.5", stroke: "4 #13bcc9" },
       },
     ];
 
@@ -708,21 +708,21 @@
     // set the chart title
     chart.title("MM contra vida");
     var title = chart.title();
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
     // set y axis title
     chart.yAxis().title("MM");
     var titley = chart.yAxis().title();
-    titley.fontColor("#000");
+    titley.fontColor("#fff");
     titley.fontSize(12);
     titley.fontWeight(800);
 
     // set y axis title
     chart.xAxis().title("VIDA");
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
@@ -733,9 +733,9 @@
     background.enabled(false);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -750,13 +750,13 @@
     yscale.minimum(0).maximum(6).ticks({ interval: 1 });
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set the container id
     chart.container("column-scrap-chart");
@@ -783,7 +783,7 @@
 
     // font labels font settings
     chart.labels().fontSize(15);
-    chart.labels().fontColor("#000");
+    chart.labels().fontColor("#fff");
     chart.labels().fontWeight(900);
 
     //tooltip
@@ -804,7 +804,7 @@
       .position("right")
       .itemsLayout("vertical")
       .align("center")
-      .fontColor("#000")
+      .fontColor("#DCDCDC")
       .fontSize(13)
       .fontWeight(600);
 
@@ -825,23 +825,23 @@
       {
         x: "TRACTOR",
         value: 25,
-        normal:   {fill: "#051026", stroke: "#051026"},
-        hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
-        selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
+        normal: { fill: "#0097fc", stroke: "#0097fc" },
+        hovered: { fill: "#0097fc 0.3", stroke: "2 #0097fc" },
+        selected: { fill: "#0097fc 0.5", stroke: "4 #0097fc" },
       },
       {
         x: "REMOLQUE",
         value: 40,
-        normal:   {fill: "#051026", stroke: "#051026"},
-        hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
-        selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
+        normal: { fill: "#0097fc", stroke: "#0097fc" },
+        hovered: { fill: "#0097fc 0.3", stroke: "2 #0097fc" },
+        selected: { fill: "#0097fc 0.5", stroke: "4 #0097fc" },
       },
       {
         x: "DOLLY",
         value: 68,
-        normal:   {fill: "#051026", stroke: "#051026"},
-        hovered:  {fill: "#051026 0.3", stroke: "2 #051026"},
-        selected: {fill: "#051026 0.5", stroke: "4 #051026"} 
+        normal: { fill: "#0097fc", stroke: "#0097fc" },
+        hovered: { fill: "#0097fc 0.3", stroke: "2 #0097fc" },
+        selected: { fill: "#0097fc 0.5", stroke: "4 #0097fc" },
       },
     ];
 
@@ -866,28 +866,28 @@
     // set the chart title
     chart.title("CANTIDAD DE VEHÍCULOS VENCIDOS");
     var title = chart.title();
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
     // set y axis title
     chart.yAxis().title("CANTIDAD");
     var titley = chart.yAxis().title();
-    titley.fontColor("#000");
+    titley.fontColor("#fff");
     titley.fontSize(12);
     titley.fontWeight(500);
 
     // set y axis title
     chart.xAxis().title("CLASE");
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({color: "#000"});
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({color: "#000"});
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -903,13 +903,13 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set the container id
     chart.container("column-chart");
@@ -936,21 +936,21 @@
     // set chart title text settings
     var title = chart.title();
     chart.title("CANTIDAD DE VEHÍCULOS VENCIDOS");
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
     // set y axis title
     chart.yAxis().title("PORCENTAJE");
     var titley = chart.yAxis().title();
-    titley.fontColor("#000");
+    titley.fontColor("#fff");
     titley.fontSize(12);
     titley.fontWeight(500);
 
     // set y axis title
     chart.xAxis().title("MES");
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
@@ -963,9 +963,9 @@
       .format("PORCENTAJE: {%value}{groupsSeparator:\\,, decimalsCount:3}");
 
     // set grid stroke appearance
-    chart.xGrid().stroke({color: "#000"});
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({color: "#000"});
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(true);
@@ -1009,9 +1009,9 @@
     series.name("Review about the product");
 
     // configure the visual settings of the second series
-    series.normal().stroke("#4973f2", 2);
-    series.hovered().stroke("#4973f2", 4);
-    series.selected().stroke("#4973f2", 6);
+    series.normal().stroke("#0071bc", 2);
+    series.hovered().stroke("#0071bc", 4);
+    series.selected().stroke("#0071bc", 6);
 
     // enable series data labels
     series.labels().enabled(false).anchor("left-bottom").padding(5);
@@ -1030,13 +1030,13 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set container for the chart and define padding
     chart.container("line-chart");
@@ -1080,13 +1080,13 @@
     series1.name("Cantidad");
 
     // configure the visual settings of the second series
-    series1.normal().fill("#051026");
-    series1.hovered().fill("#051026", 0.1);
-    series1.selected().fill("#051026", 0.5);
-    series1.normal().stroke("#051026", 2);
-    series1.hovered().stroke("#051026", 4);
-    series1.selected().stroke("#051026", 6);
-        
+    series1.normal().fill("#0071bc");
+    series1.hovered().fill("#0071bc", 0.1);
+    series1.selected().fill("#0071bc", 0.5);
+    series1.normal().stroke("#0071bc", 2);
+    series1.hovered().stroke("#0071bc", 4);
+    series1.selected().stroke("#0071bc", 6);
+
     //tooltip
     series1
       .tooltip()
@@ -1097,12 +1097,12 @@
     series2.name("Cantidad");
 
     // configure the visual settings of the second series
-    series2.normal().fill("#4973f2");
-    series2.hovered().fill("#4973f2", 0.1);
-    series2.selected().fill("#4973f2", 0.5);
-    series2.normal().stroke("#4973f2", 2);
-    series2.hovered().stroke("#4973f2", 4);
-    series2.selected().stroke("#4973f2", 6);
+    series2.normal().fill("#13bcc9");
+    series2.hovered().fill("#13bcc9", 0.1);
+    series2.selected().fill("#13bcc9", 0.5);
+    series2.normal().stroke("#13bcc9", 2);
+    series2.hovered().stroke("#13bcc9", 4);
+    series2.selected().stroke("#13bcc9", 6);
 
     //tooltip
     series2
@@ -1127,13 +1127,13 @@
 
     // config title
     var title = chart.title();
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontWeight(600);
     title.fontSize(18);
 
     // config xTitle
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
@@ -1144,9 +1144,9 @@
     background.enabled(false);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -1156,13 +1156,13 @@
     chart.yMinorGrid().enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set the container id
     chart.container("vehiculos__problemas");
@@ -1189,21 +1189,21 @@
     // set chart title text settings
     var title = chart.title();
     chart.title("VEHÍCULOS CON PROBLEMAS");
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
     // set y axis title
     chart.yAxis().title("CANTIDAD");
     var titley = chart.yAxis().title();
-    titley.fontColor("#000");
+    titley.fontColor("#fff");
     titley.fontSize(12);
     titley.fontWeight(500);
 
     // set y axis title
     chart.xAxis().title("MES");
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
@@ -1216,9 +1216,9 @@
       .format("PORCENTAJE: {%value}{groupsSeparator:\\,, decimalsCount:3}");
 
     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(true);
@@ -1260,9 +1260,9 @@
     series.name("Review about the product");
 
     // configure the visual settings of the second series
-    series.normal().stroke("#4973f2", 2);
-    series.hovered().stroke("#4973f2", 4);
-    series.selected().stroke("#4973f2", 6);
+    series.normal().stroke("#0071bc", 2);
+    series.hovered().stroke("#0071bc", 4);
+    series.selected().stroke("#0071bc", 6);
 
     // enable series data labels
     series.labels().enabled(false).anchor("left-bottom").padding(5);
@@ -1281,13 +1281,13 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set container for the chart and define padding
     chart.container("ten__vehiculos__problemas");
@@ -1315,7 +1315,7 @@
 
     // font labels font settings
     chart.labels().fontSize(10);
-    chart.labels().fontColor("#000");
+    chart.labels().fontColor("#fff");
     chart.labels().fontWeight(900);
 
     // set the chart title
@@ -1331,7 +1331,7 @@
       .position("right")
       .itemsLayout("vertical")
       .align("center")
-      .fontColor("#000")
+      .fontColor("#fff")
       .fontSize(25);
 
     // set the size of legend icons
@@ -1397,7 +1397,7 @@
         // set chart title text settings
         chart.title("COMPARATIVA DE PRODUCTOS");
         var title = chart.title();
-        title.fontColor("#000");
+        title.fontColor("#fff");
         title.fontSize(18);
         title.fontWeight(600);
 
@@ -1418,10 +1418,10 @@
         var xLabels = chart.xAxis().labels();
         xLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
 
-         // set grid stroke appearance
-         chart.xGrid().stroke({ color: "#000" });
-         // set grid stroke appearance
-         chart.yGrid().stroke({ color: "#000" });
+        // set grid stroke appearance
+        chart.xGrid().stroke({ color: "#DCDCDC" });
+        // set grid stroke appearance
+        chart.yGrid().stroke({ color: "#DCDCDC" });
 
         // grid settings
         chart.yGrid(true).xGrid(true).xMinorGrid(false).yMinorGrid(false);
@@ -1432,7 +1432,7 @@
         // set chart axes settings
         chart.xAxis().title("EJE");
         var titlex = chart.xAxis().title();
-        titlex.fontColor("#000");
+        titlex.fontColor("#fff");
         titlex.fontSize(12);
         titlex.fontWeight(800);
 
@@ -1446,64 +1446,64 @@
         sportsmen1.name("P1");
 
         // configure the visual settings of the first series
-        sportsmen1.normal().fill("#7f9df5");
-        sportsmen1.hovered().fill("#7f9df5", 0.1);
-        sportsmen1.selected().fill("#7f9df5", 0.5);
-        sportsmen1.normal().stroke("#7f9df5", 1);
-        sportsmen1.hovered().stroke("#7f9df5", 2);
-        sportsmen1.selected().stroke("#7f9df5", 4);
+        sportsmen1.normal().fill("#1d939d");
+        sportsmen1.hovered().fill("#1d939d", 0.1);
+        sportsmen1.selected().fill("#1d939d", 0.5);
+        sportsmen1.normal().stroke("#1d939d", 1);
+        sportsmen1.hovered().stroke("#1d939d", 2);
+        sportsmen1.selected().stroke("#1d939d", 4);
 
         // create the first series and set the data
         var sportsmen2 = chart.bubble(sportsmen2);
         sportsmen2.name("P2");
 
         // configure the visual settings of the first series
-        sportsmen2.normal().fill("#7f9df5");
-        sportsmen2.hovered().fill("#7f9df5", 0.1);
-        sportsmen2.selected().fill("#7f9df5", 0.5);
-        sportsmen2.normal().stroke("#7f9df5", 1);
-        sportsmen2.hovered().stroke("#7f9df5", 2);
-        sportsmen2.selected().stroke("#7f9df5", 4);
+        sportsmen2.normal().fill("#1d939d");
+        sportsmen2.hovered().fill("#1d939d", 0.1);
+        sportsmen2.selected().fill("#1d939d", 0.5);
+        sportsmen2.normal().stroke("#1d939d", 1);
+        sportsmen2.hovered().stroke("#1d939d", 2);
+        sportsmen2.selected().stroke("#1d939d", 4);
 
         // create the first series and set the data
         var sportsmen3 = chart.bubble(sportsmen3);
         sportsmen3.name("P3");
 
         // configure the visual settings of the first series
-        sportsmen3.normal().fill("#7f9df5");
-        sportsmen3.hovered().fill("#7f9df5", 0.1);
-        sportsmen3.selected().fill("#7f9df5", 0.5);
-        sportsmen3.normal().stroke("#7f9df5", 1);
-        sportsmen3.hovered().stroke("#7f9df5", 2);
-        sportsmen3.selected().stroke("#7f9df5", 4);
+        sportsmen3.normal().fill("#1d939d");
+        sportsmen3.hovered().fill("#1d939d", 0.1);
+        sportsmen3.selected().fill("#1d939d", 0.5);
+        sportsmen3.normal().stroke("#1d939d", 1);
+        sportsmen3.hovered().stroke("#1d939d", 2);
+        sportsmen3.selected().stroke("#1d939d", 4);
 
         // create the first series and set the data
         var sportsmen4 = chart.bubble(sportsmen4);
         sportsmen4.name("P4");
 
         // configure the visual settings of the first series
-        sportsmen4.normal().fill("#7f9df5");
-        sportsmen4.hovered().fill("#7f9df5", 0.1);
-        sportsmen4.selected().fill("#7f9df5", 0.5);
-        sportsmen4.normal().stroke("#7f9df5", 1);
-        sportsmen4.hovered().stroke("#7f9df5", 2);
-        sportsmen4.selected().stroke("#7f9df5", 4);
+        sportsmen4.normal().fill("#1d939d");
+        sportsmen4.hovered().fill("#1d939d", 0.1);
+        sportsmen4.selected().fill("#1d939d", 0.5);
+        sportsmen4.normal().stroke("#1d939d", 1);
+        sportsmen4.hovered().stroke("#1d939d", 2);
+        sportsmen4.selected().stroke("#1d939d", 4);
 
         // labels
         chart.labels(true);
         chart.labels().format("{%seriesName}");
 
         // set the color for the text of the labels
-        chart.labels().fontColor("#000");
-        chart.hovered().labels().fontColor("#000");
-        chart.selected().labels().fontColor("#000");
+        chart.labels().fontColor("#fff");
+        chart.hovered().labels().fontColor("#fff");
+        chart.selected().labels().fontColor("#fff");
         chart.labels().fontSize(15);
         chart.labels().fontWeight(600);
 
         chart
           .tooltip()
           .useHtml(true)
-          .fontColor("#000")
+          .fontColor("#fff")
           .positionMode("point")
           .format(
             "KM: {%value}{groupsSeparator:\\,, decimalsCount:3}<br>EJE: ${%x}{groupsSeparator:\\,, decimalsCount:3}<br>Cantidad: {%size}{groupsSeparator:\\,, decimalsCount:3}"
@@ -1516,13 +1516,13 @@
         background.enabled(false);
 
         // adjust y axis
-        chart.yAxis().stroke("#000");
+        chart.yAxis().stroke("#DCDCDC");
         chart.yAxis().ticks(false);
-        chart.yAxis().labels().fontColor("#000");
+        chart.yAxis().labels().fontColor("#DCDCDC");
 
         // adjust x axis
-        chart.xAxis().stroke("#000");
-        chart.xAxis().labels().fontColor("#000");
+        chart.xAxis().stroke("#DCDCDC");
+        chart.xAxis().labels().fontColor("#DCDCDC");
 
         // set container id for the chart
         chart.container("bubble-chart");
@@ -1589,14 +1589,14 @@
     // set chart title text settings
     chart.title("TENDENCIA DE CPK Y VIDA");
     var title = chart.title();
-    title.fontColor("#000");
+    title.fontColor("#fff");
     title.fontSize(18);
     title.fontWeight(600);
 
     // set chart axes settings
     chart.xAxis().title("FECHA");
     var titlex = chart.xAxis().title();
-    titlex.fontColor("#000");
+    titlex.fontColor("#fff");
     titlex.fontSize(12);
     titlex.fontWeight(800);
 
@@ -1636,12 +1636,12 @@
     areaSeries.name("VIDA");
 
     // configure the visual settings of the second series
-    areaSeries.normal().fill("#0a2a75", 0.6);
-    areaSeries.hovered().fill("#0a2a75", 0.1);
-    areaSeries.selected().fill("#0a2a75", 0.5);
-    areaSeries.normal().stroke("#0a2a75", 2);
-    areaSeries.hovered().stroke("#0a2a75", 4);
-    areaSeries.selected().stroke("#0a2a75", 6);
+    areaSeries.normal().fill("#0071bc", 0.6);
+    areaSeries.hovered().fill("#0071bc", 0.1);
+    areaSeries.selected().fill("#0071bc", 0.5);
+    areaSeries.normal().stroke("#0071bc", 2);
+    areaSeries.hovered().stroke("#0071bc", 4);
+    areaSeries.selected().stroke("#0071bc", 6);
 
     //tooltip
     areaSeries
@@ -1653,7 +1653,7 @@
     areaLabels.enabled(false);
     areaLabels.format("${%value}{groupsSeparator:\\,, decimalsCount:3}");
     areaLabels.position("top");
-    areaLabels.fontColor("#000");
+    areaLabels.fontColor("#fff");
     areaLabels.fontWeight("bold");
 
     // create line series and set scale for it
@@ -1662,14 +1662,14 @@
     lineSeries.name("CPK");
 
     // configure the visual settings of the second series
-    lineSeries.normal().stroke("#051026", 6);
-    lineSeries.hovered().stroke("#051026", 4);
-    lineSeries.selected().stroke("#051026", 8);
+    lineSeries.normal().stroke("#13bcc9", 6);
+    lineSeries.hovered().stroke("#13bcc9", 4);
+    lineSeries.selected().stroke("#13bcc9", 8);
 
     // enable and configure markers on the first series
     lineSeries.markers(true);
     lineSeries.markers().type("circle");
-    lineSeries.markers().fill("#051026");
+    lineSeries.markers().fill("#13bcc9");
     lineSeries.markers().size(5);
 
     //tooltip
@@ -1684,14 +1684,14 @@
     chart.legend().iconSize(15);
 
     // configure the font of legend items
-    chart.legend().fontColor("#000");
+    chart.legend().fontColor("#fff");
     chart.legend().fontSize(10);
     chart.legend().fontWeight(800);
 
-     // set grid stroke appearance
-    chart.xGrid().stroke({ color: "#000" });
     // set grid stroke appearance
-    chart.yGrid().stroke({ color: "#000" });
+    chart.xGrid().stroke({ color: "#DCDCDC" });
+    // set grid stroke appearance
+    chart.yGrid().stroke({ color: "#DCDCDC" });
 
     // enable major grids
     chart.xGrid().enabled(false);
@@ -1707,18 +1707,18 @@
     background.enabled(false);
 
     // adjust y axis
-    chart.yAxis().stroke("#000");
+    chart.yAxis().stroke("#DCDCDC");
     chart.yAxis().ticks(false);
-    chart.yAxis().labels().fontColor("#000");
+    chart.yAxis().labels().fontColor("#DCDCDC");
 
     // adjust y axis
-    chart.yAxis(1).stroke("#000");
+    chart.yAxis(1).stroke("#DCDCDC");
     chart.yAxis(1).ticks(false);
-    chart.yAxis(1).labels().fontColor("#000");
+    chart.yAxis(1).labels().fontColor("#DCDCDC");
 
     // adjust x axis
-    chart.xAxis().stroke("#000");
-    chart.xAxis().labels().fontColor("#000");
+    chart.xAxis().stroke("#DCDCDC");
+    chart.xAxis().labels().fontColor("#DCDCDC");
 
     // set container id for the chart
     chart.container("line-area-chart");

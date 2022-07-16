@@ -72,7 +72,7 @@ fieldset {
   flex: 1 1 300px;
 }
 
-input[type='date']::-webkit-inner-spin-button,
+input[type="date"]::-webkit-inner-spin-button,
 ::-webkit-calendar-picker-indicator {
   filter: invert(100%);
 }
