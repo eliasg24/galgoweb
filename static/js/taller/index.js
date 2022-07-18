@@ -37,31 +37,55 @@
             </h3>
           `
             : ''}
-              ${servicio.inflar !== '' ? `
+              ${servicio.inflar !== ''
+            ? `
               <h3 class="service__title">
                 Inflado
               </h3>
-              ` : ''}
-              ${servicio.balancear !== '' ? `
+              `
+            : ''}
+              ${servicio.rotar === 'otro'
+            ? `
+              <h3 class="service__title">
+                Rotación entre vehículos
+              </h3>
+              `
+            : ''}
+              ${servicio.rotar === 'mismo'
+            ? `
+              <h3 class="service__title">
+                Rotación entre llantas
+              </h3>
+              `
+            : ''}
+              ${servicio.balancear !== ''
+            ? `
               <h3 class="service__title">
               Balanceo
             </h3>
-              ` : ''}
-              ${servicio.reparar !== '' ? `
+              `
+            : ''}
+              ${servicio.reparar !== ''
+            ? `
               <h3 class="service__title">
                 Reparación
               </h3>
-              ` : ''}
-              ${servicio.valvula !== '' ? `
+              `
+            : ''}
+              ${servicio.valvula !== ''
+            ? `
               <h3 class="service__title">
                 Reparación de valvula
               </h3>
-              ` : ''}
-              ${servicio.costado !== '' ? `
+              `
+            : ''}
+              ${servicio.costado !== ''
+            ? `
               <h3 class="service__title">
                 Reparación de costado
               </h3>
-              ` : ''}
+              `
+            : ''}
             <p><strong>Llanta:</strong> ${servicio.numero_economico}</p>
             <p><strong>Posición:</strong> ${servicio.posicion}</p>
             ${servicio.razon.length >= 1
@@ -114,18 +138,15 @@
         var _a, _b;
         const target = e.target;
         if (target.matches('#taller-form')) {
-            const date = document.querySelector('input[type="date"]'), time = document.querySelector('input[type="time"]');
-            if (date.value === '' || time.value === '') {
+            const date = document.querySelector('input[type="date"]'), time = document.querySelector('input[type="time"]'), user = document.querySelector('select[name="usuario"]'), km = document.querySelector('input[name="km_montado"]'), noKm = document.querySelector('input[name="no_km"]');
+            if (date.value === '' || time.value === '' || user.value === '') {
                 e.preventDefault();
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Los campos de fecha y/o hora estan vacíos',
-                    icon: 'error',
-                    backdrop: true,
-                    showDenyButton: false,
-                    allowOutsideClick: true,
-                    allowEscapeKey: true,
-                });
+                Swal.fire('Error', 'No se han completado datos en la hoja de servicio', 'error');
+                return;
+            }
+            if (km.value === '' && !noKm.checked) {
+                e.preventDefault();
+                Swal.fire('Error', 'No se ha puesto un KM de montado', 'error');
                 return;
             }
             return;
@@ -151,6 +172,7 @@
             .querySelectorAll('input, select, .btn-taller')
             .forEach((input) => (input.disabled = true));
         saveData.push(data);
+        console.log(saveData);
         formHidden.value = JSON.stringify(saveData);
         (_b = document
             .querySelector('.alert__success')) === null || _b === void 0 ? void 0 : _b.classList.add('active');
@@ -312,6 +334,7 @@
         const target = e.target;
         const origen = document.getElementById(`origen-llanta-${target.dataset.radioid}`);
         const vehiculoOrigen = document.getElementById(`origen-vehiculo-${target.dataset.radioid}`);
+        const kmMontado = document.getElementById(`origen-km_montadoo-${target.dataset.radioid}`);
         if (target.value === 'mismo') {
             const tires = document.querySelector(`[data-rotar-id="${target.dataset.radioid}"] input[value="${target.dataset.radioid}"]`);
             tires.disabled = true;
@@ -334,6 +357,8 @@
                     vehiculoOrigen.value.toLocaleLowerCase())
                     .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                     .then((json) => {
+                    kmMontado.max = json.km_max || '';
+                    kmMontado.min = json.km_min || '';
                     origen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
                     origen.innerHTML += json.llantas.map((item) => {
                         return `<option value="${item.id}">${item.posicion}</option>`;

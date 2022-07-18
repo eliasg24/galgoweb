@@ -339,15 +339,24 @@ class TireSearch(LoginRequiredMixin, View):
         amarillos = []
         azules = []
         
-        for llanta in llantas:
-            color = functions.color_observaciones_all_one(llanta)            
-            if color == 'bad':
-                rojos.append(llanta.id)
-            elif color == 'yellow':
-                amarillos.append(llanta.id)
-            else:
-                azules.append(llanta.id)
-                
+        if inventario != 'Servicio':
+            for llanta in llantas:
+                color = functions.color_observaciones_all_one(llanta)            
+                if color == 'bad':
+                    rojos.append(llanta.id)
+                elif color == 'yellow':
+                    amarillos.append(llanta.id)
+                else:
+                    azules.append(llanta.id)
+        else:
+            for llanta in llantas:
+                color = functions.color_observaciones_servicio(llanta)          
+                if color == 'bad':
+                    rojos.append(llanta.id)
+                elif color == 'yellow':
+                    amarillos.append(llanta.id)
+                else:
+                    azules.append(llanta.id)
         #Resultado final
         search_first = llantas.filter(
             **eco_query,
@@ -874,7 +883,7 @@ class PanelRenovadoApi(LoginRequiredMixin, View):
             llantas_json = []
 
         try:
-            productos = list(Producto.objects.filter(compania=self.request.user.perfil.compania).values("producto"))
+            productos = list(Producto.objects.filter(compania=self.request.user.perfil.compania, vida='Renovada').values("producto"))
         except:
             productos = []
         try:
@@ -1017,6 +1026,7 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
         
         id_seletct = (request.GET['id_select'] if 'id_select' in request.GET else -1)
         id_seletct_query = ({'vehiculo__id': id_seletct})
+        vehiculo_select = ({'pk': id_seletct})
         print(id_seletct)
         print(id_seletct_query)
         
@@ -1065,6 +1075,20 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
                 max_profundidad=Greatest("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
                 ) 
        
+       
+        #Obtencion del km max
+        km_max = ''
+        vehiculo = Vehiculo.objects.filter(**vehiculo_select)
+        if vehiculo.count() > 0:
+            km_max = functions.km_max(vehiculo[0])
+       
+        km_min = ''
+        try:
+            if vehiculo[0].km != None:
+                km_min = vehiculo[0].km
+        except:
+            pass
+       
         #Serializar data
         vehiculos_list = list(vehiculos[offset:limit])
         
@@ -1075,6 +1099,8 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
             'pagination': pagination,
             'vehiculos_list': vehiculos_list,
             'llantas': llantas_list,
+            'km_max': km_max,
+            'km_min': km_min
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

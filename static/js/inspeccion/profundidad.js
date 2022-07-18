@@ -72,8 +72,8 @@ const validaciones = (
   const centerValue = parseFloat(center.value);
   const rightValue = parseFloat(right.value);
   const mm = parseFloat(
-    document.querySelector('.double-tire').getAttribute('data-mm-dif')
-  );
+    document.querySelector('.double-tire')?.getAttribute('data-mm-dif')
+  ) || '0';
 
   if (target === left) {
     // ! Si es solo la izquierda

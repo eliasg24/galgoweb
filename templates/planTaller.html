@@ -31,51 +31,56 @@
     </div>
     <div class="container">
       <aside class="left-cont">
-        <form class="service-page">
-          <h3>Hoja de Servicio</h3>
-          <!-- <div class="form__row">
-            <input type="text" name="folio" value="123456789" placeholder="Folio" readonly>
-          </div> -->
+        <details>
+          <summary>
+            Hoja de servicio
+          </summary>
+          <form class="service-page">
 
-          <div class="flex-row">
-            <select name="usuario" id="usuario" required>
-              <option value="" selected disabled>Selecciona un usuario</option>
-              {% for usuario in usuarios %}
-                <option value="{{usuario.id}}">{{usuario}}</option>
-              {% endfor %}
-            </select>
-            <!--<input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">-->
-            <input type="text" name="vehiculoEconomico" value="{{vehiculo.0}}" placeholder="Número económico" readonly>
-          </div>
-          <div class="flex-row">
-            <input type="text" name="sucursal" value="{{vehiculo.0.ubicacion}}" placeholder="Sucursal" readonly>
-            <input type="text" name="aplicacion" value="{{vehiculo.0.aplicacion}}" placeholder="Aplicación" readonly>
-          </div>
-          <label for="">
-            <strong>Fecha de inicio</strong>
-          </label>
-          <div class="flex-row">
-            <input type="date" name="fecha" id="" required>
-            <input type="time" name="hora" id="" required>
-          </div>
-          <label for="">
-            <strong>Fecha final</strong>
-          </label>
-          <div class="flex-row">
-            <input type="date" name="fecha_end" id="" required>
-            <input type="time" name="hora_end" id="" required>
-          </div>
-          <div class="flex-row">
-            <input type="number" name="km_montado" value="" placeholder="Km de montado">
-          </div>
+            <!-- <h3 class="economic-number">No. Economico: {{vehiculo.0}}</h3> -->
+  
+            <div class="flex-row">
+              <select name="usuario" id="usuario" required>
+                <option value="" selected disabled>Selecciona un usuario</option>
+                {% for usuario in usuarios %}
+                  <option value="{{usuario.id}}">{{usuario}}</option>
+                {% endfor %}
+              </select>
+              <!--<input type="text" name="usuario" value="{{request.user}}" placeholder="Usuario">-->
+              <input type="hidden" name="vehiculoEconomico" value="{{vehiculo.0}}">
+            </div>
+            <div class="flex-row">
+              <input type="text" name="sucursal" value="{{vehiculo.0.ubicacion}}" placeholder="Sucursal" readonly>
+              <input type="text" name="aplicacion" value="{{vehiculo.0.aplicacion}}" placeholder="Aplicación" readonly>
+            </div>
+            <label for="">
+              <strong>Fecha de inicio</strong>
+            </label>
+            <div class="flex-row">
+              <input type="date" name="fecha" id="" required>
+              <input type="time" name="hora" id="" required>
+            </div>
+            <label for="">
+              <strong>Fecha final</strong>
+            </label>
+            <div class="flex-row">
+              <input type="date" name="fecha_end" id="" required>
+              <input type="time" name="hora_end" id="" required>
+            </div>
+            <div class="flex-row">
+              <input type="number" name="km_montado" value="{{km}}" placeholder="Km del vehiculo {{km}}" max="{{km_max}}" min="{{km_min}}">
+              Km maximo: {{km_max}}
+            </div>
 
-          <!-- <div class="form__row">
-            <button type="submit" class="btn btn-taller">
-              Guardar
-            </button>
-          </div> -->
-
-        </form>
+            <label for="no_km">
+              <input type="checkbox" name="no_km" id="no_km" style="width: auto;">
+              <strong>
+                KM imposible de registrar
+              </strong>
+            </label>
+  
+          </form>
+        </details>
 
         <div class="relative">
           <div class="absolute">
@@ -84,6 +89,10 @@
         </div>
       </aside>
       <div class="main-cont">
+
+        <header class="container-header">
+          <h2>No. económico: {{ vehiculo.0 }}</h2>
+        </header>
 
         <form id="vehicle-form" class="flex-row" style="width: 100%; justify-content: center;">
           <label for="alinearVehiculo" class="label-check" style="width: auto;">

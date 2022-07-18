@@ -1,4 +1,4 @@
-select { 
+select {
   appearance: none;
   border-radius: 0.5rem;
   background: transparent;
@@ -109,7 +109,7 @@ select option {
 .main-cont,
 .right-cont {
   background-color: var(--colorv45);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
 }
 
 /* * Service page */
@@ -117,7 +117,8 @@ select option {
 .service-page {
   display: grid;
   gap: 0.45rem;
-  padding: 1rem;
+  /* padding: 1rem; */
+  margin-top: 1rem;
 }
 
 .form__row input,
@@ -253,8 +254,16 @@ select option {
   align-items: center;
   display: flex;
   justify-content: space-around;
-  padding: 1rem;
+  /* padding: 1rem; */
   gap: 1.25rem;
+  overflow: hidden;
+}
+
+.container-header {
+  background-color: var(--colorv04);
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
 }
 
 .head__services {
@@ -515,13 +524,35 @@ select option {
   font-size: 1.5rem;
 }
 
+details {
+  background-color: var(--colorv01);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.economic-number {
+  text-align: center;
+  color: var(--colorv04);
+}
+
+.modal__title {
+  font-size: 2rem;
+  color: var(--colorv04);
+}
+
 @media screen and (min-width: 1024px) {
   .flex-row {
     flex-flow: row nowrap;
   }
 
   .container {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 400px 1fr;
   }
 
   .card__config {
@@ -571,5 +602,9 @@ select option {
 @media screen and (min-width: 1440px) {
   .card__config {
     width: 60%;
+  }
+
+  .container {
+    grid-template-columns: 500px 1fr;
   }
 }

@@ -75,9 +75,6 @@ const diferenciaDual = (duales = document.documentElement) => {
 
 const dual = () => {
   const duales = document.querySelectorAll('.double-tire');
-  const mmDiferencia = document
-    .querySelector('.double-tire')
-    .getAttribute('data-mm-dif');
 
   duales.forEach((dual) => {
     diferenciaDual(dual);
@@ -242,7 +239,7 @@ const onSelectTire = () => {
 
     campos.forEach(item => {
       if (item.value.length <= 0) {
-        Swal.fire('Erro en el formulario', `El campo ${item.name} de la posición ${ item.dataset.vehiculo } esta vacío`, 'error');
+        Swal.fire('Error en el formulario', `El campo ${item.name} de la posición ${ item.dataset.vehiculo } esta vacío`, 'error');
         return;
       }
     })

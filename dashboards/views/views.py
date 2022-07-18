@@ -36,8 +36,9 @@ from requests import request
 
 # Functions
 from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
-from dashboards.functions.functions import DiffDays, CastDate, presion_establecida
+from dashboards.functions.functions import DiffDays, CastDate, mala_entrada, presion_establecida
 from aeto import settings
+from dashboards import GoogleDrive
 
 # Forms
 from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm, SucursalEditForm, TallerEditForm, AplicacionEditForm, VehiculoEditForm
@@ -898,10 +899,12 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                 try:
                     if presion_act >= presion_minima and presion_act <= presion_maxima:
                         color_presion = 'good'
-                    else:
+                    elif presion_act < presion_minima:
                         color_presion = 'bad'
+                    elif presion_act > presion_maxima:
+                        color_presion = 'yellow'
                 except: 
-                    color_presion = 'bad'
+                    color_presion = 'good'
                     
                 min_produndidad = functions.min_profundidad(llanta)
                 
@@ -1258,7 +1261,10 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
+                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
+                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
                             diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
@@ -2576,10 +2582,12 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                 try:
                     if presion_act >= presion_minima and presion_act <= presion_maxima:
                         color_presion = 'good'
-                    else:
+                    elif presion_act < presion_minima:
                         color_presion = 'bad'
+                    elif presion_act > presion_maxima:
+                        color_presion = 'yellow'
                 except:
-                    color_presion = 'bad'    
+                    color_presion = 'good'    
                     
                 inspecciones_llanta = Inspeccion.objects.filter(llanta = llanta)
                 total_inspecciones = len(inspecciones_llanta)
@@ -2592,7 +2600,9 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                 mm_dif = llanta.vehiculo.compania.mm_de_diferencia_entre_duales
                 context['mm_dif'] = mm_dif
                 try:
-                    km_max = functions.km_max_template(llanta.ultima_inspeccion.inspeccion_vehiculo)
+                    km_max = functions.km_max(vehiculo_actual)
+                    #km_max = ''
+                    
                 except:
                     km_max = ''
                 context['km_max'] = km_max
@@ -2821,8 +2831,10 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                     if vehiculo.km != None:
                         if kilometraje[0] != vehiculo_referencia.km:
                             if llanta_actual.km_montado == None:
-                                inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos)
+                                inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos, vida = llanta_actual.vida)
                                 if len(inspecciones) >= 2:
+                                    print(llanta_actual.vida)
+                                    print(inspecciones)
                                     print('Sin km de montado pero con inspecciones suficinetes')
                                     print(llanta_actual.id)
                                     primer_inspeccion = inspecciones.first()
@@ -2903,7 +2915,10 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
+                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
+                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
                             diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
@@ -3254,7 +3269,10 @@ class InspeccionesService(ServiceBase):
                     if llanta_i.posicion == dual_completo:
                         dual_llanta = llanta_i
                 if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                    porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
+                    presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                    presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
+                    porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                    #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                     if llanta_actual in diferencia_presion_duales_list:
                     
                         diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
@@ -3983,7 +4001,10 @@ class formularioView(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
+                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
+                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
                             diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
@@ -4474,8 +4495,10 @@ class configuracionVehiculoView(LoginRequiredMixin, TemplateView):
                 
                 if presion_act >= presion_minima and presion_act <= presion_maxima:
                     color_presion = 'good'
-                else:
+                elif presion_act < presion_minima:
                     color_presion = 'bad'
+                elif presion_act > presion_maxima:
+                    color_presion = 'yellow'
                 
                 if llanta.eje == eje:
                     list_temp.append([llanta, color_profundidad, color_presion])
@@ -4572,11 +4595,11 @@ class carritoStockView(LoginRequiredMixin, TemplateView):
                 rojo.append(1)
             elif status == 'purple':
                 morado.append(1)
-                
+            producto = llanta.producto.producto if llanta.producto != None else None
             llantas_dict.append( {
                 'id': llanta.id,
                 'eco': llanta.numero_economico,
-                'producto': llanta.producto.producto,
+                'producto': producto,
                 'fecha': f'{llanta.fecha_de_entrada_inventario.day}/{llanta.fecha_de_entrada_inventario.month}/{llanta.fecha_de_entrada_inventario.year}',
                 'status': status
             })
@@ -4859,7 +4882,7 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         llanta = Llanta.objects.get(pk = id)
         desecho = Desecho.objects.get(compania = compania, condicion = condicion, zona_de_llanta = zona, razon = razon)
         orden = OrdenDesecho.objects.create(
-            usuario = usuario,
+            usuario = perfil,
             llanta = llanta,
             compania = compania,
             fecha = hoy,
@@ -5127,12 +5150,25 @@ class ordenEntradaView(LoginRequiredMixin, TemplateView):
                 functions.cambio_de_vida(llanta, llanta)
                 llanta.vida = functions.actualizar_vida(llanta)
                 llanta.producto = producto
+                llanta.profundidad_izquierda = producto.profundidad_inicial
+                llanta.profundidad_central = producto.profundidad_inicial
+                llanta.profundidad_derecha = producto.profundidad_inicial
+                llanta.km_actual = 0
+                functions.quitar_todo_profundidad(llanta)
             if status == 'aprobado':
                 llanta.inventario = 'Renovada'
             else:
                 llanta.inventario = 'Antes de Desechar'
             
-        Llanta.objects.bulk_update(llantas, ['taller', 'producto', 'vida', 'inventario'])
+        Llanta.objects.bulk_update(llantas, 
+                                   ['taller', 
+                                    'producto', 
+                                    'vida', 
+                                    'inventario', 
+                                    'profundidad_izquierda', 
+                                    'profundidad_central', 
+                                    'profundidad_derecha',
+                                    'km_actual'])
         #! Elimina del carrito solo los ids actuales
         carrito = LlantasSeleccionadas.objects.get(perfil = perfil, inventario = 'Con renovador')
         for id in ids:
@@ -5710,6 +5746,7 @@ class resumenView(LoginRequiredMixin, TemplateView):
         #Sumas
         
         total_alta_presion = (
+                                direccion_baja_presion +
                                 libre_baja_presion +
                                 retractil_baja_presion +
                                 traccion_baja_presion +
@@ -5717,18 +5754,21 @@ class resumenView(LoginRequiredMixin, TemplateView):
                                 )
         
         total_baja_presion = (
+                                direccion_alta_presion +
                                 libre_alta_presion +
                                 retractil_alta_presion +
                                 traccion_alta_presion +
                                 arrastre_alta_presion
                                 )
         total_baja_profundidad = (
+                                    direccion_baja_profundidad +
                                     libre_baja_profundidad +
                                     retractil_baja_profundidad +
                                     traccion_baja_profundidad +
                                     arrastre_baja_profundidad
                                     )
         total_desgaste_irregular = (
+                                    direccion_desgaste_irregular +
                                     libre_desgaste_irregular +
                                     retractil_desgaste_irregular +
                                     traccion_desgaste_irregular +
@@ -5824,7 +5864,15 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         #? Se obtiene el vehiculo
         vehiculo = Vehiculo.objects.filter(pk=self.kwargs['pk'])
-        print(vehiculo)
+        km = vehiculo[0].km
+        km_max = functions.km_max(vehiculo[0])
+        km_min = functions.km_min(vehiculo[0])
+        print('-------')
+        print(km_max)
+        print(km_min)
+        print('-------')
+        
+        
         #? Se convirte el id en una lista(Por convenvion de las funciones)
         ids_vehiculo = functions.list_vehicle_id(vehiculo.values('id'))
         #? Se obtiene las llantas 
@@ -5843,7 +5891,6 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         talleres = Taller.objects.filter(compania = vehiculo[0].compania)
         
         usuarios = Perfil.objects.filter(companias__in = [vehiculo[0].compania])
-        print(usuarios)
         
         
         #? Checar si existe un taller abierto
@@ -5867,12 +5914,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     except:
                         pass
                 contador += 1
-            for llanta in servicio:
-                print(type(llanta))
+            #for llanta in servicio:
+            #    print(type(llanta))
         except:
             servicio = None
 
-        print(servicio)
         
         context['vehiculo_acomodado'] = vehiculo_acomodado
         context['talleres'] = talleres
@@ -5881,16 +5927,26 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         context['servicios'] = servicios
         context['servicio'] = servicio
         context['usuarios'] = usuarios
+        context['km'] = km
+        context['km_max'] = km_max
+        context['km_min'] = km_min
         print(datetime.now())
         return context
     
     def post(self, request, pk):
         print(request.POST.getlist('formulario')[0])
+        #? Usuarios
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
         if request.POST.getlist('formulario')[0] == 'agendar':
             servicio_vehiculo = functions.servicio_vehiculo_preguardado(pk, request)
             functions.archivar_taller(request.POST, pk, servicio_vehiculo)
             return redirect('dashboards:calendario')
         print(request.POST)
+        #? Obtencion de los datos de la hoja de servicio
+        hoja = request.POST['hoja']
+        hoja = json.loads(hoja)
+        
         #? Acciones del vehiculo
         vehiculo = Vehiculo.objects.get(pk = pk)
         try:
@@ -5899,13 +5955,19 @@ class planTallerView(LoginRequiredMixin, TemplateView):
             acciones_vehiculo = []
         if 'alinearVehiculo' in acciones_vehiculo:
             vehiculo.fecha_ultima_alineacion = date.today()
-            
+        #Actualizar km del vehiculo
+        km_imposible = True if 'no_km' in hoja else False
+        print(km_imposible)
+        if km_imposible == False:
+            km_vehiculo = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
+            vehiculo.km = km_vehiculo
+        
+        
         inflarVehiculo = True if 'inflarVehiculo' in acciones_vehiculo else False
-        Vehiculo.objects.bulk_update([vehiculo], ['fecha_ultima_alineacion'])
+        Vehiculo.objects.bulk_update([vehiculo], ['fecha_ultima_alineacion', 'km'])
         
         #? Acciones de llanta
-        hoja = request.POST['hoja']
-        hoja = json.loads(hoja)
+        
         try:
             dataPOST = json.loads(request.POST.getlist('data')[0])
         except:
@@ -5984,8 +6046,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 tipo_eje = llanta.tipo_de_eje
                 eje = llanta.eje
                 posicion = llanta.posicion
-                
-                km_montado = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
+                if km_imposible == False:
+                    km_montado = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None                    
+                else:
+                    km_montado = None
+                    
                 #? Se llama la llanta a montar
                 nuevaLlanta = data['nuevaLlanta']
                 llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta)
@@ -6027,7 +6092,9 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     'taller', 'inventario'
                     ])
                 llantas_desmontadas.append(llanta)
-                
+                functions.quitar_llanta_de_carritos(llanta_nueva, perfil)
+                functions.check_dualizacion(llanta_nueva)
+                functions.check_dif_presion_duales(llanta_nueva)
                 print('---------------')
                 
         for data in dataPOST:
@@ -6059,7 +6126,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     presion_establecida = functions.presion_establecida(llanta)
                     llanta.presion_actual = presion_establecida
                     presion = Observacion.objects.get(observacion = 'Baja presión')
+                    mala_entrada = Observacion.objects.get(observacion = 'Mala entrada')
+                    doble_mala_entrada = Observacion.objects.get(observacion = 'Doble mala entrada')
                     llanta.observaciones.remove(presion)
+                    llanta.observaciones.remove(mala_entrada)
+                    llanta.observaciones.remove(doble_mala_entrada)
                 if balancear:
                     print('Se balanceo')
                     llanta.fecha_de_balanceado = date.today()
@@ -6142,12 +6213,16 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     posicion_llanta_rotar = llanta_rotar.posicion
                     eje_llanta_rotar = llanta_rotar.eje
                     tipo_de_eje_llanta_rotar = llanta_rotar.tipo_de_eje
-                    
+                    #? Actualizar km del vehiculo
+                    vehiculo_llanta_rotar.km = km_montado_otro
+                    vehiculo_llanta_rotar.save()
                     #? Datos de la llanta montada
                     vehiculo_llanta_montada = llanta.vehiculo
                     posicion_llanta_montada = llanta.posicion
                     eje_llanta_montada = llanta.eje
                     tipo_de_eje_llanta_montada = llanta.tipo_de_eje
+                    
+                    #? Checar presiones objetivos
                     
                     #? llanta montada
                     llanta.vehiculo = vehiculo_llanta_rotar
@@ -6174,15 +6249,26 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     #? Quitar observaciones                  
                     functions.quitar_desgaste(llanta, llanta_rotar)
                     
+                    #? Corregir presiones
+                    presion_establecida_montada= functions.presion_establecida(llanta)
+                    presion_establecida_rotar = functions.presion_establecida(llanta_rotar)
+                    llanta.presion_actual = presion_establecida_montada
+                    llanta_rotar.presion_actual = presion_establecida_rotar
+                    
                     Llanta.objects.bulk_update([llanta, llanta_rotar], [
                         'vehiculo',
                         'posicion', 
                         'tipo_de_eje', 
                         'eje', 
-                        'km_montado'
+                        'km_montado',
+                        'presion_actual'
                         ])
                     llantas_rotadas.append(llanta)
                     llantas_rotadas.append(llanta_rotar)
+                    
+                    functions.quitar_todo_de_presion(llanta)
+                    functions.quitar_todo_de_presion(llanta_rotar)
+                    
                 print('---------------')
                 
         #? Guardado de la bitacora
@@ -6190,7 +6276,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         
         
         
-        return redirect('dashboards:planTaller', pk)
+        return redirect('dashboards:calendario')
     
 class reporteTallerView(LoginRequiredMixin, TemplateView):
     # Vista del reporteTallerView
@@ -7722,10 +7808,12 @@ class tireDetailView(LoginRequiredMixin, DetailView):
                     try:
                         if presion_act >= presion_minima and presion_act <= presion_maxima:
                             color_presion = 'good'
-                        else:
+                        elif presion_act < presion_minima:
                             color_presion = 'bad'
+                        elif presion_act > presion_maxima:
+                            color_presion = 'yellow'
                     except:
-                        color_presion = 'bad'
+                        color_presion = 'good'
                     if llanta.eje == eje:
                         #print(presion_act > presion_minima and presion_act < presion_maxima)
                         list_temp.append([llanta, color_profundidad, color_presion, min_produndidad, color_llanta, problema, presion_minima, presion_maxima])
@@ -8179,10 +8267,12 @@ class DetailView(LoginRequiredMixin, DetailView):
                 try:
                     if presion_act >= presion_minima and presion_act <= presion_maxima:
                         color_presion = 'good'
-                    else:
+                    elif presion_act < presion_minima:
                         color_presion = 'bad'
+                    elif presion_act > presion_maxima:
+                        color_presion = 'yellow'
                 except:
-                    color_presion = 'bad'
+                    color_presion = 'good'
                 if llanta.eje == eje:
                     #print(presion_act > presion_minima and presion_act < presion_maxima)
                     list_temp.append([llanta, color_profundidad, color_presion, min_produndidad, color_llanta, problema, int(presion_minima), int(presion_maxima)])
@@ -8553,10 +8643,12 @@ class ReporteInspeccion(ListView):
                 try:  
                     if presion_act >= presion_minima and presion_act <= presion_maxima:
                         color_presion = 'good'
-                    else:
+                    elif presion_act < presion_minima:
                         color_presion = 'bad'
+                    elif presion_act > presion_maxima:
+                        color_presion = 'yellow'
                 except:
-                    color_presion = 'bad'
+                    color_presion = 'good'
                 
                 if llanta.eje == eje:
                     #print(presion_act > presion_minima and presion_act < presion_maxima)

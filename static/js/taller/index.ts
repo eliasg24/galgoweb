@@ -79,31 +79,69 @@ interface Servicio {
           `
               : ''
           }
-              ${servicio.inflar !== '' ? `
+              ${
+                servicio.inflar !== ''
+                  ? `
               <h3 class="service__title">
                 Inflado
               </h3>
-              ` : ''}
-              ${servicio.balancear !== '' ? `
+              `
+                  : ''
+              }
+              ${
+                servicio.rotar === 'otro'
+                  ? `
+              <h3 class="service__title">
+                Rotación entre vehículos
+              </h3>
+              `
+                  : ''
+              }
+              ${
+                servicio.rotar === 'mismo'
+                  ? `
+              <h3 class="service__title">
+                Rotación entre llantas
+              </h3>
+              `
+                  : ''
+              }
+              ${
+                servicio.balancear !== ''
+                  ? `
               <h3 class="service__title">
               Balanceo
             </h3>
-              ` : ''}
-              ${servicio.reparar !== '' ? `
+              `
+                  : ''
+              }
+              ${
+                servicio.reparar !== ''
+                  ? `
               <h3 class="service__title">
                 Reparación
               </h3>
-              ` : ''}
-              ${servicio.valvula !== '' ? `
+              `
+                  : ''
+              }
+              ${
+                servicio.valvula !== ''
+                  ? `
               <h3 class="service__title">
                 Reparación de valvula
               </h3>
-              ` : ''}
-              ${servicio.costado !== '' ? `
+              `
+                  : ''
+              }
+              ${
+                servicio.costado !== ''
+                  ? `
               <h3 class="service__title">
                 Reparación de costado
               </h3>
-              ` : ''}
+              `
+                  : ''
+              }
             <p><strong>Llanta:</strong> ${servicio.numero_economico}</p>
             <p><strong>Posición:</strong> ${servicio.posicion}</p>
             ${
@@ -201,19 +239,30 @@ interface Servicio {
         ) as unknown as HTMLInputElement,
         time = document.querySelector(
           'input[type="time"]'
+        ) as unknown as HTMLInputElement,
+        user = document.querySelector(
+          'select[name="usuario"]'
+        ) as unknown as HTMLInputElement,
+        km = document.querySelector(
+          'input[name="km_montado"]'
+        ) as unknown as HTMLInputElement,
+        noKm = document.querySelector(
+          'input[name="no_km"]'
         ) as unknown as HTMLInputElement;
 
-      if (date.value === '' || time.value === '') {
+      if (date.value === '' || time.value === '' || user.value === '') {
         e.preventDefault();
-        Swal.fire({
-          title: 'Error',
-          text: 'Los campos de fecha y/o hora estan vacíos',
-          icon: 'error',
-          backdrop: true,
-          showDenyButton: false,
-          allowOutsideClick: true,
-          allowEscapeKey: true,
-        });
+        Swal.fire(
+          'Error',
+          'No se han completado datos en la hoja de servicio',
+          'error'
+        );
+        return;
+      }
+
+      if (km.value === '' && !noKm.checked) {
+        e.preventDefault();
+        Swal.fire('Error', 'No se ha puesto un KM de montado', 'error');
         return;
       }
 
@@ -257,6 +306,7 @@ interface Servicio {
 
     saveData.push(data);
 
+    console.log(saveData);
     formHidden.value = JSON.stringify(saveData);
 
     document
@@ -386,7 +436,7 @@ interface Servicio {
     if (target.name === 'inflarVehiculo') {
       if (target.value.length >= 0) {
         const inflar =
-        document.querySelectorAll<HTMLInputElement>('[name="inflar"]');
+          document.querySelectorAll<HTMLInputElement>('[name="inflar"]');
 
         inflar.forEach((item) => {
           if (item.type === 'checkbox') {
@@ -500,6 +550,9 @@ interface Servicio {
     const vehiculoOrigen = document.getElementById(
       `origen-vehiculo-${target.dataset.radioid}`
     ) as HTMLInputElement;
+    const kmMontado = document.getElementById(
+      `origen-km_montadoo-${target.dataset.radioid}`
+    ) as HTMLInputElement;
 
     /* Filtering the array of objects and returning the objects that do not have the same id as the
     target.dataset.radioid. */
@@ -533,6 +586,8 @@ interface Servicio {
         )
           .then((res) => (res.ok ? res.json() : Promise.reject(res)))
           .then((json) => {
+            kmMontado.max = json.km_max || '';
+            kmMontado.min = json.km_min || '';
             origen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
             origen.innerHTML += json.llantas.map((item: any) => {
               return `<option value="${item.id}">${item.posicion}</option>`;

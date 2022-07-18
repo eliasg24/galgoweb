@@ -1,9 +1,8 @@
 <div class="modal__bg" data-modal="{{ llanta.llanta.id }}">
   <form class="modal__form">
-    <nav class="flex-row">
-      <button class="btn btn-taller">Guardar</button>
-      <button type="button" role="menu" class="btn close-modal">Cerrar</button>
-    </nav>
+    <h3 class="modal__title">
+      {{llanta.llanta.numero_economico}}
+    </h3>
 
     <header class="flex-row">
       <label for="sr-{{ llanta.llanta.id }}" class="label-check">
@@ -151,6 +150,13 @@
                 <input type="number" name="kmMontadoOtro" value="" placeholder="Km de montado" id="origen-km_montadoo-{{ llanta.llanta.id }}">
                 
               </label>
+
+              <label for="no_km-{{ llanta.llanta.id }}" style="margin-top: 1rem;">
+                <input type="checkbox" name="no_km" id="no_km-{{ llanta.llanta.id }}" style="width: auto;">
+                <strong>
+                  KM imposible de registrar
+                </strong>
+              </label>
             </div>
 
             {% include 'taller/config-modal.html' %}
@@ -207,5 +213,10 @@
     <input type="hidden" name="llantaId" value="{{ llanta.llanta.id }}" />
     <input type="hidden" name="numero_economico" value="{{ llanta.llanta.numero_economico }}" />
     <input type="hidden" name="posicion" value="{{ llanta.llanta.posicion }}" />
+
+    <nav class="flex-row">
+      <button class="btn btn-taller">Guardar</button>
+      <button type="button" role="menu" class="btn close-modal">Cerrar</button>
+    </nav>
   </form>
 </div>

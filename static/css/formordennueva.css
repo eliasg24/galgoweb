@@ -4,7 +4,7 @@ select {
   background: transparent;
   border: none;
   border: 2px solid lightgray;
-  color: lightgray;
+  color: var(--colorv02);
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
@@ -71,7 +71,7 @@ select option {
 
 .list__inputs,
 .add-form {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
   border-radius: 1rem;
   box-shadow: 0 3px 6px 1px rgba(0, 0, 0, 0.25);
   padding: 1rem;

@@ -360,7 +360,7 @@
                                             <td class="td-table1">{{llanta.posicion}}</td>
                                             <td class="td-table1">{{llanta.numero_economico}}</td>
                                             <td class="td-table1">{{llanta.producto}}</span>
-                                            <td class="td-table1">{{llanta.km_actual}}</span>
+                                            <td class="td-table1 km-format">{{llanta.km_actual}}</span>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -634,6 +634,11 @@
     }
 
     decimalConverter();
+
+    document.querySelectorAll('.km-format').forEach(item => {
+        if (!item.textContent) return;
+        item.textContent = separator(item.textContent)
+    })
 
     const dbFullscreen = (container = '') => {
         const element = document.getElementById(container);
