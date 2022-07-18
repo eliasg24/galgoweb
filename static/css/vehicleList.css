@@ -362,7 +362,7 @@
 .filter__input {
   background: transparent;
   border: thin solid #fff;
-  color: #fff;
+  color: var(--colorv02);
   font-family: inherit;
   font-size: 1rem;
   outline: none;

@@ -4183,7 +4183,10 @@ def check_dualizacion(llanta):
         else:
             llanta.observaciones.remove(desdualización)
             dual_llanta.observaciones.remove(desdualización)
-            llanta.vehiculo.observaciones_llanta.remove(desdualización)
+            #llanta.vehiculo.observaciones_llanta.remove(desdualización)
+    else:
+        llanta.observaciones.remove(desdualización)
+        #llanta.vehiculo.observaciones_llanta.remove(desdualización)  
 
 def check_dif_presion_duales(llanta):
     dual_llanta = check_dual(llanta)
@@ -4202,7 +4205,10 @@ def check_dif_presion_duales(llanta):
             else:
                 llanta.observaciones.remove(diferencia_presion_duales)
                 dual_llanta.observaciones.remove(diferencia_presion_duales)
-                llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
+                #llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
+    else:
+        llanta.observaciones.remove(diferencia_presion_duales)
+        #llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
         
 def min_profundidad(llanta):
     profundidad_derecha = llanta.profundidad_derecha
@@ -4544,7 +4550,7 @@ def quitar_desgaste(llanta, llanta_rotar):
     d_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha') #?Amarillo
     d_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda') #?Amarillo
     baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad') #?Amarillo
-    en_punto_rota = Observacion.objects.get(observacion = '	En punto de retiro') #?Amarillo
+    en_punto_rota = Observacion.objects.get(observacion = 'En punto de retiro') #?Amarillo
 
     
     #? Llanta
@@ -4578,7 +4584,7 @@ def quitar_desgaste_one(llanta):
 def quitar_todo_profundidad(llanta):
     quitar_desgaste_one(llanta)
     baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad') #?Amarillo
-    en_punto_rota = Observacion.objects.get(observacion = '	En punto de retiro') #?Amarillo
+    en_punto_rota = Observacion.objects.get(observacion = 'En punto de retiro') #?Amarillo
     llanta.observaciones.remove(baja_profundidad)
     llanta.observaciones.remove(en_punto_rota)
 
@@ -4607,6 +4613,21 @@ def radar_min_resta(min, max):
         return min - resta
     except:
         return None
+
+
+def rectificar_observaciones_llantas(vehiculo):
+    vehiculo.observaciones_llanta.clear()
+    llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante')
+    for llanta in llantas:
+        observaciones = llanta.observaciones.all()
+        for observacion in observaciones:
+            if observacion not in vehiculo.observaciones_llanta.all():
+                vehiculo.observaciones_llanta.add(observacion)
+
+def rectificar_observaciones_vehiculo(vehiculos_lista):
+    for vehiculo in vehiculos_lista:
+        rectificar_observaciones_llantas(vehiculo)
+
 
 def reduce(func, items):
     result = items.pop()

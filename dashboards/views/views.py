@@ -5949,6 +5949,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         
         #? Acciones del vehiculo
         vehiculo = Vehiculo.objects.get(pk = pk)
+        vehiculos_lista = [vehiculo]
         try:
             acciones_vehiculo = json.loads(request.POST.getlist('vehiculo')[0])
         except:
@@ -6265,12 +6266,16 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                         ])
                     llantas_rotadas.append(llanta)
                     llantas_rotadas.append(llanta_rotar)
+                    if vehiculo_llanta_montada not in vehiculos_lista:
+                        vehiculos_lista.append(vehiculo_llanta_montada)
                     
                     functions.quitar_todo_de_presion(llanta)
                     functions.quitar_todo_de_presion(llanta_rotar)
                     
                 print('---------------')
-                
+        
+        #? Rectificar observaciones deñ vehiculo
+        functions.rectificar_observaciones_vehiculo(vehiculos_lista)
         #? Guardado de la bitacora
         functions.bitacora_servicios(pk, request, acciones_vehiculo, dataPOST, llantas_desmontadas)
         

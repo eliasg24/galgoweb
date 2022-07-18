@@ -5,7 +5,7 @@ def modoDB(modo=config('MODO')):
     if modo == 'local':
         return{
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'aeto2',
+        'NAME': 'aeto',
         'USER': 'postgres',
         'PASSWORD': config('PASSWORD'),
         'HOST': 'localhost',

@@ -63,7 +63,7 @@ h1 {
 }
 
 .score-card_body {
-  background-color: var(--colorv03);
+  background-color: var(--colorv48);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,7 +94,7 @@ h1 {
 }
 
 .resumen-table {
-  background: var(--colorv01);
+  background: var(--colorv45);
   border-collapse: collapse;
   border-radius: 0.5rem;
   color: #0097f0;

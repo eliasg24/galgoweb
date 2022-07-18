@@ -8,7 +8,7 @@
 }
 
 .fc-view-harness {
-  background-color: var(--colorv01);
+  background-color: var(--colorv45);
 }
 
 .modal__container {
@@ -59,6 +59,10 @@
   font-weight: 600;
 }
 
+.fc-col-header-cell-cushion {
+  color: var(--color02);
+}
+
 /* 
   * Buttons 
 */
@@ -69,6 +73,7 @@
 }
 
 .btn.close {
+  color: var(--colorv02);
   align-items: flex-end;
   display: flex;
   justify-content: flex-end;

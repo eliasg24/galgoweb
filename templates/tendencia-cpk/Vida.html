@@ -4,6 +4,17 @@
     // Graph AreaLine-chart
   anychart.onDocumentReady(function () {
 
+  // set the default types of legend icons
+  anychart.theme({
+  chart: {
+  defaultSeriesSettings: {
+  column: {legendItem: {iconType: "cubo"}},
+  line: {legendItem: {iconType: "circle"}}
+
+  }
+  }
+  });
+
     // create a data set
     var data = anychart.data.set([
 
@@ -28,11 +39,36 @@
     // it force line series to not stuck values with over series
     var scale = anychart.scales.linear();
 
+    chart.yAxis().labels().format("{%value}");
+
+    // adjust y axis
+    chart.xAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+    // adjust y axis
+    chart.yAxis()
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
     // adjusting y axis title and setting additional axis
     chart.yAxis(1).scale(scale);
     chart.yAxis(1).orientation("right");
     chart.yAxis(1).labels().format("${%value}");
-    chart.yAxis().labels().format("{%value}");
+
+    // adjust y axis
+    chart.yAxis(1)
+            .title('')
+            .stroke("#000")
+            .labels().fontColor("#000");
+
+     //set chart legend settings
+    var legend = chart.legend();
+    legend.enabled(true)
+          .fontColor("#000")
+          .fontSize(12);
 
     // configure y scale
     chart.yScale().minimum(0).maximum(5);
@@ -52,21 +88,21 @@
     chart.interactivity().hoverMode('by-x');
 
     // configure the visual settings of the first series
-    series1.normal().stroke("#0097fc", 4);
-    series1.hovered().stroke("#0097fc", 2);
-    series1.selected().stroke("#0097fc", 6);
+    series1.normal().stroke("#ed2a3d", 4);
+    series1.hovered().stroke("#ed2a3d", 2);
+    series1.selected().stroke("#ed2a3d", 6);
 
     // create the second series, set the data and name
     var series2 = chart.area(seriesData_2);
     series2.name("Vida");
 
     // configure the visual settings of the second series
-    series2.normal().fill("#A349A4", 0.5);
-    series2.hovered().fill("#A349A4", 0.1);
-    series2.selected().fill("#A349A4", 0.3);
-    series2.normal().stroke("#A349A4", 4);
-    series2.hovered().stroke("#A349A4", 2);
-    series2.selected().stroke("#A349A4", 6);
+    series2.normal().fill("#4973f2", 0.5);
+    series2.hovered().fill("#4973f2", 0.1);
+    series2.selected().fill("#4973f2", 0.3);
+    series2.normal().stroke("#4973f2", 4);
+    series2.hovered().stroke("#4973f2", 2);
+    series2.selected().stroke("#4973f2", 6);
 
     // set the chart title
     // chart.title("Tendencia CPK vida - vida");
