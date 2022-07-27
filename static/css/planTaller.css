@@ -19,8 +19,28 @@ select option {
   color: #000;
 }
 
+label {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 .head-cont {
   justify-content: space-between;
+}
+
+.content-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.options-container {
+  background-color: var(--colorv01);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 500px;
+  margin: auto 1rem;
 }
 
 /* BUTTONS */
@@ -109,7 +129,7 @@ select option {
 .main-cont,
 .right-cont {
   background-color: var(--colorv45);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
 }
 
 /* * Service page */
@@ -260,7 +280,7 @@ select option {
 }
 
 .container-header {
-  color: white;
+  color: #fff;
   background-color: var(--colorv04);
   padding: 1rem;
   text-align: center;
@@ -329,7 +349,7 @@ select option {
   flex-flow: column nowrap;
   padding: 2rem;
   background-color: var(--colorv45);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   gap: 1rem;
   overflow: auto;
 }
@@ -369,8 +389,12 @@ select option {
   gap: 0.5rem;
   flex-flow: row nowrap;
   position: relative;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+}
+
+.config__row.sp1 {
+  transform: rotate(90deg);
 }
 
 .config__row.double-shaft {
@@ -390,7 +414,7 @@ select option {
   font-size: 1rem;
 }
 
-.config__row .icon-llanta-outline {
+.icon-llanta-outline {
   font-size: 6rem;
 }
 
@@ -527,12 +551,12 @@ select option {
 
 details {
   background-color: var(--colorv01);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   padding: 1rem;
 }
 
 summary {
-  color: white;
+  color: #fff;
   cursor: pointer;
   font-size: 1.25rem;
   font-weight: 700;

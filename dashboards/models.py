@@ -74,7 +74,7 @@ class Ubicacion(models.Model):
         return f"{self.nombre}"
     class Meta:
         verbose_name_plural = "Ubicaciones"
-        
+
 class Taller(models.Model):
     # Modelo del Taller
 
@@ -110,19 +110,22 @@ class Perfil(models.Model):
     # Modelo del Perfil de Usuario
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, blank=True, null=True)
-    ubicacion = models.ManyToManyField("Ubicacion", blank=True, null=True)
-    aplicacion = models.ManyToManyField("Aplicacion", blank=True, null=True)
-    taller = models.ManyToManyField("Taller", blank=True, null=True)
+    compania = models.ForeignKey(Compania, null=True, blank=True, on_delete=models.CASCADE)
+    ubicacion = models.ManyToManyField("Ubicacion", blank = True)
+    aplicacion = models.ManyToManyField("Aplicacion", blank = True)
+    taller = models.ManyToManyField("Taller", blank = True)
     opciones_idioma = (("Español", "Español"), ("Inglés", "Inglés"))
     idioma = models.CharField(max_length=200, choices=opciones_idioma, default="Español")
 
     fecha_de_creacion = models.DateTimeField(auto_now_add=True)
     fecha_de_modificacion = models.DateTimeField(auto_now=True)
-    companias = models.ManyToManyField("Compania", null=True, blank=True, related_name="companias")
-    ubicaciones = models.ManyToManyField("Ubicacion", blank=True, null=True, related_name="ubicaciones")
-    aplicaciones = models.ManyToManyField("Aplicacion", blank=True, null=True, related_name="aplicaciones")
-    talleres = models.ManyToManyField("Taller", blank=True, null=True, related_name="talleres")
+    companias = models.ManyToManyField("Compania", related_name="companias", blank = True)
+    ubicaciones = models.ManyToManyField("Ubicacion", related_name="ubicaciones", blank = True)
+    aplicaciones = models.ManyToManyField("Aplicacion", related_name="aplicaciones", blank = True)
+    talleres = models.ManyToManyField("Taller", related_name="talleres", blank = True)
+    
+    link_pulpo = models.CharField(max_length=500, null = True, blank = True)
+    link_operativo = models.CharField(max_length=500, null = True, blank = True)
     def __str__(self):
         # Retorna el username
         return self.user.username
@@ -239,17 +242,17 @@ class Vehiculo(models.Model):
     presion_establecida_7 = models.IntegerField(blank=True, null=True)
     km = models.IntegerField(blank=True, null=True)
     km_diario_maximo = models.IntegerField(blank=True, null=True, default=1000)
-    ultima_bitacora_pro = models.ForeignKey("Bitacora_Pro", null=True, blank=True, on_delete=models.CASCADE, related_name="bitacoras_pro")
-    observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Vehiculo"})
-    observaciones_llanta = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Llanta"}, related_name='observaciones_llanta')
+    ultima_bitacora_pro = models.ForeignKey("Bitacora_Pro", null=True, blank=True, on_delete=models.SET_NULL, related_name="bitacoras_pro")
+    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Vehiculo"}, blank = True)
+    observaciones_llanta = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Llanta"}, related_name='observaciones_llanta', blank = True)
     estatus_activo = models.BooleanField(default=True)
     tirecheck = models.BooleanField(default=False)
     nuevo = models.BooleanField(default=False)
     fecha_de_creacion = models.DateField(auto_now_add=True)
-    
+
     dias_inspeccion = models.IntegerField(blank=True, null=True, default=0)
     fecha_ultima_inspeccion = models.DateField(null=True, blank=True)
-    
+
     dias_alinear = models.IntegerField(blank=True, null=True, default=0)
     fecha_ultima_alineacion = models.DateField(null=True, blank=True)
 
@@ -260,9 +263,9 @@ class Vehiculo(models.Model):
 class InspeccionVehiculo(models.Model):
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
     km = models.IntegerField(blank=True, null=True)
-    observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Vehiculo"})
+    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Vehiculo"})
     fecha = models.DateTimeField(null=True, blank=True, editable=True)
-    
+
 class Inspeccion(models.Model):
     # Modelo de la Inspección
     opciones_evento = (("Inspección", "Inspección"),
@@ -291,7 +294,7 @@ class Inspeccion(models.Model):
     profundidad_izquierda = models.FloatField(blank=True, null=True)
     profundidad_central = models.FloatField(blank=True, null=True)
     profundidad_derecha = models.FloatField(blank=True, null=True)
-    observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Llanta"})
+    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Llanta"})
     edicion_manual = models.BooleanField(default=False)
     evento = models.CharField(max_length=1000)
 
@@ -388,7 +391,7 @@ class Llanta(models.Model):
     inventario = models.CharField(max_length=200, choices=opciones_de_inventario, null=True, blank=True, default="Rodante")
     fecha_de_entrada_inventario = models.DateField(null=True, blank=True)
     rechazo = models.ForeignKey("Rechazo", on_delete=models.SET_NULL, null=True, blank=True)
-    observaciones = models.ManyToManyField("Observacion", null=True, blank=True, limit_choices_to={'nivel': "Llanta"})
+    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Llanta"}, blank = True)
     tirecheck = models.BooleanField(default=False)
     fecha_de_balanceado = models.DateField(null=True, blank=True)
 
@@ -562,7 +565,7 @@ class Observacion(models.Model):
         )
     nivel = models.CharField(max_length=200, choices=opciones_de_nivel)
     automatico = models.BooleanField(default=True)
-    
+
     class Meta:
         verbose_name_plural = "Observaciones"
 
@@ -648,11 +651,11 @@ class ServicioLlanta(models.Model):
     inventario_de_desmontaje = models.CharField(max_length=200, choices=opciones_de_inventario, null=True, blank=True)
     taller_de_desmontaje = models.ForeignKey(Taller, on_delete=models.SET_NULL, blank=True, null=True)
     razon_de_desmontaje = models.CharField(max_length=200, null=True, blank=True)
-    
-            
+
+
 class TareasServicio(models.Model):
     folio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
-    
+
     opciones_tarea = (("Prueba", "Prueba"),
             )
     tarea = models.CharField(max_length=200, choices=opciones_tarea)
@@ -662,7 +665,7 @@ class TareasServicio(models.Model):
     vehiculo_2 = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, related_name="vehiculo_2")
     posicion_llanta_2 = models.CharField(max_length=200)
     llanta_2 = models.ForeignKey(Llanta, on_delete=models.CASCADE, related_name="llanta_2")
-    
+
 class Orden(models.Model):
     opcion_status = (
         ("PreOrden", "PreOrden"),
@@ -683,7 +686,7 @@ class Orden(models.Model):
 
     class Meta:
         verbose_name_plural = "Ordenes"
-        
+
 
 
 class OrdenDesecho(models.Model):
@@ -699,7 +702,7 @@ class OrdenDesecho(models.Model):
     class Meta:
         verbose_name_plural = "OrdenesDesechos"
 
-     
+
 class LlantasSeleccionadas(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
     opciones_de_inventario = (("Nueva", "Nueva"),
@@ -713,7 +716,7 @@ class LlantasSeleccionadas(models.Model):
                         ("Archivado", "Archivado")
                 )
     inventario = models.CharField(max_length=200, choices=opciones_de_inventario, null=True, blank=True)
-    llantas = models.ManyToManyField(Llanta, null=True, blank=True)
+    llantas = models.ManyToManyField(Llanta)
 
     class Meta:
         verbose_name_plural = "LlantasSeleccionadas"

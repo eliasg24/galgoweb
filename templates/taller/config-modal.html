@@ -102,4 +102,17 @@
   </div>
   {% endif %} 
   {% endfor %}
+  {% if vehiculo.sp1 == True %}
+    <label for="{{  llanta_sp1.posicion }}-{{ llanta_sp1.id }}" style="width: auto;" class="label-check">
+      <input type="radio" name="origenLlanta" id="{{  llanta_sp1.posicion }}-{{ llanta_sp1.id }}" value="{{ llanta_sp1.id }}">
+      <div class="tire">
+        <div class="tag__middle">
+          <div class="pos good">
+            {{ llanta_sp1.posicion }}
+          </div>
+        </div>
+        <div class="icon-llanta-outline"></div>
+      </div>
+    </label>
+  {% endif %}
 </div>

@@ -610,6 +610,11 @@ urlpatterns = [
     #----------------------APIS---------------------
     
     #-----------------------A-----------------------
+    path(
+        route="api/archivartaller",
+        view=views_rest.ArchivarTaller.as_view(),
+        name="archivartaller"
+    ),
     
     #-----------------------B-----------------------
     
@@ -638,6 +643,13 @@ urlpatterns = [
         view=views_rest.ClearContexto.as_view(),
         name="clearcontexto"
     ),
+    
+    path(
+        route="api/copiargalgo",
+        view=views_rest.CopiarGalgo.as_view(),
+        name="copiargalgo"
+    ),
+
     
     #-----------------------D-----------------------
     
@@ -852,5 +864,12 @@ urlpatterns = [
         route="api/reemplazos/<str:usuario>",
         view=views_pbi.ReemplazoData.as_view(),
         name="reemplazosapi"
+    ),
+    
+    
+    path(
+        route="api/copiarvehiculo/",
+        view=views_rest.CopiarVehiculo.as_view(),
+        name="CopiarVehiculo"
     ),
 ]

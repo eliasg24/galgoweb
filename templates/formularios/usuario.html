@@ -3,6 +3,8 @@
 {% block head %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <title>Formulario de usuario</title>
 {% endblock %}
 
@@ -12,7 +14,7 @@
 
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de usuario</h1>
@@ -56,7 +58,7 @@
                     <a href="{% url 'dashboards:usuarioFormularioEdit' usuario.id %}" class="btn btn-download">
                       <i class="icon-pencil"></i>
                     </a>
-                    <form action="{% url "dashboards:usuarioFormularioDelete" %}" method="POST">
+                    <form action="{% url "dashboards:usuarioFormularioDelete" %}" method="POST" class="delete-form">
                       {% csrf_token %}
                       <input type="hidden" name="id" value="{{usuario.id}}">
                       <button class="btn btn-danger">
@@ -87,7 +89,11 @@
                       <li>{{taller}}</li>
                   {% endfor %}
                 </td>
-                <td>{{usuario.groups.get}}</td>
+                <td>
+                  {% for grupo in grupos %}
+                      <li>{{grupo}}</li>
+                  {% endfor %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -101,6 +107,27 @@
 
 <script src="{% static 'js/inputChange.js' %}"></script>
 <script src="{% static 'js/filter.js' %}"></script>
+<script>
+  document.addEventListener('submit', (e) => {
+    if (e.target.matches('.delete-form')) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Esta seguro?',
+        text: 'Esta acción eliminará al usuario de manera permanente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          e.target.submit();
+        } else {
+          result.dismiss === Swal.DismissReason.cancel;
+        }
+      })
+    }
+  });
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     validPassword();

@@ -14,6 +14,7 @@
 }
 
 .section-head {
+  border-radius: 1rem;
   background-color: var(--colorv45);
   padding: 0.5rem;
 }
@@ -47,6 +48,7 @@
 /* Agregar producto */
 .container {
   background-color: var(--colorv45);
+  border-radius: 1rem;
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
@@ -100,6 +102,7 @@
   position: relative;
   overflow: auto;
   width: 100%;
+  border-radius: 1rem;
 }
 
 .main-table {

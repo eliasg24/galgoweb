@@ -172,7 +172,6 @@
             .querySelectorAll('input, select, .btn-taller')
             .forEach((input) => (input.disabled = true));
         saveData.push(data);
-        console.log(saveData);
         formHidden.value = JSON.stringify(saveData);
         (_b = document
             .querySelector('.alert__success')) === null || _b === void 0 ? void 0 : _b.classList.add('active');
@@ -245,23 +244,6 @@
                 document.querySelectorAll(`[data-view="${target.dataset.nav}"]`)[0].style.display = 'block';
             }
         }
-        if (target.name === 'inflarVehiculo') {
-            if (target.value.length >= 0) {
-                const inflar = document.querySelectorAll('[name="inflar"]');
-                inflar.forEach((item) => {
-                    if (item.type === 'checkbox') {
-                        item.checked = true;
-                        saveData = [
-                            ...saveData,
-                            {
-                                id: item.dataset.tireid,
-                                inflar: 'on',
-                            },
-                        ];
-                    }
-                });
-            }
-        }
     });
     document.addEventListener('input', (e) => {
         const target = e.target;
@@ -291,9 +273,9 @@
                     fetch('/api/tiresearchtaller?inventario=Nueva')
                         .then((res) => res.json())
                         .then((json) => {
-                        let options = `<option value="">Seleccione una llanta</option>`;
+                        let options = '';
                         json.result.forEach((item) => {
-                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__dimension}</option>`;
+                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__producto}</option>`;
                         });
                         llanta.innerHTML = options;
                     })
@@ -303,9 +285,9 @@
                     fetch('/api/tiresearchtaller?inventario=Renovada')
                         .then((res) => res.json())
                         .then((json) => {
-                        let options = `<option value="">Seleccione una llanta</option>`;
+                        let options = '';
                         json.result.forEach((item) => {
-                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__dimension}</option>`;
+                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__producto}</option>`;
                         });
                         llanta.innerHTML = options;
                     })
@@ -315,16 +297,22 @@
                     fetch('/api/tiresearchtaller?inventario=Servicio')
                         .then((res) => res.json())
                         .then((json) => {
-                        let options = `<option value="">Seleccione una llanta</option>`;
+                        let options = '';
                         json.result.forEach((item) => {
-                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__dimension}</option>`;
+                            options += `<option value="${item.numero_economico}">${item.numero_economico} - ${item.producto__producto}</option>`;
                         });
                         llanta.innerHTML = options;
                     })
                         .catch((error) => console.error(error));
                     break;
-                default:
-                    break;
+            }
+        }
+        if (target.name === 'nuevaLlanta') {
+            const datalist = target.nextElementSibling;
+            const list = Array(...datalist.querySelectorAll('option')).map((item) => item.value);
+            if (!list.includes(target.value)) {
+                target.value = '';
+                Swal.fire('Error', 'El valor no coincide con ningun número económico', 'info');
             }
         }
     });
@@ -341,20 +329,27 @@
         }
         if (target.value === 'otro') {
             origen.innerHTML = `<option value="">Seleccione una llanta</option>`;
+            const inputOrigen = vehiculoOrigen.previousElementSibling;
+            let list = [];
             fetch('/api/vehicleandtiresearchtaller')
                 .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                 .then((json) => {
-                vehiculoOrigen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
-                vehiculoOrigen.innerHTML += json.vehiculos_list.map((item) => {
-                    return `<option value="${item.id}">${item.numero_economico}</option>`;
+                json.vehiculos_list.forEach((item) => {
+                    vehiculoOrigen.innerHTML += `<option value="${item.id}">${item.numero_economico}</option>`;
                 });
+                list = Array(...vehiculoOrigen.querySelectorAll('option')).map((item) => item.value);
             })
                 .catch((error) => console.error(error));
-            vehiculoOrigen.addEventListener('change', (e) => {
-                if (vehiculoOrigen.value === '')
+            inputOrigen === null || inputOrigen === void 0 ? void 0 : inputOrigen.addEventListener('change', (e) => {
+                if (inputOrigen.value === '')
                     return;
+                if (!list.includes(inputOrigen.value)) {
+                    inputOrigen.value = '';
+                    Swal.fire('Error', 'El número economico no existe', 'error');
+                    return;
+                }
                 fetch('/api/vehicleandtiresearchtaller?id_select=' +
-                    vehiculoOrigen.value.toLocaleLowerCase())
+                    inputOrigen.value.toLocaleLowerCase())
                     .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                     .then((json) => {
                     kmMontado.max = json.km_max || '';

@@ -1,7 +1,6 @@
 <div class="card__config">
-
     {% for eje in vehiculo.ejes %}
-      <!--Si el eje es de 2-->
+    <!--Si el eje es de 2-->
         {% if eje|length == 2 %}
         
             <!--Tire-->
@@ -62,7 +61,7 @@
       
     <!--Si el eje es de 4-->
         {% if eje|length == 4 %}
-        <!--Double Tire-->
+          <!--Double Tire-->
             <div class="config__row">
               <div class="double__tire">
                 <div 
@@ -162,5 +161,32 @@
               </div>
             </div>
         {% endif %}
-        {% endfor %}
+
+      {% endfor %}
+      
+      {% if vehiculo_acomodado.0.sp1 == True %}
+          <div class="config__row sp1">
+            <div 
+              class="tire" 
+              data-id=""
+              data-pos=""
+              data-dimension=""
+            >
+              <span class="tag top good">
+                None
+              </span>
+            
+              <div class="tag__middle">
+                <div class="pos good">
+                  SP1
+                </div>
+              </div>
+            
+              <div class="icon-llanta-outline"></div>
+              <span class="tag bottom good">
+                None
+              </span>
+            </div>
+          </div>
+        {% endif %}
 </div>

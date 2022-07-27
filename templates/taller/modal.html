@@ -124,7 +124,7 @@
           <div style="margin: 1rem 0;">
             
             <div style="display: none" data-rotar-id="{{ llanta.llanta.id }}">
-              <label for="origen-vehiculo-{{ llanta.llanta.id }}">
+              <!-- <label for="origen-vehiculo-{{ llanta.llanta.id }}">
                 Vehiculo origen
                 <select
                   name="otroVehiculo"
@@ -132,7 +132,17 @@
                 >
                   <option value="">Elige un vehículo...</option>
                 </select>
-              </label>
+              </label> -->
+
+              <label for="">Vehículo Origen</label>
+              <input 
+                type="text" 
+                name="otroVehiculo" 
+                list="origen-vehiculo-{{ llanta.llanta.id }}"
+                placeholder="Vehículo"
+              >
+
+              <datalist id="origen-vehiculo-{{ llanta.llanta.id }}"></datalist>
 
               <label for="origen-llanta-{{ llanta.llanta.id }}">
                 Llanta de origen
@@ -178,19 +188,24 @@
         <option value="servicio">Servicio</option>
       </select>
 
-      <label for="">Llanta</label>
+      <!-- <label for="">Llanta</label>
       <select name="nuevaLlanta" id="">
         <option value="">Seleccione un stock...</option>
-      </select>
+      </select> -->
+
+      <input 
+        autocomplete="off"
+        type="text" 
+        name="nuevaLlanta" 
+        placeholder="Llanta..." 
+        list="llanta-montaje-{{ llanta.llanta.id }}"
+      >
+      <datalist id="llanta-montaje-{{ llanta.llanta.id }}"></datalist>
 
       <label for="">Razón de desmontaje</label>
       <select name="razon" id="">
         <option value="">Seleccione una razón...</option>
         <option value="razon 1">Razón 1</option>
-        <option value="razon 2">Razón 2</option>
-        <option value="razon 3">Razón 3</option>
-        <option value="razon 4">Razón 4</option>
-        <option value="razon 5">Razón 5</option>
       </select>
 
       <label for="">Almacen de retiro</label>

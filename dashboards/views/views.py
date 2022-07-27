@@ -38,7 +38,7 @@ from requests import request
 from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
 from dashboards.functions.functions import DiffDays, CastDate, mala_entrada, presion_establecida
 from aeto import settings
-from dashboards import GoogleDrive
+#from dashboards import GoogleDrive
 
 # Forms
 from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm, SucursalEditForm, TallerEditForm, AplicacionEditForm, VehiculoEditForm
@@ -1119,7 +1119,7 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                             llanta_actual.save()
                         
                         elif llanta_actual.km_montado == None:
-                            inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo) 
+                            inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
                             inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos)
                             #inspecciones = Inspeccion.objects.filter(llanta = llanta_actual)
                             if len(inspecciones) >= 2:
@@ -1129,8 +1129,9 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                                 ultima_inspeccion = inspecciones.last()
                                 km_teorico = functions.actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion)
                                 print(km_teorico)
-                                llanta_actual.km_actual = km_teorico
-                                llanta_actual.save()
+                                if km_teorico != None:
+                                    llanta_actual.km_actual = km_teorico
+                                    llanta_actual.save()
                             else:
                                 print('Sin km de montado y sin inspecciones suficinetes')
                                 print(llanta_actual.id)
@@ -1261,9 +1262,9 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_actual = float(llanta_actual.presion_actual) if float(llanta_actual.presion_actual) != 0 else 1
                         presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        porcentaje_dif = (float(presion_actual) - presion_dual) / float(presion_actual)
                         #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
@@ -1552,9 +1553,16 @@ class tireDiagramaView(LoginRequiredMixin, TemplateView):
             for llanta_i in llantas_comparacion:
                 if llanta_i.posicion == dual_completo:
                     dual_llanta = llanta_i
+            #? Checar pa
             if llanta.presion_actual != None and dual_llanta.presion_actual != None:
-                porcentaje_dif_1 = (float(llanta.presion_actual) - dual_llanta.presion_actual) / float(llanta.presion_actual)
-                porcentaje_dif_2 = (dual_llanta.presion_actual - float(llanta.presion_actual)) / dual_llanta.presion_actual
+                presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
+                
+                porcentaje_dif_1 = (float(presion_actual) - presion_dual) / float(presion_actual)
+                porcentaje_dif_2 = (presion_dual - float(presion_actual)) / presion_dual
+                
+                # = (float(llanta.presion_actual) - dual_llanta.presion_actual) / float(llanta.presion_actual)
+                # = (dual_llanta.presion_actual - float(llanta.presion_actual)) / dual_llanta.presion_actual
                 
             if porcentaje_dif_1 > 0.1 or porcentaje_dif_2 > 0.1:
                 #Poner a los 2 duales
@@ -2193,11 +2201,13 @@ class usuarioFormularioView(LoginRequiredMixin, CreateView):
         aplicaciones = Aplicacion.objects.all()
         talleres = Taller.objects.all()
         usuarios = User.objects.all()
+        grupos = Group.objects.all()
         for usuario in usuarios:
             print(usuario)
             print(usuario.perfil.companias.all())
         context["aplicaciones"] = aplicaciones
         context["companias"] = companias
+        context["grupos"] = grupos
         context["sucursales"] = ubicaciones
         context["talleres"] = talleres
         context["usuarios"] = usuarios
@@ -2362,6 +2372,7 @@ class nuevoVehiculoView(LoginRequiredMixin, CreateView):
         numero_de_llantas = functions.cantidad_llantas(configuracion)
         vehiculo.numero_de_llantas = numero_de_llantas
         vehiculo.save()
+        functions.crear_llantas_nuevos_vehiculos(vehiculo)
         
         return super(nuevoVehiculoView, self).form_valid(form)
 
@@ -2600,8 +2611,8 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                 mm_dif = llanta.vehiculo.compania.mm_de_diferencia_entre_duales
                 context['mm_dif'] = mm_dif
                 try:
-                    km_max = functions.km_max(vehiculo_actual)
-                    #km_max = ''
+                    #km_max = functions.km_max(vehiculo_actual)
+                    km_max = ''
                     
                 except:
                     km_max = ''
@@ -2827,7 +2838,7 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                     llanta_actual.save() 
                     if 'vida' in cambios:
                         functions.cambio_de_vida(llanta_referencia, llanta_actual)
-                    inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo)
+                    inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
                     if vehiculo.km != None:
                         if kilometraje[0] != vehiculo_referencia.km:
                             if llanta_actual.km_montado == None:
@@ -2841,8 +2852,9 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                                     ultima_inspeccion = inspecciones.last()
                                     km_teorico = functions.actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion)
                                     print(km_teorico)
-                                    llanta_actual.km_actual = km_teorico
-                                    llanta_actual.save()
+                                    if km_teorico != None:
+                                        llanta_actual.km_actual = km_teorico
+                                        llanta_actual.save()
                                 else:
                                     print('Sin km de montado y sin inspecciones suficinetes')
                                     print(llanta_actual.id)
@@ -2915,9 +2927,12 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_actual = float(llanta_actual.presion_actual) if float(llanta_actual.presion_actual) != 0 else 1
                         presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        porcentaje_dif = (float(presion_actual) - presion_dual) / float(presion_actual)
+                        print(f'presion_actual {presion_actual}')
+                        print(f'presion_dual {presion_dual}')
+                        print(f'porcentaje_dif {porcentaje_dif}')
                         #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
@@ -3189,7 +3204,7 @@ class InspeccionesService(ServiceBase):
                 llanta_actual.profundidad_derecha = profundidad_derecha_post
                 llanta_actual.save()
                 
-                inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo) 
+                inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
                 if vehiculo.km != None:
                     if kilometraje[0] != vehiculo_referencia.km:
                         if llanta_actual.km_montado == None:
@@ -3202,8 +3217,9 @@ class InspeccionesService(ServiceBase):
                                 ultima_inspeccion = inspecciones.last()
                                 km_teorico = functions.actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion)
                                 print(km_teorico)
-                                llanta_actual.km_actual = km_teorico
-                                llanta_actual.save()
+                                if km_teorico != None:
+                                    llanta_actual.km_actual = km_teorico
+                                    llanta_actual.save()
                             else:
                                 print('Sin km de montado y sin inspecciones suficinetes')
                                 print(llanta_actual.id)
@@ -3269,9 +3285,9 @@ class InspeccionesService(ServiceBase):
                     if llanta_i.posicion == dual_completo:
                         dual_llanta = llanta_i
                 if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                    presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                    presion_actual = float(llanta_actual.presion_actual) if float(llanta_actual.presion_actual) != 0 else 1
                     presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-                    porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                    porcentaje_dif = (float(presion_actual) - presion_dual) / float(presion_actual)
                     #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                     if llanta_actual in diferencia_presion_duales_list:
                     
@@ -3914,7 +3930,7 @@ class formularioView(LoginRequiredMixin, TemplateView):
                     llanta_actual.profundidad_derecha = profundidad_derecha_post
                     llanta_actual.save()
                     
-                    inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo) 
+                    inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
                     if vehiculo.km != None:
                         if kilometraje[0] != vehiculo_referencia.km:
                             if llanta_actual.km_montado == None:
@@ -3927,8 +3943,9 @@ class formularioView(LoginRequiredMixin, TemplateView):
                                     ultima_inspeccion = inspecciones.last()
                                     km_teorico = functions.actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion)
                                     print(km_teorico)
-                                    llanta_actual.km_actual = km_teorico
-                                    llanta_actual.save()
+                                    if km_teorico != None:
+                                        llanta_actual.km_actual = km_teorico
+                                        llanta_actual.save()
                                 else:
                                     print('Sin km de montado y sin inspecciones suficinetes')
                                     print(llanta_actual.id)
@@ -4001,9 +4018,9 @@ class formularioView(LoginRequiredMixin, TemplateView):
                         if llanta_i.posicion == dual_completo:
                             dual_llanta = llanta_i
                     if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                        presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
+                        presion_actual = float(llanta_actual.presion_actual) if float(llanta_actual.presion_actual) != 0 else 1
                         presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-                        porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
+                        porcentaje_dif = (float(presion_actual) - presion_dual) / float(presion_actual)
                         #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
                         if llanta_actual in diferencia_presion_duales_list:
                         
@@ -4174,13 +4191,13 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
             for num in num_ejes:
                 list_temp = []
                 for llanta in llantas_actuales:
-                
-                    if llanta.eje == eje:
-                        list_temp.append(
-                            [llanta, 
-                             bitacora.presion_de_entrada, 
-                             bitacora.presion_de_salida
-                             ])
+                    if llanta.tipo_de_eje != 'SP1':
+                        if llanta.eje == eje:
+                            list_temp.append(
+                                [llanta, 
+                                 bitacora.presion_de_entrada, 
+                                 bitacora.presion_de_salida
+                                 ])
                 eje += 1
                 ejes_no_ordenados.append(list_temp)
         elif self.kwargs['tipo'] == 'pulpopro':
@@ -4207,7 +4224,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
                 ejes.append(lista_temp)
                 print(' 0---0')
             
-            else:
+            elif len(eje) == 4:
                 lista_temp = ['', '', '', '']
                 for llanta_act in eje:
                     if 'LO' in llanta_act[0].posicion:
@@ -4220,6 +4237,8 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
                         lista_temp[3] = llanta_act
                 ejes.append(lista_temp)
                 print('00---00')
+            else:
+                pass
         #if self.kwargs['tipo'] == 'pulpopro':
         #    for eje in ejes:
         #        print(eje)
@@ -4273,7 +4292,14 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
         numero = 0
         #print(vehiculo.id)
         for eje in ejes:
+            print(eje)
+        print()
+        print()
+        print()
+        for eje in ejes:
             for ej in eje:
+                print(eje)
+                print(ej)
                 presion_entrada_act = ej[1]
                 presion_salida_act  = ej[2]
                 #Cheking precion_ entrada
@@ -5487,7 +5513,7 @@ class tallerDestinoView(LoginRequiredMixin, TemplateView):
             llanta_data.append(
                 {
                     'num_eco': llanta.numero_economico,
-                    'producto': llanta.producto.producto,
+                    'producto': llanta.producto.producto if llanta.producto != None else None ,
                     'taller_origen': llanta.taller.nombre
                 }
             )
@@ -5578,7 +5604,7 @@ class stockDestinoView(LoginRequiredMixin, TemplateView):
             llanta_data.append(
                 {
                     'num_eco': llanta.numero_economico,
-                    'producto': llanta.producto.producto,
+                    'producto': llanta.producto.producto if llanta.producto != None else None,
                     'stock_origen': llanta.inventario
                 }
             )
@@ -5867,6 +5893,8 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         km = vehiculo[0].km
         km_max = functions.km_max(vehiculo[0])
         km_min = functions.km_min(vehiculo[0])
+        km_max = ''
+        km_min = ''
         print('-------')
         print(km_max)
         print(km_min)
@@ -5888,44 +5916,28 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         acomodo_posicion_ejes_vehicle = functions.acomodo_pocisiones_vehicle(acomodo_ejes_vehicle)
         vehiculo_acomodado = acomodo_posicion_ejes_vehicle
         
+        if vehiculo_acomodado[0]['sp1'] == True:
+            llanta_sp1 = Llanta.objects.get(vehiculo = vehiculo[0], inventario = 'Rodante', tipo_de_eje = 'SP1')
+            context['llanta_sp1'] = llanta_sp1
         talleres = Taller.objects.filter(compania = vehiculo[0].compania)
         
         usuarios = Perfil.objects.filter(companias__in = [vehiculo[0].compania])
         
         
         #? Checar si existe un taller abierto
-        servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo[0], estado = 'abierto').count()
-        try:
-            evento_raw = ServicioVehiculo.objects.get(vehiculo = vehiculo[0], estado = 'abierto').preguardado_llantas
-            evento_raw = evento_raw.replace("\'", "\"")
-            servicio_actual = json.loads(evento_raw)
-            
-            servicio = []
-            for vehiculo in vehiculo_acomodado:
-                for eje in vehiculo['ejes']:
-                    for llanta in eje:
-                        servicio.append({'llanta': llanta['llanta'].id})
-            contador = 0
-            for llanta in servicio:
-                for tire in servicio_actual:
-                    try:
-                        if llanta['llanta'] == tire['llanta']:
-                            servicio[contador] = tire
-                    except:
-                        pass
-                contador += 1
-            #for llanta in servicio:
-            #    print(type(llanta))
-        except:
-            servicio = None
+        servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo[0], estado = 'abierto')
+        
 
         
         context['vehiculo_acomodado'] = vehiculo_acomodado
         context['talleres'] = talleres
         context['vehiculo'] = vehiculo
         context['fecha'] = datetime.now()
-        context['servicios'] = servicios
-        context['servicio'] = servicio
+        context['servicios'] = servicios.count()
+        try:
+            context['idServicio'] = servicios.first().id
+        except:
+            context['idServicio'] = None
         context['usuarios'] = usuarios
         context['km'] = km
         context['km_max'] = km_max
@@ -5942,6 +5954,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
             servicio_vehiculo = functions.servicio_vehiculo_preguardado(pk, request)
             functions.archivar_taller(request.POST, pk, servicio_vehiculo)
             return redirect('dashboards:calendario')
+        print('-*-*-*-*-*--*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-')
         print(request.POST)
         #? Obtencion de los datos de la hoja de servicio
         hoja = request.POST['hoja']
@@ -5950,6 +5963,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         #? Acciones del vehiculo
         vehiculo = Vehiculo.objects.get(pk = pk)
         vehiculos_lista = [vehiculo]
+        
         try:
             acciones_vehiculo = json.loads(request.POST.getlist('vehiculo')[0])
         except:
@@ -5958,7 +5972,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
             vehiculo.fecha_ultima_alineacion = date.today()
         #Actualizar km del vehiculo
         km_imposible = True if 'no_km' in hoja else False
-        print(km_imposible)
+        print(f'km_imposible = {km_imposible}')
         if km_imposible == False:
             km_vehiculo = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
             vehiculo.km = km_vehiculo
@@ -6097,7 +6111,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 functions.check_dualizacion(llanta_nueva)
                 functions.check_dif_presion_duales(llanta_nueva)
                 print('---------------')
-                
+                                
         for data in dataPOST:
             if data['tipoServicio'] == 'sr':
                 print('Servicio')
@@ -6199,9 +6213,19 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     print('Rotar en diferentes vehiculo')
                     id_llanta_rotar = int(data['llantaOrigen'])
                     llanta_rotar = Llanta.objects.get(id = id_llanta_rotar)
+                    #km_imposible_otro = True if 'no_km' in 'no_km' in data else False
+                    km_imposible_otro = True if 'no_km' in data else False
                     
-                    km_montado_otro = int(data['kmMontadoOtro']) if data['kmMontadoOtro'] != '' and data['kmMontadoOtro'] != None else None
-                    km_montado = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
+                    if km_imposible_otro == False:
+                        km_montado_otro = int(data['kmMontadoOtro']) if data['kmMontadoOtro'] != '' and data['kmMontadoOtro'] != None else None
+                    else:
+                        km_montado_otro = None
+
+                    if km_imposible == False:
+                        km_montado = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
+                    else:
+                        km_montado = None
+                        
                     
                     if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
                         continue
@@ -6215,8 +6239,17 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     eje_llanta_rotar = llanta_rotar.eje
                     tipo_de_eje_llanta_rotar = llanta_rotar.tipo_de_eje
                     #? Actualizar km del vehiculo
-                    vehiculo_llanta_rotar.km = km_montado_otro
-                    vehiculo_llanta_rotar.save()
+                    
+                    try:
+                        if km_montado_otro > vehiculo_llanta_rotar.km and km_montado_otro != None:
+                            vehiculo_llanta_rotar.km = km_montado_otro
+                            vehiculo_llanta_rotar.save()
+                    except:
+                        pass
+                    print(vehiculo_llanta_rotar)
+                    print(vehiculo_llanta_rotar.km)
+                    print('************************')
+                    
                     #? Datos de la llanta montada
                     vehiculo_llanta_montada = llanta.vehiculo
                     posicion_llanta_montada = llanta.posicion
@@ -6582,9 +6615,16 @@ class PulpoProAPI(View):
 
     def post(self, request):
         jd = json.loads(request.body)
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        print(jd)
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
         vehiculo.fecha_de_inflado=datetime.now()
-        llantas = Llanta.objects.filter(vehiculo=vehiculo)
+        llantas = Llanta.objects.filter(vehiculo=vehiculo, inventario='Rodante').exclude(tipo_de_eje = 'SP1')
         presiones_de_entrada = eval(jd['presiones_de_entrada'])
         presiones_de_salida = eval(jd['presiones_de_salida'])
         numero_de_llantas = vehiculo.numero_de_llantas
@@ -6607,6 +6647,7 @@ class PulpoProAPI(View):
                     ejes_no_ordenados.append(list_temp)
             
             for eje in ejes_no_ordenados:
+                print(len(eje))
                 if len(eje) == 2:
                     lista_temp = ['', '']
                     for llanta_act in eje:
@@ -6618,7 +6659,7 @@ class PulpoProAPI(View):
                     ejes.append(lista_temp)
                     print(' 0---0')
                 
-                else:
+                elif len(eje) == 4:
                     lista_temp = ['', '', '', '']
                     for llanta_act in eje:
                         if 'LO' in llanta_act[0].posicion:
@@ -6631,7 +6672,10 @@ class PulpoProAPI(View):
                             lista_temp[3] = llanta_act
                     ejes.append(lista_temp)
                     print('00---00')
-            
+                else:
+                    pass
+            print('-----')
+            print(ejes)
             loop_llantas = 0
             for eje in ejes:
                 for llanta in eje:
@@ -6700,6 +6744,8 @@ class PulpoProAPI(View):
                     print("max_presion", max_presion)
                     nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
                     condicional = nueva_condicional
+                    functions.check_dif_presion_duales(llanta)
+                functions.check_presion__entre_duales_pulpo(vehiculo)
                 functions.send_mail(bi, 'pulpopro')
                 return JsonResponse(jd)
 
@@ -6847,6 +6893,10 @@ class PulpoView(LoginRequiredMixin, ListView):
 
         #functions.crear_3(Vehiculo.objects.get(numero_economico="P5"))
 
+        user = self.request.user
+        perfil = Perfil.objects.get(user = user)
+        link_pulpo = perfil.link_pulpo
+        
         context["aplicaciones"] = Aplicacion.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))
         context["aplicaciones_mas_frecuentes_infladas"] = functions.aplicaciones_mas_frecuentes(vehiculo_fecha_total, vehiculo, self.request.user.perfil.compania)
         context["bitacoras"] = bitacora
@@ -6893,6 +6943,7 @@ class PulpoView(LoginRequiredMixin, ListView):
         context["vehiculos_malos"] = vehiculo_malos_status
         context["vehiculos_periodo"] = vehiculo_periodo_status
         context["vehiculos_todos"] = vehiculo
+        context["link_pulpo"] = link_pulpo
         return context
 
 
@@ -7244,7 +7295,7 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
 
                         aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
 
-                        Vehiculo.objects.create(numero_economico=numero_economico,
+                        vehiculo_nuevo = Vehiculo.objects.create(numero_economico=numero_economico,
                                             modelo=modelo,
                                             marca=marca,
                                             compania=compania,
@@ -7264,6 +7315,8 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
                                             estatus_activo=estatus_activo,
                                             nuevo=nuevo
                                             )
+                        #! No eliminar, esta funcion crea las llantas
+                        functions.crear_llantas_nuevos_vehiculos(vehiculo_nuevo)
                 except:
                     pass
             fp.close()
@@ -7539,15 +7592,16 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         llanta = self.get_object()
         inspecciones_llanta = Inspeccion.objects.filter(llanta=llanta)
         vehiculo = llanta.vehiculo
-        if llanta.vehiculo == None:
-            llantas = Llanta.objects.filter(numero_economico=self.get_object())
-            context["vehiculo__boolean"] = False
-        else:
+        if llanta.inventario == "Rodante":
             llantas = Llanta.objects.filter(vehiculo=vehiculo)
             context["vehiculo__boolean"] = True
+        else:
+            llantas = Llanta.objects.filter(numero_economico=self.get_object())
+            context["vehiculo__boolean"] = False
+
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
 
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             try:
                 bitacora = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), compania=Compania.objects.get(compania=self.request.user.perfil.compania))
             except:
@@ -7563,12 +7617,12 @@ class tireDetailView(LoginRequiredMixin, DetailView):
 
             print(f'bitacora_normal: {bitacora_normal}')
             print(f'bitacora_pro: {bitacora_pro}')
-            #eventos = []
-            #for bit in bitacora_normal:
-            #    eventos.append([bit, 'pulpo'])
-            #for bit in bitacora_pro:
-            #    eventos.append([bit, 'pulpopro'])
-            #print(f'Eventos: {eventos}')
+            eventos = []
+            for bit in bitacora_normal:
+                eventos.append([bit, 'pulpo'])
+            for bit in bitacora_pro:
+                eventos.append([bit, 'pulpopro'])
+            print(f'Eventos: {eventos}')
         
         hoy = date.today()
         mes_1 = hoy.strftime("%b")
@@ -7590,7 +7644,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         hoy8 = mes_8.strftime("%m")
 
 
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             color = functions.entrada_correcta_actual(vehiculo)
             vehiculo_mes1 = bitacora.filter(fecha_de_inflado__month=hoy1)
             vehiculo_mes2 = bitacora.filter(fecha_de_inflado__month=hoy2)
@@ -7656,7 +7710,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
 
         message = None
         message_pro = {}
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             try:
                 if doble_mala_entrada:
                     message = "Doble mala entrada"
@@ -7693,7 +7747,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
             pass
         desgaste_mensual = functions.desgaste_mensual(inspecciones_llanta)
 
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             context["bitacoras"] = bitacora
             context["cantidad_doble_entrada_mes1"] = doble_entrada[2]["mes1"] + doble_entrada[3]["mes1"]
             context["cantidad_doble_entrada_mes2"] = doble_entrada[2]["mes2"] + doble_entrada[3]["mes2"]
@@ -7733,10 +7787,10 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         context["mes_8"] = mes_8.strftime("%b")
         context["message"] = message
         context["problemas_abiertos"] = problemas_abiertos
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             context["vehiculo"] = vehiculo
             context["entradas"] = entradas_correctas
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             context["vehiculo_mes1"] = vehiculo_mes1.count() + vehiculo_pro_mes1.count()
             context["vehiculo_mes2"] = vehiculo_mes2.count() + vehiculo_pro_mes2.count()
             context["vehiculo_mes3"] = vehiculo_mes3.count() + vehiculo_pro_mes3.count()
@@ -7748,20 +7802,20 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         
         #Generacion de ejes dinamico
         
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             vehiculo_actual = vehiculo
         llantas_actuales = llantas.filter(inventario = 'Rodante')
         inspecciones_actuales = inspecciones
         llanta_actual = Llanta.objects.get(pk=self.kwargs['pk'])
         
         #Obtencion de la data
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             num_ejes = vehiculo_actual.configuracion.split('.')
         ejes_no_ordenados = []
         ejes = []
         eje = 1
         color_profundidad = ""
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             presiones_establecida=[
                 vehiculo_actual.presion_establecida_1,
                 vehiculo_actual.presion_establecida_2,
@@ -7772,7 +7826,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
                 vehiculo_actual.presion_establecida_7,
             ]
         numero = 0
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             for num in num_ejes:
                 list_temp = []
                 for llanta in llantas_actuales:
@@ -7850,7 +7904,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
                     ejes.append(lista_temp)
         numero_llanta = 1
         numero_eje = 1
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             llanta_info = None
             numero_llanta_check = None
             numero_eje_check = None
@@ -7883,13 +7937,12 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         observaciones = llanta_actual.observaciones.all()
         context['observaciones'] = observaciones
 
-        if llanta.vehiculo == None:
+        if llanta.inventario != "Rodante":
             presion_act = llanta.presion_actual
             min_produndidad = llanta.producto.profundidad_inicial
             color_profundidad = "good"
-            context["presion_act"] = presion_act
-            context["min_produndidad"] = min_produndidad
-            context["color_profundidad"] = color_profundidad
+            llanta_info = [llanta, color_profundidad, "good", min_produndidad, None, None, None, None]
+            context["llanta_info"] = llanta_info
 
         problemas = []
         ultima_inspeccion = llanta_actual.ultima_inspeccion
@@ -7908,7 +7961,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
                     'observacion': observacion, 
                     'signo': signo
                     })
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             if llanta_info[2] == 'bad':
                 baja_presion = Observacion.objects.get(observacion='Baja presión')
                 presion_mala = 0
@@ -7924,7 +7977,7 @@ class tireDetailView(LoginRequiredMixin, DetailView):
         print(problemas)
         context['problemas'] = problemas
         #Bitacorasllanta
-        if llanta.vehiculo:
+        if llanta.inventario == "Rodante":
             inpecciones_llanta_act = Inspeccion.objects.filter(llanta = llanta_info[0])
             eventos = []
             inspecciones_list = []
@@ -7952,10 +8005,10 @@ class tireDetailView(LoginRequiredMixin, DetailView):
             for ins in inspecciones_list:
                 eventos.append([ins[0], ins[1], ins[2], ins[3]])
             for servicio in servicios:
-                eventos.append([servicio.serviciovehiculo.fecha_inicio, servicio, 'servicio', 'icon-checkmark good-text'])
+                eventos.append([datetime.combine(servicio.serviciovehiculo.fecha_inicio, datetime.min.time(), timezone.utc)  , servicio, 'servicio', 'icon-checkmark good-text'])
             eventos = sorted(eventos, key=lambda x:x[0], reverse=True)
         
-        #context['eventos'] = eventos
+            context['eventos'] = eventos
         llanta = self.get_object()
         color_observaciones = functions.color_observaciones_all_one(llanta)
         print(color_observaciones)

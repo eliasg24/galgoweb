@@ -23,7 +23,7 @@
   top: 0;
   width: 100%;
   z-index: 999;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -55,7 +55,7 @@
 }
 
 .fc-event-title-container {
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -84,7 +84,8 @@
 
 .btn.gray,
 .btn.green,
-.btn.blue {
+.btn.blue,
+.btn.red {
   border-radius: 0.25rem;
   padding: 0.5rem 0.75rem;
   margin-left: 0.5rem;
@@ -103,6 +104,10 @@
 
 .btn.blue {
   background-color: #026cf5;
+}
+
+.btn.red {
+  background-color: var(--colorv07);
 }
 
 @media screen and (min-width: 1024px) {

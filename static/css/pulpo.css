@@ -8,6 +8,10 @@
   color: #fff; /*No cambia*/
 }
 
+iframe {
+  height: 100%;
+}
+
 input[type="date"]::-webkit-inner-spin-button,
 ::-webkit-calendar-picker-indicator {
   filter: invert(100%);

@@ -113,8 +113,18 @@
 
     {% endfor %}
     {% if vehiculo.sp1 == True %}
-      <div class="sp1">
-        <span class="icon-tire2"></span>
+      <div class="config__row sp1">
+        <div class="tire">
+            
+          <span class="tag top {{eje.0.color_presion}}"></span>
+
+          <div class="rotate {{eje.0.ico_desgaste}}">
+            <span class="icon-reload"></span>
+          </div>
+
+          <div class="icon-llanta-outline"></div>
+          <span class="tag bottom {{eje.0.color_profundidad}}"></span>
+        </div>
       </div>
     {% else %}
     {% endif %}

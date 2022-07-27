@@ -75,7 +75,7 @@
 
 .card {
   background: var(--colorv27);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
 }
 
 .card__circle {
@@ -84,7 +84,7 @@
   display: grid;
   justify-items: center;
   align-items: center;
-  border-radius: 0.25rem;
+  border-radius: 1rem;
 }
 
 .card__config {
@@ -105,6 +105,7 @@
 .config__header {
   color: #fff; /*No cambia*/
   background-color: #026cf5; /*No cambia*/
+  border-radius: 1rem 1rem 0 0;
   border-bottom: thin solid var(--colorv14);
   text-align: center;
   padding: 0.25rem;

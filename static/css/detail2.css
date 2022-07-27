@@ -145,6 +145,7 @@
 
 .config__data {
   background-color: var(--colorv27);
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -179,7 +180,7 @@
 .score-card {
   align-items: center;
   background-color: var(--colorv00);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -190,6 +191,7 @@
 
 .chart__container {
   background-color: var(--colorv27);
+  border-radius: 1rem;
   display: flex;
   flex-flow: column nowrap;
   padding: 0.5rem;
@@ -224,7 +226,7 @@
 
 .config__container {
   background-color: var(--colorv27);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: grid;
   grid-template-rows: auto auto auto 1fr;
   overflow: hidden;
@@ -396,7 +398,7 @@
 
 .dash__container {
   background: var(--colorv27);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

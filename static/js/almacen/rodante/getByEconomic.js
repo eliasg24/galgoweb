@@ -71,8 +71,8 @@ const getFilters = async (querys = '') => {
 
       // ? El inventario se pone manual según el inventario
 
-      template.querySelector('.add-item').dataset.id = item.id;
-      template.querySelector('.add-item').dataset.inventario = 'Con renovador';
+      // template.querySelector('.add-item').dataset.id = item.id;
+      // template.querySelector('.add-item').dataset.inventario = 'Con renovador';
 
       let clone = document.importNode(template, true);
       fragment.appendChild(clone);
@@ -82,7 +82,7 @@ const getFilters = async (querys = '') => {
     loader.style.display = 'none';
     container.appendChild(fragment);
 
-    document.querySelectorAll('.add-item').forEach((button) => {
+    /* document.querySelectorAll('.add-item').forEach((button) => {
       button.addEventListener('click', (e) => {
         const id = button.dataset.id;
         const inventario = button.dataset.inventario;
@@ -106,7 +106,7 @@ const getFilters = async (querys = '') => {
           })
           .catch((err) => console.error(err));
       });
-    });
+    }); */
   } catch (error) {
     console.error(error);
   }
@@ -157,8 +157,6 @@ export const setFilters = () => {
       let value = e.target.value.toLowerCase();
 
       params.set(e.target.name, value);
-
-      console.log(e.target.name);
 
       if (value == '') {
         params.delete(e.target.name);

@@ -24,6 +24,7 @@
   background-color: var(--colorv27);
   height: 100%;
   padding: 1rem;
+  border-radius: 1rem;
 }
 
 .tire__medium {

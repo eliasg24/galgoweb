@@ -5,6 +5,15 @@ html {
 .head-cont {
   flex-flow: row wrap;
   gap: 1rem;
+  position: sticky;
+  top: 50px;
+  z-index: 999;
+}
+
+@media screen and (min-width: 1024px) {
+  .head-cont {
+    top: 0;
+  }
 }
 
 .head-cont h1 {
@@ -75,7 +84,7 @@ select {
 .card__wrapper {
   align-items: center;
   background-color: var(--colorv27);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: grid;
   height: 100%;
   flex: 1 1 400px;
@@ -98,6 +107,7 @@ select {
 .card__header {
   background-color: var(--colorv02);
   color: var(--colorv10);
+  border-radius: 1rem 1rem 0 0;
   padding: 0.25rem;
 }
 
@@ -120,7 +130,7 @@ select {
 
 .card__body {
   background-color: var(--colorv00);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   height: 100%;
   padding: 1rem;
   position: relative;
@@ -182,7 +192,7 @@ select {
 
 .filter__content {
   background-color: var(--colorv45);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
@@ -271,8 +281,17 @@ h1 {
   display: flex;
   gap: 1rem;
   flex-flow: row nowrap;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+}
+
+.btn.btn-vehicle {
+  background-color: #026cf5;
+  border-radius: 0.5rem;
+  display: block;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  width: fit-content;
 }
 
 .cart {

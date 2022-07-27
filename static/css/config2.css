@@ -79,7 +79,7 @@ h3 {
 
 .con {
   background-color: var(--colorv45);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   display: none;
   flex-flow: column nowrap;
   gap: 1rem;

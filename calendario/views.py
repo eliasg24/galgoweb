@@ -37,7 +37,7 @@ class CalendarioApi(LoginRequiredMixin, View):
             title = F('vehiculo__numero_economico'),
             
             )
-        calendarios = list(calendarios.values('id', 'horario_start_str', 'horario_end_str', 'title', 'estado', 'color', 'reporte', 'id_servicio'))
+        calendarios = list(calendarios.values('id', 'horario_start_str', 'horario_end_str', 'title', 'estado', 'color', 'reporte', 'id_servicio', 'vehiculo__id'))
         
         dict_context = {
             'calendarios': calendarios,
@@ -84,9 +84,22 @@ class CerrarServicioApi(LoginRequiredMixin, View):
             print(preguardado_llantas)
             
             vehiculo = servicio.vehiculo
+            
+            km_imposible = False
+            km_montado = None
             for vehicule in preguardado_vehiculo:
                 if 'alinearVehiculo' in vehicule:
                     vehiculo.fecha_ultima_alineacion = date.today()
+                
+                if 'km_imposible' in vehicule:
+                    if 'km_imposible' == 'True':
+                        km_montado = None
+                        km_imposible = True
+                    else:
+                        km_montado = int(vehicule['km_vehiculo'])
+                        vehiculo.km = km_montado
+                        vehiculo.save()
+                
             Vehiculo.objects.bulk_update([vehiculo], ['fecha_ultima_alineacion'])
             llantas_desmontadas = []
             llantas_rotadas = []
@@ -97,6 +110,8 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                     print('Desmontaje')
                     #? Se llama la llanta actual
                     llanta = Llanta.objects.get(pk=data['llanta'])
+                    
+                    presion_establecida = func.presion_establecida(llanta)
                     vehiculo = llanta.vehiculo
                     ubicacion = llanta.ubicacion
                     aplicacion = llanta.aplicacion
@@ -126,6 +141,8 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                     llanta_nueva.tipo_de_eje = tipo_eje
                     llanta_nueva.eje = eje
                     llanta_nueva.inventario = 'Rodante'
+                    llanta_nueva.km_montado = km_montado
+                    llanta_nueva.presion_actual = presion_establecida
 
                     #? Se actualizan las llantas respectivamente
                     Llanta.objects.bulk_update([llanta_nueva], [
@@ -135,14 +152,22 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         'aplicacion',
                         'tipo_de_eje',
                         'eje',
-                        'inventario'
+                        'inventario',
+                        'km_montado',
+                        'presion_actual'
                         ])
 
                     Llanta.objects.bulk_update([llanta], [
                         'taller', 'inventario'
                         ])
                     llantas_desmontadas.append(llanta)
-
+                    
+                    try:
+                        func.quitar_llanta_de_carritos(llanta_nueva, perfil)
+                        func.check_dualizacion(llanta_nueva)
+                        func.check_dif_presion_duales(llanta_nueva)
+                    except:
+                        pass
                     print('---------------')
                     
             for data in preguardado_llantas:
@@ -246,6 +271,12 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         if llanta_rotar in llantas_rotadas or llanta_rotar in llantas_desmontadas:
                             continue
                         
+                        km_imposible_otro = data['km_imposible_otro']
+                        if km_imposible_otro == 'True':
+                            km_montado_otro = None
+                        else:
+                            km_montado_otro = int(data['km_montado_otro'])
+                        
                         #? Datos de la llanta a rotar
                         vehiculo_llanta_rotar = llanta_rotar.vehiculo
                         posicion_llanta_rotar = llanta_rotar.posicion
@@ -263,11 +294,14 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         llanta.posicion = posicion_llanta_rotar
                         llanta.eje = eje_llanta_rotar
                         llanta.tipo_de_eje = tipo_de_eje_llanta_rotar
+                        llanta.km_montado = km_montado_otro
+                        
                         #? Llanta a rotar
                         llanta_rotar.vehiculo = vehiculo_llanta_montada
                         llanta_rotar.posicion = posicion_llanta_montada
                         llanta_rotar.eje = eje_llanta_montada
                         llanta_rotar.tipo_de_eje = tipo_de_eje_llanta_montada
+                        llanta_rotar.km_montado = km_montado
 
                         #? Quitar observaciones                  
                         func.quitar_desgaste(llanta, llanta_rotar)
@@ -277,9 +311,12 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                             'posicion', 
                             'tipo_de_eje', 
                             'eje', 
+                            'km_montado'
                             ])
                         llantas_rotadas.append(llanta)
                         llantas_rotadas.append(llanta_rotar)
+                        func.quitar_todo_de_presion(llanta)
+                        func.quitar_todo_de_presion(llanta_rotar)
                     print('---------------')        
                     
             

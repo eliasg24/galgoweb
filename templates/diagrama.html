@@ -18,7 +18,7 @@
 
       <header class="head-cont">
         <div class="logo">
-          <img src="{% static 'images/perro-galgo.png' %}" alt="logo aeto">
+          <img src="{% static 'images/aeto.svg' %}" alt="logo aeto">
         </div>
 
         <h1 class="main-title">Edición manual</h1>
@@ -293,7 +293,7 @@
                   value = "{% if vehiculo_actual.km == None %}{% else %}{{vehiculo_actual.km}}{% endif %}"
                 />
                 <label for="" class="form__label">
-                  KM de vehículo
+                  Km de vehículo actual: {{vehiculo_actual.km}}
                 </label>
               </div>
   

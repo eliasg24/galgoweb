@@ -103,7 +103,7 @@ input[type="date"]::-webkit-inner-spin-button,
   background-color: var(--colorv45);
   height: fit-content;
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   min-width: 400px;
   height: 100%;
 }
@@ -136,7 +136,7 @@ input[type="date"]::-webkit-inner-spin-button,
 
 .table-container {
   background-color: var(--colorv45);
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   padding: 0.5rem;
   overflow: auto;
 }

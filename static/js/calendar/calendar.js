@@ -53,9 +53,9 @@
 
     if (extendedProps.estado === 'cerrado') {
       modalContainer.querySelector('#cerrar').style.display = 'none';
-      modalContainer.querySelector('#taller').style.display = 'none';
+      modalContainer.querySelector('#borrar').style.display = 'none';
     } else if (extendedProps.estado === 'abierto') {
-      modalContainer.querySelector('#taller').style.display = 'flex';
+      modalContainer.querySelector('#borrar').style.display = 'flex';
       modalContainer.querySelector('#cerrar').style.display = 'flex';
       modalContainer.querySelector('#cerrar').addEventListener('click', (e) => {
         e.preventDefault();
@@ -90,6 +90,43 @@
               });
           } else if (result.isDenied) {
             Swal.fire('Los orden no fue cerrada', '', 'info');
+          }
+        });
+      });
+      modalContainer.querySelector('#borrar').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        Swal.fire({
+          title: '¿Seguro de borrar la orden?',
+          icon: 'info',
+          showDenyButton: true,
+          showCancelButton: false,
+          confirmButtonText: 'Guardar',
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            fetch(`/api/archivartaller?vehiculo=${extendedProps.vehiculo__id}`)
+              .then((resp) => (resp.ok ? resp.json() : Promise.reject(resp)))
+              .then((json) => {
+                console.log(json);
+                Swal.fire('Eliminado', '', 'success');
+                setTimeout(async () => {
+                  modalContainer.classList.remove('active');
+                  calendarEvents = await getEvents();
+                  calendar(calendarEvents);
+                }, 500);
+              })
+              .catch((error) => {
+                console.error(error);
+                Swal.fire(
+                  'Algo salió mal',
+                  'Por favor contacte con el administrador',
+                  'error'
+                );
+              });
+          } else if (result.isDenied) {
+            Swal.fire('Los orden no fue eliminada', '', 'info');
           }
         });
       });

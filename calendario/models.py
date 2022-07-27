@@ -18,4 +18,4 @@ class Calendario(models.Model):
 
     def __str__(self):
         # Retorna el nombre de la compañía
-        return f"start: {self.start}, end: {self.end}, title: {self.title}"
+        return f"start: {self.start}, end: {self.end}, title: {self.title_current}"

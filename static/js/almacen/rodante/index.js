@@ -6,6 +6,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
   setFilters();
   setValues();
   getTires(window.location.search);
-  getCounter();
+  // getCounter();
   removeFilters();
 });

@@ -53,6 +53,7 @@
                         <div class="wrapper">
                             <div class="con-sec">
                                 <div class="buttons">
+                                    {% if request.user.perfil.groups.get != "Pulpo Manager" %}
                                     <a href="{% url 'dashboards:catalogoProductos' %}" class="btn btn-redirect">
                                         Catálogos de productos
                                     </a>
@@ -62,12 +63,22 @@
                                     <a href="{% url 'dashboards:catalogoDesechos' %}" class="btn btn-redirect">
                                         Catálogos de desechos
                                     </a>
+                                    {% endif %}
                                     <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-redirect">
                                         Catálogos de observaciones
                                     </a>
+                                    {% if request.user.perfil.groups.get != "Pulpo Manager" %}
                                     <a href="{% url 'dashboards:catalogoRechazos' %}" class="btn btn-redirect">
                                         Catálogos de rechazos
                                     </a>
+
+                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
+                                        Usuario
+                                    </a>
+                                    <a href="{% url 'dashboards:nuevoVehiculo' %}" class="btn btn-redirect">
+                                        Vehículo
+                                    </a>
+                                    {% endif %}
                                     <!-- <a href="https://drive.google.com/uc?export=download&id=1Lg7iQZf_N3bwSjutnlWAJwF5mlPXERai" class="btn btn-redirect">
                                         Catálogos de metas
                                     </a>
@@ -99,12 +110,6 @@
                                     </a>
                                     <a href="{% url 'dashboards:aplicacionFormulario' %}" class="btn btn-redirect">
                                         Aplicación
-                                    </a>
-                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
-                                        Usuario
-                                    </a>
-                                    <a href="{% url 'dashboards:nuevoVehiculo' %}" class="btn btn-redirect">
-                                        Vehículo
                                     </a>
                                 </div>
                             </div>
@@ -194,6 +199,7 @@
                 </div>
 
                 <div class="row page" id="page-2">
+                    {% if request.user.perfil.groups.get == "Pulpo Manager" %}
                     {% if perms.compania.add_compania %}
                     <div class="con" id="llantas">
                         <div class="con-title">
@@ -220,6 +226,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                     {% endif %}
                     
                     <div class="con on-view" id="operacion" >

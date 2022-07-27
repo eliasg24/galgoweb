@@ -32,7 +32,7 @@
 
 .config__llantas {
   background: var(--colorv27);
-  border-radius: 0.25rem;
+  border-radius: 1rem;
   margin: 1rem;
   display: grid;
   position: relative;

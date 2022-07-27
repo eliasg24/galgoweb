@@ -41,7 +41,6 @@ p {
 
 .top__search h2 {
   font-size: 2rem;
-  color: white;
   background-color: var(--colorv08);
   margin: 0;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -107,7 +106,6 @@ input[type="search"] {
 }
 
 .cont__right h2 {
-  color: white;
   font-size: 2rem;
   background-color: var(--colorv08);
   margin: 0;

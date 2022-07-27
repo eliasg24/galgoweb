@@ -36,7 +36,7 @@ from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, Veh
 
 # Models
 from django.contrib.auth.models import User, Group
-from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Producto, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion, Orden, Taller
+from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Producto, ServicioVehiculo, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion, Orden, Taller
 
 # Utilities
 from multi_form_view import MultiModelFormView
@@ -395,7 +395,7 @@ class TireSearch(LoginRequiredMixin, View):
         pagination = functions.pagination(page, pages)
         
         #Serializar data
-        search_list = list(search[offset:limit].values( "numero_economico","color", "id", 'producto__producto','min_profundidad', 'fecha_de_entrada_inventario'))
+        search_list = list(search[offset:limit].values( "numero_economico","color", "id", 'producto__producto','min_profundidad', 'fecha_de_entrada_inventario', 'vehiculo__id'))
         
         productos = list(search_first.values(product=F('producto__producto')).distinct())
         
@@ -1346,3 +1346,189 @@ class ClearContexto(LoginRequiredMixin, View):
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
 
         return HttpResponse(json_context, content_type='application/json')
+
+
+
+class CopiarGalgo(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        contrasena = self.request.GET.get('contrasena', None)
+        print(contrasena)
+        if contrasena == 'Cn195929':
+            perfil = Perfil.objects.get(user__username = 'GalgoTest')
+            user_galgo = perfil.user
+            compania_galgo = perfil.companias.first()
+            aplicaciones_galgo = perfil.aplicacion.first()
+            ubicaciones_galgo = perfil.ubicaciones.first()
+            talleres_galgo = perfil.talleres.first()
+            print(compania_galgo)
+            print(aplicaciones_galgo)
+            print(ubicaciones_galgo)
+            print(talleres_galgo)
+            
+            compania_copy = Compania.objects.get(compania = 'PruebaBI')
+            vehiculos = Vehiculo.objects.filter(compania = compania_copy)
+            
+            productos = Producto.objects.filter(compania = compania_copy)
+            for producto in productos:
+                producto_nuevo = Producto.objects.get(id = producto.id)
+                producto_nuevo.id == None
+                producto_nuevo.compania = compania_galgo
+                
+            
+            for vehiculo in vehiculos:
+                llantas_actual = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante')
+                print(llantas_actual)
+                print(llantas_actual.count())
+                
+                print()
+                
+                
+                vehiculo_nuevo = Vehiculo.objects.get(id = vehiculo.id)
+                vehiculo_nuevo.id = None
+                nuevo_num_eco = vehiculo_nuevo.numero_economico[1:]
+                vehiculo_nuevo.numero_economico = f'G{nuevo_num_eco}'
+                vehiculo_nuevo.compania = compania_galgo 
+                vehiculo_nuevo.aplicacion = aplicaciones_galgo 
+                vehiculo_nuevo.ubicacion = ubicaciones_galgo 
+                vehiculo_nuevo.save()
+                contador = 0
+                for llanta in llantas_actual:
+                    contador += 1
+                    try:
+                        producto_nuevo = Producto.objects.get(producto = llanta.producto.producto, compania = compania_galgo)
+                    except:
+                        producto = None
+
+                    llanta_nuevo = Llanta.objects.get(id = llanta.id)
+                    llanta_nuevo.id = None
+                    llanta_nuevo.compania = compania_galgo
+                    llanta_nuevo.vehiculo = vehiculo_nuevo
+                    llanta_nuevo.numero_economico = f'{vehiculo_nuevo}-{contador}'
+                    llanta_nuevo.producto = producto_nuevo
+                    if llanta.taller != None:
+                        llanta_nuevo.taller = talleres_galgo
+                    llanta_nuevo.save()
+                    
+            
+            
+            dict_context = {
+                'Estado': 'Oki',
+            }
+
+            json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+            return HttpResponse(json_context, content_type='application/json')
+        else:
+            
+            json_context = json.dumps({'Contraseña': 'Incorrecta'}, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+
+
+class CopiarVehiculo(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        contrasena = self.request.GET.get('contrasena', None)
+        print(contrasena)
+        if contrasena == 'Cn195929':
+            perfil = Perfil.objects.get(user__username = 'NewPick')
+            user_galgo = perfil.user
+            compania_galgo = perfil.companias.first()
+            aplicaciones_galgo = perfil.aplicacion.first()
+            ubicaciones_galgo = perfil.ubicaciones.first()
+            talleres_galgo = perfil.talleres.first()
+            print(compania_galgo)
+            print(aplicaciones_galgo)
+            print(ubicaciones_galgo)
+            print(talleres_galgo)
+            
+            compania_copy = Compania.objects.get(compania = 'PruebaBI')
+            vehiculos = Vehiculo.objects.filter(id = 23884)
+            
+            productos = Producto.objects.filter(compania = compania_copy)
+            for producto in productos:
+                producto_nuevo = Producto.objects.get(id = producto.id)
+                producto_nuevo.id == None
+                producto_nuevo.compania = compania_galgo
+                #producto_nuevo.save()
+                
+            
+            for vehiculo in vehiculos:
+                llantas_actual = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante')
+                print(llantas_actual)
+                print(llantas_actual.count())
+                
+                print()
+                
+                
+                vehiculo_nuevo = Vehiculo.objects.get(id = vehiculo.id)
+                vehiculo_nuevo.id = None
+                nuevo_num_eco = vehiculo_nuevo.numero_economico[1:]
+                vehiculo_nuevo.numero_economico = f'NewPick{nuevo_num_eco}'
+                vehiculo_nuevo.compania = compania_galgo 
+                vehiculo_nuevo.aplicacion = aplicaciones_galgo 
+                vehiculo_nuevo.ubicacion = ubicaciones_galgo 
+                vehiculo_nuevo.save()
+                contador = 0
+                for llanta in llantas_actual:
+                    contador += 1
+                    try:
+                        producto_nuevo = Producto.objects.get(producto = llanta.producto.producto, compania = compania_galgo)
+                    except:
+                        producto = None
+
+                    llanta_nuevo = Llanta.objects.get(id = llanta.id)
+                    llanta_nuevo.id = None
+                    llanta_nuevo.compania = compania_galgo
+                    llanta_nuevo.vehiculo = vehiculo_nuevo
+                    llanta_nuevo.numero_economico = f'{vehiculo_nuevo}-{contador}'
+                    llanta_nuevo.producto = None
+                    llanta_nuevo.save()
+            
+            
+            dict_context = {
+                'Estado': 'Oki',
+            }
+
+            json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+            return HttpResponse(json_context, content_type='application/json')
+        else:
+            
+            json_context = json.dumps({'Contraseña': 'Incorrecta'}, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+        
+        
+class ArchivarTaller(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        try:
+            print(self.request.GET.get('vehiculo', None))
+            vehiculo_id = int(self.request.GET.get('vehiculo', None))
+        except:
+            json_context = json.dumps({'status': 'Id no vaido o formato no valido'}, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+        
+        vehiculo = Vehiculo.objects.get( id = vehiculo_id )
+        servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo, estado = 'abierto')
+        if servicios.count() > 0:
+            servicios = servicios.first()
+            servicios.delete()
+            dict_context = {
+                'Estado': 'Servicio borrado',
+            }
+            json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+        else:
+            dict_context = {
+                'Estado': 'Sin servicios abiertos',
+            }
+            json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+        

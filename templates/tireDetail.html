@@ -24,7 +24,7 @@
 <main class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}">
+      <img src="{% static 'images/aeto.svg' %}">
     </div>
     {% if vehiculo_boolean %}
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
@@ -70,7 +70,9 @@
 
               <div class="tire__medium {{color_observaciones}}">
                 <span class="tire__data">
-                    {{llanta_info.0.posicion}}
+                    {% if llanta_info.0.posicion %}
+                      {{llanta_info.0.posicion}}
+                    {% endif %}
                 </span>
               </div>
 
@@ -652,7 +654,7 @@
     chart.title('Comportamiento de Desgaste');
     var title = chart.title();
     title.align('center');
-    title.fontColor('#000');
+    title.fontColor('#fff');
     title.fontSize(18);
     title.fontWeight(600);
 

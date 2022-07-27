@@ -21,7 +21,8 @@ const getTires = async (querys = '') => {
 
   try {
     const resp = await fetch(apiSearch);
-    const { result, pagination, productos } = await resp.json();
+    const json = await resp.json();
+    const { result, pagination, productos } = json;
 
     if (!resp.ok) throw new Error('Algo sucedió mal');
 
@@ -47,6 +48,7 @@ const getTires = async (querys = '') => {
 
     result.forEach((item) => {
       template.querySelector('a').href = `/tireDetail/${item.id}`; // Poner el id del rodante
+      template.querySelector('.btn-vehicle').href = `/${item.vehiculo__id}`;
 
       template.querySelector('.economic').textContent = item.numero_economico;
       template.querySelector('.economic').textContent = item.numero_economico;
@@ -72,9 +74,9 @@ const getTires = async (querys = '') => {
       template.querySelector('.date').textContent =
         item.fecha_de_entrada_inventario;
 
-      template.querySelector('.add-item').dataset.id = item.id;
+      // template.querySelector('.add-item').dataset.id = item.id;
       // ? El inventario se pone manual según el inventario
-      template.querySelector('.add-item').dataset.inventario = 'Rodante';
+      // template.querySelector('.add-item').dataset.inventario = 'Rodante';
 
       let clone = document.importNode(template, true);
       fragment.appendChild(clone);
@@ -97,7 +99,7 @@ const getTires = async (querys = '') => {
     loader.style.display = 'none';
     container.appendChild(fragment);
     
-    document.querySelectorAll('.add-item').forEach(button => {
+/*     document.querySelectorAll('.add-item').forEach(button => {
       button.addEventListener('click', (e) => {
         const id = button.dataset.id;
         const inventario = button.dataset.inventario;
@@ -119,7 +121,7 @@ const getTires = async (querys = '') => {
           })
           .catch((err) => console.error(err));
       });
-    })
+    }) */
 
   } catch (error) {
     console.error(error);

@@ -46,7 +46,7 @@ hr {
 .dashboard,
 .informe {
   background: var(--colorv25);
-  border-radius: 12px;
+  border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;

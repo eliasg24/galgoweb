@@ -36,10 +36,14 @@
 <title>AETO WEB</title>
 {% endblock head %} 
 {% block content %}
+{% if link_pulpo != None %}
+  <iframe title="PulpoPro - PulpoPro" width="100%" height="99vh" src="{{link_pulpo}}" frameborder="0" allowFullScreen="true"></iframe>
+{% else %}
+
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+      <img src="{% static 'images/aeto.svg' %}" alt="logo" />
     </div>
 
     <form class="form-head" action="{% url 'dashboards:buscar' %}" method="GET">
@@ -519,9 +523,12 @@
     </div>
   </section>
 </div>
+  
+{% endif %}
 <script src="{% static './js/filter.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
 <script src="{% static 'js/gauge.js' %}"></script>
+<script src="{% static 'js/powerbi.js' %}"></script>
 <script>
 
   document.addEventListener('DOMContentLoaded', (e) => {
@@ -1658,284 +1665,285 @@
               //         }
               //     }
               // });
-//radar1
-anychart.onDocumentReady(function () {
-// create data set on our data
-var chart = anychart.radar();
+  //radar1
+  anychart.onDocumentReady(function () {
+  // create data set on our data
+  var chart = anychart.radar();
 
-// turn on chart animation
-chart.animation(true);
+  // turn on chart animation
+  chart.animation(true);
 
-var series = chart.area([
-                {% if clases_mas_frecuentes_infladas %}
-                    {% for clase, num in clases_mas_frecuentes_infladas.items %}
-                        {x: '{{clase}}', value:{{num}} }, 
-                    {% endfor %}
-                {% else %}
-                    {x:" ", value:0},
-                    {x:"  ", value:0},
-                    {x:"   ", value:0},
-                    {x:"    ", value:0},
-                    {x:"     ", value:0},
-                    {x:"      ", value:0},
-                    {x:"       ", value:0},
-                    {x:"        ", value:0},
-                {% endif %}
-]);
+  var series = chart.area([
+                  {% if clases_mas_frecuentes_infladas %}
+                      {% for clase, num in clases_mas_frecuentes_infladas.items %}
+                          {x: '{{clase}}', value:{{num}} },
+                      {% endfor %}
+                  {% else %}
+                      {x:" ", value:0},
+                      {x:"  ", value:0},
+                      {x:"   ", value:0},
+                      {x:"    ", value:0},
+                      {x:"     ", value:0},
+                      {x:"      ", value:0},
+                      {x:"       ", value:0},
+                      {x:"        ", value:0},
+                  {% endif %}
+  ]);
 
-// chart.title("Porcentaje de Clase de Vehículos Inflados");
-var title = chart.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
-series.name("%");
+  // chart.title("Porcentaje de Clase de Vehículos Inflados");
+  var title = chart.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+  series.name("%");
 
-series.normal().fill('#a349a4', 0.5);
-series.hovered().fill('#a349a4', 0.3);
-series.selected().fill('#a349a4', 0.5);
-series.normal().stroke('#a349a4', 6);
-series.hovered().stroke('#a349a4', 3);
-series.selected().stroke('#a349a4', 8);
+  series.normal().fill('#a349a4', 0.5);
+  series.hovered().fill('#a349a4', 0.3);
+  series.selected().fill('#a349a4', 0.5);
+  series.normal().stroke('#a349a4', 6);
+  series.hovered().stroke('#a349a4', 3);
+  series.selected().stroke('#a349a4', 8);
 
 
-var background = chart.background();
+  var background = chart.background();
 
-background.stroke('0 #000');
-background.corners(12);            
-background.enabled(false);
-// chart credits false
-var credits = chart.credits();
-credits.enabled(false);
+  background.stroke('0 #000');
+  background.corners(12);
+  background.enabled(false);
+  // chart credits false
+  var credits = chart.credits();
+  credits.enabled(false);
 
-// set default series type
-chart.defaultSeriesType('area');
+  // set default series type
+  chart.defaultSeriesType('area');
 
-// set chart data
+  // set chart data
 
-// force chart to stack values by Y scale.
-chart.yScale().stackMode();
+  // force chart to stack values by Y scale.
+  chart.yScale().stackMode();
 
-// set yAxis settings
-chart.yAxis().stroke('#000');
-chart.yAxis().ticks().stroke('#000');
+  // set yAxis settings
+  chart.yAxis().stroke('#fff');
+  chart.yAxis().ticks().stroke('#fff');
 
-// set xAxis settings
-var xlabels = chart.xAxis().labels();
-xlabels.fontSize(20);
-xlabels.enabled(false);
-// var button = document.getElementById("mostrar-clase");
-// document.getElementById('mostrarR1').addEventListener('click',mostrarC);
-// document.getElementById('ocultarR1').addEventListener('click',ocultarC);
-function mostrarC() {
-    xlabels.enabled(true);
-}
-function ocultarC() {
-    xlabels.enabled(false);
-}
-// set yAxis labels settings
-chart.yAxis().labels()
-        .fontColor('#000')
-        .format('{%Value}%');
+  // set xAxis settings
+  var xlabels = chart.xAxis().labels();
+  xlabels.fontSize(20);
+  xlabels.enabled(false);
+  // var button = document.getElementById("mostrar-clase");
+  // document.getElementById('mostrarR1').addEventListener('click',mostrarC);
+  // document.getElementById('ocultarR1').addEventListener('click',ocultarC);
+  function mostrarC() {
+      xlabels.enabled(true);
+  }
+  function ocultarC() {
+      xlabels.enabled(false);
+  }
+  // set yAxis labels settings
+  chart.yAxis().labels()
+          .fontColor('#fff')
+          .format('{%Value}%');
 
-// set yScales 
-chart.yScale().minimum(0).maximum(100);
+  // set yScales
+  chart.yScale().minimum(0).maximum(100);
 
-// set chart legend settings
-chart.legend().enabled(false);
+  // set chart legend settings
+  chart.legend().enabled(false);
 
-//set title settings
-chart.title().fontColor('#000');
+  //set title settings
+  chart.title().fontColor('#fff');
 
-// set container id for the chart
-chart.container('radar1');
-// initiate chart drawing
-chart.draw();
-});
+  // set container id for the chart
+  chart.container('radar1');
+  // initiate chart drawing
+  chart.draw();
+  });
 
-// Gauge-radar2
-anychart.onDocumentReady(function () {
+  // Gauge-radar2
+  anychart.onDocumentReady(function () {
 
-// set stage
-stage = anychart.graphics.create("radar2");
+  // set stage
+  stage = anychart.graphics.create("radar2");
 
-// set layers
+  // set layers
 
-//for the Winter Sales chart
-layer_1 = stage.layer();
-layer_1.zIndex(80);
-//for the Spring Sales chart
-layer_2 = stage.layer();
-//for the buttons
-layer_5 = stage.layer();
-layer_5.zIndex(100);
+  //for the Winter Sales chart
+  layer_1 = stage.layer();
+  layer_1.zIndex(80);
+  //for the Spring Sales chart
+  layer_2 = stage.layer();
+  //for the buttons
+  layer_5 = stage.layer();
+  layer_5.zIndex(100);
 
-// set data for the Winter Sales
-var names = [{% for aplicacion in aplicaciones_mas_frecuentes_infladas %}"{{aplicacion}}",{% endfor %}];
-var data_1 = [{% for aplicacion, num in aplicaciones_mas_frecuentes_infladas.items %}{{num}},{% endfor %}];
-var dataSet_1 = anychart.data.set(data_1);
-var palette = anychart.palettes.distinctColors().items(['#00e5f3', '#1976d2']);
+  // set data for the Winter Sales
+  var names = [{% for aplicacion in aplicaciones_mas_frecuentes_infladas %}"{{aplicacion}}",{% endfor %}];
+  var data_1 = [{% for aplicacion, num in aplicaciones_mas_frecuentes_infladas.items %}{{num}},{% endfor %}];
+  var dataSet_1 = anychart.data.set(data_1);
+  var palette = anychart.palettes.distinctColors().items(['#00e5f3', '#1976d2']);
 
-var makeBarWithBar = function Gauge (gauge, radius, i, width, without_stroke) {
-var stroke = '5 #e5e4e4';
-if (without_stroke) {
-    stroke = null;
-    gauge.label(i)
-            .text(names[i] + ', <span style="color:#sb1b7bc">' + data_1[i] + '%</span>')// color: #7c868e
-            .useHtml(true);
-    gauge.label(i)
-            .hAlign('center')
-            .vAlign('middle')
-            .anchor('right-center')
-            .padding(0, 0)
-            .height(width / 1 + '%')
-            .offsetY(radius + '%')
-            .offsetX(0);
-}
-gauge.bar(i).dataIndex(i)
-        .radius(radius)
-        .width(width)
-        .fill(palette.itemAt(i))
-        .stroke(null)
-        .zIndex(5);
-gauge.bar(i + 100).dataIndex(5)
-        .radius(radius)
-        .width(width)
-        .fill('#ffff00')
-        .stroke(stroke)
-        .zIndex(4);
+  var makeBarWithBar = function Gauge (gauge, radius, i, width, without_stroke) {
+  var stroke = '5 #e5e4e4';
+  if (without_stroke) {
+      stroke = null;
+      gauge.label(i)
+              .text(names[i] + ', <span style="color:#fff">' + data_1[i] + '%</span>')// color: #7c868e
+              .useHtml(true);
+      gauge.label(i)
+              .hAlign('center')
+              .vAlign('middle')
+              .anchor('right-center')
+              .padding(0, 0)
+              .height(width / 1 + '%')
+              .offsetY(radius + '%')
+              .offsetX(0);
+  }
+  gauge.bar(i).dataIndex(i)
+          .radius(radius)
+          .width(width)
+          .fill(palette.itemAt(i))
+          .stroke(null)
+          .zIndex(5);
+  gauge.bar(i + 100).dataIndex(5)
+          .radius(radius)
+          .width(width)
+          .fill('#ffff00')
+          .stroke(stroke)
+          .zIndex(4);
 
-return gauge.bar(i)
-};
-var gauge = anychart.gauges.circular();
-// gauge.title("Porcentaje de Aplicación de Vehículos Inflados");
-var title = gauge.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
+  return gauge.bar(i)
+  };
+  var gauge = anychart.gauges.circular();
+  // gauge.title("Porcentaje de Aplicación de Vehículos Inflados");
+  var title = gauge.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
 
-// enable the legend
-gauge.legend(true);
+  // enable the legend
+  gauge.legend(true);
 
-gauge.padding(0, 0, 0, 0);
-gauge.data(dataSet_1);
-gauge.stroke(null);
-gauge.fill(false)
-        .stroke(null)
-        .padding(0)
-        .margin(0)
-        .startAngle(0)
-        .sweepAngle(270);
+  gauge.padding(0, 0, 0, 0);
+  gauge.data(dataSet_1);
+  gauge.stroke(null);
+  gauge.fill(false)
+          .stroke(null)
+          .padding(0)
+          .margin(0)
+          .startAngle(0)
+          .sweepAngle(270);
 
-var axis = gauge.axis().radius(100).width(1).fill(null);
-axis.scale()
-        .minimum(0)
-        .maximum(100)
-        .ticks({interval: 1})
-        .minorTicks({interval: 1});
-        axis.labels().enabled(false);
-        axis.ticks().enabled(false);
-        axis.minorTicks().enabled(false);
-        {% for aplicacion in aplicaciones_mas_frecuentes_infladas %}
-            makeBarWithBar(gauge, 100, 0, 17, true);
-        {% endfor %}
+  var axis = gauge.axis().radius(100).width(1).fill(null);
+  axis.scale()
+          .minimum(0)
+          .maximum(100)
+          .ticks({interval: 1})
+          .minorTicks({interval: 1});
+          axis.labels().enabled(false);
+          axis.ticks().enabled(false);
+          axis.minorTicks().enabled(false);
+          {% for aplicacion in aplicaciones_mas_frecuentes_infladas %}
+              makeBarWithBar(gauge, 100, 0, 17, true);
+          {% endfor %}
 
-var background = gauge.background();
+  var background = gauge.background();
 
-background.stroke('0 #fff');
-background.corners(0); 
-background.enabled(true);
-background.fill('#fff');
+  background.stroke('0 #000');
+  background.corners(0);
+  background.enabled(true);
+  background.fill('#222');
 
-// turn on chart animation
-gauge.animation(true);
+  // turn on chart animation
+  gauge.animation(true);
 
-gauge.container(layer_1).draw();
+  gauge.container(layer_1).draw();
 
-//radar2
-// create data set on our data
-var data_2 = [
-  {x:" ", value:0},
-  {x:"  ", value:0},
-  {x:"   ", value:0},
-  {x:"    ", value:0},
-  {x:"     ", value:0},
-  {x:"      ", value:0},
-  {x:"       ", value:0},
-  {x:"        ", value:0}
-];
-// create a chart
-var chart_2 = anychart.radar();
+  //radar2
+  // create data set on our data
+  var data_2 = [
+    {x:" ", value:0},
+    {x:"  ", value:0},
+    {x:"   ", value:0},
+    {x:"    ", value:0},
+    {x:"     ", value:0},
+    {x:"      ", value:0},
+    {x:"       ", value:0},
+    {x:"        ", value:0}
+  ];
+  // create a chart
+  var chart_2 = anychart.radar();
 
-// create a line series and set the data
-var series_2 = chart_2.area(data_2);
-series_2.stroke(null);
+  // create a line series and set the data
+  var series_2 = chart_2.area(data_2);
+  series_2.stroke(null);
 
-// chart_2.title("Porcentaje de Aplicación de Vehículos Inflados");
-var title = chart_2.title();
-title.fontColor('#fff');
-title.fontSize(18);
-title.fontWeight(600);
-chart_2.padding(50, 0, 0, 0);
+  // chart_2.title("Porcentaje de Aplicación de Vehículos Inflados");
+  var title = chart_2.title();
+  title.fontColor('#fff');
+  title.fontSize(18);
+  title.fontWeight(600);
+  chart_2.padding(50, 0, 0, 0);
 
-// enable the legend
-chart_2.legend(true);
+  // enable the legend
+  chart_2.legend(true);
 
-series_2.name("%");
-series_2.normal().fill('#a349a4', 0.5);
-series_2.hovered().fill('#a349a4', 0.3);
-series_2.selected().fill('#a349a4', 0.5);
-series_2.normal().stroke('#a349a4', 6);
-series_2.hovered().stroke('#a349a4', 3);
-series_2.selected().stroke('#a349a4', 8);
+  series_2.name("%");
+  series_2.normal().fill('#a349a4', 0.5);
+  series_2.hovered().fill('#a349a4', 0.3);
+  series_2.selected().fill('#a349a4', 0.5);
+  series_2.normal().stroke('#a349a4', 6);
+  series_2.hovered().stroke('#a349a4', 3);
+  series_2.selected().stroke('#a349a4', 8);
 
-// turn on chart animation
-chart_2.animation(true);
+  // turn on chart animation
+  chart_2.animation(true);
 
-var background = chart_2.background();
+  var background = chart_2.background();
 
-background.stroke('0 #000');
-background.corners(12); 
-background.enabled(true);
-// background.fill('#171717');
-// chart credits false
-var credits = chart_2.credits();
-credits.enabled(false);
+  background.stroke('0 #000');
+  background.corners(12);
+  background.enabled(true);
+  // background.fill('#171717');
+  // chart credits false
+  var credits = chart_2.credits();
+  credits.enabled(false);
 
-// set default series type
-chart_2.defaultSeriesType('area');
+  // set default series type
+  chart_2.defaultSeriesType('area');
 
-// force chart to stack values by Y scale.
-chart_2.yScale().stackMode();
+  // force chart to stack values by Y scale.
+  chart_2.yScale().stackMode();
 
-// set yAxis settings
-chart_2.yAxis().stroke('#000');
-chart_2.yAxis().ticks().stroke('#000');
+  // set yAxis settings
+  chart_2.yAxis().stroke('#545f69');
+  chart_2.yAxis().ticks().stroke('#545f69');
 
-// set xAxis settings
-var xlabels = chart_2.xAxis().labels();
-xlabels.fontSize(10);
-// var button = document.getElementById("mostrar-clase");
-if (chart_2.requestFullscreen) {
-    xlabels.enabled(true);    
-}else{
-    xlabels.enabled(false);
-}
+  // set xAxis settings
+  var xlabels = chart_2.xAxis().labels();
+  xlabels.fontSize(10);
+  // var button = document.getElementById("mostrar-clase");
+  if (chart_2.requestFullscreen) {
+      xlabels.enabled(true);
+  }else{
+      xlabels.enabled(false);
+  }
 
-// set yAxis labels settings
-chart_2.yAxis().labels()
-        .fontColor('#000')
-        .format('{%Value}%');
+  // set yAxis labels settings
+  chart_2.yAxis().labels()
+          .fontColor('#545f69')
+          .format('{%Value}%');
 
-// set yScales 
-chart_2.yScale().minimum(0).maximum(100);
+  // set yScales
+  chart_2.yScale().minimum(0).maximum(100);
 
-//set title settings
-chart_2.title().fontColor('#000');
+  //set title settings
+  chart_2.title().fontColor('#fff');
 
-// set container id for the chart
-chart_2.container(layer_2).draw();
+  // set container id for the chart
+  chart_2.container(layer_2).draw();
 
-});
+  });
+
 
   /*rango de fechas*/
   $(function() {

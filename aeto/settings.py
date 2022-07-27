@@ -26,10 +26,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gu(u2jc4&k164&b3ol4&6hjh13s(wvqgjb%hla4io983=*@-bp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['192.168.100.23','192.168.100.109', '192.168.100.94','192.168.100.91', 'localhost', '127.0.0.1']
-
+if config('DEBUG') == 'True':
+    DEBUG = True
+else:
+    DEBUG = False
+    
+if config('DEBUG') == 'True':
+    ALLOWED_HOSTS = ['192.168.100.23','192.168.100.109', '192.168.100.94','192.168.100.91', 'localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['www.aetoweb.com']
+    
 # Application definition
 
 INSTALLED_APPS = [
@@ -140,9 +146,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-    )
+
+if config('DEBUG') == 'True':
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+        )
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
@@ -163,5 +174,8 @@ EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_USE_TLS=True
 EMAIL_PORT=587
-EMAIL_HOST_USER='lolgar99@gmail.com'
-EMAIL_HOST_PASSWORD='rlxncfihpqekmvma'
+EMAIL_HOST_USER='aetoreportes@gmail.com'
+EMAIL_HOST_PASSWORD='mofqcgpicxctweat'
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -27,7 +27,7 @@ from itertools import count
 import math
 import matplotlib.pyplot as plt 
 import numpy as np
-from random import sample, randint, uniform, random
+from random import sample, randint, uniform, random, choice
 from sklearn.metrics import r2_score
 import pandas as pd
 import os
@@ -51,18 +51,40 @@ def archivar_taller(POST, pk, servicio_vehiculo):
     #print(POST)
     #? Acciones del vehiculo
     vehiculo = Vehiculo.objects.get(pk = pk)
+    
+    
     try:
         acciones_vehiculo = json.loads(POST.getlist('vehiculo')[0])
     except:
         acciones_vehiculo = []
+    
+    
+    try:
+        hoja = json.loads(POST.getlist('hoja')[0])
+    except:
+        hoja = []
+        
     if 'alinearVehiculo' in acciones_vehiculo:
         intenciones_vehiculo.append({'alinearVehiculo': 'True'})
     inflarVehiculo = True if 'inflarVehiculo' in acciones_vehiculo else False
+    
+    
+    
+    km_imposible = True if 'no_km' in hoja else False
+    print(hoja)
+    if km_imposible == False:
+        km_vehiculo = int(hoja['km_montado']) if hoja['km_montado'] != '' and hoja['km_montado'] != None else None
+        intenciones_vehiculo.append({'km_imposible': 'False', 'km_vehiculo': km_vehiculo})
+    else:
+        km_vehiculo = ''
+        intenciones_vehiculo.append({'km_imposible': 'True'})
+        
+    
     try:
         dataPOST = json.loads(POST.getlist('data')[0])
     except:
         dataPOST = []
-        
+    print(dataPOST)    
     if len(dataPOST) == 0 and inflarVehiculo == True:
         llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante')
         for llanta in llantas:
@@ -91,8 +113,11 @@ def archivar_taller(POST, pk, servicio_vehiculo):
     if len(dataPOST) != 0 and inflarVehiculo == True:
         id_in_data = ids_in_data(dataPOST)
         llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario = 'Rodante').exclude(id__in = id_in_data)
-        
+        print()
+        print(dataPOST)
+        print()
         for data in dataPOST:
+            print(dataPOST)
             if data['tipoServicio'] == 'sr':
                 data['inflar'] = 'on'
         for llanta in llantas:
@@ -158,6 +183,14 @@ def archivar_taller(POST, pk, servicio_vehiculo):
             
             rotar = data['rotar'] if data['rotar'] != 'no' else False
             id_llanta_rotar = ''
+            
+            
+            km_imposible_otro = True if 'no_km' in data else False
+                    
+            if km_imposible_otro == False:
+                km_montado_otro = int(data['kmMontadoOtro']) if data['kmMontadoOtro'] != '' and data['kmMontadoOtro'] != None else None
+            else:
+                km_montado_otro = None
             #? Rotar en el mismo vehiculo
             if rotar == 'mismo':
                 print('Rotar en el mismo vehiculo')
@@ -179,7 +212,11 @@ def archivar_taller(POST, pk, servicio_vehiculo):
                     'valvula': str(valvula),
                     'costado': str(costado),
                     'rotar': str(rotar),
-                    'llanta_rotar': id_llanta_rotar
+                    'llanta_rotar': id_llanta_rotar,
+                    'kmMontado': km_vehiculo,
+                    'km_imposible': str(km_imposible),
+                    'km_montado_otro': str(km_montado_otro),
+                    'km_imposible_otro': str(km_imposible_otro)
                     })
     print('-------------')
     
@@ -249,123 +286,127 @@ def acomodo_ejes_vehicle(vehiculos_llantas_acomodadas:list):
     
     #Primero itero en los vehiculos
     for vehiculo in vehiculos_llantas_acomodadas:
-        vehiculo_actual = None
-        ejes = []
-        #Saco una lista con los diversas cantidades de ejes
-        for llanta in vehiculo:
-            ejes.append(llanta.eje)
-        ejes = list(set(ejes))
-        ejes_total = []
-        #Itero sobre eesos ejes
-        for eje in ejes:
-            temp_ejes = []
-            #Itero sobre las llantas para buscar coincidencia de ejes
+        try:
+            vehiculo_actual = None
+            ejes = []
+            #Saco una lista con los diversas cantidades de ejes
             for llanta in vehiculo:
-                vehiculo_actual = llanta.vehiculo
-                if llanta.eje == eje:
-                    #Se obtienen las observaciones
-                    observaciones = llanta.observaciones.all()
-                    #Se ponen los default de los campos
-                    color_presion = 'good'
-                    color_profundidad = 'good'
-                    ico_desgaste = ''
-                    ico_desdualizacion = ''
-                    #Se comprueban las condiciones 
-                    #Checar presiones
-                    if baja_presion in observaciones:
-                        color_presion = 'bad'
-                    if alta_presion in observaciones:
-                        color_presion = 'yellow'
-                    #Checar profundidades
-                    if baja_profundidad in observaciones:
-                        color_profundidad = 'bad'
-                    if en_punto_de_retiro in observaciones:
-                        color_profundidad = 'yellow'
-                    #Checar desgastes
-                    if d_alta_presion in observaciones:
-                        ico_desgaste = 'active'
-                    if d_costilla_interna in observaciones:
-                        ico_desgaste = 'active'
-                    if d_inclinado_derecha in observaciones:
-                        ico_desgaste = 'active'
-                    if d_inclinado_izquierda in observaciones:
-                        ico_desgaste = 'active'
-                    #Check Desdualización
-                    if desdualizacion in observaciones:
-                        ico_desdualizacion = 'icon-cross'
-                    color_middle = color_observaciones_all_one(llanta)
+                ejes.append(llanta.eje)
+            ejes = list(set(ejes))
+            ejes_total = []
+            #Itero sobre eesos ejes
+            for eje in ejes:
+                temp_ejes = []
+                #Itero sobre las llantas para buscar coincidencia de ejes
+                for llanta in vehiculo:
+                    vehiculo_actual = llanta.vehiculo
+                    if llanta.eje == eje:
+                        #Se obtienen las observaciones
+                        observaciones = llanta.observaciones.all()
+                        #Se ponen los default de los campos
+                        color_presion = 'good'
+                        color_profundidad = 'good'
+                        ico_desgaste = ''
+                        ico_desdualizacion = ''
+                        #Se comprueban las condiciones 
+                        #Checar presiones
+                        if baja_presion in observaciones:
+                            color_presion = 'bad'
+                        if alta_presion in observaciones:
+                            color_presion = 'yellow'
+                        #Checar profundidades
+                        if baja_profundidad in observaciones:
+                            color_profundidad = 'bad'
+                        if en_punto_de_retiro in observaciones:
+                            color_profundidad = 'yellow'
+                        #Checar desgastes
+                        if d_alta_presion in observaciones:
+                            ico_desgaste = 'active'
+                        if d_costilla_interna in observaciones:
+                            ico_desgaste = 'active'
+                        if d_inclinado_derecha in observaciones:
+                            ico_desgaste = 'active'
+                        if d_inclinado_izquierda in observaciones:
+                            ico_desgaste = 'active'
+                        #Check Desdualización
+                        if desdualizacion in observaciones:
+                            ico_desdualizacion = 'icon-cross'
+                        color_middle = color_observaciones_all_one(llanta)
+
+                        temp_ejes.append({
+                            'llanta': llanta,
+                            'posicion': llanta.posicion,
+                            'color_presion': color_presion,
+                            'color_profundidad': color_profundidad,
+                            'ico_desgaste': ico_desgaste,
+                            'ico_desdualizacion': ico_desdualizacion,
+                            'color_middle': color_middle,
+                            'min_presion': round(min_presion(llanta)),
+                            'max_presion': round(max_presion(llanta)),
+                            'min_profundidad': min_profundidad(llanta)
+                        })
+                ejes_total.append(temp_ejes)
+                dias_sin_inspeccion = 'N/A'
+                dias_sin_alinear = 'N/A'
+
+                color_dias_inspenccion = 'good'
+                color_dias_alinear = 'good'
+                color_dias_inflado = 'good'
+                hoy = date.today()
+                if vehiculo_actual.fecha_ultima_inspeccion != None:
+                    #print(vehiculo_actual.fecha_ultima_inspeccion)
+                    dias_sin_inspeccion = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days
+                if vehiculo_actual.compania.periodo2_inspeccion != 0:
+                    #print(vehiculo_actual.compania.periodo2_inspeccion)
+                    try:
+                        if dias_sin_inspeccion > (vehiculo_actual.compania.periodo2_inspeccion * 2):
+                            color_dias_inspenccion = 'bad'
+                        elif dias_sin_inspeccion > vehiculo_actual.compania.periodo2_inspeccion:
+                            color_dias_inspenccion = 'yellow'
+                    except:
+                        pass
                     
-                    temp_ejes.append({
-                        'llanta': llanta,
-                        'posicion': llanta.posicion,
-                        'color_presion': color_presion,
-                        'color_profundidad': color_profundidad,
-                        'ico_desgaste': ico_desgaste,
-                        'ico_desdualizacion': ico_desdualizacion,
-                        'color_middle': color_middle,
-                        'min_presion': round(min_presion(llanta)),
-                        'max_presion': round(max_presion(llanta)),
-                    })
-            ejes_total.append(temp_ejes)
-            dias_sin_inspeccion = 'N/A'
-            dias_sin_alinear = 'N/A'
-            
-            color_dias_inspenccion = 'good'
-            color_dias_alinear = 'good'
-            color_dias_inflado = 'good'
-            hoy = date.today()
-            if vehiculo_actual.fecha_ultima_inspeccion != None:
-                #print(vehiculo_actual.fecha_ultima_inspeccion)
-                dias_sin_inspeccion = (hoy - vehiculo_actual.fecha_ultima_inspeccion).days
-            if vehiculo_actual.compania.periodo2_inspeccion != 0:
-                #print(vehiculo_actual.compania.periodo2_inspeccion)
+                if vehiculo_actual.fecha_ultima_alineacion != None:
+                    #print(vehiculo_actual.fecha_ultima_inspeccion)
+                    dias_sin_alinear = (hoy - vehiculo_actual.fecha_ultima_alineacion).days   
+
+                if vehiculo_actual.dias_alinear != 0:
+                    #print(vehiculo_actual.dias_alinear)
+                    try:
+                        if dias_sin_alinear > (vehiculo_actual.dias_alinear * 2):
+                            color_dias_alinear = 'bad'
+                        elif dias_sin_alinear > vehiculo_actual.dias_alinear:
+                            color_dias_alinear = 'yellow'
+                    except:
+                        pass 
+            dias_sin_inflar = is_valid_dias_sin_inflar(vehiculo_actual)
+            if vehiculo_actual.compania.periodo2_inflado != 0:
                 try:
-                    if dias_sin_inspeccion > (vehiculo_actual.compania.periodo2_inspeccion * 2):
-                        color_dias_inspenccion = 'bad'
-                    elif dias_sin_inspeccion > vehiculo_actual.compania.periodo2_inspeccion:
-                        color_dias_inspenccion = 'yellow'
+                    if dias_sin_inflar > (vehiculo_actual.compania.periodo2_inflado * 2):
+                        color_dias_inflado = 'bad'
+                    elif dias_sin_inflar > vehiculo_actual.compania.periodo2_inflado:
+                        color_dias_inflado = 'yellow'
                 except:
                     pass
                 
-            if vehiculo_actual.fecha_ultima_alineacion != None:
-                #print(vehiculo_actual.fecha_ultima_inspeccion)
-                dias_sin_alinear = (hoy - vehiculo_actual.fecha_ultima_alineacion).days   
-            
-            if vehiculo_actual.dias_alinear != 0:
-                #print(vehiculo_actual.dias_alinear)
-                try:
-                    if dias_sin_alinear > (vehiculo_actual.dias_alinear * 2):
-                        color_dias_alinear = 'bad'
-                    elif dias_sin_alinear > vehiculo_actual.dias_alinear:
-                        color_dias_alinear = 'yellow'
-                except:
-                    pass 
-        dias_sin_inflar = is_valid_dias_sin_inflar(vehiculo_actual)
-        if vehiculo_actual.compania.periodo2_inflado != 0:
-            try:
-                if dias_sin_inflar > (vehiculo_actual.compania.periodo2_inflado * 2):
-                    color_dias_inflado = 'bad'
-                elif dias_sin_inflar > vehiculo_actual.compania.periodo2_inflado:
-                    color_dias_inflado = 'yellow'
-            except:
-                pass
-        
-        sp1 = is_sp1(vehiculo_actual)
-            
-        vehiculos_acomodados.append(
-            {
-                'vehiculo': vehiculo_actual,
-                'ejes':  ejes_total,
-                'dias_sin_inspeccion': dias_sin_inspeccion,
-                'dias_sin_alinear': dias_sin_alinear,
-                'color_dias_inspenccion': color_dias_inspenccion,
-                'color_dias_alinear': color_dias_alinear,
-                'dias_sin_inflar': dias_sin_inflar,
-                'color_dias_inflado': color_dias_inflado,
-                'fecha_inflado': vehiculo_actual.fecha_de_inflado,
-                'sp1': sp1
-            }
-        )
+            sp1 = is_sp1(vehiculo_actual)
+
+            vehiculos_acomodados.append(
+                {
+                    'vehiculo': vehiculo_actual,
+                    'ejes':  ejes_total,
+                    'dias_sin_inspeccion': dias_sin_inspeccion,
+                    'dias_sin_alinear': dias_sin_alinear,
+                    'color_dias_inspenccion': color_dias_inspenccion,
+                    'color_dias_alinear': color_dias_alinear,
+                    'dias_sin_inflar': dias_sin_inflar,
+                    'color_dias_inflado': color_dias_inflado,
+                    'fecha_inflado': vehiculo_actual.fecha_de_inflado,
+                    'sp1': sp1
+                }
+            )
+        except:
+           pass
     return vehiculos_acomodados
 
 def is_sp1(vehiculo_actual):
@@ -503,29 +544,32 @@ def actualizar_km_actual(llanta_actual, llanta_referencia, vehiculo, vehiculo_re
         return km
 
 def actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion):
-    #Datos primera inspeccion
-    primer_profundidad = min_profundidad(primer_inspeccion)
-    primer_km = primer_inspeccion.km_vehiculo
-    print(f'primer_profundidad {primer_profundidad}')
-    print(f'primer_km {primer_km}')
-    #Datos ultima inspeccion
-    ultima_profundidad = min_profundidad(ultima_inspeccion)
-    ultima_km = ultima_inspeccion.km_vehiculo
-    print(f'ultima_profundidad {ultima_profundidad}')
-    print(f'ultima_km {ultima_km}')
-    #Calculos de variables
-    mm_desgastados = primer_profundidad - ultima_profundidad
-    km_recorrido = ultima_km - primer_km
-    km_x_mm = km_recorrido / mm_desgastados
-    profundidad_inicial = primer_inspeccion.llanta.producto.profundidad_inicial
-    print(f'mm_desgastados {mm_desgastados}')
-    print(f'km_recorrido {km_recorrido}')
-    print(f'km_x_mm {km_x_mm}')
-    print(f'profundidad_inicial {profundidad_inicial}')
-    #Km teorico
-    km_teorico = (profundidad_inicial - ultima_profundidad) * km_x_mm
-    print(f'km_teorico {km_teorico}')
-    return km_teorico
+    try:
+        #Datos primera inspeccion
+        primer_profundidad = min_profundidad(primer_inspeccion)
+        primer_km = primer_inspeccion.km_vehiculo
+        print(f'primer_profundidad {primer_profundidad}')
+        print(f'primer_km {primer_km}')
+        #Datos ultima inspeccion
+        ultima_profundidad = min_profundidad(ultima_inspeccion)
+        ultima_km = ultima_inspeccion.km_vehiculo
+        print(f'ultima_profundidad {ultima_profundidad}')
+        print(f'ultima_km {ultima_km}')
+        #Calculos de variables
+        mm_desgastados = primer_profundidad - ultima_profundidad
+        km_recorrido = ultima_km - primer_km
+        km_x_mm = km_recorrido / mm_desgastados
+        profundidad_inicial = primer_inspeccion.llanta.producto.profundidad_inicial
+        print(f'mm_desgastados {mm_desgastados}')
+        print(f'km_recorrido {km_recorrido}')
+        print(f'km_x_mm {km_x_mm}')
+        print(f'profundidad_inicial {profundidad_inicial}')
+        #Km teorico
+        km_teorico = (profundidad_inicial - ultima_profundidad) * km_x_mm
+        print(f'km_teorico {km_teorico}')
+        return km_teorico
+    except:
+        return None
     
 def all_num_eco_compania(compania, llantas_actuales):
     num_eco = []
@@ -3191,7 +3235,11 @@ def folio():
 def ids_in_data(dataPOST):
     ids = []
     for data in dataPOST:
-        ids.append(int(data['llantaId']))
+        try:
+            ids.append(int(data['llantaId']))
+        except:
+            ids.append(int(data['id']))
+            
     return ids
 
 def inflado_inicio(POST):
@@ -4190,26 +4238,32 @@ def check_dualizacion(llanta):
 
 def check_dif_presion_duales(llanta):
     dual_llanta = check_dual(llanta)
+    diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
+    
     if dual_llanta != None:
-        if llanta.presion_actual != None and dual_llanta.presion_actual != None:
-            presion_actual = float(llanta.presion_actual) if float(llanta.presion_actual) != 0 else 1
-            presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-            porcentaje_dif = (float(presion_actual) - presion_dual / float(presion_actual))
-            diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
-
-            if porcentaje_dif > 0.1:
-                #Poner a los 2 duales
-                llanta.observaciones.add(diferencia_presion_duales)
-                dual_llanta.observaciones.add(diferencia_presion_duales)
-                llanta.vehiculo.observaciones_llanta.add(diferencia_presion_duales)
-            else:
-                llanta.observaciones.remove(diferencia_presion_duales)
-                dual_llanta.observaciones.remove(diferencia_presion_duales)
-                #llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
+        presion_llanta_actual = llanta.presion_actual if llanta.presion_actual > 0 else 1
+        presion_llanta_dual_llanta = dual_llanta.presion_actual if dual_llanta.presion_actual > 0 else 1
+        if (
+            ( ( ( presion_llanta_actual - presion_llanta_dual_llanta ) / presion_llanta_actual ) ) > .1
+            or
+            ( ( ( presion_llanta_dual_llanta -presion_llanta_actual) / presion_llanta_dual_llanta ) ) > .1
+        ):
+            llanta.observaciones.add(diferencia_presion_duales)
+            dual_llanta.observaciones.add(diferencia_presion_duales)
+        else:
+            llanta.observaciones.remove(diferencia_presion_duales)
+            dual_llanta.observaciones.remove(diferencia_presion_duales)
     else:
         llanta.observaciones.remove(diferencia_presion_duales)
+        dual_llanta.observaciones.remove(diferencia_presion_duales)
+        
         #llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
         
+        
+def check_presion__entre_duales_pulpo(vehiculo):
+    llantas = Llanta.objects.filter(vehiculo = vehiculo, tipo_de_eje__icontains = '4')
+    print(llantas)
+    
 def min_profundidad(llanta):
     profundidad_derecha = llanta.profundidad_derecha
     profundidad_central = llanta.profundidad_central
@@ -4885,6 +4939,175 @@ def calendarioTaller(servicio):
         compania = servicio.vehiculo.compania
     )
 
+
+def lista_presiones_establecidas(vehiculo):
+    return [
+        vehiculo.presion_establecida_1,
+        vehiculo.presion_establecida_2,
+        vehiculo.presion_establecida_3,
+        vehiculo.presion_establecida_4,
+        vehiculo.presion_establecida_5,
+        vehiculo.presion_establecida_6,
+        vehiculo.presion_establecida_7
+    ]
+
+def check_name_of_eje(letra_de_eje):
+    if letra_de_eje == 'C':
+        return 'Loco'
+    if letra_de_eje == 'S':
+        return 'Dirección'
+    if letra_de_eje == 'D':
+        return 'Tracción'
+    if letra_de_eje == 'L':
+        return 'Retractil'
+    if letra_de_eje == 'T':
+        return 'Arrastre'
+    if letra_de_eje == 'SP':
+        return 'Refacción'
+
+def check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje):
+    if tipo_de_eje == 'SP1':
+        return None
+    else:
+        presiones_establecidad = lista_presiones_establecidas(vehiculo)
+        return presiones_establecidad[eje]
+    
+
+def crear_llantas_nuevos_vehiculos(vehiculo):
+    compania = vehiculo.compania
+    configuracion = (vehiculo.configuracion).split('.')
+    num_eco_ = []
+    eje = 1
+    for tipo_de_eje in configuracion:
+        if tipo_de_eje != 'SP1':
+            numero = int(tipo_de_eje[1:])
+            letra_de_eje = tipo_de_eje[:1]
+        else:
+            numero = int(tipo_de_eje[2:])
+            letra_de_eje = tipo_de_eje[:2]
+        bandera = True
+
+        
+        while bandera:
+            num_eco_complemento = randint(0, 1000)
+            if num_eco_complemento not in num_eco_:
+                num_eco_.append(num_eco_complemento)
+                bandera = False
+
+        if numero == 1:
+            Llanta.objects.create(
+                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                compania = compania,
+                vehiculo = vehiculo,
+                ubicacion = vehiculo.ubicacion,
+                aplicacion = vehiculo.aplicacion,
+                vida = 'Nueva',
+                tipo_de_eje = tipo_de_eje,
+                eje = eje,
+                posicion = f'{eje}LI',
+                nombre_de_eje = check_name_of_eje(letra_de_eje),
+                presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                inventario = 'Rodante',
+                fecha_de_entrada_inventario = date.today(),
+            )
+        elif numero == 2: 
+            Llanta.objects.create(
+                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                compania = compania,
+                vehiculo = vehiculo,
+                ubicacion = vehiculo.ubicacion,
+                aplicacion = vehiculo.aplicacion,
+                vida = 'Nueva',
+                tipo_de_eje = tipo_de_eje,
+                eje = eje,
+                posicion = f'{eje}LI',
+                nombre_de_eje = check_name_of_eje(letra_de_eje),
+                presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                inventario = 'Rodante',
+                fecha_de_entrada_inventario = date.today(),
+            )
+            
+            Llanta.objects.create(
+                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                compania = compania,
+                vehiculo = vehiculo,
+                ubicacion = vehiculo.ubicacion,
+                aplicacion = vehiculo.aplicacion,
+                vida = 'Nueva',
+                tipo_de_eje = tipo_de_eje,
+                eje = eje,
+                posicion = f'{eje}RI',
+                nombre_de_eje = check_name_of_eje(letra_de_eje),
+                presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                inventario = 'Rodante',
+                fecha_de_entrada_inventario = date.today(),
+            )
+        elif numero == 4: 
+            Llanta.objects.create(
+                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                compania = compania,
+                vehiculo = vehiculo,
+                ubicacion = vehiculo.ubicacion,
+                aplicacion = vehiculo.aplicacion,
+                vida = 'Nueva',
+                tipo_de_eje = tipo_de_eje,
+                eje = eje,
+                posicion = f'{eje}LO',
+                nombre_de_eje = check_name_of_eje(letra_de_eje),
+                presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                inventario = 'Rodante',
+                fecha_de_entrada_inventario = date.today(),
+            )
+            
+            Llanta.objects.create(
+                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                compania = compania,
+                vehiculo = vehiculo,
+                ubicacion = vehiculo.ubicacion,
+                aplicacion = vehiculo.aplicacion,
+                vida = 'Nueva',
+                tipo_de_eje = tipo_de_eje,
+                eje = eje,
+                posicion = f'{eje}LI',
+                nombre_de_eje = check_name_of_eje(letra_de_eje),
+                presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                inventario = 'Rodante',
+                fecha_de_entrada_inventario = date.today(),
+            )
+            
+            Llanta.objects.create(
+                    numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                    compania = compania,
+                    vehiculo = vehiculo,
+                    ubicacion = vehiculo.ubicacion,
+                    aplicacion = vehiculo.aplicacion,
+                    vida = 'Nueva',
+                    tipo_de_eje = tipo_de_eje,
+                    eje = eje,
+                    posicion = f'{eje}RI',
+                    nombre_de_eje = check_name_of_eje(letra_de_eje),
+                    presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                    inventario = 'Rodante',
+                    fecha_de_entrada_inventario = date.today(),
+                )
+
+            Llanta.objects.create(
+                    numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                    compania = compania,
+                    vehiculo = vehiculo,
+                    ubicacion = vehiculo.ubicacion,
+                    aplicacion = vehiculo.aplicacion,
+                    vida = 'Nueva',
+                    tipo_de_eje = tipo_de_eje,
+                    eje = eje,
+                    posicion = f'{eje}RO',
+                    nombre_de_eje = check_name_of_eje(letra_de_eje),
+                    presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
+                    inventario = 'Rodante',
+                    fecha_de_entrada_inventario = date.today(),
+                )
+            
+        eje += 1
 
 def servicio_llanta_desmomtaje(dataPOST, servicio_vehiculo_id):
     for data in dataPOST:
