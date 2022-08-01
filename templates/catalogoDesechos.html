@@ -3,7 +3,8 @@
 {% block head %}
 	{%load static%}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/catalogos.css' %}">
-	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 	<title>Catologo de desechos</title>
 {% endblock %}
 
@@ -50,7 +51,7 @@
 							<a href="{% url 'dashboards:catalogoDesechosEdit' desecho.id %}" class="btn btn-download">
 								<span class="icon-pencil"></span>
 							</a>
-							<form action="{% url "dashboards:catalogoDesechosDelete" %}" method="POST">
+							<form action="{% url "dashboards:catalogoDesechosDelete" %}" class="delete-form" method="POST">
 								{% csrf_token %}
 								<input type="hidden" name="id" value="{{desecho.id}}">
 								<button class="btn btn-danger">
@@ -102,5 +103,27 @@
 
 		/* End Dropdown */
 	</script>
+
+<script>
+  document.addEventListener('submit', (e) => {
+    if (e.target.matches('.delete-form')) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Esta seguro?',
+        text: 'Esta acción eliminará al usuario de manera permanente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          e.target.submit();
+        } else {
+          result.dismiss === Swal.DismissReason.cancel;
+        }
+      })
+    }
+  });
+</script>
 
 {% endblock %}

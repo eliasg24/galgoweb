@@ -60,31 +60,33 @@
             <div class="pop-out">Edición Manual</div>
           </a>
         </div>
+
         <div class="card__tire">
           <div class="cont__config">
             <div class="tire__config">
 
-              <div class="tire__top {{llanta_info.2}}">
-                <span class="tire__data">{{llanta_info.0.presion_actual}}</span>
+              <div class="tire__top {{color_presion}}">
+                <span class="tire__data">{{llanta.presion_actual}}</span>
               </div>
 
-              <div class="tire__medium {{color_observaciones}}">
+              <div class="tire__medium {{color_medio}}">
                 <span class="tire__data">
-                    {% if llanta_info.0.posicion %}
-                      {{llanta_info.0.posicion}}
+                    {% if llanta.posicion %}
+                      {{llanta.posicion}}
                     {% endif %}
                 </span>
               </div>
 
               <span class="icon-tire2"></span>
               
-              <div class="tire__bottom {{llanta_info.1}}">
-                <span class="tire__data">{{llanta_info.3}}</span>
+              <div class="tire__bottom {{color_profundidad}}">
+                <span class="tire__data">{{min_profundidad}}</span>
               </div>
 
             </div>
           </div>
         </div>
+
       </div>
       <div class="card config__data">
         <nav class="config__nav">
@@ -168,6 +170,27 @@
                   </tr>
                 </thead>
                 <tbody>
+
+                  {% for desecho in desechos %}
+                    <tr id="paragraph {{evento.0.id}}">
+                      <td class="td-table3">
+                        <span class="icon-warning yellow-text"></span>
+                      </td>
+                      <td class="td-table3">
+                        {{desecho.fecha.day}}/{{desecho.fecha.month}}/{{desecho.fecha.year}}
+                      </td>
+                      <td class="td-table3">
+                        <span class="icon-checkmark"></span>
+                      </td>
+                      
+                      <td class="td-table3">
+                        <a href="{% url 'dashboards:ordenDesechoTemplete'%}?ids=[{{desecho.id}}&fecha={{desecho.fecha.day}}/{{desecho.fecha.month}}/{{desecho.fecha.year}}" rel="noopener" target="_blank">
+                          <span class="icon-file-pdf" ></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+
                   {% for evento in eventos %}
                   {% if evento.2 == 'pulpo' or evento.2 == 'pulpopro' %}
                     <tr id="paragraph {{evento.0.id}}">
@@ -182,7 +205,7 @@
                       </td>
                       
                       <td class="td-table3">
-                        <a href="{% url 'dashboards:reporteLlanta' evento.1.id llanta.id numero_eje_check numero_llanta_check evento.2 %}" rel="noopener" target="_blank">
+                        <a href="{% url 'dashboards:reporteLlanta' evento.1.id llanta.id evento.2 %}" rel="noopener" target="_blank">
                           <span class="icon-file-pdf" ></span>
                         </a>
                       </td>

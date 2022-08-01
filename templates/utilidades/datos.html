@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Title</title>
+</head>
+<body>
+    {% for dato in datos %}
+        llanta = {{dato.llanta}} <br>
+        llanta = {{dato.llanta.id}} <br>
+        llanta = {{dato.llanta.km_actual}} <br>
+        llanta km montado = {{dato.llanta.km_montado}} <br>
+
+        mm_desgastados = {{dato.mm_desgastados}} <br>
+        porcentaje_de_desgaste = {{dato.porcentaje_de_desgaste}} <br>
+        profundidad_inicial = {{dato.profundidad_inicial}} <br>
+        punto_retiro = {{dato.punto_retiro}} <br>
+        minima = {{dato.minima}} <br>
+        km_x_mm = {{dato.km_x_mm}} <br>
+        ----<br>
+        ----<br>
+        <br>
+    {% endfor %}
+</body>
+</html>

@@ -1,4 +1,5 @@
 # Django
+from email.policy import default
 from operator import mod
 from pyexpat import model
 from re import L
@@ -8,6 +9,8 @@ from django.db import models
 
 # Utilities
 from datetime import date, datetime, timedelta
+
+from django.forms import FloatField
 
 class Compania(models.Model):
     # Modelo de la Compañía
@@ -261,9 +264,10 @@ class Vehiculo(models.Model):
         return f"{self.numero_economico}"
 
 class InspeccionVehiculo(models.Model):
+    usuario = models.ForeignKey(Perfil, on_delete=models.CASCADE, null=True, blank=True)
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
     km = models.IntegerField(blank=True, null=True)
-    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Vehiculo"})
+    observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Vehiculo"}, blank=True)
     fecha = models.DateTimeField(null=True, blank=True, editable=True)
 
 class Inspeccion(models.Model):
@@ -394,6 +398,9 @@ class Llanta(models.Model):
     observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Llanta"}, blank = True)
     tirecheck = models.BooleanField(default=False)
     fecha_de_balanceado = models.DateField(null=True, blank=True)
+    
+    parametro_desgaste_irregular = models.FloatField(blank=True, null=True)
+    
 
     def __str__(self):
         # Retorna el número económico
@@ -408,6 +415,45 @@ class Bitacora(models.Model):
     tiempo_de_inflado = models.FloatField(blank=True, null=True, default=2)
     presion_de_entrada = models.IntegerField(blank=True, null=True, default=100)
     presion_de_salida = models.IntegerField(blank=True, null=True, default=100)
+    llanta_1 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_1_pulpo')
+    presion_establecida_1 = models.IntegerField(null=True, blank=True)
+
+    llanta_2 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_2_pulpo')
+    presion_establecida_2 = models.IntegerField(null=True, blank=True)
+
+    llanta_3 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_3_pulpo')
+    presion_establecida_3 = models.IntegerField(null=True, blank=True)
+
+    llanta_4 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_4_pulpo')
+    presion_establecida_4 = models.IntegerField(null=True, blank=True)
+
+    llanta_5 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_5_pulpo')
+    presion_establecida_5 = models.IntegerField(null=True, blank=True)
+
+    llanta_6 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_6_pulpo')
+    presion_establecida_6 = models.IntegerField(null=True, blank=True)
+
+    llanta_7 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_7_pulpo')
+    presion_establecida_7 = models.IntegerField(null=True, blank=True)
+
+    llanta_8 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_8_pulpo')
+    presion_establecida_8 = models.IntegerField(null=True, blank=True)
+
+    llanta_9 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_9_pulpo')
+    presion_establecida_9 = models.IntegerField(null=True, blank=True)
+
+    llanta_10 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_10_pulpo')
+    presion_establecida_10 = models.IntegerField(null=True, blank=True)
+
+    llanta_11 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_11_pulpo')
+    presion_establecida_11 = models.IntegerField(null=True, blank=True)
+
+    llanta_12 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_12_pulpo')
+    presion_establecida_12 = models.IntegerField(null=True, blank=True)
+
+    
+    llantas = models.ManyToManyField(Llanta)
+    
 
     def __str__(self):
         # Retorna el número económico
@@ -420,30 +466,70 @@ class Bitacora_Pro(models.Model):
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
     fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     tiempo_de_inflado = models.FloatField(blank=True, null=True)
+    
     presion_de_entrada_1 = models.IntegerField(blank=True, null=True)
     presion_de_salida_1 = models.IntegerField(blank=True, null=True)
+    llanta_1 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_1_pulpopro')
+    presion_establecida_1 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_2 = models.IntegerField(blank=True, null=True)
     presion_de_salida_2 = models.IntegerField(blank=True, null=True)
+    llanta_2 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_2_pulpopro')
+    presion_establecida_2 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_3 = models.IntegerField(blank=True, null=True)
     presion_de_salida_3 = models.IntegerField(blank=True, null=True)
+    llanta_3 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_3_pulpopro')
+    presion_establecida_3 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_4 = models.IntegerField(blank=True, null=True)
     presion_de_salida_4 = models.IntegerField(blank=True, null=True)
+    llanta_4 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_4_pulpopro')
+    presion_establecida_4 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_5 = models.IntegerField(blank=True, null=True)
     presion_de_salida_5 = models.IntegerField(blank=True, null=True)
+    llanta_5 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_5_pulpopro')
+    presion_establecida_5 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_6 = models.IntegerField(blank=True, null=True)
     presion_de_salida_6 = models.IntegerField(blank=True, null=True)
+    llanta_6 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_6_pulpopro')
+    presion_establecida_6 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_7 = models.IntegerField(blank=True, null=True)
     presion_de_salida_7 = models.IntegerField(blank=True, null=True)
+    llanta_7 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_7_pulpopro')
+    presion_establecida_7 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_8 = models.IntegerField(blank=True, null=True)
     presion_de_salida_8 = models.IntegerField(blank=True, null=True)
+    llanta_8 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_8_pulpopro')
+    presion_establecida_8 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_9 = models.IntegerField(blank=True, null=True)
     presion_de_salida_9 = models.IntegerField(blank=True, null=True)
+    llanta_9 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_9_pulpopro')
+    presion_establecida_9 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_10 = models.IntegerField(blank=True, null=True)
     presion_de_salida_10 = models.IntegerField(blank=True, null=True)
+    llanta_10 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_10_pulpopro')
+    presion_establecida_10 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_11 = models.IntegerField(blank=True, null=True)
     presion_de_salida_11 = models.IntegerField(blank=True, null=True)
+    llanta_11 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_11_pulpopro')
+    presion_establecida_11 = models.IntegerField(null=True, blank=True)
+
     presion_de_entrada_12 = models.IntegerField(blank=True, null=True)
     presion_de_salida_12 = models.IntegerField(blank=True, null=True)
+    llanta_12 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_12_pulpopro')
+    presion_establecida_12 = models.IntegerField(null=True, blank=True)
+    
+    
+    llantas = models.ManyToManyField(Llanta)
+
 
     def __str__(self):
         # Retorna el número económico
@@ -626,7 +712,7 @@ class ServicioVehiculo(models.Model):
 
 
 class ServicioLlanta(models.Model):
-    serviciovehiculo = models.ForeignKey(ServicioVehiculo, null=True, on_delete=models.SET_NULL)
+    serviciovehiculo = models.ForeignKey(ServicioVehiculo, on_delete=models.CASCADE)
     llanta = models.ForeignKey(Llanta, null=True, on_delete=models.SET_NULL)
     inflado = models.BooleanField(default=False)
     balanceado = models.BooleanField(default=False)
@@ -695,7 +781,7 @@ class OrdenDesecho(models.Model):
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     llanta = models.ForeignKey(Llanta, on_delete=models.CASCADE)
     fecha = models.DateField(null=True, blank=True)
-    min_profundidad = models.IntegerField(blank=True, null=True)
+    min_profundidad = models.FloatField(blank=True, null=True)
     desecho = models.ForeignKey(Desecho, on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='desecho', null=True)
 
@@ -723,7 +809,7 @@ class LlantasSeleccionadas(models.Model):
 
 class Rendimiento(models.Model):
     # Modelo de la Bitácora del Desecho
-    mes = models.ForeignKey(Desecho, on_delete=models.CASCADE, null=True, blank=True)
+    mes = models.IntegerField()
     llanta = models.ForeignKey(Llanta, on_delete=models.CASCADE, null=True, blank=True)
     mm_desgastados = models.FloatField()
     porcentaje_de_desgaste = models.FloatField()

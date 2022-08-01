@@ -88,7 +88,7 @@ class InspeccionesAdmin(admin.ModelAdmin):
 @admin.register(InspeccionVehiculo)
 class InspeccionVehiculoAdmin(admin.ModelAdmin):
     #Admin de observaciones
-    list_display = ( 'id', 'vehiculo', 'fecha')
+    list_display = ( 'id', 'vehiculo', 'fecha', 'usuario')
 
 @admin.register(Excel)
 class ExcelAdmin(admin.ModelAdmin):

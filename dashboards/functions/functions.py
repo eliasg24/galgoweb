@@ -697,6 +697,103 @@ def clases_mas_frecuentes(vehiculo_fecha, compania):
     except:
         return None
 
+def check_bitacora_actual(bitacora):
+    llantas = [
+        bitacora.llanta_1,
+        bitacora.llanta_2,
+        bitacora.llanta_3,
+        bitacora.llanta_4,
+        bitacora.llanta_5,
+        bitacora.llanta_6,
+        bitacora.llanta_7,
+        bitacora.llanta_8,
+        bitacora.llanta_9,
+        bitacora.llanta_10,
+        bitacora.llanta_11,
+        bitacora.llanta_12
+        ]
+    
+    total = 0
+    for llanta in llantas:
+        if llanta != None:
+            total += 1
+            
+    if total == 0:
+        return True
+    
+def max_presion_datos(presion_establecida, objetivo):
+    return presion_establecida + (presion_establecida * objetivo)
+
+def min_presion_datos(presion_establecida, objetivo):
+    return presion_establecida - (presion_establecida * objetivo)
+
+def check_color_presion_bitacora_pulpopro(presion, presion_establecida, objetivo):
+    presion_max = max_presion_datos(presion_establecida, objetivo)
+    presion_min = min_presion_datos(presion_establecida, objetivo)
+    
+    if presion < presion_min:
+        color = 'bad'
+    elif presion > presion_max:
+        color = 'yellow'
+    else:
+        color = 'good'
+    return color
+
+
+def check_color_presion_bitacora_pulpo(llanta, bitacora, tipo):
+    if llanta == bitacora.llanta_1:
+        presion_establecida = bitacora.presion_establecida_1
+    elif llanta == bitacora.llanta_2:
+        presion_establecida = bitacora.presion_establecida_2
+    elif llanta == bitacora.llanta_3:
+        presion_establecida = bitacora.presion_establecida_3
+    elif llanta == bitacora.llanta_4:
+        presion_establecida = bitacora.presion_establecida_4
+    elif llanta == bitacora.llanta_5:
+        presion_establecida = bitacora.presion_establecida_5
+    elif llanta == bitacora.llanta_6:
+        presion_establecida = bitacora.presion_establecida_6
+    elif llanta == bitacora.llanta_7:
+        presion_establecida = bitacora.presion_establecida_7
+    elif llanta == bitacora.llanta_8:
+        presion_establecida = bitacora.presion_establecida_8
+    elif llanta == bitacora.llanta_9:
+        presion_establecida = bitacora.presion_establecida_9
+    elif llanta == bitacora.llanta_10:
+        presion_establecida = bitacora.presion_establecida_10
+    elif llanta == bitacora.llanta_11:
+        presion_establecida = bitacora.presion_establecida_11
+    elif llanta == bitacora.llanta_12:
+        presion_establecida = bitacora.presion_establecida_12
+    
+    parametro = bitacora.compania.objetivo
+    if tipo == 'entrada':
+        presion = bitacora.presion_de_entrada
+    else:
+        presion = bitacora.presion_de_salida
+        
+    
+    presion_minima = int(presion_establecida) - (int(presion_establecida) * (parametro/100))
+    presion_maxima = int(presion_establecida) + (int(presion_establecida) * (parametro/100))
+    
+    if presion < presion_minima:
+        return 'bad'
+    elif presion > presion_maxima:
+        return 'yellow'
+    else:
+        return 'good'
+    
+
+
+def check_icon_pulpo(color):
+    if color == 'good':
+        icon = "icon-checkmark"
+    elif color == 'yellow':
+        icon = 'icon-warning'
+    elif color == 'bad':
+        icon = "icon-cross"
+    return icon
+
 
 def check_presion_pulpo(llanta, min_presion, max_presion, condicional):
     presion = int(llanta.presion_actual)
@@ -838,16 +935,63 @@ def comportamiento_de_desgaste(inspecciones):
         return None
 
 
+def check_color_presion(llanta):
+    presion = llanta.presion_actual
+    presion_min = min_presion(llanta)
+    presion_max = max_presion(llanta)
+    print(presion)
+    print(presion_min)
+    print(presion_max)
+    return color_presion(int(presion), int(presion_min), int(presion_max))
+
 def color_presion(presion, presion_minima, presion_maxima):
     try:
-        if presion >= presion_minima and presion <= presion_maxima:
-            color_presion = 'good'
-        else:
+        if presion < presion_minima:
             color_presion = 'bad'
+        elif presion > presion_maxima:
+            color_presion = 'yellow'
+        else:
+            color_presion = 'good'
     except: 
-        color_presion = 'bad'
+        color_presion = 'good'
+
     return color_presion
 
+
+
+def check_color_profundidad(llanta):
+    obs = llanta.observaciones.all()
+    #* Rojas
+    baja_presion = Observacion.objects.get(observacion = 'Baja presión') #?Rojo
+    baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad') #?Rojo
+    #* Amarillas
+    d_alta_presion = Observacion.objects.get(observacion = 'Desgaste alta presión') #?Amarillo
+    d_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna') #?Amarillo
+    d_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha') #?Amarillo
+    d_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda') #?Amarillo
+    desdualizacion = Observacion.objects.get(observacion = 'Desdualización') #?Amarillo
+    alta_presion = Observacion.objects.get(observacion = 'Alta presion') #?Amarillo
+    en_punto_de_retiro = Observacion.objects.get(observacion = 'En punto de retiro') #? Amarillo
+    if (
+        baja_presion in obs
+        or
+        baja_profundidad in obs
+        ):
+        color = 'bad'
+    elif (
+        d_alta_presion in obs or
+        d_costilla_interna in obs or
+        d_inclinado_derecha in obs or
+        d_inclinado_izquierda in obs or
+        desdualizacion in obs or
+        alta_presion in obs or
+        en_punto_de_retiro in obs
+        ):
+        color = 'yellow'
+    else:
+        color = 'good'
+    return color
+    
 
 def color_profundidad(profundidad, punto_de_retiro):
     if profundidad != None:
@@ -908,6 +1052,14 @@ def color_observaciones_servicio(inspeccion):
 
 
 def color_observaciones_all_one(inspeccion):
+    """Obtiene una llanta o una inspeccion y regresea el color de la misma segun sus observaciones
+
+    Args:
+        inspeccion (Models): Puede sedr una instancia de Inspeccion o de LLanta
+
+    Returns:
+        _type_: str
+    """
     colores = []
     observaciones = inspeccion.observaciones.all()
     for obs in observaciones:
@@ -1543,65 +1695,155 @@ def desdualizacion(llantas, periodo):
 
 def desgaste_profundidad(izquierda, central , derecha, llanta_actual):
     print(izquierda, central , derecha)
+    mm_de_degastes = llanta_actual.compania.mm_de_desgaste_irregular
     if (izquierda != None and central != None and derecha != None):
         print('hey')
         if not(izquierda == central == derecha):
             print('izq centr der')
+            dif_profundidades = max_profundidad(llanta_actual) -  min_profundidad(llanta_actual)
+            if dif_profundidades >  mm_de_degastes:
+                if izquierda < central > derecha:
+                    if llanta_actual.parametro_desgaste_irregular == None:
+                        desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                        llanta_actual.observaciones.add(desgaste_costilla_interna)
+                        print(desgaste_costilla_interna)
+                    elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                        desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                        llanta_actual.observaciones.add(desgaste_costilla_interna)
+                        print(desgaste_costilla_interna)
+                    else:
+                        pass
+
+                elif izquierda > central < derecha:
+                    if llanta_actual.parametro_desgaste_irregular == None:
+                        desgaste_alta_presión = Observacion.objects.get(observacion = 'Desgaste alta presión')
+                        llanta_actual.observaciones.add(desgaste_alta_presión)
+                        print(desgaste_alta_presión)
+                    elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                        desgaste_alta_presión = Observacion.objects.get(observacion = 'Desgaste alta presión')
+                        llanta_actual.observaciones.add(desgaste_alta_presión)
+                        print(desgaste_alta_presión)
+                    else:
+                        pass
+                    
+                elif izquierda == min(izquierda, central, derecha):
+                    if llanta_actual.parametro_desgaste_irregular == None:
+                        desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                        llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                        print(desgaste_inclinado_izquierda)
+                    elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                        desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                        llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                        print(desgaste_inclinado_izquierda)
+                    else:
+                        pass
             
-            if izquierda < central > derecha:
-                desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
-                llanta_actual.observaciones.add(desgaste_costilla_interna)
-                print(desgaste_costilla_interna)
-
-            elif izquierda > central < derecha:
-                desgaste_alta_presión = Observacion.objects.get(observacion = 'Desgaste alta presión')
-                llanta_actual.observaciones.add(desgaste_alta_presión)
-                print(desgaste_alta_presión)
-                
-            elif izquierda == min(izquierda, central, derecha):
-                desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
-                llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
-                print(desgaste_inclinado_izquierda)
-
-            elif derecha == min(izquierda, central, derecha):
-                desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
-                llanta_actual.observaciones.add(desgaste_inclinado_derecha)
-                print(desgaste_inclinado_derecha)
-
-            
+                elif derecha == min(izquierda, central, derecha):
+                    if llanta_actual.parametro_desgaste_irregular == None:
+                        desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                        llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                        print(desgaste_inclinado_derecha)
+                    elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                        desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                        llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                        print(desgaste_inclinado_derecha)
+                    else:
+                        pass
+            else:
+                pass
             
     elif izquierda != None and central != None:
         print('izq central')
-        if izquierda > central:
-            desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
-            llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
-            print(desgaste_inclinado_izquierda)
-        elif izquierda < central:
-            desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
-            llanta_actual.observaciones.add(desgaste_costilla_interna)
-            print(desgaste_costilla_interna)
-            
+        dif_profundidades = max_profundidad(llanta_actual) -  min_profundidad(llanta_actual)
+        
+        if dif_profundidades >  mm_de_degastes:
+        
+            if izquierda > central:
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                    llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                    print(desgaste_inclinado_izquierda)
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                    llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                    print(desgaste_inclinado_izquierda)
+                else: 
+                    pass
+                
+            elif izquierda < central:
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                    llanta_actual.observaciones.add(desgaste_costilla_interna)
+                    print(desgaste_costilla_interna)
+                    
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                    llanta_actual.observaciones.add(desgaste_costilla_interna)
+                    print(desgaste_costilla_interna)
+                else: 
+                    pass
+            else:
+                pass    
     elif central != None and derecha != None:
+        dif_profundidades = max_profundidad(llanta_actual) -  min_profundidad(llanta_actual)
         print('central derecha')
-        if central < derecha:
-            desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
-            llanta_actual.observaciones.add(desgaste_inclinado_derecha)
-            print(desgaste_inclinado_derecha)
-        elif central > derecha:
-            desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
-            llanta_actual.observaciones.add(desgaste_costilla_interna)
-            print(desgaste_costilla_interna)
-    
+        if dif_profundidades >  mm_de_degastes:
+            if central < derecha:
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                    llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                    print(desgaste_inclinado_derecha)
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                    llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                    print(desgaste_inclinado_derecha)
+                else:
+                    pass
+                
+            elif central > derecha:
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                    llanta_actual.observaciones.add(desgaste_costilla_interna)
+                    print(desgaste_costilla_interna)
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna')
+                    llanta_actual.observaciones.add(desgaste_costilla_interna)
+                    print(desgaste_costilla_interna)
+                else:
+                    pass
+        else:
+            pass
     elif izquierda != None and derecha != None:
+        dif_profundidades = max_profundidad(llanta_actual) -  min_profundidad(llanta_actual)
         print('izq der')
-        if izquierda > derecha:
-            desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
-            llanta_actual.observaciones.add(desgaste_inclinado_derecha)
-            print(desgaste_inclinado_derecha)
-        elif izquierda < derecha:
-            desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
-            llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
-            print(desgaste_inclinado_izquierda)
+        if dif_profundidades >  mm_de_degastes:
+            if izquierda > derecha:
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                    llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                    print(desgaste_inclinado_derecha)
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha')
+                    llanta_actual.observaciones.add(desgaste_inclinado_derecha)
+                    print(desgaste_inclinado_derecha)
+                else:
+                    pass
+                
+            elif izquierda < derecha:
+                dif_profundidades = max_profundidad(llanta_actual) -  min_profundidad(llanta_actual)
+                if llanta_actual.parametro_desgaste_irregular == None:
+                    desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                    llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                    print(desgaste_inclinado_izquierda)
+                elif dif_profundidades > llanta_actual.parametro_desgaste_irregular:
+                    desgaste_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda')
+                    llanta_actual.observaciones.add(desgaste_inclinado_izquierda)
+                    print(desgaste_inclinado_izquierda)
+                else:
+                    pass
+        else:
+            pass
+    
     else:
         print('Ningun caso')
 
@@ -4217,8 +4459,8 @@ def check_dual(llanta):
 def check_dualizacion(llanta):
     compania = llanta.vehiculo.compania
     dual_llanta = check_dual(llanta)
+    desdualización = Observacion.objects.get(observacion = 'Desdualización')
     if dual_llanta != None:
-        desdualización = Observacion.objects.get(observacion = 'Desdualización')
         if (
             (min_profundidad(llanta) - min_profundidad(dual_llanta)) >= compania.mm_de_diferencia_entre_duales
             or 
@@ -4230,14 +4472,15 @@ def check_dualizacion(llanta):
             llanta.vehiculo.observaciones_llanta.add(desdualización)
         else:
             llanta.observaciones.remove(desdualización)
-            dual_llanta.observaciones.remove(desdualización)
             #llanta.vehiculo.observaciones_llanta.remove(desdualización)
     else:
         llanta.observaciones.remove(desdualización)
         #llanta.vehiculo.observaciones_llanta.remove(desdualización)  
 
 def check_dif_presion_duales(llanta):
+    print(llanta)
     dual_llanta = check_dual(llanta)
+    print(dual_llanta)
     diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
     
     if dual_llanta != None:
@@ -4255,7 +4498,6 @@ def check_dif_presion_duales(llanta):
             dual_llanta.observaciones.remove(diferencia_presion_duales)
     else:
         llanta.observaciones.remove(diferencia_presion_duales)
-        dual_llanta.observaciones.remove(diferencia_presion_duales)
         
         #llanta.vehiculo.observaciones_llanta.remove(diferencia_presion_duales)
         
@@ -4312,7 +4554,8 @@ def nunca_vistos(vehiculos):
 
 def observaciones_vehiculo(vehiculo):
     vehiculo.observaciones_llanta.clear()
-    llantas = Llanta.objects.filter(vehiculo__id = vehiculo.id)
+    print(vehiculo.observaciones_llanta.all())
+    llantas = Llanta.objects.filter(vehiculo__id = vehiculo.id, inventario = 'Rodante')
     for llanta in llantas:
         for obs in llanta.observaciones.all():
             vehiculo.observaciones_llanta.add(obs)
@@ -4483,6 +4726,87 @@ def porcentaje(divisor, dividendo):
     except:
         return "Nada"
 
+
+def datos_entrada_o_salida_pulpopro(bitacora, llanta, tipo):
+    
+    if tipo == 'entrada':
+        if llanta == bitacora.llanta_1:
+            presion_establecida = bitacora.presion_establecida_1
+            presion = bitacora.presion_de_entrada_1
+        elif llanta == bitacora.llanta_2:
+            presion_establecida = bitacora.presion_establecida_2
+            presion = bitacora.presion_de_entrada_2
+        elif llanta == bitacora.llanta_3:
+            presion_establecida = bitacora.presion_establecida_3
+            presion = bitacora.presion_de_entrada_3
+        elif llanta == bitacora.llanta_4:
+            presion_establecida = bitacora.presion_establecida_4
+            presion = bitacora.presion_de_entrada_4
+        elif llanta == bitacora.llanta_5:
+            presion_establecida = bitacora.presion_establecida_5
+            presion = bitacora.presion_de_entrada_5
+        elif llanta == bitacora.llanta_6:
+            presion_establecida = bitacora.presion_establecida_6
+            presion = bitacora.presion_de_entrada_6
+        elif llanta == bitacora.llanta_7:
+            presion_establecida = bitacora.presion_establecida_7
+            presion = bitacora.presion_de_entrada_7
+        elif llanta == bitacora.llanta_8:
+            presion_establecida = bitacora.presion_establecida_8
+            presion = bitacora.presion_de_entrada_8
+        elif llanta == bitacora.llanta_9:
+            presion_establecida = bitacora.presion_establecida_9
+            presion = bitacora.presion_de_entrada_9
+        elif llanta == bitacora.llanta_10:
+            presion_establecida = bitacora.presion_establecida_10
+            presion = bitacora.presion_de_entrada_10
+        elif llanta == bitacora.llanta_11:
+            presion_establecida = bitacora.presion_establecida_11
+            presion = bitacora.presion_de_entrada_11
+        elif llanta == bitacora.llanta_12:
+            presion_establecida = bitacora.presion_establecida_12
+            presion = bitacora.presion_de_entrada_12
+            
+    if tipo == 'salida':
+        if llanta == bitacora.llanta_1:
+            presion_establecida = bitacora.presion_establecida_1
+            presion = bitacora.presion_de_salida_1
+        elif llanta == bitacora.llanta_2:
+            presion_establecida = bitacora.presion_establecida_2
+            presion = bitacora.presion_de_salida_2
+        elif llanta == bitacora.llanta_3:
+            presion_establecida = bitacora.presion_establecida_3
+            presion = bitacora.presion_de_salida_3
+        elif llanta == bitacora.llanta_4:
+            presion_establecida = bitacora.presion_establecida_4
+            presion = bitacora.presion_de_salida_4
+        elif llanta == bitacora.llanta_5:
+            presion_establecida = bitacora.presion_establecida_5
+            presion = bitacora.presion_de_salida_5
+        elif llanta == bitacora.llanta_6:
+            presion_establecida = bitacora.presion_establecida_6
+            presion = bitacora.presion_de_salida_6
+        elif llanta == bitacora.llanta_7:
+            presion_establecida = bitacora.presion_establecida_7
+            presion = bitacora.presion_de_salida_7
+        elif llanta == bitacora.llanta_8:
+            presion_establecida = bitacora.presion_establecida_8
+            presion = bitacora.presion_de_salida_8
+        elif llanta == bitacora.llanta_9:
+            presion_establecida = bitacora.presion_establecida_9
+            presion = bitacora.presion_de_salida_9
+        elif llanta == bitacora.llanta_10:
+            presion_establecida = bitacora.presion_establecida_10
+            presion = bitacora.presion_de_salida_10
+        elif llanta == bitacora.llanta_11:
+            presion_establecida = bitacora.presion_establecida_11
+            presion = bitacora.presion_de_salida_11
+        elif llanta == bitacora.llanta_12:
+            presion_establecida = bitacora.presion_establecida_12
+            presion = bitacora.presion_de_salida_12
+
+    return {'presion_establecida': presion_establecida, 'presion': presion}
+
 def presion_establecida(llanta):
     vehiculo = llanta.vehiculo
     presiones_establecidas = [
@@ -4603,25 +4927,44 @@ def quitar_desgaste(llanta, llanta_rotar):
     d_costilla_interna = Observacion.objects.get(observacion = 'Desgaste  costilla interna') #?Amarillo
     d_inclinado_derecha = Observacion.objects.get(observacion = 'Desgaste inclinado a la derecha') #?Amarillo
     d_inclinado_izquierda = Observacion.objects.get(observacion = 'Desgaste inclinado a la izquierda') #?Amarillo
-    baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad') #?Amarillo
-    en_punto_rota = Observacion.objects.get(observacion = 'En punto de retiro') #?Amarillo
+    #baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad') #?Amarillo
+    #en_punto_rota = Observacion.objects.get(observacion = 'En punto de retiro') #?Amarillo
 
+    obs_llanta = llanta.observaciones.all()
+    obs_llanta_rotar = llanta_rotar.observaciones.all()
+    if (
+        d_alta_presion in obs_llanta or
+        d_costilla_interna in obs_llanta or
+        d_inclinado_derecha in obs_llanta or
+        d_inclinado_izquierda in obs_llanta
+    ):
+        llanta.parametro_desgaste_irregular = max_profundidad(llanta) - min_profundidad(llanta)
+        llanta.save()
+    
+    if (
+        d_alta_presion in obs_llanta_rotar or
+        d_costilla_interna in obs_llanta_rotar or
+        d_inclinado_derecha in obs_llanta_rotar or
+        d_inclinado_izquierda in obs_llanta_rotar
+    ):
+        llanta_rotar.parametro_desgaste_irregular = max_profundidad(llanta) - min_profundidad(llanta)
+        llanta_rotar.save()
     
     #? Llanta
     llanta.observaciones.remove(d_alta_presion)
     llanta.observaciones.remove(d_costilla_interna)
     llanta.observaciones.remove(d_inclinado_derecha)
     llanta.observaciones.remove(d_inclinado_izquierda)
-    llanta.observaciones.remove(baja_profundidad)
-    llanta.observaciones.remove(en_punto_rota)
+    #llanta.observaciones.remove(baja_profundidad)
+    #llanta.observaciones.remove(en_punto_rota)
     
     #? Llanta rotada
     llanta_rotar.observaciones.remove(d_alta_presion)
     llanta_rotar.observaciones.remove(d_costilla_interna)
     llanta_rotar.observaciones.remove(d_inclinado_derecha)
     llanta_rotar.observaciones.remove(d_inclinado_izquierda)
-    llanta_rotar.observaciones.remove(baja_profundidad)
-    llanta_rotar.observaciones.remove(en_punto_rota)
+    #llanta_rotar.observaciones.remove(baja_profundidad)
+    #llanta_rotar.observaciones.remove(en_punto_rota)
     
 def quitar_desgaste_one(llanta):
     d_alta_presion = Observacion.objects.get(observacion = 'Desgaste alta presión') #?Amarillo
@@ -4964,19 +5307,18 @@ def check_name_of_eje(letra_de_eje):
         return 'Arrastre'
     if letra_de_eje == 'SP':
         return 'Refacción'
-
+ 
 def check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje):
     if tipo_de_eje == 'SP1':
         return None
     else:
         presiones_establecidad = lista_presiones_establecidas(vehiculo)
-        return presiones_establecidad[eje]
+        return presiones_establecidad[eje - 1]
     
 
 def crear_llantas_nuevos_vehiculos(vehiculo):
     compania = vehiculo.compania
     configuracion = (vehiculo.configuracion).split('.')
-    num_eco_ = []
     eje = 1
     for tipo_de_eje in configuracion:
         if tipo_de_eje != 'SP1':
@@ -4985,18 +5327,10 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
         else:
             numero = int(tipo_de_eje[2:])
             letra_de_eje = tipo_de_eje[:2]
-        bandera = True
-
-        
-        while bandera:
-            num_eco_complemento = randint(0, 1000)
-            if num_eco_complemento not in num_eco_:
-                num_eco_.append(num_eco_complemento)
-                bandera = False
-
+            
         if numero == 1:
             Llanta.objects.create(
-                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                numero_economico = f'{vehiculo.numero_economico}-{eje}-1',
                 compania = compania,
                 vehiculo = vehiculo,
                 ubicacion = vehiculo.ubicacion,
@@ -5012,7 +5346,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
             )
         elif numero == 2: 
             Llanta.objects.create(
-                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                numero_economico = f'{vehiculo.numero_economico}-{eje}-1',
                 compania = compania,
                 vehiculo = vehiculo,
                 ubicacion = vehiculo.ubicacion,
@@ -5028,7 +5362,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
             )
             
             Llanta.objects.create(
-                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                numero_economico = f'{vehiculo.numero_economico}-{eje}-2',
                 compania = compania,
                 vehiculo = vehiculo,
                 ubicacion = vehiculo.ubicacion,
@@ -5044,7 +5378,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
             )
         elif numero == 4: 
             Llanta.objects.create(
-                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                numero_economico = f'{vehiculo.numero_economico}-{eje}-1',
                 compania = compania,
                 vehiculo = vehiculo,
                 ubicacion = vehiculo.ubicacion,
@@ -5060,7 +5394,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
             )
             
             Llanta.objects.create(
-                numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                numero_economico = f'{vehiculo.numero_economico}-{eje}-2',
                 compania = compania,
                 vehiculo = vehiculo,
                 ubicacion = vehiculo.ubicacion,
@@ -5076,7 +5410,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
             )
             
             Llanta.objects.create(
-                    numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                    numero_economico = f'{vehiculo.numero_economico}-{eje}-3',
                     compania = compania,
                     vehiculo = vehiculo,
                     ubicacion = vehiculo.ubicacion,
@@ -5092,7 +5426,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 )
 
             Llanta.objects.create(
-                    numero_economico = f'{vehiculo.numero_economico}-{num_eco_complemento}',
+                    numero_economico = f'{vehiculo.numero_economico}-{eje}-4',
                     compania = compania,
                     vehiculo = vehiculo,
                     ubicacion = vehiculo.ubicacion,

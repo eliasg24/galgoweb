@@ -3,6 +3,8 @@
 {% block head %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <title>Formulario de aplicación</title>
 {% endblock %}
 
@@ -69,7 +71,7 @@
                     <a href="{% url 'dashboards:aplicacionFormularioEdit' aplicacion.id %}" class="btn btn-download">
                       <i class="icon-pencil"></i>
                     </a>
-                    <form action="{% url "dashboards:aplicacionFormularioDelete" %}" method="POST">
+                    <form action="{% url "dashboards:aplicacionFormularioDelete" %}" class="delete-form" method="POST">
                       {% csrf_token %}
                       <input type="hidden" name="id" value="{{aplicacion.id}}">
                       <button class="btn btn-danger">
@@ -98,5 +100,26 @@
 </main>
 
 <script src="{% static 'js/inputChange.js' %}"></script>
+<script>
+  document.addEventListener('submit', (e) => {
+    if (e.target.matches('.delete-form')) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Esta seguro?',
+        text: 'Esta acción eliminará al usuario de manera permanente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          e.target.submit();
+        } else {
+          result.dismiss === Swal.DismissReason.cancel;
+        }
+      })
+    }
+  });
+</script>
 
 {% endblock %}

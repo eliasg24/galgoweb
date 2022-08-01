@@ -6,6 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 <title>Configuracion</title>
 {% endblock head %}
@@ -53,7 +55,7 @@
                         <div class="wrapper">
                             <div class="con-sec">
                                 <div class="buttons">
-                                    {% if request.user.perfil.groups.get != "Pulpo Manager" %}
+                                    {% if request.user.groups.get != "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoProductos' %}" class="btn btn-redirect">
                                         Catálogos de productos
                                     </a>
@@ -67,7 +69,7 @@
                                     <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-redirect">
                                         Catálogos de observaciones
                                     </a>
-                                    {% if request.user.perfil.groups.get != "Pulpo Manager" %}
+                                    {% if request.user.groups.get != "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoRechazos' %}" class="btn btn-redirect">
                                         Catálogos de rechazos
                                     </a>
@@ -90,7 +92,7 @@
                         </div>
                     </div>
     
-                    {% if perms.compania.add_compania %}
+                    {% if request.user.groups.get != "Aeto Manager" %}
                         <div class="con" id="contexto">
                             <div class="con-title">
                                 <h2 class="con-title__text">
@@ -169,7 +171,7 @@
                     </div>
                     {% endif %}
     
-                    {% if perms.compania.add_compania %}
+                    {% if request.user.groups.get != "Aeto Manager" %}
                     <div class="con" id="vehiculos">
                         <div class="con-title">
                             <h2 class="con-title__text">
@@ -199,8 +201,7 @@
                 </div>
 
                 <div class="row page" id="page-2">
-                    {% if request.user.perfil.groups.get == "Pulpo Manager" %}
-                    {% if perms.compania.add_compania %}
+                    {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
                     <div class="con" id="llantas">
                         <div class="con-title">
                             <h2 class="con-title__text">
@@ -226,7 +227,6 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
                     {% endif %}
                     
                     <div class="con on-view" id="operacion" >
@@ -272,7 +272,22 @@
             </article>
         
     </section>
-</div>                                        
+</div>   
+
+<script>
+     /* 
+        Iconos
+        success | error | warning 
+     */
+     {% if if_vehiculo == "Nunca" %}
+    Swal.fire('Ninguno', 'No se subió ningún vehículo', 'success')
+    {% elif if_vehiculo == "Algunos" %}
+    Swal.fire('{{if_vehiculo}}', 'Algunos', 'success')
+    {% elif if_vehiculo == "Todos" %}
+    Swal.fire('Todos', 'Se subieron todos los vehículos', 'success')
+    {% endif %}
+</script>
+
 <script>
 
 document.addEventListener('DOMContentLoaded', (e) => {

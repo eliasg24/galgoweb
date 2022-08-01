@@ -84,6 +84,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
             print(preguardado_llantas)
             
             vehiculo = servicio.vehiculo
+            vehiculos_lista = [vehiculo]
             
             km_imposible = False
             km_montado = None
@@ -162,12 +163,11 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         ])
                     llantas_desmontadas.append(llanta)
                     
-                    try:
-                        func.quitar_llanta_de_carritos(llanta_nueva, perfil)
-                        func.check_dualizacion(llanta_nueva)
-                        func.check_dif_presion_duales(llanta_nueva)
-                    except:
-                        pass
+                    
+                    func.quitar_llanta_de_carritos(llanta_nueva, perfil)
+                    func.check_dualizacion(llanta_nueva)
+                    func.check_dif_presion_duales(llanta_nueva)
+                    
                     print('---------------')
                     
             for data in preguardado_llantas:
@@ -254,13 +254,28 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         #? Quitar observaciones                  
                         func.quitar_desgaste(llanta, llanta_rotar)
 
+                        #? Corregir presiones
+                        presion_establecida_montada= func.presion_establecida(llanta)
+                        presion_establecida_rotar = func.presion_establecida(llanta_rotar)
+                        print(f'presion_establecida_montada {presion_establecida_montada}')
+                        print(f'presion_establecida_rotar {presion_establecida_rotar}')
+                        llanta.presion_actual = presion_establecida_montada
+                        llanta_rotar.presion_actual = presion_establecida_rotar
+                        
                         Llanta.objects.bulk_update([llanta, llanta_rotar], [
                             'posicion', 
                             'tipo_de_eje', 
                             'eje', 
+                            'presion_actual'
                             ])
                         llantas_rotadas.append(llanta)
                         llantas_rotadas.append(llanta_rotar)
+                        
+                        func.quitar_todo_de_presion(llanta)
+                        func.quitar_todo_de_presion(llanta_rotar)
+                        
+                        func.check_dualizacion(llanta_rotar)
+                        func.check_dif_presion_duales(llanta_rotar)
 
                     #? Rotar en diferente vehiculo
                     if rotar == 'otro':
@@ -315,15 +330,21 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                             ])
                         llantas_rotadas.append(llanta)
                         llantas_rotadas.append(llanta_rotar)
+                        if vehiculo_llanta_montada not in vehiculos_lista:
+                            vehiculos_lista.append(vehiculo_llanta_montada)
                         func.quitar_todo_de_presion(llanta)
                         func.quitar_todo_de_presion(llanta_rotar)
+                        
+                        func.check_dualizacion(llanta_rotar)
+                        func.check_dif_presion_duales(llanta_rotar)
                     print('---------------')        
                     
             
             functions.servicio_vehiculo_guardado(servicio, preguardado_vehiculo)        
             functions.servicio_llanta_desmomtaje(servicio, preguardado_llantas)
             functions.servicio_llanta_servicio(llantas_desmontadas, servicio, preguardado_llantas)
-                   
+            #? Rectificar observaciones deñ vehiculo
+            func.rectificar_observaciones_vehiculo(vehiculos_lista) 
             dict_data = {
                 'preguardado_vehiculo': preguardado_vehiculo,
                 'preguardado_llantas': preguardado_llantas,

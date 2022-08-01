@@ -89,11 +89,7 @@
                       <li>{{taller}}</li>
                   {% endfor %}
                 </td>
-                <td>
-                  {% for grupo in grupos %}
-                      <li>{{grupo}}</li>
-                  {% endfor %}
-                </td>
+                <td>{{usuario.groups.get}}</td>
               </tr>
               {% endfor %}
             </tbody>

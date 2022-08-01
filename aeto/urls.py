@@ -12,5 +12,7 @@ urlpatterns = [
     
     path("", include(("calendario.urls", "calendario"), namespace="calendario")),
     
+    path("", include(("utilidades.urls", "utilidades"), namespace="utilidades")),
+    
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

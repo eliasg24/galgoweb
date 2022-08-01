@@ -372,7 +372,7 @@ urlpatterns = [
         name="reporteVehiculo"
     ),
     path(
-        route="reporteLlanta/<int:pk>/<int:llanta>/<int:eje>/<int:num_llanta>/<str:pulpo>",
+        route="reporteLlanta/<int:pk>/<int:llanta>/<str:pulpo>",
         view=views.reporteLlantaView.as_view(),
         name="reporteLlanta"
     ),
@@ -867,9 +867,18 @@ urlpatterns = [
     ),
     
     
+    
+    
+    
     path(
         route="api/copiarvehiculo/",
         view=views_rest.CopiarVehiculo.as_view(),
         name="CopiarVehiculo"
+    ),
+    
+    path(
+        route="api/corregirproducto/",
+        view=views_rest.CorregirProducto.as_view(),
+        name="corregirproducto"
     ),
 ]

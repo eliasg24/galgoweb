@@ -1531,4 +1531,43 @@ class ArchivarTaller(LoginRequiredMixin, View):
             }
             json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
             return HttpResponse(json_context, content_type='application/json')
+
+
+
+class CorregirProducto(LoginRequiredMixin, View):
+        # Vista del panel de renovado
+
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        contrasena = self.request.GET.get('contrasena', None)
+        print(contrasena)
+        if contrasena == 'Cn195929':
+            compania = Compania.objects.get(compania='PruebaBI')
+            vehiculos = Vehiculo.objects.filter(compania=compania)
+            llantas = Llanta.objects.filter(vehiculo__in=vehiculos).exclude(producto=None)
+            llantas2 = Llanta.objects.filter(compania=compania).exclude(producto=None)
+            producto = Producto.objects.get(producto='AETO UWU MUCHO 2WL')
+        
+        
+            for llanta in llantas:
+                llanta.producto = producto
+            
+            for llanta in llantas2:
+                llanta.producto = producto
+            
+            Llanta.objects.bulk_update(llantas, ['producto'])
+            Llanta.objects.bulk_update(llantas2, ['producto'])
+            
+            
+            llantas = list(llantas.values("producto__producto"))
+            
+            dict_context = {
+                'llantas': llantas
+            }
+
+            json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
+        else:
+            json_context = json.dumps({'status': 'contraseña nel pa'}, indent=None, sort_keys=False, default=str)
+            return HttpResponse(json_context, content_type='application/json')
         

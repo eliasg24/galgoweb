@@ -18,8 +18,23 @@
     Nombre
   </label>
 </div>
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="email"
+    name="email"
+    {% if usuario.email %}value="{{usuario.email}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="nombre" class="form__label">
+    Email
+  </label>
+</div>
 <!-- End input -->
 
+{% if not usuario %}
 <!-- Start input -->
 <div class="form__group field">
   <input
@@ -51,7 +66,7 @@
   </label>
 </div>
 <!-- End input -->
-
+{% endif %}
 <div class="dropdown">
   <button class="drop-btn" id="company" type="button">
     Compañia
@@ -223,4 +238,5 @@
   <option value="Galgo Manager">Galgo Manager</option>
   <option value="Company Manager">Company Manager</option>
   <option value="Fleet Manager">Fleet Manager</option>
+  <option value="Pulpo Manager">Pulpo Manager</option>
 </select>
