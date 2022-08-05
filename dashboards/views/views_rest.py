@@ -107,7 +107,6 @@ class ContextoApi(LoginRequiredMixin, View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-
 class SearchView(LoginRequiredMixin, View):
     # Vista del dashboard buscar_vehiculos
 
@@ -1571,3 +1570,20 @@ class CorregirProducto(LoginRequiredMixin, View):
             json_context = json.dumps({'status': 'contraseña nel pa'}, indent=None, sort_keys=False, default=str)
             return HttpResponse(json_context, content_type='application/json')
         
+class ProfundidadInicialApi(LoginRequiredMixin, View):
+    # Vista del dashboard buscar_vehiculos
+
+    def get(self, request):
+
+        producto = self.request.GET.get('producto')
+
+        profundidad_inicial = Producto.objects.get(producto=producto).profundidad_inicial
+
+        dict_context = {
+            'profundidad_inicial': profundidad_inicial,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+
+        return HttpResponse(json_context, content_type='application/json')

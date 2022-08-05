@@ -14,5 +14,7 @@ urlpatterns = [
     
     path("", include(("utilidades.urls", "utilidades"), namespace="utilidades")),
     
+    path("", include(("galgoapi.urls", "galgoapi"), namespace="galgoapi")),
+    
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 # Django
 from django.urls import path
 from django.views.generic.base import View
-from utilidades import views
+from galgoapi import views
 
 # Views
 
@@ -10,26 +10,10 @@ urlpatterns = [
     #-----------------------A-----------------------
     
     #-----------------------B-----------------------
-    
-    path(
-        route="utilidades/BorrarRendimientos",
-        view=views.BorrarRendimientos,
-        name="BorrarRendimientos"
-    ),    
-    
+     
     #-----------------------C-----------------------
-    path(
-        route="utilidades/corregirInspeccionesVehiculo",
-        view=views.corregirInspeccionesVehiculo,
-        name="corregirInspeccionesVehiculo"
-    ),
-    #-----------------------D-----------------------
     
-    path(
-        route="utilidades/DailyDataTendencias",
-        view=views.DailyDataTendencias.as_view(),
-        name="DailyDataTendencias"
-    ),
+    #-----------------------D-----------------------
     
     #-----------------------E-----------------------
     
@@ -38,11 +22,17 @@ urlpatterns = [
     #-----------------------G-----------------------
     
     path(
-        route="utilidades/guardar_estado_actual_llantas",
-        view=views.guardar_estado_actual_llantas,
-        name="guardar_estado_actual_llantas"
-    ),    
+        route="api/GalgoSucursales/",
+        view=views.GalgoSucursales.as_view(),
+        name="GalgoSucursales"
+    ),
     
+    path(
+        route="api/GalgoAplicaciones/",
+        view=views.GalgoAplicaciones.as_view(),
+        name="GalgoAplicaciones"
+    )
+        
     #-----------------------H-----------------------
 
     #-----------------------I-----------------------
@@ -73,12 +63,6 @@ urlpatterns = [
 
     #-----------------------U-----------------------
     
-    path(
-        route="utilidades/home",
-        view=views.UtilidadesView.as_view(),
-        name="utilidades"
-    ),
-
     #-----------------------V-----------------------
 
     #-----------------------W-----------------------

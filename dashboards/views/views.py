@@ -32,20 +32,18 @@ from django.views.generic.base import View
 from psycopg2 import IntegrityError
 from requests import request
 
-# Rest Framework
-
 # Functions
 from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
-from dashboards.functions.functions import DiffDays, CastDate, mala_entrada, presion_establecida
+from dashboards.functions.functions import DiffDays, CastDate, mala_entrada, presion_establecida, presupuesto
 from aeto import settings
 #from dashboards import GoogleDrive
 
 # Forms
-from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm, SucursalEditForm, TallerEditForm, AplicacionEditForm, VehiculoEditForm
+from dashboards.forms.forms import EdicionManual, ExcelForm, InspeccionForm, VehiculoForm, ProductoForm, RenovadorForm, DesechoForm, DesechoEditForm, ObservacionForm, ObservacionEditForm, RechazoForm, RechazoEditForm, SucursalForm, TallerForm, UsuarioForm, AplicacionForm, CompaniaForm, UsuarioEditForm, SucursalEditForm, TallerEditForm, AplicacionEditForm, VehiculoEditForm, PresupuestoForm, PresupuestoEditForm
 
 # Models
 from django.contrib.auth.models import User, Group
-from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Orden, OrdenDesecho, Producto, Servicio, ServicioLlanta, ServicioVehiculo, Taller, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion
+from dashboards.models import Aplicacion, Bitacora_Pro, Inspeccion, InspeccionVehiculo, Llanta, LlantasSeleccionadas, Orden, OrdenDesecho, Producto, Servicio, ServicioLlanta, ServicioVehiculo, Taller, Ubicacion, Vehiculo, Perfil, Bitacora, Compania, Renovador, Desecho, Observacion, Rechazo, User, Observacion, Presupuesto
 
 
 # Utilities
@@ -907,6 +905,7 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                     color_presion = 'good'
                     
                 min_produndidad = functions.min_profundidad(llanta)
+                max_produndidad = functions.max_profundidad(llanta)
                 
                 punto_retiro = functions.punto_de_retiro(llanta)
                 color_profundidad = functions.color_profundidad(min_produndidad, punto_retiro)
@@ -921,7 +920,10 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                     'presion_maxima': presion_maxima,
                     'punto_retiro': punto_retiro,
                     'observaciones': observaciones,
-                    'observaciones_act': observaciones_act
+                    'observaciones_act': observaciones_act,
+                    'min_produndidad': min_produndidad,
+                    'max_produndidad': max_produndidad,
+                    'desgaste_anterior_llanta': llanta.parametro_desgaste_irregular
                         }
                 if llanta.ultima_inspeccion == None:
                     con_inspeccion = False
@@ -959,6 +961,8 @@ class diagramaView(LoginRequiredMixin, TemplateView):
         #print(f'llantas_rojas: {llantas_rojas}')
         #print(f'llantas_amarillas: {llantas_amarillas}')
         #print(f'llantas_azules: {llantas_azules}')
+        mm_de_desgaste_compania = vehiculo_actual.compania.mm_de_desgaste_irregular
+        
         context['ejes'] = ejes
         context['style'] = style
         context['cant_ejes'] = cant_ejes
@@ -967,6 +971,8 @@ class diagramaView(LoginRequiredMixin, TemplateView):
         context['observaciones_manuales'] = observaciones_manuales
         context['observaciones_automaticas'] = observaciones_automaticas
         context['observaciones_vehiculo'] = observaciones_vehiculo
+        context['mm_de_desgaste_compania'] = mm_de_desgaste_compania
+        
 
         return context
     #DiagramaPost
@@ -1735,6 +1741,42 @@ class SiteMenuView(LoginRequiredMixin, TemplateView):
 
     template_name = "siteMenu.html"
 
+class catalogoLinksView(LoginRequiredMixin, TemplateView):
+    # Vista de catalogoLinksView
+
+    template_name = "catalogoLinks.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        perfiles = Perfil.objects.all()
+        context["perfiles"] = perfiles
+        context["user"] = False
+
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy("dashboards:catalogoLinks")
+
+class catalogoLinksEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogoLinksEditView
+
+    template_name = "catalogoLinks.html"
+    slug_field = "perfil"
+    slug_url_kwarg = "perfil"
+    queryset = Perfil.objects.all()
+    context_object_name = "perfil"
+    model = Perfil
+    fields = ["id", 'link_pulpo', 'link_operativo']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        perfiles = Perfil.objects.all()
+        context["perfiles"] = perfiles
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:catalogoLinks")
 
 class catalogoProductoView(LoginRequiredMixin, MultiModelFormView):
     # Vista de catalogoProductosView
@@ -2329,6 +2371,171 @@ def usuarioFormularioDeleteView(request):
         return redirect("dashboards:usuarioFormulario")
     return redirect("dashboards:usuarioFormulario")
 
+class nuevoPresupuestoView(LoginRequiredMixin, CreateView):
+    # Vista de nuevoPresupuestoView
+
+    template_name = "formularios/presupuesto.html"
+    form_class = PresupuestoForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compania = self.request.user.perfil.compania
+        companias = self.request.user.perfil.companias.all()
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        clases = Vehiculo.opciones_clase
+        configuraciones = Vehiculo.opciones_configuracion
+        presupuestos = Presupuesto.objects.filter(compania=self.request.user.perfil.compania)
+
+        print("hola1")
+        if self.request.method =='POST':
+            print("hola")
+            mes = self.request.POST.get('mes')
+            ano = self.request.POST.get('ano')
+            compania = self.request.POST.get('compania')
+            presupuesto = self.request.POST.get('presupuesto')
+            ubicacion = self.request.POST.get('ubicacion')
+            gasto_real = self.request.POST.get('gasto_real')
+            km_recorridos = self.request.POST.get('km_recorridos')
+
+            if mes == "Enero":
+                mes = 1
+            elif mes == "Febrero":
+                mes = 2
+            elif mes == "Marzo":
+                mes = 3
+            elif mes == "Abril":
+                mes = 4
+            elif mes == "Mayo":
+                mes = 5
+            elif mes == "Junio":
+                mes = 6
+            elif mes == "Julio":
+                mes = 7
+            elif mes == "Agosto":
+                mes = 8
+            elif mes == "Septiembre":
+                mes = 9
+            elif mes == "Octubre":
+                mes = 10
+            elif mes == "Noviembre":
+                mes = 11
+            elif mes == "Diciembre":
+                mes = 12
+
+            print("hola2")
+            print("ano", ano)
+            print("mes", mes)
+            print("ano2", type(ano))
+            print("mes2", type(mes))
+
+            mes_ano = datetime(int(ano), int(mes), 1)
+
+            Presupuesto.objects.create(mes_ano=mes_ano,
+                                        compania=Compania.objects.get(compania=compania),
+                                        ubicacion=Ubicacion.objects.get(nombre=ubicacion),
+                                        presupuesto=presupuesto,
+                                        gasto_real=gasto_real,
+                                        km_recorridos=km_recorridos
+            )
+        print(presupuestos)
+        context["clases"] = clases
+        context["compania"] = compania
+        context["companias"] = companias
+        context["configuraciones"] = configuraciones
+        context["sucursales"] = sucursales
+        context["presupuestos"] = presupuestos
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:nuevoPresupuesto")
+
+class nuevoPresupuestoEditView(LoginRequiredMixin, DetailView, UpdateView):
+    # Vista de catalogonuevoPresupuestotView
+
+    template_name = "formularios/presupuesto.html"
+    slug_field = "presupuesto"
+    slug_url_kwarg = "presupuesto"
+    queryset = Presupuesto.objects.all()
+    context_object_name = "presupuesto"
+    form_class = PresupuestoEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sucursales = self.request.user.perfil.ubicaciones.all()
+        companias = self.request.user.perfil.companias.all()
+        presupuestos = Presupuesto.objects.filter(compania=self.request.user.perfil.compania)
+        
+        if self.request.method =='POST':
+            print("hola")
+            id = self.request.POST.get('id')
+            mes = self.request.POST.get('mes')
+            ano = self.request.POST.get('ano')
+            compania = self.request.POST.get('compania')
+            presupuesto = self.request.POST.get('presupuesto')
+            ubicacion = self.request.POST.get('ubicacion')
+            gasto_real = self.request.POST.get('gasto_real')
+            km_recorridos = self.request.POST.get('km_recorridos')
+
+            if mes == "Enero":
+                mes = 1
+            elif mes == "Febrero":
+                mes = 2
+            elif mes == "Marzo":
+                mes = 3
+            elif mes == "Abril":
+                mes = 4
+            elif mes == "Mayo":
+                mes = 5
+            elif mes == "Junio":
+                mes = 6
+            elif mes == "Julio":
+                mes = 7
+            elif mes == "Agosto":
+                mes = 8
+            elif mes == "Septiembre":
+                mes = 9
+            elif mes == "Octubre":
+                mes = 10
+            elif mes == "Noviembre":
+                mes = 11
+            elif mes == "Diciembre":
+                mes = 12
+
+            print("hola2")
+            print("ano", ano)
+            print("mes", mes)
+            print("ano2", type(ano))
+            print("mes2", type(mes))
+
+            mes_ano = datetime(int(ano), int(mes), 1)
+
+            presupuesto_id = Presupuesto.objects.get(id=id)
+            presupuesto_id.mes_ano = mes_ano
+            presupuesto_id.compania = Compania.objects.get(compania=compania)
+            presupuesto_id.ubicacion = Ubicacion.objects.get(nombre=ubicacion)
+            presupuesto_id.presupuesto = presupuesto
+            presupuesto_id.gasto_real = gasto_real
+            presupuesto_id.km_recorridos = km_recorridos
+            presupuesto_id.save()
+
+        context["companias"] = companias
+        context["sucursales"] = sucursales
+        context["presupuestos"] = presupuestos
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("dashboards:sucursalFormulario")
+
+def nuevoPresupuestoDeleteView(request):
+    if request.method =="POST":
+        presupuesto = Presupuesto.objects.get(id=request.POST.get("id"))
+        presupuesto.delete()
+        return redirect("dashboards:nuevoPresupuesto")
+    return redirect("dashboards:nuevoPresupuesto")
+
+
 class nuevoVehiculoView(LoginRequiredMixin, CreateView):
     # Vista de nuevoVehiculoView
 
@@ -2618,6 +2825,9 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                     
                 except:
                     km_max = ''
+                inspeccion = True
+                if llanta.ultima_inspeccion == None:
+                    inspeccion = False
                 context['km_max'] = km_max
                 data = {
                     'presion_minima': presion_minima,
@@ -2627,7 +2837,9 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                     'min_central': minimos['min_central'],
                     'min_derecha': minimos['min_derecha'],
                     'min_produndidad': min_produndidad,
-                    'max_produndidad': max_produndidad
+                    'max_produndidad': max_produndidad,
+                    'desgaste_anterior_llanta': llanta.parametro_desgaste_irregular,
+                    'inspeccion': inspeccion
                         }
                                   
                 if llanta.eje == eje:
@@ -2664,7 +2876,7 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
         #print(f'llantas_amarillas: {llantas_amarillas}')
         #print(f'llantas_azules: {llantas_azules}')
         
-        mm_de_desgaste = vehiculo_actual.compania.mm_de_desgaste_irregular
+        mm_de_desgaste_compania = vehiculo_actual.compania.mm_de_desgaste_irregular
         
         context['ejes'] = ejes
         context['style'] = style
@@ -2677,7 +2889,7 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
         context['observaciones_manuales'] = observaciones_manuales
         context['observaciones_automaticas'] = observaciones_automaticas
         context['observaciones_vehiculo'] = observaciones_vehiculo
-        context['mm_de_desgaste'] = mm_de_desgaste
+        context['mm_de_desgaste_compania'] = mm_de_desgaste_compania
         print(date.today())
         return context
     
@@ -8027,6 +8239,15 @@ class DetailView(LoginRequiredMixin, DetailView):
         llantas = Llanta.objects.filter(vehiculo=vehiculo, tirecheck=False, inventario = 'Rodante')
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
         inspecciones_vehiculo = InspeccionVehiculo.objects.filter(vehiculo=vehiculo)
+        ultima_inspeccion_img = []
+        for llanta in llantas:
+            if llanta.ultima_inspeccion != None:
+                if llanta.ultima_inspeccion.imagen :
+                    print(llanta.ultima_inspeccion.imagen)
+                    ultima_inspeccion_img.append(llanta)
+        
+        context['ultima_inspeccion_img'] = ultima_inspeccion_img
+        
         bitacora = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
         bitacora_pro = Bitacora_Pro.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
 
@@ -9625,6 +9846,55 @@ def ftp_newpick(request):
 
     functions_ftp.ftp_descarga()
 
+def download_llantas_rodantes(request):
+    # Define Django project base directory
+    # content-type of response
+    llantas_patito = Llanta.objects.filter(compania=Compania.objects.get(compania=request.user.perfil.compania), patito=True)
+
+    response = HttpResponse(content_type='application/ms-excel')
+
+	#decide file name
+    response['Content-Disposition'] = 'attachment; filename="Llantas_info.xls"'
+
+	#creating workbook
+    wb = xlwt.Workbook(encoding='utf-8')
+
+	#adding sheet
+    ws = wb.add_sheet("Llantas")
+
+	# Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+	# headers are bold
+    font_style.font.bold = True
+
+	#column header names, you can use your own headers here
+    columns = ['Número Económico', 'Número económico nuevo', 'Vehículo', 'Sucursal', 'Aplicación', 'Vida', 'Posición', 'Presión actual', 'Profundidad izquierda', "Profundidad central", "Profundidad derecha", "Km actual", "Producto", "Inventario", "Km de montado"]
+
+    #write column headers in sheet
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    #get your data, from database or from a text file...
+    for my_row in range(len(llantas_patito)):
+        ws.write(my_row + 1, 0, str(llantas_patito.values("numero_economico")[my_row]["numero_economico"]), font_style)
+        ws.write(my_row + 1, 2, str(llantas_patito.values("vehiculo__numero_economico")[my_row]["vehiculo__numero_economico"]), font_style)
+        ws.write(my_row + 1, 3, str(llantas_patito.values("ubicacion__nombre")[my_row]["ubicacion__nombre"]), font_style)
+        ws.write(my_row + 1, 4, str(llantas_patito.values("aplicacion__nombre")[my_row]["aplicacion__nombre"]), font_style)
+        ws.write(my_row + 1, 5, str(llantas_patito.values("vida")[my_row]["vida"]), font_style)
+        ws.write(my_row + 1, 6, str(llantas_patito.values("posicion")[my_row]["posicion"]), font_style)
+        ws.write(my_row + 1, 7, str(llantas_patito.values("presion_actual")[my_row]["presion_actual"]), font_style)
+        ws.write(my_row + 1, 13, str(llantas_patito.values("inventario")[my_row]["inventario"]), font_style)
+
+    wb.save(response)
+    for llanta in llantas_patito:
+        llanta.patito = False
+        llanta.save()
+    return response
 
 # Consumo de llantas = Cantidad llantas rodantes * Km recorridos / Rendimiento de la llanta
 def redireccionOrden(request, id):

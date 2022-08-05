@@ -1,0 +1,174 @@
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    type="hidden"
+    name="id"
+    {% if presupuesto.id %}value="{{presupuesto.id}}"{% endif %}
+  />
+  <input
+    class="form__field"
+    type="text"
+    placeholder="mes"
+    name="mes"
+    {% if presupuesto.mes_ano|date:"F" == "January" %}value="Enero"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "February" %}value="Febrero"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "March" %}value="Marzo"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "April" %}value="Abril"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "May" %}value="Mayo"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "June" %}value="Junio"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "July" %}value="Julio"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "August" %}value="Agosto"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "September" %}value="Septiembre"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "October" %}value="Octubre"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "November" %}value="Noviembre"{% endif %}
+    {% if presupuesto.mes_ano|date:"F" == "December" %}value="Diciembre"{% endif %}
+    list="mes"
+    autocomplete="off"
+    required
+  />
+  <label for="mes_ano" class="form__label">
+    Mes
+    <datalist id="mes">
+      <option value="Enero">Enero</option>
+      <option value="Febrero">Febrero</option>
+      <option value="Marzo">Marzo</option>
+      <option value="Abril">Abril</option>
+      <option value="Mayo">Mayo</option>
+      <option value="Junio">Junio</option>
+      <option value="Julio">Julio</option>
+      <option value="Agosto">Agosto</option>
+      <option value="Septiembre">Septiembre</option>
+      <option value="Octubre">Octubre</option>
+      <option value="Noviembre">Noviembre</option>
+      <option value="Diciembre">Diciembre</option>
+    </datalist>
+  </label>
+</div>
+<div class="form__group field">
+  <input
+    type="hidden"
+    name="id"
+    {% if presupuesto.id %}value="{{presupuesto.id}}"{% endif %}
+  />
+  <input
+    class="form__field"
+    type="number" min="2022" max="2100" step="1"
+    placeholder="ano"
+    name="ano"
+    {% if presupuesto.mes_ano %}value="{{presupuesto.mes_ano.year}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="ano" class="form__label">
+    Año
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<!-- <div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="compania"
+    name="compania"
+    list="compania"
+    {% if taller.compania %}value="{{taller.compania}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="compania" class="form__label">
+    Compañia
+  </label>
+  <datalist id="compania">
+    {% for compania in companias %}
+      <option value="{{compania}}">{{compania}}</option>
+    {% endfor %}
+  </datalist>
+</div> -->
+<!-- End input -->
+
+<label for="compania" class="select-label">Compañia</label>
+<select name="compania" id="compania" required class="select-input">
+  <option value="">Seleccione una compañia...</option>
+  {% if presupuesto.compania %}<option value="{{presupuesto.compania}}" selected>{{presupuesto.compania}}</option>{% endif %}
+  {% for c in companias %}
+    <option value="{{c}}">{{c}}</option>
+  {% endfor %}
+</select>
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="ubicacion"
+    name="ubicacion"
+    {% if presupuesto.ubicacion %}value="{{presupuesto.ubicacion}}"{% endif %}
+    autocomplete="off"
+    list="ubicacion"
+    required
+  />
+  <label for="ubicacion" class="form__label">
+    Sucursal
+  </label>
+  <datalist id="ubicacion">
+    <option value="">Seleccione una compañia...</option>
+    {% if presupuesto.ubicacion %}<option value="{{presupuesto.ubicacion}}" selected>{{presupuesto.ubicacion}}</option>{% endif %}
+    {% for sucursal in sucursales %}
+      <option value="{{sucursal}}">{{sucursal}}</option>
+    {% endfor %}
+  </datalist>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="presupuesto"
+    name="presupuesto"
+    {% if presupuesto.presupuesto %}value="{{presupuesto.presupuesto}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="presupuesto" class="form__label">
+    Presupuesto
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="gasto_real"
+    name="gasto_real"
+    {% if presupuesto.gasto_real %}value="{{presupuesto.gasto_real}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="gasto_real" class="form__label">
+    Gasto real
+  </label>
+</div>
+<!-- End input -->
+
+<!-- Start input -->
+<div class="form__group field">
+  <input
+    class="form__field"
+    type="text"
+    placeholder="km_recorridos"
+    name="km_recorridos"
+    {% if presupuesto.km_recorridos %}value="{{presupuesto.km_recorridos}}"{% endif %}
+    autocomplete="off"
+    required
+  />
+  <label for="km_recorridos" class="form__label">
+    Km recorridos
+  </label>
+</div>
+<!-- End input -->

@@ -301,6 +301,7 @@ class Inspeccion(models.Model):
     observaciones = models.ManyToManyField("Observacion", limit_choices_to={'nivel': "Llanta"})
     edicion_manual = models.BooleanField(default=False)
     evento = models.CharField(max_length=1000)
+    imagen = models.ImageField(upload_to='observacionLlanta', null=True, blank=True)
 
     def __str__(self):
         # Retorna el número económico
@@ -400,7 +401,7 @@ class Llanta(models.Model):
     fecha_de_balanceado = models.DateField(null=True, blank=True)
     
     parametro_desgaste_irregular = models.FloatField(blank=True, null=True)
-    
+    patito = models.BooleanField(default=False)
 
     def __str__(self):
         # Retorna el número económico
@@ -809,12 +810,34 @@ class LlantasSeleccionadas(models.Model):
 
 class Rendimiento(models.Model):
     # Modelo de la Bitácora del Desecho
-    mes = models.IntegerField()
+    mes = models.IntegerField(null=True, blank=True)
     llanta = models.ForeignKey(Llanta, on_delete=models.CASCADE, null=True, blank=True)
-    mm_desgastados = models.FloatField()
-    porcentaje_de_desgaste = models.FloatField()
-    km_x_mm = models.FloatField()
-    km_proyectado = models.FloatField()
-    analizada = models.FloatField()
-    cpk_proyectado = models.FloatField()
-    cpk_real = models.FloatField()
+    mm_desgastados = models.FloatField(null=True, blank=True)
+    porcentaje_de_desgaste = models.FloatField(null=True, blank=True)
+    km_x_mm = models.FloatField(null=True, blank=True)
+    km_proyectado = models.FloatField(null=True, blank=True)
+    is_analizada = models.BooleanField(null=True, blank=True)
+    cpk_proyectado = models.FloatField(null=True, blank=True)
+    cpk_real = models.FloatField(null=True, blank=True)
+
+class Presupuesto(models.Model):
+    # Modelo de Presupuesto
+    mes_ano = models.DateField()
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.SET_NULL, null=True, blank=True)
+    presupuesto = models.IntegerField()
+    gasto_real = models.IntegerField()
+    km_recorridos = models.IntegerField()
+
+
+class Tendencia(models.Model):
+    # Modelo de la Bitácora del Desecho
+    fecha = models.DateField()
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
+    aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
+    clase = models.CharField(max_length=255 ,null=True, blank=True)
+    correctas_pulpo = models.FloatField()
+    inspecciones_a_tiempo = models.FloatField()
+    health = models.FloatField()
+    buena_presion = models.FloatField()

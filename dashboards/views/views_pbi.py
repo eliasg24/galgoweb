@@ -1,3 +1,5 @@
+from datetime import date
+from email.policy import default
 import json
 from django.http import HttpResponse
 from django.views.generic.base import View
@@ -5,12 +7,14 @@ from django.contrib.auth.models import User, Group
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.fields import ArrayField
 from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func, OuterRef, Subquery, Sum
-from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest
+from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest, TruncDate
+import numpy
 
 from dashboards.functions import functions
-from dashboards.functions.functions import DiffDays, CastDate, min_profundidad
-from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
+from dashboards.functions.functions import DiffDays, CastDate, min_profundidad, porcentaje
+from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Presupuesto, Tendencia, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
 
+from utilidades.functions import functions as utilidades
 class CompaniaData(View):
     def get(self, request , *args, **kwargs):
         #Queryparams
@@ -216,6 +220,13 @@ class LlantaData(View):
         ).annotate(
             health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)
         ).annotate(
+            punto_de_retiro = Case(
+                When(nombre_de_eje="Dirección", then=F("vehiculo__compania__punto_retiro_eje_direccion")),
+                When(nombre_de_eje="Tracción", then=F("vehiculo__compania__punto_retiro_eje_traccion")),
+                When(nombre_de_eje="Arrastre", then=F("vehiculo__compania__punto_retiro_eje_arrastre")),
+                When(nombre_de_eje="Loco", then=F("vehiculo__compania__punto_retiro_eje_loco")),
+                When(nombre_de_eje="Retractil", then=F("vehiculo__compania__punto_retiro_eje_retractil"))
+                ),
             p1=Case(
                 When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), 
                 When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), 
@@ -255,9 +266,12 @@ class LlantaData(View):
                 When(presion_actual__lt=F('min_presion'), then=Value('baja')),
                 When(presion_actual__gt=F('max_presion'), then=Value('alta')),
                 default=Value('buena')
+            ),
+            status_profundidad = Case(
+                When( min_profundidad__lte = F('punto_de_retiro'), then = Value('baja') ),
+                default = Value('buena')
             )
         )
-        
         #Serializar data
         llantas = list(llantas.values(
                             "status_presion",
@@ -290,7 +304,8 @@ class LlantaData(View):
                             "health",
                             "min_profundidad",
                             "ubicacion_llanta",
-                            "aplicacion_llanta"
+                            "aplicacion_llanta",
+                            "status_profundidad"
                             ))
         
         dict_context = {
@@ -333,7 +348,7 @@ class ProductoData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-class DesechoData(View):
+class DesechoDataHistorico(View):
     def get(self, request , *args, **kwargs):
         #Queryparams
         usuario = kwargs['usuario']
@@ -371,6 +386,14 @@ class DesechoData(View):
                 When(llanta__vida="5R", then=F("llanta__producto__precio")),
                 default=None
             ),
+            profundidad_desecho = F('min_profundidad'),
+            operacion = F('porcentaje_util_desechado') * F('valor_banda_rodamiento'),
+            perdida_total = Case(
+                When(desecho__razon = 'Venta', then= F('operacion') - F('valor_casco') ),
+                When(desecho__razon = 'Cobrada', then= (F('operacion') + F('valor_casco')) * -1 ),
+                When(desecho__razon = 'Fin de vida', then= 0.0),
+                default = F('operacion') + F('valor_casco')
+            )
         )
         #Serializar data
         desechos = list(desechos.values(
@@ -390,6 +413,7 @@ class DesechoData(View):
             "llanta__vida",
             "valor_banda_rodamiento",
             "llanta__producto__precio",
+            "llanta__producto__profundidad_inicial",
             
             "punto_de_retiro",
             "llanta__vehiculo__numero_economico",
@@ -397,6 +421,9 @@ class DesechoData(View):
             "llanta__vehiculo__aplicacion__nombre",
             "llanta__nombre_de_eje",
             "llanta__km_actual",
+            
+            "profundidad_desecho",
+            "perdida_total",
             #"min_profundidad",
             #"llanta",
             #"llanta__nombre_de_eje",
@@ -419,14 +446,291 @@ class RendimientoData(View):
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        rendimientos = Rendimiento.objects.filter(llanta__compania=compania)
+        rendimientos = Rendimiento.objects.filter(llanta__compania=compania).annotate(
+            punto_de_retiro = Case(
+                When(llanta__nombre_de_eje="Dirección", then=F("llanta__vehiculo__compania__punto_retiro_eje_direccion")),
+                When(llanta__nombre_de_eje="Tracción", then=F("llanta__vehiculo__compania__punto_retiro_eje_traccion")),
+                When(llanta__nombre_de_eje="Arrastre", then=F("llanta__vehiculo__compania__punto_retiro_eje_arrastre")),
+                When(llanta__nombre_de_eje="Loco", then=F("llanta__vehiculo__compania__punto_retiro_eje_loco")),
+                When(llanta__nombre_de_eje="Retractil", then=F("llanta__vehiculo__compania__punto_retiro_eje_retractil"))
+                ),
+            min_profundidad=Least("llanta__profundidad_izquierda", "llanta__profundidad_central", "llanta__profundidad_derecha"),
+            
+        ).annotate(
+            numero_economico = F('llanta__numero_economico'),
+            inventario = F('llanta__inventario'),
+            nombre_de_eje = F('llanta__nombre_de_eje'),
+            vehiculo__estatus_activo = F('llanta__vehiculo__estatus_activo'),
+            vehiculo__modelo = F('llanta__vehiculo__modelo'),
+            vehiculo__clase = F('llanta__vehiculo__clase'),
+            
+            producto__producto = F('llanta__producto__producto'),
+            producto__profundidad_inicial = F('llanta__producto__profundidad_inicial'),
+            
+            km_actual = F('llanta__km_actual'),
+            vehiculo__compania__compania = F('llanta__vehiculo__compania__compania'),
+            vehiculo__ubicacion__nombre = F('llanta__vehiculo__ubicacion__nombre'),
+            vehiculo__aplicacion__nombre = F('llanta__vehiculo__aplicacion__nombre'),
+            vehiculo__numero_economico = F('llanta__vehiculo__numero_economico'),
+            fecha_de_entrada_inventario = F('llanta__fecha_de_entrada_inventario'),
+            vida = F('llanta__vida'),
+            taller__nombre = F('llanta__taller__nombre'),
+            
+            km_montado = F('llanta__km_montado')
+            
+        ).annotate(
+            mes_ = F('mes'),
+            numero_economico_ = F('numero_economico'),
+            mm_desgastados_ = F('mm_desgastados'),
+            porcentaje_de_desgaste_ = F('porcentaje_de_desgaste'),
+            km_x_mm_ = F('km_x_mm'),
+            km_proyectado_ = F('km_proyectado'),
+            is_analizada_ = F('is_analizada'),
+            cpk_proyectado_ = F('cpk_proyectado'),
+            cpk_real_ = F('cpk_real'),
+                 
+            inventario_ = F('inventario'),
+            nombre_de_eje_ = F('nombre_de_eje'),
+            vehiculo__estatus_activo_ = F('vehiculo__estatus_activo'),
+            vehiculo__modelo_ = F('vehiculo__modelo'),
+            vehiculo__clase_ = F('vehiculo__clase'),
+                 
+            producto__producto_ = F('producto__producto'),
+            producto__profundidad_inicial_ = F('producto__profundidad_inicial'),
+            min_profundidad_ = F('min_profundidad'),
+            punto_de_retiro_ = F('punto_de_retiro'),
+            km_actual_ = F('km_actual'),
+            vehiculo__compania__compania_ = F('vehiculo__compania__compania'),
+            vehiculo__ubicacion__nombre_ = F('vehiculo__ubicacion__nombre'),
+            vehiculo__aplicacion__nombre_ = F('vehiculo__aplicacion__nombre'),
+            vehiculo__numero_economico_ = F('vehiculo__numero_economico'),
+            fecha_de_entrada_inventario_ = F('fecha_de_entrada_inventario'),
+            vida_ = F('vida'),
+            taller__nombre_ = F('taller__nombre'),
+        )
         #Serializar data
         """Mes, Numero economico de la llanta, inventario, nombre del eje, estatus_activo_vehiculo, modelo_vehiculo, clase_vehiculo,
             mm_desgastado, profundidad_inicial, profundidad_actual, punto_retiro_eje, porcentaje_de_desgaste, km_actual_llanta, 
             km_x_mm, km_proyectado / km_teorico_proyectado, analizada, cpk_proyectado, cpk_real, producto_nombre, compania_vehiculo,
             sucursal_vehiculo, aplicacion_vehiculo, ultimo_vehiculo, posicion, fecha_de_entrada_inventario, vida, taller
             """
-        rendimientos = list(rendimientos.values())
+        rendimientos = list(rendimientos.values(
+            "mes_",
+            "numero_economico_",
+            "mm_desgastados_",
+            "porcentaje_de_desgaste_",
+            "km_x_mm_",
+            "km_proyectado_",
+            "is_analizada_",
+            "cpk_proyectado_",
+            "cpk_real_",
+            
+            "inventario_",
+            "nombre_de_eje_",
+            "vehiculo__estatus_activo_",
+            "vehiculo__modelo_",
+            "vehiculo__clase_",
+            
+            "producto__producto_",
+            "producto__profundidad_inicial_",
+            "min_profundidad_",
+            "punto_de_retiro_",
+            "km_actual_",
+            "vehiculo__compania__compania_",
+            "vehiculo__ubicacion__nombre_",
+            "vehiculo__aplicacion__nombre_",
+            "vehiculo__numero_economico_",
+            "fecha_de_entrada_inventario_",
+            "vida_",
+            "taller__nombre_",
+            
+            
+        ))
+
+        dict_context = {
+            'rendimientos': rendimientos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+
+class RendimientoActualData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        mes = date.today().month
+        llantas = Llanta.objects.filter(compania=compania)
+        
+        km_actuales = llantas.exclude(km_actual = None).values_list("km_actual", flat=True)
+        numero_elementos = km_actuales.count()
+        km_actuales_list = list(km_actuales)
+        pq_1 = utilidades.percentil(km_actuales_list, 1, numero_elementos)
+        pq_3 = utilidades.percentil(km_actuales_list, 3, numero_elementos)
+        
+        km_filtrados = llantas.filter(km_actual__gte = pq_1, km_actual__lte = pq_3).exclude(km_actual = None)
+        km_filtrados_list = list(km_filtrados.values_list("km_actual", flat=True))
+        km_filtrados_list.sort()
+        
+        mediana = numpy.median(km_filtrados_list, axis = None)
+        std = numpy.std(km_filtrados_list, axis=None, dtype=numpy.float64)
+    
+        limite_inferior = mediana - (2*std)
+        limite_superior = mediana + (2*std)
+        
+        
+        rendimientos = llantas.annotate(
+            punto_de_retiro = Case(
+                When(nombre_de_eje="Dirección", then=F("vehiculo__compania__punto_retiro_eje_direccion")),
+                When(nombre_de_eje="Tracción", then=F("vehiculo__compania__punto_retiro_eje_traccion")),
+                When(nombre_de_eje="Arrastre", then=F("vehiculo__compania__punto_retiro_eje_arrastre")),
+                When(nombre_de_eje="Loco", then=F("vehiculo__compania__punto_retiro_eje_loco")),
+                When(nombre_de_eje="Retractil", then=F("vehiculo__compania__punto_retiro_eje_retractil"))
+                ),
+            min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha"),
+            mes = Value(mes),
+            mm_desgastados = Case(
+                When(producto = None, then=None),
+                When(producto__profundidad_inicial = None, then=None),
+                When(min_profundidad = None, then=None),
+                default=F('producto__profundidad_inicial') - F('min_profundidad')
+                
+            ),
+            operacion_porcentaje_de_desgaste = Case(
+                When(producto = None, then=None),
+                When(producto__profundidad_inicial = None, then=None),
+                When(min_profundidad = None, then=None),
+                When(punto_de_retiro = None, then=None),
+                default = ( F('producto__profundidad_inicial') - F('min_profundidad') ) / ( F('producto__profundidad_inicial') - F('punto_de_retiro') )
+            ),
+            porcentaje_de_desgaste = Case(
+                When(operacion_porcentaje_de_desgaste = None, then=None),
+                When(operacion_porcentaje_de_desgaste__lt = 0.0, then=0.0 ),
+                default = F('operacion_porcentaje_de_desgaste')
+            ),
+            km_x_mm = Case(
+                When(mm_desgastados = None, then = None),
+                When(mm_desgastados = 0.0, then = None),
+                When(mm_desgastados = 0.0, then = None),
+                When(producto = None, then = None),
+                When(producto__profundidad_inicial = None, then=None),
+                When(km_actual = None, then = None),
+                When(km_montado = None, then = F('km_actual') / F('mm_desgastados') ),
+                default = F('km_actual') / ( F('producto__profundidad_inicial') - F('punto_de_retiro') )
+            ),
+            km_proyectado = Case(
+                When(min_profundidad = None, then = None),
+                When(producto = None, then = None),
+                When(producto__profundidad_inicial = None, then=None),
+                When(km_x_mm = None, then=None),
+                When(min_profundidad__lt = F('punto_de_retiro'), then=Cast('km_actual', output_field=FloatField()) ),
+                default = ( F('producto__profundidad_inicial') - F('punto_de_retiro') ) * F('km_x_mm')
+            ),
+            limite_inferior = Case(
+                When(km_actual__gt = limite_inferior, then = 1.0),
+                default = 0.0
+            ),
+            limite_superior = Case(
+                When(km_actual__lt = limite_superior, then = 1.0),
+                default = 0.0
+            ),
+            operacion_analizada = (
+                F('limite_inferior') + F('limite_superior')
+            ),
+            is_analizada = Case(
+                When(porcentaje_de_desgaste__lte = .15, then = False),
+                When(operacion_analizada = 2.0, then = True),
+                default = False
+            ),
+            cpk_proyectado = Case(
+                When(km_proyectado = None, then = None),
+                When(km_proyectado = 0, then = None),
+                When(producto = None, then=None),
+                default = F('producto__precio') / F('km_proyectado')
+            ),
+            cpk_real = Case(
+                When(producto__precio = None, then = None),
+                When(km_actual = None, then = None),
+                When(km_actual = 0, then = None),
+                default = F('producto__precio') / F('km_actual')
+            )
+            ).annotate(
+            mes_ = F('mes'),
+            numero_economico_ = F('numero_economico'),
+            mm_desgastados_ = F('mm_desgastados'),
+            porcentaje_de_desgaste_ = F('porcentaje_de_desgaste'),
+            km_x_mm_ = F('km_x_mm'),
+            km_proyectado_ = F('km_proyectado'),
+            is_analizada_ = F('is_analizada'),
+            cpk_proyectado_ = F('cpk_proyectado'),
+            cpk_real_ = F('cpk_real'),
+                 
+            inventario_ = F('inventario'),
+            nombre_de_eje_ = F('nombre_de_eje'),
+            vehiculo__estatus_activo_ = F('vehiculo__estatus_activo'),
+            vehiculo__modelo_ = F('vehiculo__modelo'),
+            vehiculo__clase_ = F('vehiculo__clase'),
+                 
+            producto__producto_ = F('producto__producto'),
+            producto__profundidad_inicial_ = F('producto__profundidad_inicial'),
+            min_profundidad_ = F('min_profundidad'),
+            punto_de_retiro_ = F('punto_de_retiro'),
+            km_actual_ = F('km_actual'),
+            vehiculo__compania__compania_ = F('vehiculo__compania__compania'),
+            vehiculo__ubicacion__nombre_ = F('vehiculo__ubicacion__nombre'),
+            vehiculo__aplicacion__nombre_ = F('vehiculo__aplicacion__nombre'),
+            vehiculo__numero_economico_ = F('vehiculo__numero_economico'),
+            fecha_de_entrada_inventario_ = F('fecha_de_entrada_inventario'),
+            vida_ = F('vida'),
+            taller__nombre_ = F('taller__nombre'),
+        )
+            
+            
+        
+        #Serializar data
+        """Mes, Numero economico de la llanta, inventario, nombre del eje, estatus_activo_vehiculo, modelo_vehiculo, clase_vehiculo,
+            mm_desgastado, profundidad_inicial, profundidad_actual, punto_retiro_eje, porcentaje_de_desgaste, km_actual_llanta, 
+            km_x_mm, km_proyectado / km_teorico_proyectado, analizada, cpk_proyectado, cpk_real, producto_nombre, compania_vehiculo,
+            sucursal_vehiculo, aplicacion_vehiculo, ultimo_vehiculo, posicion, fecha_de_entrada_inventario, vida, taller
+            """
+        rendimientos = list(rendimientos.values(
+            "mes_",
+            "numero_economico_",
+            "mm_desgastados_",
+            "porcentaje_de_desgaste_",
+            "km_x_mm_",
+            "km_proyectado_",
+            "is_analizada_",
+            "cpk_proyectado_",
+            "cpk_real_",
+            
+            "inventario_",
+            "nombre_de_eje_",
+            "vehiculo__estatus_activo_",
+            "vehiculo__modelo_",
+            "vehiculo__clase_",
+            
+            "producto__producto_",
+            "producto__profundidad_inicial_",
+            "min_profundidad_",
+            "punto_de_retiro_",
+            "km_actual_",
+            "vehiculo__compania__compania_",
+            "vehiculo__ubicacion__nombre_",
+            "vehiculo__aplicacion__nombre_",
+            "vehiculo__numero_economico_",
+            "fecha_de_entrada_inventario_",
+            "vida_",
+            "taller__nombre_",
+            
+            
+        ))
+        
+        
         
         dict_context = {
             'rendimientos': rendimientos,
@@ -467,7 +771,49 @@ class InspeccionesLlantaData(View):
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        inspecciones_llanta = Inspeccion.objects.filter(llanta__compania=compania)
+        inspecciones_llanta = Inspeccion.objects.filter(llanta__compania=compania).annotate(
+            p1=Case(
+                When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), 
+                When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), 
+                When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), 
+                When(Q(profundidad_izquierda=None), then=Value(4)), 
+                When(Q(profundidad_central=None), then=Value(5)), 
+                When(Q(profundidad_derecha=None), then=Value(6)), 
+                default=0, output_field=IntegerField()
+                ),
+            min_profundidad=Case(
+                    When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")),
+                    When(p1=1, then=F("profundidad_izquierda")), 
+                    When(p1=2, then=F("profundidad_central")), 
+                    When(p1=3, then=F("profundidad_derecha")), 
+                    When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), 
+                    When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), 
+                    When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), 
+                    output_field=FloatField()
+                ),
+            objetivo = Cast(F('llanta__compania__objetivo'), output_field=FloatField()) / 100,
+            max_presion = F('presion_establecida') +  ( F('presion_establecida') * F('objetivo') ) ,
+            min_presion = F('presion_establecida') -  ( F('presion_establecida') * F('objetivo') ) ,
+            baja_presion = Case(
+                When(presion__lt = F('min_presion'), then=True),
+                default=False
+            ),
+            alta_presion = Case(
+                When(presion__gt = F('max_presion'), then=True),
+                default=False
+            ),
+            punto_de_retiro = Case(
+                When(llanta__nombre_de_eje="Dirección", then=F("llanta__vehiculo__compania__punto_retiro_eje_direccion")),
+                When(llanta__nombre_de_eje="Tracción", then=F("llanta__vehiculo__compania__punto_retiro_eje_traccion")),
+                When(llanta__nombre_de_eje="Arrastre", then=F("llanta__vehiculo__compania__punto_retiro_eje_arrastre")),
+                When(llanta__nombre_de_eje="Loco", then=F("llanta__vehiculo__compania__punto_retiro_eje_loco")),
+                When(llanta__nombre_de_eje="Retractil", then=F("llanta__vehiculo__compania__punto_retiro_eje_retractil"))
+                ),
+            baja_profundidad = Case(
+                When(min_profundidad__lte = F('punto_de_retiro'), then=True),
+                default=False
+            )
+        )
         #Serializar data
         inspecciones_llanta = list(inspecciones_llanta.values(
             "tipo_de_evento",
@@ -486,7 +832,11 @@ class InspeccionesLlantaData(View):
             "profundidad_izquierda",
             "profundidad_central",
             "profundidad_derecha",
-            "edicion_manual"
+            "edicion_manual",
+            'min_profundidad',
+            'baja_presion',
+            'alta_presion',
+            'baja_profundidad',
         ))
         
         dict_context = {
@@ -497,7 +847,7 @@ class InspeccionesLlantaData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-class ObservacionesInspeccionData(View):
+class ObservacionesHistoriconData(View): #Historico
     def get(self, request , *args, **kwargs):
         #Queryparams
         usuario = kwargs['usuario']
@@ -506,8 +856,21 @@ class ObservacionesInspeccionData(View):
         compania = perfil.compania
         inspecciones = Inspeccion.objects.filter(llanta__compania=compania).annotate(health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField()))
         #Serializar data
-        inspecciones = list(inspecciones.values("id", "llanta__numero_economico", "observaciones__observacion"))
-        
+        inspecciones = list(inspecciones.annotate(fecha=TruncDate("fecha_hora")
+                                                  ).values(
+                                                        "llanta__numero_economico",
+                                                        "observaciones__observacion",
+                                                        "fecha",
+                                                        "llanta__vehiculo__numero_economico",
+                                                        "llanta__compania__compania",
+                                                        "llanta__vehiculo__ubicacion__nombre",
+                                                        "llanta__vehiculo__aplicacion__nombre",
+                                                        "llanta__nombre_de_eje"
+                                                        ).exclude(observaciones__observacion = None
+                                                        ).exclude(observaciones__observacion = 'Mala entrada'
+                                                        ).exclude(observaciones__observacion = 'Doble mala entrada')
+                                                    )
+
         dict_context = {
             'inspecciones': inspecciones,
         }
@@ -516,7 +879,7 @@ class ObservacionesInspeccionData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-class ObservacionesLlantaData(View):
+class ObservacionesActualesData(View): # Actual
     def get(self, request , *args, **kwargs):
         #Queryparams
         usuario = kwargs['usuario']
@@ -525,7 +888,19 @@ class ObservacionesLlantaData(View):
         compania = perfil.compania
         llantas = Llanta.objects.filter(compania=compania).annotate(health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)).annotate(p1=Case(When(Q(profundidad_central=None) & Q(profundidad_derecha=None), then=Value(1)), When(Q(profundidad_izquierda=None) & Q(profundidad_derecha=None), then=Value(2)), When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), When(Q(profundidad_izquierda=None), then=Value(4)), When(Q(profundidad_central=None), then=Value(5)), When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())).annotate(min_profundidad=Case(When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")), When(p1=1, then=F("profundidad_izquierda")), When(p1=2, then=F("profundidad_central")), When(p1=3, then=F("profundidad_derecha")), When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), output_field=FloatField()))
         #Serializar data
-        llantas = list(llantas.values("numero_economico", "observaciones__observacion"))
+        llantas = list(llantas.annotate(sucursal=F("vehiculo__ubicacion__nombre")
+                                        ).values(
+                                        "numero_economico",
+                                        "observaciones__observacion",
+                                        "compania__compania",
+                                        "sucursal",
+                                        "vehiculo__aplicacion__nombre",
+                                        "nombre_de_eje",
+                                        "vehiculo__numero_economico",
+                                        ).exclude(observaciones__observacion = None
+                                        ).exclude(observaciones__observacion = 'Mala entrada'
+                                        ).exclude(observaciones__observacion = 'Doble mala entrada')
+                                            )
         
         dict_context = {
             'llantas': llantas,
@@ -637,6 +1012,54 @@ class ReemplazoData(View):
             
         dict_context = {
             'llantas': list(llantas.annotate(periodo=periodo[F("id")]).values("numero_economico", "vehiculo__numero_economico", "compania", "posicion", "eje", "ubicacion__nombre", "aplicacion__nombre", "vehiculo__clase", "producto__precio", "producto__producto", "nombre_de_eje", "vida", "periodo"))
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+class PresupuestosData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        presupuesto = Presupuesto.objects.filter(compania=compania)
+        #Serializar data
+        presupuesto = list(presupuesto.values("mes_ano", "compania__compania", "ubicacion__nombre", "presupuesto", "gasto_real", "km_recorridos"))
+        
+        dict_context = {
+            'presupuesto': presupuesto,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+class TendenciaData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        tendencias = Tendencia.objects.filter(compania=compania)
+        #Serializar data
+        tendencias = list(tendencias.values(
+            "fecha",
+            "compania__compania",
+            "ubicacion__nombre",
+            "aplicacion__nombre",
+            "clase",
+            "correctas_pulpo",
+            "inspecciones_a_tiempo",
+            "health",
+            "buena_presion",
+        ))
+        
+        dict_context = {
+            'tendencias': tendencias,
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

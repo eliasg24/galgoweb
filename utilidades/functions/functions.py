@@ -40,19 +40,67 @@ def km_x_mm(llanta):
     try:
         if llanta.km_montado == None:
              km = llanta.km_actual / mm_desgastasdos(llanta)
-
-             print(km)
-             print(llanta.km_actual)
-             print(mm_desgastasdos(llanta))
         else:
             profundidad_inicial = llanta.producto.profundidad_inicial
             punto_retiro = functions.punto_de_retiro(llanta)
             km = llanta.km_actual / (profundidad_inicial - punto_retiro)
-            print(profundidad_inicial)
-            print(punto_retiro)
-            print(km)
     except:
         km = None
     
     return km
+
+def km_proyectado(llanta):
+    try:
+        min_profundidad = functions.min_profundidad(llanta)
+        punto_retiro = functions.punto_de_retiro(llanta)
+        if min_profundidad < punto_retiro:
+            proyectado = llanta.km_actual
+        else:
+            profundidad_inicial = llanta.producto.profundidad_inicial
+            km_por_mm = km_x_mm(llanta)
+            proyectado = (profundidad_inicial - punto_retiro) * km_por_mm
+    except:
+        proyectado = None
+    return proyectado
+
+def cpk_proyectado(llanta):
+    try:
+        precio_llanta = llanta.producto.precio
+        km_proyectado_actual = km_proyectado(llanta)
+        cpk_p = precio_llanta / km_proyectado_actual
+    except:
+        cpk_p = None
+    return cpk_p
+
+
+def cpk_real(llanta):
+    try:
+        precio_llanta = llanta.producto.precio
+        km_actual = llanta.km_actual
+        cpk = precio_llanta / km_actual
+    except:
+        cpk = None
+    return cpk
+
+def percentil(numeros: list, num_q:int, numero_elementos=None):
+    numeros.sort()
+    if numero_elementos == None:
+        total_num = len(numeros)
+    else:
+        total_num = numero_elementos
+    if num_q == 1:
+        indice = round((25/100) * total_num)
+    elif num_q == 3:
+        indice = round((75/100) * total_num)
+    
+    pq = numeros[(indice-1)]
+    
+    return pq
+    
+    
+def query_a_str(query):
+    lista = []
+    for dato in query:
+        lista.append(dato['clase'])
+    return lista
 

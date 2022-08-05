@@ -40,8 +40,6 @@ const diferenciaDual = (duales = document.documentElement) => {
 
       let ids = [container1, container2];
 
-      console.log(presion1, presion2);
-
       let porcentajeDif1 = (presion1 - presion2) / presion1;
       let porcentajeDif2 = (presion2 - presion1) / presion2;
 
@@ -86,7 +84,9 @@ const vehiculoManual = (item = '') => {
 
   observations.forEach((observation) => {
     observation.addEventListener('input', () => {
-      let container = document.querySelector('.modal__container .observations__container');
+      let container = document.querySelector(
+        '.modal__container .observations__container'
+      );
       if (observation.checked) {
         container
           .querySelector(`[data-icon-type="${observation.value}"]`)
@@ -212,7 +212,6 @@ const onSelectTire = () => {
   });
 };
 
-
 (() => {
   const button = document.querySelector('.btn.modal');
   const close = document.querySelector('#close-modal');
@@ -221,14 +220,14 @@ const onSelectTire = () => {
   button.addEventListener('click', (e) => {
     modal.classList.add('active');
   });
-  
+
   close.addEventListener('click', (e) => {
     modal.classList.remove('active');
   });
 
   document.addEventListener('keyup', (e) => {
-    if (e.key === "Escape") {
-      if (modal.classList.contains('active')) modal.classList.remove('active')
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('active')) modal.classList.remove('active');
     }
   });
 })();
@@ -237,11 +236,48 @@ const onSelectTire = () => {
   document.addEventListener('submit', (e) => {
     const campos = e.target.querySelectorAll('[data-required]');
 
-    campos.forEach(item => {
+    campos.forEach((item) => {
       if (item.value.length <= 0) {
-        Swal.fire('Error en el formulario', `El campo ${item.name} de la posición ${ item.dataset.vehiculo } esta vacío`, 'error');
+        Swal.fire(
+          'Error en el formulario',
+          `El campo ${item.name} de la posición ${item.dataset.vehiculo} esta vacío`,
+          'error'
+        );
         return;
       }
-    })
-  })
-})()
+    });
+  });
+})();
+
+const getMaxProf = async (producto = '', target) => {
+  const inputs = target.parentElement?.querySelectorAll(
+    '[data-profundidad-id] input'
+  );
+  try {
+    const resp = await fetch(`/api/profundidad_inicial?producto=${producto}`);
+    const { profundidad_inicial } = await resp.json();
+
+    inputs.forEach((input) => {
+      input.value = '';
+      input.max = profundidad_inicial;
+      input.nextElementSibling.querySelector(
+        '.profundidad__max'
+      ).textContent = `(${profundidad_inicial})`;
+    });
+  } catch (error) {
+    console.error(error);
+    Swal.fire(
+      'Algo salió mal',
+      'Por favor contacte con el administrador',
+      'error'
+    );
+  }
+};
+
+document.addEventListener('change', (e) => {
+  if (e.target.name === 'producto') {
+    if (!e.target.value) return;
+
+    getMaxProf(e.target.value, e.target);
+  }
+});

@@ -1,0 +1,87 @@
+{% if perfil.id %}
+<form
+  action="{% url 'dashboards:catalogoLinksEdit' perfil.id %}"
+  id="form"
+  class="container"
+  method="POST"
+>
+  {% else %}
+  <form
+    action="{% url 'dashboards:catalogoLinks' %}"
+    id="form"
+    class="container"
+    method="POST"
+  >
+    {% endif %} {% csrf_token %}
+    <div class="container-fluid">
+      <aside class="form-aeto">
+        <div class="form__group field">
+          <input
+            type="hidden"
+            name="id"
+            {% if perfil.id %}
+            value="{{perfil.id}}"
+            {% endif %}
+          />
+          <input
+            class="form__field"
+            type="text"
+            placeholder="perfil..."
+            name="perfil"
+            autocomplete="off"
+            {% if perfil %}value="{{perfil.user.username}}"
+            {% endif %}
+            id="perfil"
+            readonly
+          />
+          <label for="perfil" class="form__label">Perfil</label>
+        </div>
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="text"
+            placeholder="Link_pulpo..."
+            name="link_pulpo"
+            {% if perfil.link_pulpo %}
+            value="{{perfil.link_pulpo}}"
+            {% endif %}
+            autocomplete="off"
+            id="link_pulpo"
+          />
+          <label for="link_pulpo" class="form__label">Link pulpo</label>
+        </div>
+
+        <div class="form__group field">
+          <input
+            class="form__field"
+            type="text"
+            placeholder="Link_operativo..."
+            name="link_operativo"
+            {% if perfil.link_operativo %}
+            value="{{perfil.link_operativo}}"
+            {% endif %}
+            autocomplete="off"
+            id="link_operativo"
+          />
+          <label for="link_operativo" class="form__label">Link operativo</label>
+        </div>
+
+
+      </aside>
+    </div>
+
+    <nav class="btn-group">
+
+      <button class="btn btn-success">
+        <span class="icon-checkmark"></span>
+      </button>
+
+      <a href="{% url 'dashboards:catalogoLinks' %}" class="btn btn-danger">
+        <span class="icon-cross"></span>
+      </a>
+
+
+    </nav>
+  </form>
+</form>

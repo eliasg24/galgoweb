@@ -200,7 +200,16 @@
             {% endif %}
             <h3>Profundidades</h3>
 
-            <div class="form__prof" data-punto-retiro="{{ ej.6.punto_retiro }}" data-profundidad-id="{{ ej.0.id }}">
+            <div 
+              class="form__prof" 
+              data-punto-retiro="{{ ej.6.punto_retiro }}" 
+              data-max-profundidad-act="{{ ej.6.max_produndidad }}" 
+              data-min-profundidad-act="{{ ej.6.min_produndidad }}"
+              data-mm-de-desgaste-compania="{{ mm_de_desgaste_compania }}"
+              data-desgaste-anterior-llanta="{{ ej.6.desgaste_anterior_llanta }}"
+              data-inspeccion="{{ ej.6.inspeccion }}"
+              data-profundidad-id="{{ ej.0.id }}"
+            >
 
             {% if ej.0.tipo_de_eje != 'SP1'  %}
 
@@ -216,7 +225,8 @@
                   autocomplete="off"
                 />
                 <label for="min_profundidad" class="form__label">
-                  Izquierda({{ej.0.profundidad_izquierda}})
+                  Izquierda
+                  <span class="profundidad__max">({{ej.0.profundidad_izquierda}})</span>
                 </label>
               </div>
 
@@ -232,7 +242,10 @@
                   autocomplete="off" 
                 />
                 <label for="min_profundidad" class="form__label">
-                  Central({{ej.0.profundidad_central}})
+                  Central
+                  <span class="profundidad__max">
+                    ({{ej.0.profundidad_central}})
+                  </span>
                 </label>
               </div>
             
@@ -248,7 +261,10 @@
                   autocomplete="off"                  
                 />
                 <label for="min_profundidad" class="form__label">
-                  Derecha({{ej.0.profundidad_derecha}})
+                  Derecha
+                  <span class="profundidad__max">
+                    ({{ej.0.profundidad_derecha}})
+                  </span>
                 </label>
               </div>
 
@@ -266,7 +282,8 @@
                   value = {{ej.0.profundidad_izquierda}}
                 />
                 <label for="min_profundidad" class="form__label">
-                  {{ej.0.profundidad_izquierda}}(Izquierda)
+                  <span class="profundidad__max">{{ej.0.profundidad_izquierda}}</span>
+                  (Izquierda)
                 </label>
               </div>
 
@@ -283,7 +300,8 @@
                   value = {{ej.0.profundidad_central}}
                 />
                 <label for="min_profundidad" class="form__label">
-                  {{ej.0.profundidad_central}}(Central)
+                  <span class="profundidad__max">{{ej.0.profundidad_central}}</span>
+                  (Central)
                 </label>
               </div>
             
@@ -300,7 +318,8 @@
                   value = {{ej.0.profundidad_derecha}}               
                 />
                 <label for="min_profundidad" class="form__label">
-                  {{ej.0.profundidad_derecha}} (Derecha)
+                  <span class="profundidad__max">{{ej.0.profundidad_derecha}}</span>
+                  (Derecha)
                 </label>
               </div>
             {% endif %}

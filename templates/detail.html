@@ -336,9 +336,23 @@
                                         <tr>
                                             <td class="td-table2">{{llanta.0}}</td>
                                             <td class="td-table2">{{llanta.1.observacion}}</td>
-                                            <td class="td-table2"><span class="{{llanta.2}}"></span>
+                                            <td class="td-table2"><span class="{{llanta.2}}"></span></td>
                                         </tr>
                                     {% endfor %}
+
+                                    {% if ultima_inspeccion_img|length != 0 %}
+                                        {% for llanta in ultima_inspeccion_img %}
+                                            <tr>
+                                                <td class="td-table2">{{llanta.posicion}}</td>
+                                                <td class="td-table2">Imagen</td>
+                                                <td class="td-table2"><a href="{{llanta.ultima_inspeccion.imagen.url}}" target="_blank">Ver imagen</a></td>
+
+                                            </tr>
+                                        
+                                        {% endfor %}
+                                
+                                    {% endif %}
+
                                 </tbody>
                                 
                             </table>

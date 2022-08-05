@@ -66,9 +66,11 @@
                                         Catálogos de desechos
                                     </a>
                                     {% endif %}
+                                    {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
                                     <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-redirect">
                                         Catálogos de observaciones
                                     </a>
+                                    {% endif %}
                                     {% if request.user.groups.get != "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoRechazos' %}" class="btn btn-redirect">
                                         Catálogos de rechazos
@@ -79,6 +81,9 @@
                                     </a>
                                     <a href="{% url 'dashboards:nuevoVehiculo' %}" class="btn btn-redirect">
                                         Vehículo
+                                    </a>
+                                    <a href="{% url 'dashboards:nuevoPresupuesto' %}" class="btn btn-redirect">
+                                        Presupuesto
                                     </a>
                                     {% endif %}
                                     <!-- <a href="https://drive.google.com/uc?export=download&id=1Lg7iQZf_N3bwSjutnlWAJwF5mlPXERai" class="btn btn-redirect">
@@ -222,7 +227,7 @@
                                             <button class="btn btn-download w-100" type="submit">Continuar</button>
                                         </form>
                                     </div>
-                                    <a href="https://drive.google.com/uc?id=1DtE-s-P6C47l6df30PIAQtzm4QzSAPCw&export=download" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
+                                    <a href="{% url 'dashboards:download_llantas_rodantes' %}" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
                                 </div>
                             </div>
                         </div>

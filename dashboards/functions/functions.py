@@ -942,7 +942,10 @@ def check_color_presion(llanta):
     print(presion)
     print(presion_min)
     print(presion_max)
-    return color_presion(int(presion), int(presion_min), int(presion_max))
+    try:
+        return color_presion(int(presion), int(presion_min), int(presion_max))
+    except:
+        return 'good'
 
 def color_presion(presion, presion_minima, presion_maxima):
     try:
@@ -5343,6 +5346,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                 inventario = 'Rodante',
                 fecha_de_entrada_inventario = date.today(),
+                patito=True
             )
         elif numero == 2: 
             Llanta.objects.create(
@@ -5359,6 +5363,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                 inventario = 'Rodante',
                 fecha_de_entrada_inventario = date.today(),
+                patito=True
             )
             
             Llanta.objects.create(
@@ -5375,6 +5380,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                 inventario = 'Rodante',
                 fecha_de_entrada_inventario = date.today(),
+                patito=True
             )
         elif numero == 4: 
             Llanta.objects.create(
@@ -5391,6 +5397,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                 inventario = 'Rodante',
                 fecha_de_entrada_inventario = date.today(),
+                patito=True
             )
             
             Llanta.objects.create(
@@ -5407,6 +5414,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                 presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                 inventario = 'Rodante',
                 fecha_de_entrada_inventario = date.today(),
+                patito=True
             )
             
             Llanta.objects.create(
@@ -5423,6 +5431,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                     presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                     inventario = 'Rodante',
                     fecha_de_entrada_inventario = date.today(),
+                    patito=True
                 )
 
             Llanta.objects.create(
@@ -5439,6 +5448,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
                     presion_actual = check_presion_establecida_llanta_nueva(vehiculo, eje, tipo_de_eje),
                     inventario = 'Rodante',
                     fecha_de_entrada_inventario = date.today(),
+                    patito=True
                 )
             
         eje += 1

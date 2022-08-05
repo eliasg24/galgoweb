@@ -2,7 +2,7 @@
 from django import forms
 
 # Models
-from dashboards.models import Inspeccion, Vehiculo, Excel, Llanta, Producto, Renovador, Desecho, Compania, Observacion, Rechazo, Ubicacion, Taller, User, Perfil, Aplicacion
+from dashboards.models import Inspeccion, Vehiculo, Excel, Llanta, Producto, Renovador, Desecho, Compania, Observacion, Rechazo, Ubicacion, Taller, User, Perfil, Aplicacion, Presupuesto
 from django.contrib.auth.models import Group
 
 class VehiculoForm(forms.ModelForm):
@@ -16,6 +16,24 @@ class VehiculoForm(forms.ModelForm):
         # Configuración del Form
         model = Vehiculo
         fields = ("numero_economico", "modelo", "marca", "compania", "aplicacion", "ubicacion", "clase", "configuracion", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7", "km_diario_maximo")
+
+class PresupuestoForm(forms.ModelForm):
+    # Model form del Presupuesto
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), to_field_name = 'nombre')
+    class Meta:
+        # Configuración del Form
+        model = Presupuesto
+        fields = ("mes_ano", "compania", "ubicacion", "presupuesto", "gasto_real", "km_recorridos")
+
+class PresupuestoEditForm(forms.ModelForm):
+    # Model form del Presupuesto
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), to_field_name = 'nombre')
+    class Meta:
+        # Configuración del Form
+        model = Presupuesto
+        fields = ("id", "mes_ano", "compania", "ubicacion", "presupuesto", "gasto_real", "km_recorridos")
 
 class VehiculoEditForm(forms.ModelForm):
     # Model form del Vehiculo

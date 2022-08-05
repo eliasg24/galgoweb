@@ -9,8 +9,9 @@
 <body>
     {% for dato in datos %}
         llanta = {{dato.llanta}} <br>
-        llanta = {{dato.llanta.id}} <br>
-        llanta = {{dato.llanta.km_actual}} <br>
+        llanta id = {{dato.llanta.id}} <br>
+        llanta km actual= {{dato.llanta.km_actual}} <br>
+        llanta presio= {{dato.llanta.producto.precio}} <br>
         llanta km montado = {{dato.llanta.km_montado}} <br>
 
         mm_desgastados = {{dato.mm_desgastados}} <br>
@@ -19,6 +20,10 @@
         punto_retiro = {{dato.punto_retiro}} <br>
         minima = {{dato.minima}} <br>
         km_x_mm = {{dato.km_x_mm}} <br>
+        km_proyectado = {{dato.km_proyectado}} <br>
+        cpk_proyectado = {{dato.cpk_proyectado}} <br>
+        cpk_real = {{dato.cpk_real}} <br>
+        is_analizada = {{dato.is_analizada}} <br>
         ----<br>
         ----<br>
         <br>

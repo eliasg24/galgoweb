@@ -132,6 +132,16 @@ urlpatterns = [
         name="catalogoProductos"
     ),
     path(
+        route="catalogoLinks",
+        view=views.catalogoLinksView.as_view(),
+        name="catalogoLinks"
+    ),
+    path(
+        route="catalogoLinks/<int:pk>/",
+        view=views.catalogoLinksEditView.as_view(),
+        name="catalogoLinksEdit"
+    ),
+    path(
         route="productos/<int:pk>/",
         view=views.catalogoProductoEditView.as_view(),
         name="catalogoProductosEdit"
@@ -295,6 +305,21 @@ urlpatterns = [
         route="usuarioFormulario/delete",
         view=views.usuarioFormularioDeleteView,
         name="usuarioFormularioDelete"
+    ),
+    path(
+        route="nuevoPresupuesto",
+        view=views.nuevoPresupuestoView.as_view(),
+        name="nuevoPresupuesto"
+    ),
+    path(
+        route="nuevoPresupuesto/<int:pk>/",
+        view=views.nuevoPresupuestoEditView.as_view(),
+        name="nuevoPresupuestoEdit"
+    ),
+    path(
+        route="nuevoPresupuesto/delete",
+        view=views.nuevoPresupuestoDeleteView,
+        name="nuevoPresupuestoDelete"
     ),
     path(
         route="nuevoVehiculo",
@@ -606,6 +631,11 @@ urlpatterns = [
         view=views.download_todo,
         name="download_todo"
     ),
+    path(
+        route="download_llantas_rodantes",
+        view=views.download_llantas_rodantes,
+        name="download_llantas_rodantes"
+    ),
     
     #----------------------APIS---------------------
     
@@ -723,6 +753,11 @@ urlpatterns = [
         name="procesodesecho"
     ),
     path(
+        route="api/profundidad_inicial",
+        view=views_rest.ProfundidadInicialApi.as_view(),
+        name="profundidad_inicial"
+    ),
+    path(
         route="api/pulpoapi/<str:user>",
         view=views_rest.PulpoApiView.as_view(),
         name="pulpoapi"
@@ -816,14 +851,19 @@ urlpatterns = [
         name="productosapi"
     ),
     path(
-        route="api/desechos/<str:usuario>",
-        view=views_pbi.DesechoData.as_view(),
-        name="desechosapi"
+        route="api/desechoshistoricos/<str:usuario>",
+        view=views_pbi.DesechoDataHistorico.as_view(),
+        name="desechoshistoricos"
     ),
     path(
         route="api/rendimientos/<str:usuario>",
         view=views_pbi.RendimientoData.as_view(),
         name="rendimientosapi"
+    ),
+    path(
+        route="api/rendimientoactualdata/<str:usuario>",
+        view=views_pbi.RendimientoActualData.as_view(),
+        name="rendimientosactualapi"
     ),
     path(
         route="api/inspeccionesvehiculo/<str:usuario>",
@@ -836,13 +876,13 @@ urlpatterns = [
         name="inspeccionesllantaapi"
     ),
     path(
-        route="api/observacionesinspeccion/<str:usuario>",
-        view=views_pbi.ObservacionesInspeccionData.as_view(),
+        route="api/observacioneshistorico/<str:usuario>",
+        view=views_pbi.ObservacionesHistoriconData.as_view(),
         name="observacionesinspeccionapi"
     ),
     path(
-        route="api/observacionesllanta/<str:usuario>",
-        view=views_pbi.ObservacionesLlantaData.as_view(),
+        route="api/observacionesactuales/<str:usuario>",
+        view=views_pbi.ObservacionesActualesData.as_view(),
         name="observacionesllantaapi"
     ),
     path(
@@ -865,8 +905,16 @@ urlpatterns = [
         view=views_pbi.ReemplazoData.as_view(),
         name="reemplazosapi"
     ),
-    
-    
+    path(
+        route="api/presupuestos/<str:usuario>",
+        view=views_pbi.PresupuestosData.as_view(),
+        name="presupuestosapi"
+    ),
+        path(
+        route="api/tendenciadata/<str:usuario>",
+        view=views_pbi.TendenciaData.as_view(),
+        name="tendenciadata"
+    ),
     
     
     

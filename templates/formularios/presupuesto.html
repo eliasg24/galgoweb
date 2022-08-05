@@ -1,0 +1,187 @@
+{% extends '../base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<title>Formulario de usuario</title>
+{% endblock %}
+
+{% block content %}
+
+<main class="main-cont">
+
+  <header class="head-cont">
+    <div class="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+    </div>
+
+    <h1>Formulario de presupuesto</h1>
+  </header>
+
+  <section class="form-body">
+    {% if presupuesto.id %}
+    <form action="{% url 'dashboards:nuevoPresupuestoEdit' presupuesto.id %}" class="form-body_form" method="POST">
+    {% else %}
+    <form action="{% url 'dashboards:nuevoPresupuesto' %}" class="form-body_form" method="POST">
+    {% endif %}
+      {% csrf_token %}
+      {% include './forms/form-presupuesto.html' %}
+      <nav class="flex-row">
+        <button type="submit" class="btn btn-success">
+          <i class="icon-checkmark"></i>
+        </button>
+      </nav>
+    </form>
+
+    <div class="table-container">
+      <div class="relative">
+        <div class="absolute">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th>Acciones</th>
+                <th>Mes y Año</th>
+                <th>Compañía</th>
+                <th>Sucursal</th>
+                <th>Presupuesto</th>
+                <th>Gasto real</th>
+                <th>Km recorridos</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for presupuesto in presupuestos %}
+              <tr>
+                <td>
+                  <div class="flex-row" style="flex-wrap: nowrap; justify-content: center;">
+                    <a href="{% url 'dashboards:nuevoPresupuestoEdit' presupuesto.id %}" class="btn btn-download">
+                      <i class="icon-pencil"></i>
+                    </a>
+                    <form action="{% url "dashboards:nuevoPresupuestoDelete" %}" method="POST" class="delete-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="id" value="{{presupuesto.id}}">
+                      <button class="btn btn-danger">
+                        <span class="icon-trash"></span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+                <td>{{presupuesto.mes_ano|date:"F"}} {{presupuesto.mes_ano.year}}</td>
+                <td>{{presupuesto.compania}}</td>
+                <td>{{presupuesto.ubicacion}}</td>
+                <td>{{presupuesto.presupuesto}}</td>
+                <td>{{presupuesto.gasto_real}}</td>
+                <td>{{presupuesto.km_recorridos}}</td>
+                
+                <td>{{usuario.groups.get}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="{% static 'js/inputChange.js' %}"></script>
+<script src="{% static 'js/filter.js' %}"></script>
+<script>
+  document.addEventListener('submit', (e) => {
+    if (e.target.matches('.delete-form')) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Esta seguro?',
+        text: 'Esta acción eliminará al usuario de manera permanente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          e.target.submit();
+        } else {
+          result.dismiss === Swal.DismissReason.cancel;
+        }
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    validPassword();
+  });
+
+  const validPassword = () => {
+    const password = document.querySelector('input[name="password"]');
+    const password2 = document.querySelector('input[name="repeat_password"]');
+    
+    password2.addEventListener('keyup', (e) => {
+      if (password.value !== password2.value) {
+        password2.classList.add('invalid');
+      } 
+      if (password.value === password2.value) {
+        password2.classList.remove('invalid');
+      } 
+    });
+  };
+
+  const handleSelectAll = ({ container = '', selectAll = 'all' }) => {
+    const selector = document.querySelector(`#${container} #${selectAll}`);
+    const checkboxs = document.querySelectorAll(
+      `#${container} input[type="checkbox"]`
+    );
+
+    selector.addEventListener('change', (e) => {
+      selector.checked
+        ? checkboxs.forEach((check) => (check.checked = true))
+        : checkboxs.forEach((check) => (check.checked = false));
+    });
+
+    checkboxs.forEach((item) => {
+      item.addEventListener('change', (e) => {
+        let notAll = false;
+
+        checkboxs.forEach((item) => {
+          if (!item.checked) notAll = true;
+          if (notAll) selector.checked = false;
+        });
+      });
+    });
+  };
+
+  const dropdown = (button = '', menu = '') => {
+    const dropBtn = document.getElementById(button);
+    const dropMenu = document.getElementById(menu);
+
+    dropBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropMenu.classList.toggle('active');
+      if (dropMenu.classList.contains('active')) {
+        dropBtn.querySelector('.indicator').classList.add('active');
+      } else {
+        dropBtn.querySelector('.indicator').classList.remove('active');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.matches('.dropdown *')) {
+          dropMenu.classList.remove('active');
+          dropBtn.querySelector('.indicator').classList.remove('active');
+        }
+      });
+  };
+
+  handleSelectAll({ container: 'menu-company', selectAll: 'all-company' });
+  handleSelectAll({ container: 'menu-sucursal', selectAll: 'all-sucursal' });
+  handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+  handleSelectAll({ container: 'menu-taller', selectAll: 'all-taller' });
+  dropdown('company', 'menu-company');
+  dropdown('sucursal', 'menu-sucursal');
+  dropdown('app', 'menu-app');
+  dropdown('taller', 'menu-taller');
+</script>
+
+{% endblock %}

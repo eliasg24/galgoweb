@@ -6,7 +6,7 @@ from django.contrib import admin
 # Models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import RelatedField
-from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, ServicioLlanta, ServicioVehiculo, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden, Bitacora_Desecho, Rendimiento
+from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, Presupuesto, ServicioLlanta, ServicioVehiculo, Tendencia, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden, Bitacora_Desecho, Rendimiento
 
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
@@ -180,7 +180,18 @@ class ServicioLlantaAdmin(admin.ModelAdmin):
 @admin.register(Rendimiento)
 class RendimientoAdmin(admin.ModelAdmin):
     # Admin del Perfil
-    list_display = ('mes', 'llanta', 'analizada')
+    list_display = ('mes', 'llanta')
+
+@admin.register(Tendencia)
+class TendenciaAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('fecha', 'clase', 'compania')
+
+@admin.register(Presupuesto)
+class PresupuestoAdmin(admin.ModelAdmin):
+    # Admin del Presupuesto
+    list_display = ('mes_ano',)
+
 
 class ProfileInline(admin.StackedInline):
     # Alinear el admin del perfil con el de User de Django
