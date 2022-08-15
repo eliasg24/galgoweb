@@ -8,7 +8,7 @@
 <main class="main-cont">
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/aeto.svg' %}" alt="logo" />
+      <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
     </div>
 
     <h1>Formulario de compañia</h1>
@@ -111,12 +111,12 @@
                 <td>{{compania.punto_retiro_eje_retractil}}</td>
                 <td>{{compania.mm_de_diferencia_entre_duales}}</td>
                 <td>{{compania.mm_de_desgaste_irregular}}</td>
-                <td>{{compania.valor_casco_nuevo}}</td>
-                <td>{{compania.valor_casco_1r}}</td>
-                <td>{{compania.valor_casco_2r}}</td>
-                <td>{{compania.valor_casco_3r}}</td>
-                <td>{{compania.valor_casco_4r}}</td>
-                <td>{{compania.valor_casco_5r}}</td>
+                <td>{% if compania.valor_casco_nuevo %}{{compania.valor_casco_nuevo}}{% endif %}</td>
+                <td>{% if compania.valor_casco_1r %}{{compania.valor_casco_1r}}0{% endif %}</td>
+                <td>{% if compania.valor_casco_2r %}{{compania.valor_casco_2r}}0{% endif %}</td>
+                <td>{% if compania.valor_casco_3r %}{{compania.valor_casco_3r}}0{% endif %}</td>
+                <td>{% if compania.valor_casco_4r %}{{compania.valor_casco_4r}}0{% endif %}</td>
+                <td>{% if compania.valor_casco_5r %}{{compania.valor_casco_5r}}0{% endif %}</td>
                 <td>{{compania.unidades_presion}}</td>
                 <td>{{compania.unidades_distancia}}</td>
                 <td>{{compania.unidades_profundidad}}</td>

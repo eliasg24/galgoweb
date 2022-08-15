@@ -52,17 +52,7 @@ from openpyxl.chart import BarChart, Reference
 import os
 import pandas as pd
 from random import sample, randint, uniform, random
-from spyne import ComplexModel, Iterable, Array
-from spyne.application import Application
-from spyne.decorator import rpc
-from spyne.model.fault import Fault
-from spyne.model.primitive import Unicode, Integer, String, Float, Date
-from spyne.protocol.http import HttpRpc
-from spyne.protocol.json import JsonDocument
-from spyne.protocol.soap import Soap11, Soap12
-from spyne.server.django import DjangoApplication
-from spyne.server.wsgi import WsgiApplication
-from spyne.service import ServiceBase
+
 import statistics
 import xlwt
 
@@ -964,7 +954,7 @@ class OpcionesDesechoApi(LoginRequiredMixin, View):
         perfil = Perfil.objects.get(user = usuario)
         compania = perfil.compania
         #Trae todos el catalogo
-        opciones_desecho = Desecho.objects.filter(compania = compania)
+        opciones_desecho = Desecho.objects.filter()
         condiciones = list(opciones_desecho.values('condicion').distinct())
         zonas = list(opciones_desecho.filter(condicion = condicion).values('zona_de_llanta').distinct())
         razones = list(opciones_desecho.filter(condicion = condicion, zona_de_llanta = zona).values('razon').distinct())
@@ -1024,8 +1014,8 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
         eco_query = ({'numero_economico__icontains': eco} if  eco != None else {})
         
         id_seletct = (request.GET['id_select'] if 'id_select' in request.GET else -1)
-        id_seletct_query = ({'vehiculo__id': id_seletct})
-        vehiculo_select = ({'pk': id_seletct})
+        id_seletct_query = ({'vehiculo__numero_economico': id_seletct})
+        vehiculo_select = ({'numero_economico': id_seletct})
         print(id_seletct)
         print(id_seletct_query)
         
@@ -1051,7 +1041,8 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
         
         llantas = Llanta.objects.filter(
             **id_seletct_query,
-            inventario = 'Rodante'
+            inventario = 'Rodante',
+            compania = compania
         )
 
         #Color de llanta
@@ -1072,12 +1063,11 @@ class VehicleAndTireSearchTaller(LoginRequiredMixin, View):
         llantas = llantas.annotate(
                 min_profundidad=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha"), 
                 max_profundidad=Greatest("profundidad_izquierda", "profundidad_central", "profundidad_derecha")
-                ) 
-       
+                ).exclude(patito=True).exclude(producto=None)
        
         #Obtencion del km max
         km_max = ''
-        vehiculo = Vehiculo.objects.filter(**vehiculo_select)
+        vehiculo = Vehiculo.objects.filter(**vehiculo_select, compania = compania)
         if vehiculo.count() > 0:
             km_max = functions.km_max(vehiculo[0])
        
@@ -1574,10 +1564,13 @@ class ProfundidadInicialApi(LoginRequiredMixin, View):
     # Vista del dashboard buscar_vehiculos
 
     def get(self, request):
-
+        usuario = self.request.user
+        perfil = Perfil.objects.get(user = usuario)
+        compania = perfil.compania
+        
         producto = self.request.GET.get('producto')
 
-        profundidad_inicial = Producto.objects.get(producto=producto).profundidad_inicial
+        profundidad_inicial = Producto.objects.get(producto=producto, compania=compania).profundidad_inicial
 
         dict_context = {
             'profundidad_inicial': profundidad_inicial,

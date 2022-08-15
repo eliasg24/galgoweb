@@ -15,6 +15,11 @@ select {
   width: 100%;
 }
 
+input:disabled {
+  opacity: 0.75; 
+  cursor: default !important;
+}
+
 select option {
   color: #000;
 }

@@ -23,7 +23,7 @@
         <h2 class="doc-sub">Folio: {{folio}}</h2>
       </div>
       <div class="logo">
-        <img src="{% static 'images/aeto-logo.svg' %}" />
+        <img src="{% static 'images/perro-galgo.png' %}" />
       </div>
     </header>
   
@@ -71,7 +71,7 @@
               <td>{{orden.min_profundidad}}</td>
               <td>{{orden.llanta.taller.nombre}}</td>
               <td>{{orden.usuario}}</td>
-              <td><a href="{{orden.imagen.url}}" target="_blank">Imagen</a></td>
+              <td><a href="{% url 'dashboards:imagenDesechoView' orden.id %}" target="_blank">Imagen</a></td> 
 
               
             </tr>

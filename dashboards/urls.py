@@ -132,6 +132,11 @@ urlpatterns = [
         name="catalogoProductos"
     ),
     path(
+        route="catalogoProductoExcelView",
+        view=views.catalogoProductoExcelView.as_view(),
+        name="catalogoProductoExcelView"
+    ),
+    path(
         route="catalogoLinks",
         view=views.catalogoLinksView.as_view(),
         name="catalogoLinks"
@@ -251,31 +256,7 @@ urlpatterns = [
         view=views.inpeccionesView.as_view(),
         name="inspeccionesView"
     ),
-    path(
-        route="inspeccionesAdd/",
-        view=views.my_soap_inspeccion(),
-        name="inspeccionesAdd"
-    ),
-    path(
-        route="basesList/",
-        view=views.my_soap_base(),
-        name="basesList"
-    ),
-    path(
-        route="rutasList/",
-        view=views.my_soap_ruta(),
-        name="rutasList"
-    ),
-    path(
-        route="vehiculosList/",
-        view=views.my_soap_vehiculo(),
-        name="vehiculosList"
-    ),
-    path(
-        route="llantasList/",
-        view=views.my_soap_llanta(),
-        name="llantasList"
-    ),
+    
     path(
         route="tallerFormulario",
         view=views.tallerFormularioView.as_view(),
@@ -622,6 +603,11 @@ urlpatterns = [
         name="ordenDesechoTemplete"
     ),
     path(
+        route="img-desecho/<int:id>",
+        view=views.imagenDesechoView.as_view(),
+        name="imagenDesechoView"
+    ),
+    path(
         route="historial-desecho",
         view=views.historialDesechoView.as_view(),
         name="ordenDesecho"
@@ -636,7 +622,16 @@ urlpatterns = [
         view=views.download_llantas_rodantes,
         name="download_llantas_rodantes"
     ),
-    
+    path(
+        route="descargarCatalogoProducto",
+        view=views.descargarCatalogoProducto,
+        name="descargarCatalogoProducto"
+    ),
+    path(
+        route="descargarCatalogoProductoVacio",
+        view=views.descargarCatalogoProductoVacio,
+        name="descargarCatalogoProductoVacio"
+    ),
     #----------------------APIS---------------------
     
     #-----------------------A-----------------------
@@ -910,13 +905,29 @@ urlpatterns = [
         view=views_pbi.PresupuestosData.as_view(),
         name="presupuestosapi"
     ),
-        path(
+    path(
         route="api/tendenciadata/<str:usuario>",
         view=views_pbi.TendenciaData.as_view(),
         name="tendenciadata"
     ),
     
+    path(
+        route="api/tendenciadataaplicacion/<str:usuario>",
+        view=views_pbi.TendenciaDataAplicacion.as_view(),
+        name="tendenciadataaplicacion"
+    ),
     
+    path(
+        route="api/tendenciadataubicacion/<str:usuario>",
+        view=views_pbi.TendenciaDataUbicacion.as_view(),
+        name="tendenciadataubicacion"
+    ),
+
+    path(
+        route="api/tendenciadatacompania/<str:usuario>",
+        view=views_pbi.TendenciaDataCompania.as_view(),
+        name="tendenciadatacompania"
+    ),
     
     path(
         route="api/copiarvehiculo/",

@@ -13,6 +13,10 @@ a {
   text-decoration: none;
 }
 
+select{
+  color: black;
+}
+
 /* body {
   margin: 0;
   font-family: Arial;

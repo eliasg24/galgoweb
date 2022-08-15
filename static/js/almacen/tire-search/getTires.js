@@ -79,8 +79,6 @@ document.addEventListener('input', async (e) => {
 
     history.pushState(null, '', newPath);
 
-    console.log(location.search)
-
     getTires(location.search);
   }
 });

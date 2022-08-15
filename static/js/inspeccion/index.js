@@ -235,6 +235,50 @@ const onSelectTire = () => {
 (() => {
   document.addEventListener('submit', (e) => {
     const campos = e.target.querySelectorAll('[data-required]');
+    const profundidades = e.target.querySelectorAll(
+      '[name="profundidad_izquierda"], [name="profundidad_central"], [name="profundidad_derecha"]'
+    );
+    const kmVehiculo = document.querySelector('[data-vehiculomax]');
+    console.log(kmVehiculo.dataset.vehiculomax);
+
+    console.log({ kmVehiculo });
+
+    if (
+      parseFloat(kmVehiculo.value) > parseFloat(kmVehiculo.dataset.vehiculomax)
+    ) {
+      Swal.fire(
+        'Error en el KM del vehículo',
+        'El KM del vehículo es mayor al permitido',
+        'error'
+      );
+      return;
+    }
+    if (parseFloat(kmVehiculo.value) < parseFloat(kmVehiculo.dataset.min)) {
+      Swal.fire(
+        'Error en el KM del vehículo',
+        'El KM del vehículo es menor al permitido',
+        'error'
+      );
+      return;
+    }
+
+    profundidades.forEach((input) => {
+      let { value } = input;
+
+      if (isNaN(value) || isNaN(input.dataset.llantamax)) return;
+      let max = parseFloat(input.dataset.llantamax);
+
+      value = parseFloat(value);
+
+      if (value > max) {
+        Swal.fire(
+          'El valor no puede ser mayor al máximo',
+          `Alguna profundidad de la posición ${input.dataset.llantaposicion} es mayor de lo permitido (${max})`,
+          'error'
+        );
+        return;
+      }
+    });
 
     campos.forEach((item) => {
       if (item.value.length <= 0) {
@@ -259,7 +303,7 @@ const getMaxProf = async (producto = '', target) => {
 
     inputs.forEach((input) => {
       input.value = '';
-      input.max = profundidad_inicial;
+      input.dataset.llantamax = profundidad_inicial;
       input.nextElementSibling.querySelector(
         '.profundidad__max'
       ).textContent = `(${profundidad_inicial})`;

@@ -39,6 +39,10 @@ select {
   padding: 0.25rem;
 }
 
+select option {
+  color: #fff;
+}
+
 .relative {
   height: 100%;
   position: relative;

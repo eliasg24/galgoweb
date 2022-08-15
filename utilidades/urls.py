@@ -23,6 +23,13 @@ urlpatterns = [
         view=views.corregirInspeccionesVehiculo,
         name="corregirInspeccionesVehiculo"
     ),
+    
+    path(
+        route="utilidades/CorregirPrimeraInspeccion",
+        view=views.CorregirPrimeraInspeccion.as_view(),
+        name="CorregirPrimeraInspeccion"
+    ),
+    
     #-----------------------D-----------------------
     
     path(
@@ -30,7 +37,26 @@ urlpatterns = [
         view=views.DailyDataTendencias.as_view(),
         name="DailyDataTendencias"
     ),
+    path(
+        route="utilidades/DailyDataTendenciasAplicaciones",
+        view=views.DailyDataTendenciasAplicaciones.as_view(),
+        name="DailyDataTendenciasAplicaciones"
+    ),
     
+    path(
+        route="utilidades/DailyDataTendenciasUbicaciones",
+        view=views.DailyDataTendenciasUbicaciones.as_view(),
+        name="DailyDataTendenciasUbicaciones"
+    ),
+    
+    
+    path(
+        route="utilidades/DailyDataTendenciasCompanias",
+        view=views.DailyDataTendenciasCompanias.as_view(),
+        name="DailyDataTendenciasCompanias"
+    ),
+    
+
     #-----------------------E-----------------------
     
     #-----------------------F-----------------------
@@ -55,6 +81,12 @@ urlpatterns = [
     
     #-----------------------M-----------------------
     
+    path(
+        route="utilidades/MonthDataRendimiento",
+        view=views.MonthDataRendimiento.as_view(),
+        name="MonthDataRendimiento"
+    ),
+    
     #-----------------------N-----------------------
      
     #-----------------------Ñ-----------------------
@@ -68,6 +100,12 @@ urlpatterns = [
     #-----------------------R-----------------------
 
     #-----------------------S-----------------------
+
+    path(
+        route="utilidades/subirBigData",
+        view=views.subirBigData,
+        name="subirBigData"
+    ),
 
     #-----------------------T-----------------------
 

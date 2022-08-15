@@ -231,7 +231,7 @@
     type="text"
     placeholder="valor-casco-nuevo"
     name="valor_casco_nuevo"
-    {% if compania.valor_casco_nuevo %}value="{{compania.valor_casco_nuevo}}"{% endif %}
+    {% if compania.valor_casco_nuevo %}value="{{compania.valor_casco_nuevo}}" {% elif compania.valor_casco_nuevo == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />
@@ -248,7 +248,7 @@
     type="text"
     placeholder="valor-casco-1r"
     name="valor_casco_1r"
-    {% if compania.valor_casco_1r %}value="{{compania.valor_casco_1r}}"{% endif %}
+    {% if compania.valor_casco_1r %}value="{{compania.valor_casco_1r}}" {% elif compania.valor_casco_1r == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />
@@ -265,7 +265,7 @@
     type="text"
     placeholder="valor-casco-2r"
     name="valor_casco_2r"
-    {% if compania.valor_casco_2r %}value="{{compania.valor_casco_2r}}"{% endif %}
+    {% if compania.valor_casco_2r %}value="{{compania.valor_casco_2r}}" {% elif compania.valor_casco_2r == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />
@@ -282,7 +282,7 @@
     type="text"
     placeholder="valor-casco-3r"
     name="valor_casco_3r"
-    {% if compania.valor_casco_3r %}value="{{compania.valor_casco_3r}}"{% endif %}
+    {% if compania.valor_casco_3r %}value="{{compania.valor_casco_3r}}" {% elif compania.valor_casco_3r == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />
@@ -299,7 +299,7 @@
     type="text"
     placeholder="valor-casco-4r"
     name="valor_casco_4r"
-    {% if compania.valor_casco_4r %}value="{{compania.valor_casco_4r}}"{% endif %}
+    {% if compania.valor_casco_4r %}value="{{compania.valor_casco_4r}}" {% elif compania.valor_casco_4r == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />
@@ -316,7 +316,7 @@
     type="text"
     placeholder="valor-casco-5r"
     name="valor_casco_5r"
-    {% if compania.valor_casco_5r %}value="{{compania.valor_casco_5r}}"{% endif %}
+    {% if compania.valor_casco_5r %}value="{{compania.valor_casco_5r}}" {% elif compania.valor_casco_5r == 0 %}value="0"{% endif %}
     autocomplete="off"
     required
   />

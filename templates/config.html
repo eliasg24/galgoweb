@@ -55,7 +55,7 @@
                         <div class="wrapper">
                             <div class="con-sec">
                                 <div class="buttons">
-                                    {% if request.user.groups.get != "Aeto Manager" %}
+                                    {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoProductos' %}" class="btn btn-redirect">
                                         Catálogos de productos
                                     </a>
@@ -66,19 +66,16 @@
                                         Catálogos de desechos
                                     </a>
                                     {% endif %}
-                                    {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
+                                    {% if request.user.groups.get|stringformat:"s" == "Pulpo Manager" or request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoObservaciones' %}" class="btn btn-redirect">
                                         Catálogos de observaciones
                                     </a>
                                     {% endif %}
-                                    {% if request.user.groups.get != "Aeto Manager" %}
+                                    {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                                     <a href="{% url 'dashboards:catalogoRechazos' %}" class="btn btn-redirect">
                                         Catálogos de rechazos
                                     </a>
 
-                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
-                                        Usuario
-                                    </a>
                                     <a href="{% url 'dashboards:nuevoVehiculo' %}" class="btn btn-redirect">
                                         Vehículo
                                     </a>
@@ -97,7 +94,7 @@
                         </div>
                     </div>
     
-                    {% if request.user.groups.get != "Aeto Manager" %}
+                    {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                         <div class="con" id="contexto">
                             <div class="con-title">
                                 <h2 class="con-title__text">
@@ -112,11 +109,43 @@
                                     <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-redirect">
                                         Sucursal
                                     </a>
+                                    <a href="{% url 'dashboards:aplicacionFormulario' %}" class="btn btn-redirect">
+                                        Aplicación
+                                    </a>
                                     <a href="{% url 'dashboards:tallerFormulario' %}" class="btn btn-redirect">
                                         Taller
                                     </a>
+                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
+                                        Usuario
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if request.user.groups.get|stringformat:"s" != "Aeto Manager" %}
+                        <div class="con" id="contexto">
+                            <div class="con-title">
+                                <h2 class="con-title__text">
+                                    Contexto
+                                </h2>
+                            </div> 
+                            <div class="wrapper">
+                                <div class="con-sec">
+                                    <a href="{% url 'dashboards:companyFormulario' %}" class="btn btn-redirect">
+                                        Compañia
+                                    </a>
+                                    <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-redirect">
+                                        Sucursal
+                                    </a>
                                     <a href="{% url 'dashboards:aplicacionFormulario' %}" class="btn btn-redirect">
                                         Aplicación
+                                    </a>
+                                    <a href="{% url 'dashboards:tallerFormulario' %}" class="btn btn-redirect">
+                                        Taller
+                                    </a>
+                                    <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
+                                        Usuario
                                     </a>
                                 </div>
                             </div>
@@ -149,7 +178,7 @@
                         </div>
                     </div>
 
-                    <div class="con" id="llantas">
+                    <!--<div class="con" id="llantas">
                         <div class="con-title">
                             <h2 class="con-title__text">
                                 <span class="icon-upload-cloud"></span>
@@ -169,14 +198,14 @@
                                             <button class="btn btn-download w-100" type="submit">Continuar</button>
                                         </form>
                                     </div>
-                                    <a href="https://drive.google.com/uc?id=1DtE-s-P6C47l6df30PIAQtzm4QzSAPCw&export=download" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
+                                    <a href="{% url 'dashboards:download_llantas_rodantes' %}" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     {% endif %}
     
-                    {% if request.user.groups.get != "Aeto Manager" %}
+                    {% if request.user.groups.get|stringformat:"s" != "Aeto Manager" %}
                     <div class="con" id="vehiculos">
                         <div class="con-title">
                             <h2 class="con-title__text">
@@ -206,7 +235,7 @@
                 </div>
 
                 <div class="row page" id="page-2">
-                    {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
+                    {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                     <div class="con" id="llantas">
                         <div class="con-title">
                             <h2 class="con-title__text">

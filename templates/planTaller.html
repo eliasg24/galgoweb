@@ -20,14 +20,23 @@
       </nav>
     </article>
   </section>
-      
+  {% elif num_llantas_no_validas > 0 %}
+
+  Las llantas :
+  <br>
+  {% for llanta in llantas_no_validas %}
+  {{llanta}}
+  <br>
+  {% endfor %}
+  <br>
+  No tienen producto, realice una inspeccion para solucionarlo
   {% else %}
 
 
   <main class="all-cont">
     <div class="head-cont">
       <div class="logo">
-        <img src="{% static 'images/aeto.svg' %}" alt="logo" />
+        <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
       </div>
       <form id="taller-form" class="title-cont" method='POST'>
         {% csrf_token %}

@@ -46,11 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "rest_framework",
+    'rest_framework',
+    'rest_framework.authtoken',
 
     # Aplicaciones Locales
     "dashboards",
     "calendario",
+    "utilidades",
+    "galgoapi",
+    "aetoappapi",
 ]
 
 MIDDLEWARE = [
@@ -63,13 +67,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-REST_FRAMEWORK = {
-  'DEFAULT_RENDERER_CLASSES': (
-    'rest_framework.renderers.XMLRenderer',
-    'rest_framework.renderers.JSONRenderer',
-    'rest_framework.renderers.BrowsableAPIRenderer',
-  )
-}
+#REST_FRAMEWORK = {
+#  'DEFAULT_RENDERER_CLASSES': (
+#    'rest_framework.renderers.XMLRenderer',
+#    'rest_framework.renderers.JSONRenderer',
+#    'rest_framework.renderers.BrowsableAPIRenderer',
+#  )
+#}
 
 ROOT_URLCONF = 'aeto.urls'
 
@@ -133,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 

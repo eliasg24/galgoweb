@@ -34,12 +34,23 @@ const colorProf = (tag, puntoRetiro, container) => {
 };
 
 const desdualizacion = (tire = document.documentElement, mm) => {
-  const dual =
-    tire.parentElement.parentElement.parentElement.querySelectorAll('.tire');
+  const shaft = tire.parentElement?.parentElement?.parentElement;
 
-  const ids = [ dual[0].getAttribute('data-tire-id'), dual[1].getAttribute('data-tire-id') ];
-  const tire1 = parseFloat(dual[0].querySelector('[data-prof-tag]').textContent);
-  const tire2 = parseFloat(dual[1].querySelector('[data-prof-tag]').textContent);
+  // Validando si es un dual o no
+  if (!shaft.classList.contains('double-tire')) return;
+
+  const dual = shaft?.querySelectorAll('.tire');
+
+  const ids = [
+    dual[0].getAttribute('data-tire-id'),
+    dual[1].getAttribute('data-tire-id'),
+  ];
+  const tire1 = parseFloat(
+    dual[0].querySelector('[data-prof-tag]').textContent
+  );
+  const tire2 = parseFloat(
+    dual[1].querySelector('[data-prof-tag]').textContent
+  );
 
   if (tire1 - tire2 >= mm || tire2 - tire1 >= mm) {
     ids.forEach((id) => {
@@ -59,76 +70,146 @@ const desdualizacion = (tire = document.documentElement, mm) => {
   }
 };
 
-const validaciones = (
-  target,
-  left,
-  center,
-  right,
+const tresProfundidades = ({
+  rightValue,
+  leftValue,
+  centerValue,
+  container,
   tag,
   puntoRetiro,
-  container
-) => {
+}) => {
+  if (
+    (rightValue < leftValue && rightValue < centerValue) ||
+    (rightValue < leftValue && rightValue === centerValue)
+  ) {
+    container
+      .querySelectorAll('[data-icon-desgaste]')
+      .forEach((icon) => icon.classList.remove('visible'));
+    container
+      .querySelector('[data-icon-desgaste="Desgaste inclinado a la derecha"]')
+      .classList.add('visible');
+    colorProf(tag, puntoRetiro, container);
+  }
+
+  if (
+    (leftValue < centerValue && leftValue < rightValue) ||
+    (leftValue < rightValue && leftValue === centerValue)
+  ) {
+    container
+      .querySelectorAll('[data-icon-desgaste]')
+      .forEach((icon) => icon.classList.remove('visible'));
+    container
+      .querySelector('[data-icon-desgaste="Desgaste inclinado a la izquierda"]')
+      .classList.add('visible');
+    colorProf(tag, puntoRetiro, container);
+  }
+
+  if (leftValue < centerValue && centerValue > rightValue) {
+    container
+      .querySelectorAll('[data-icon-desgaste]')
+      .forEach((icon) => icon.classList.remove('visible'));
+    container
+      .querySelector('[data-icon-desgaste="Desgaste de baja presion"]')
+      .classList.add('visible');
+    colorProf(tag, puntoRetiro, container);
+  }
+
+  if (leftValue > centerValue && centerValue < rightValue) {
+    container
+      .querySelectorAll('[data-icon-desgaste]')
+      .forEach((icon) => icon.classList.remove('visible'));
+    container
+      .querySelector('[data-icon-desgaste="Desgaste alta presión"]')
+      .classList.add('visible');
+    colorProf(tag, puntoRetiro, container);
+  }
+
+  if (leftValue === centerValue && leftValue === rightValue) {
+    container
+      .querySelectorAll('[data-icon-desgaste]')
+      .forEach((icon) => icon.classList.remove('visible'));
+  }
+};
+
+const validaciones = (tireObject, target) => {
+  const {
+    left,
+    center,
+    right,
+    tag,
+    puntoRetiro,
+    container,
+    max,
+    min,
+    desgasteCompany,
+    anteriorLlanta,
+  } = tireObject;
   const leftValue = parseFloat(left.value);
   const centerValue = parseFloat(center.value);
   const rightValue = parseFloat(right.value);
   const mm = parseFloat(
     document.querySelector('.double-tire')?.getAttribute('data-mm-dif')
-  ) || null;
+  );
 
-  if (target === left) {
-    // ! Si es solo la izquierda
-    if (center.value === '' && right.value === '') {
-      // ! Si la izquierda deja de tener valor
-      if (left.value === '') {
-        tag.parentElement.classList.remove('bad', 'yellow', 'good');
-        tag.textContent = '-';
+  switch (target) {
+    case left:
+      // ! Si es solo la izquierda
+      if (center.value === '' && right.value === '') {
+        // ! Si la izquierda deja de tener valor
+        if (left.value === '') {
+          tag.parentElement.classList.remove('bad', 'yellow', 'good');
+          tag.textContent = '-';
+          desdualizacion(tag, mm);
+          colorProf(tag, puntoRetiro, container);
+          return;
+        }
+
+        tag.textContent = leftValue;
         desdualizacion(tag, mm);
         colorProf(tag, puntoRetiro, container);
-        return;
       }
-
-      tag.textContent = leftValue;
-      desdualizacion(tag, mm);
       colorProf(tag, puntoRetiro, container);
-    }
-    colorProf(tag, puntoRetiro, container);
-  }
+      break;
 
-  if (target === center) {
-    if (left.value === '' && right.value === '') {
-      if (center.value === '') {
-        tag.parentElement.classList.remove('bad', 'yellow', 'good');
-        tag.textContent = '-';
-        desdualizacion(tag, mm);
-        colorProf(tag, puntoRetiro, container);
-        return;
-      }
-      tag.textContent = centerValue;
+    case center:
+      if (left.value === '' && right.value === '') {
+        if (center.value === '') {
+          tag.parentElement.classList.remove('bad', 'yellow', 'good');
+          tag.textContent = '-';
+          desdualizacion(tag, mm);
+          colorProf(tag, puntoRetiro, container);
+          return;
+        }
+        tag.textContent = centerValue;
 
-      colorProf(tag, puntoRetiro, container);
-      desdualizacion(tag, mm);
-      return;
-    }
-    colorProf(tag, puntoRetiro, container);
-  }
-
-  if (target === right) {
-    if (left.value === '' && center.value === '') {
-      if (right.value === '') {
-        tag.parentElement.classList.remove('bad', 'yellow', 'good');
-        tag.textContent = '-';
         colorProf(tag, puntoRetiro, container);
         desdualizacion(tag, mm);
         return;
       }
-
-      tag.textContent = rightValue;
-
       colorProf(tag, puntoRetiro, container);
-      desdualizacion(tag, mm);
-      return;
-    }
-    colorProf(tag, puntoRetiro, container);
+      break;
+
+    case right:
+      if (left.value === '' && center.value === '') {
+        if (right.value === '') {
+          tag.parentElement.classList.remove('bad', 'yellow', 'good');
+          tag.textContent = '-';
+          colorProf(tag, puntoRetiro, container);
+          desdualizacion(tag, mm);
+          return;
+        }
+
+        tag.textContent = rightValue;
+
+        colorProf(tag, puntoRetiro, container);
+        desdualizacion(tag, mm);
+        return;
+      }
+      colorProf(tag, puntoRetiro, container);
+      break;
+
+    default:
+      break;
   }
 
   if (target === left || target === center || target === right) {
@@ -232,68 +313,65 @@ const validaciones = (
     }
 
     // * Evaluación de los 3 ejes
+
     if (left.value !== '' && center.value !== '' && right.value !== '') {
       const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      let dif,
+        companyFloat = parseFloat(desgasteCompany),
+        anteriorFloat;
 
       tag.textContent = minValue;
 
       colorProf(tag, puntoRetiro, container);
       desdualizacion(tag, mm);
 
-      if (
-        (rightValue < leftValue && rightValue < centerValue) ||
-        (rightValue < leftValue && rightValue === centerValue)
-      ) {
-        container
-          .querySelectorAll('[data-icon-desgaste]')
-          .forEach((icon) => icon.classList.remove('visible'));
-        container
-          .querySelector(
-            '[data-icon-desgaste="Desgaste inclinado a la derecha"]'
-          )
-          .classList.add('visible');
-        colorProf(tag, puntoRetiro, container);
-      }
+      dif = maxValue - minValue;
 
-      if (
-        (leftValue < centerValue && leftValue < rightValue) ||
-        (leftValue < rightValue && leftValue === centerValue)
-      ) {
-        container
-          .querySelectorAll('[data-icon-desgaste]')
-          .forEach((icon) => icon.classList.remove('visible'));
-        container
-          .querySelector(
-            '[data-icon-desgaste="Desgaste inclinado a la izquierda"]'
-          )
-          .classList.add('visible');
-        colorProf(tag, puntoRetiro, container);
-      }
+      console.log({ dif, companyFloat });
 
-      if (leftValue < centerValue && centerValue > rightValue) {
-        container
-          .querySelectorAll('[data-icon-desgaste]')
-          .forEach((icon) => icon.classList.remove('visible'));
-        container
-          .querySelector('[data-icon-desgaste="Desgaste  costilla interna"]')
-          .classList.add('visible');
-        colorProf(tag, puntoRetiro, container);
-      }
+      if (dif > companyFloat) {
+        if (anteriorLlanta === 'None') {
+          tresProfundidades({
+            rightValue,
+            leftValue,
+            centerValue,
+            container,
+            tag,
+            puntoRetiro,
+          });
+        } else {
+          return;
+        }
 
-      if (leftValue > centerValue && centerValue < rightValue) {
-        container
-          .querySelectorAll('[data-icon-desgaste]')
-          .forEach((icon) => icon.classList.remove('visible'));
-        container
-          .querySelector('[data-icon-desgaste="Desgaste alta presión"]')
-          .classList.add('visible');
-        colorProf(tag, puntoRetiro, container);
-      }
+        if (!isNaN(anteriorLlanta)) {
+          anteriorFloat = parseFloat(anteriorLlanta);
 
-      if (leftValue === centerValue && leftValue === rightValue) {
-        container
-          .querySelectorAll('[data-icon-desgaste]')
-          .forEach((icon) => icon.classList.remove('visible'));
+          if (dif > anteriorFloat) {
+            tresProfundidades({
+              rightValue,
+              leftValue,
+              centerValue,
+              container,
+              tag,
+              puntoRetiro,
+            });
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      } else {
+        // tresProfundidades({
+        //   rightValue,
+        //   leftValue,
+        //   centerValue,
+        //   container,
+        //   tag,
+        //   puntoRetiro,
+        // });
+        return;
       }
     }
   }
@@ -310,10 +388,33 @@ export const profundidad = () => {
 
     let tag = document.querySelector(`[data-prof-tag="profundidad-${id}"]`);
     let puntoRetiro = parseFloat(profundidad.getAttribute('data-punto-retiro'));
+    let max = profundidad.getAttribute('data-max-profundidad-act');
+    let min = profundidad.getAttribute('data-min-profundidad-act');
+    let desgasteCompany = profundidad.getAttribute(
+      'data-mm-de-desgaste-compania'
+    );
+
+    let anteriorLlanta = profundidad.getAttribute(
+      'data-desgaste-anterior-llanta'
+    );
+
     let container = document.querySelector(`[data-container-id="${id}"]`);
 
+    const tire = {
+      left,
+      center,
+      right,
+      tag,
+      puntoRetiro,
+      container,
+      max,
+      min,
+      desgasteCompany,
+      anteriorLlanta,
+    };
+
     document.addEventListener('input', ({ target }) =>
-      validaciones(target, left, center, right, tag, puntoRetiro, container)
+      validaciones(tire, target)
     );
   });
 };

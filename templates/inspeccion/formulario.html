@@ -217,12 +217,13 @@
                 <input
                   class="form__field"
                   type="number"
-                  max = {{ ej.6.min_izquierda }}
+                  data-llantamax = {{ ej.6.min_izquierda }}
                   min="0"
                   step="any"
                   placeholder="Profundidad izquierda"
                   name="profundidad_izquierda"
                   autocomplete="off"
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   Izquierda
@@ -235,11 +236,12 @@
                   class="form__field"
                   type="number"
                   min="0"
-                  max = {{ ej.6.min_central }}
+                  data-llantamax = {{ ej.6.min_central }}
                   step="any"
                   placeholder="Profundidad central"
                   name="profundidad_central"
                   autocomplete="off" 
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   Central
@@ -254,11 +256,12 @@
                   class="form__field"
                   type="number"
                   min="0"
-                  max = {{ ej.6.min_derecha }}
+                  data-llantamax = {{ ej.6.min_derecha }}
                   step="any"
                   placeholder="Profundidad derecha"
                   name="profundidad_derecha"
-                  autocomplete="off"                  
+                  autocomplete="off"   
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   Derecha
@@ -273,13 +276,14 @@
                 <input
                   class="form__field"
                   type="number"
-                  max = {{ ej.6.min_izquierda }}
+                  data-llantamax = {{ ej.6.min_izquierda }}
                   min="0"
                   step="any"
                   placeholder="Profundidad izquierda"
                   name="profundidad_izquierda"
                   autocomplete="off"
                   value = {{ej.0.profundidad_izquierda}}
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   <span class="profundidad__max">{{ej.0.profundidad_izquierda}}</span>
@@ -292,12 +296,13 @@
                   class="form__field"
                   type="number"
                   min="0"
-                  max = {{ ej.6.min_central }}
+                  data-llantamax = {{ ej.6.min_central }}
                   step="any"
                   placeholder="Profundidad central"
                   name="profundidad_central"
                   autocomplete="off" 
                   value = {{ej.0.profundidad_central}}
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   <span class="profundidad__max">{{ej.0.profundidad_central}}</span>
@@ -310,12 +315,13 @@
                   class="form__field"
                   type="number"
                   min="0"
-                  max = {{ ej.6.min_derecha }}
+                  data-llantamax = {{ ej.6.min_derecha }}
                   step="any"
                   placeholder="Profundidad derecha"
                   name="profundidad_derecha"
                   autocomplete="off"   
-                  value = {{ej.0.profundidad_derecha}}               
+                  value = {{ej.0.profundidad_derecha}}    
+                  data-llantaPosicion="{{ ej.0.posicion }}"
                 />
                 <label for="min_profundidad" class="form__label">
                   <span class="profundidad__max">{{ej.0.profundidad_derecha}}</span>

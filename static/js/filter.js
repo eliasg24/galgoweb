@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
   searchFilters('#search-vehiculo', '#menu-vehiculo', '.search-item');
   searchFilters('#search-pos', '#menu-pos', '.search-item');
   searchFilters('#search-producto', '#menu-producto', '.search-item');
+  searchFilters('#search-taller', '#menu-taller', '.search-item');
 });
 
 /**

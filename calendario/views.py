@@ -167,6 +167,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                     func.quitar_llanta_de_carritos(llanta_nueva, perfil)
                     func.check_dualizacion(llanta_nueva)
                     func.check_dif_presion_duales(llanta_nueva)
+                    func.quitar_todo_observaciones(llanta)
                     
                     print('---------------')
                     
@@ -337,6 +338,9 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         
                         func.check_dualizacion(llanta_rotar)
                         func.check_dif_presion_duales(llanta_rotar)
+                        
+                        func.check_dualizacion(llanta)
+                        func.check_dif_presion_duales(llanta)
                     print('---------------')        
                     
             

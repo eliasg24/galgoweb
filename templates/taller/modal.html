@@ -134,25 +134,26 @@
                 </select>
               </label> -->
 
-              <label for="">Vehículo Origen</label>
+              <label for="">Vehículo destino</label>
               <input 
                 type="text" 
                 name="otroVehiculo" 
                 list="origen-vehiculo-{{ llanta.llanta.id }}"
                 placeholder="Vehículo"
               >
-
               <datalist id="origen-vehiculo-{{ llanta.llanta.id }}"></datalist>
-
+              <input type="hidden" name="destino-vehiculo" value="">
+              
               <label for="origen-llanta-{{ llanta.llanta.id }}">
-                Llanta de origen
+                Llanta de destino
                 <select
-                  name="llantaOrigen"
-                  id="origen-llanta-{{ llanta.llanta.id }}"
+                name="llantaOrigen"
+                id="origen-llanta-{{ llanta.llanta.id }}"
                 >
-                  <option value="">Elige una llanta...</option>
+                <option value="">Elige una llanta...</option>
                 </select>
               </label>
+              <input type="hidden" name="destino-llanta" value="">
               
               <label for="origen-km_montadoo-{{ llanta.llanta.id }}">
                 Km montado
@@ -205,7 +206,12 @@
       <label for="">Razón de desmontaje</label>
       <select name="razon" id="">
         <option value="">Seleccione una razón...</option>
-        <option value="razon 1">Razón 1</option>
+        <option value="Fin de vida">Fin de vida</option>
+        <option value="Daño Severo">Daño Severo</option>
+        <option value="Dualización">Dualización</option>
+        <option value="Montar en otra unidad">Montar en otra unidad</option>
+        <option value="Rotar a otro eje">Rotar a otro eje</option>
+        <option value="Obtener como llanta de servicio">Obtener como llanta de servicio</option>
       </select>
 
       <label for="">Almacen de retiro</label>

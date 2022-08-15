@@ -29,7 +29,7 @@
           <div class="text">Vehiculos</div>
         </a>
       </li>
-      {% if request.user.perfil.groups.get != "Pulpo Manager" %}
+      {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:almacen' %}">
           <span class="icon-warehouse"></span>
@@ -43,7 +43,7 @@
           <span class="text">Configuracion</span>
         </a>
       </li>
-      {% if request.user.perfil.groups.get != "Pulpo Manager" %}
+      {% if request.user.groups.get|stringformat:"s" != "Pulpo Manager" %}
       <li class="menu-item">
         <a class="center-icon" href="{% url 'dashboards:calendario' %}">
           <span class="icon-calendar1"></span>

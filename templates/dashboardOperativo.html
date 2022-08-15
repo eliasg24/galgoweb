@@ -10,7 +10,15 @@
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
 <title>DASHBOARD OPERATIVO</title>
 {% endblock head %} {% block content %}
-<iframe title="operativo" width="100%" height="99vh" src="https://app.powerbi.com/view?r=eyJrIjoiNjdmY2QzMTgtMDg1Yi00ZjVlLWFhNTUtNzAzODFkNjY3MTEyIiwidCI6IjYxNzRkNmFmLTgyZTAtNGEyZS04ODVhLWFmMzAzYzA5YzQzMyJ9&pageName=ReportSection918a87c6dfec9547e223" frameborder="0" allowFullScreen="true"></iframe>
+
+{% if link_operativo == None %}
+
+{% else %}
+
+  <iframe title="operativo" width="100%" height="99vh" src="{{ link_operativo }}" frameborder="0" allowFullScreen="true"></iframe>
+
+{% endif %}
+
 <!-- <main class="main-cont animate__animated animate__fadeIn">
   <header class="head-cont">
     <h2 class="title__operativo">DASHBOARD OPERATIVO</h2>

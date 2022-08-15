@@ -19,7 +19,7 @@
     </a>
     
     <div class="logo">
-      <img src="{% static 'images/aeto.svg' %}" alt="">
+      <img src="{% static 'images/perro-galgo.png' %}" alt="">
     </div>
   </header>
 
@@ -74,7 +74,7 @@
           <i class="bx bx-search"></i>
         </div>
 
-        <button type="button" class="btn btn-config">Seleccionar todas</button>
+        <button type="button" class="btn btn-config" id="select-all">Seleccionar todas</button>
 
       </div>
       <div class="list__cont">
@@ -116,6 +116,13 @@
     getTaller();
   });
 
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('#select-all')) {
+      console.log('click')
+      document.querySelector('.tire__list').querySelectorAll('input').forEach(input => input.checked = true);
+    }
+  });
+
   const ids = '{{ ids }}';
   const container = document.querySelector('.tire__list'),
         loader = document.querySelector('.icon-spinner2');
@@ -124,7 +131,6 @@
         
   const getProductos = () => {
     const productosInput = document.getElementById('producto');
-    console.log('getProductos');
     fetch(`${ location.origin }/api/panelrenovado?ids=${ ids }`)
       .then(res => res.json())
       .then(json => {
@@ -132,7 +138,6 @@
         json.productos.forEach(producto => {
           options += `<option value="${ producto.producto }">${ producto.producto }</option>`;
         })
-        console.log(productosInput.innerHTML)
         productosInput.innerHTML = options;
       })
       .catch(err => console.log(err));

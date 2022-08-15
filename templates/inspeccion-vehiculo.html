@@ -16,7 +16,7 @@
 <div class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-        <img src="{% static 'images/aeto.svg' %}" alt="logo">
+        <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
     </div>
   
     <h1>Inspección de vehículo</h1>
@@ -41,11 +41,11 @@
             class="form__field"
             type="number"
             {% if vehiculo_actual.km == None %}
-              min="0"
+              data-min="0"
             {% else %}
-              min="{{vehiculo_actual.km}}"
+              data-min="{{vehiculo_actual.km}}"
             {% endif %}
-            max="{{km_max}}"
+            data-vehiculomax="{{km_max}}"
             placeholder="producto"
             name="kilometraje"
             autocomplete="off"

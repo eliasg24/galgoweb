@@ -234,7 +234,7 @@ const validaciones = (
           .querySelectorAll('[data-icon-desgaste]')
           .forEach((icon) => icon.classList.remove('visible'));
         container
-          .querySelector('[data-icon-desgaste="Desgaste  costilla interna"]')
+          .querySelector('[data-icon-desgaste="Desgaste de baja presion"]')
           .classList.add('visible');
         colorProf(tag, puntoRetiro, container);
       }

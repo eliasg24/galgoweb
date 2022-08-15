@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/config2.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+<title>Configuracion</title>
+{% endblock head %}
+
+{% block content %}
+<div class="all-cont">
+    <section class="container">
+
+        <div class="form__container">
+
+            <nav class="head-cont">
+                <h1 class="con-title__text">CONFIGURACIÓN</h1>
+            </nav>
+
+            
+    
+            <article class="grid">
+                <div class="con" id="vehiculos">
+                    <div class="con-title">
+                        <h2 class="con-title__text">
+                            <span class="icon-upload-cloud"></span>
+                            ALTA DE PRODUCTOS
+                        </h2>
+                    </div>
+                    <div class="wrapper">
+                        <div class="con-sec">
+                            <div class="buttons">
+                                <div>
+                                    <form style="margin: 0"  method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="compania" value="{{user.perfil.compania}}">
+                                        <label>
+                                            <input type="file" name="file"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                        </label>
+                                        <label>
+                                            <a href="{% url 'dashboards:descargarCatalogoProductoVacio' %}"><p class="agregar">DESCARGAR FORMATO EXCEL</p></a>
+                                        </label>
+                                        <button class="btn btn-download w-100" value="excelform" type="submit">Continuar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </article>
+        
+    </section>
+</div>   
+
+{% endblock %}

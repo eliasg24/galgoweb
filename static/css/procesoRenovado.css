@@ -161,6 +161,7 @@ select {
   padding: 1rem;
   transition: all 0.2s ease-in;
   cursor: pointer;
+  filter: brightness(0.55);
 }
 
 .tire__input {
@@ -168,7 +169,8 @@ select {
 }
 
 .tire__input:checked ~ .tire__item {
-  filter: brightness(0.75);
+  filter: brightness(1);
+  filter: drop-shadow(0 0 2px #40bf77);
 }
 
 .icon-tire2 {

@@ -56,10 +56,11 @@ class ProductoForm(forms.ModelForm):
 
 class RenovadorForm(forms.ModelForm):
     # Model form del Renovador
+    compania = forms.ModelChoiceField(queryset=Compania.objects.all(), to_field_name = 'compania')
     class Meta:
         # Configuración del Form
         model = Renovador
-        fields = ["nombre", 'ciudad', 'marca']
+        fields = ["nombre", "compania", 'ciudad', 'marca']
 
 class DesechoForm(forms.ModelForm):
     # Model form del Desecho
@@ -215,8 +216,14 @@ class EdicionManual(forms.ModelForm):
     class Meta:
         model = Llanta
         fields = ("numero_economico", "producto", "vida", "km_montado", )
+        
+    def __init__(self, *args, **kwargs):
+        super(EdicionManual, self).__init__(*args, **kwargs)
+        self.fields['producto'].queryset = Producto.objects.filter(
+                                        compania=self.instance.compania.id)
 
 class InspeccionForm(forms.ModelForm):
     class Meta:
         model = Inspeccion
         fields = ('llanta', 'km_vehiculo', 'presion', 'observaciones')
+    

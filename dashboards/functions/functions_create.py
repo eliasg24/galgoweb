@@ -1,6 +1,7 @@
 # Utilities
 import csv
-from dashboards.models import Aplicacion, Bitacora, Compania, Inspeccion, Llanta, Perfil, Producto, Ubicacion, Vehiculo
+from dashboards.functions.functions import presion_establecida
+from dashboards.models import Aplicacion, Bitacora, Compania, Inspeccion, InspeccionVehiculo, Llanta, Perfil, Producto, Ubicacion, Vehiculo, Taller
 from datetime import date, datetime
 from openpyxl import load_workbook
 from itertools import count
@@ -1188,8 +1189,81 @@ def crear_llantas():
                                 fecha_de_entrada_inventario=date.today()
             )
 
+def crear_big_data_chida():
+
+    posiciones = []
+    posiciones.append("1LO")
+    posiciones.append("1LI")
+    posiciones.append("1RI")
+    posiciones.append("1RO")
+    posiciones.append("2LO")
+    posiciones.append("2LI")
+    posiciones.append("2RI")
+    posiciones.append("2RO")
+    for i in range(100000):
+        vehiculo = Vehiculo.objects.create(numero_economico=f"big-{i}",
+            modelo="International",
+            marca="X",
+            compania=Compania.objects.get(compania="pruebaBigData"),
+            ubicacion=Ubicacion.objects.get(nombre="BIgDataSucursal1"),
+            aplicacion=Aplicacion.objects.get(nombre="BigDataAplicacion1"),
+            numero_de_llantas=8,
+            clase="TRACTOR",
+            configuracion="T4.T4",
+            presion_establecida_1=100,
+            presion_establecida_2=100,
+            )
+
+        inspeccion_vehiculo = InspeccionVehiculo.objects.create(usuario=Perfil.objects.get(user__username="pruebabigdata"),
+                                                                vehiculo=Vehiculo.objects.get(numero_economico=f"big-{i}"),
+                                                                fecha=date.today()
+        )
+
+        ejes = vehiculo.configuracion.split(".")
+        for j in range(vehiculo.numero_de_llantas):
+            posicion = posiciones[j]
+
+            if ejes[int(posicion[0]) - 1][0] == "S":
+                nombre_de_eje = "Dirección"
+            if ejes[int(posicion[0]) - 1][0] == "D":
+                nombre_de_eje = "Tracción"
+            if ejes[int(posicion[0]) - 1][0] == "T":
+                nombre_de_eje = "Arrastre"
+            if ejes[int(posicion[0]) - 1][0] == "C":
+                nombre_de_eje = "Loco"
+            if ejes[int(posicion[0]) - 1][0] == "L":
+                nombre_de_eje = "Retractil"
+            llanta = Llanta.objects.create(numero_economico=f"big-{i}-{j}",
+                compania=Compania.objects.get(compania="pruebaBigData"),
+                vehiculo=Vehiculo.objects.get(numero_economico=f"big-{i}"),
+                ubicacion=Ubicacion.objects.get(nombre="BIgDataSucursal1"),
+                aplicacion=Aplicacion.objects.get(nombre="BigDataAplicacion1"),
+                taller=Taller.objects.get(nombre="tallerbigdata"),
+                tipo_de_eje=ejes[int(posicion[0]) - 1],
+                eje=posicion[0],
+                posicion=posicion,
+                nombre_de_eje=nombre_de_eje,
+                producto=Producto.objects.get(producto="NUEVA BIG HT3 11R22.5"),
+                fecha_de_entrada_inventario=date.today()
+            )
+
+            profundidad_inicial = llanta.producto.profundidad_inicial
+
+            inspecciones = Inspeccion.objects.create(tipo_de_evento="Inspección",
+                    inspeccion_vehiculo=inspeccion_vehiculo,
+                    llanta=llanta,
+                    posicion=posicion,
+                    tipo_de_eje=ejes[int(posicion[0]) - 1],
+                    eje=posicion[0],
+                    usuario=Perfil.objects.get(user__username="pruebabigdata"),
+                    vehiculo=vehiculo,
+                    profundidad_izquierda=profundidad_inicial,
+                    profundidad_central=profundidad_inicial,
+                    profundidad_derecha=profundidad_inicial,
+                )
+
 def crear_big_data():
-    vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania="pruebacarlos")).exclude(numero_economico__in=["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"])
+    vehiculos = Vehiculo.objects.filter(compania=Compania.objects.get(compania="pruebaBigData"))
     for vehiculo in vehiculos:
         posiciones = []
         ejes = vehiculo.configuracion.split(".")

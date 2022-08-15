@@ -68,24 +68,24 @@
 <!-- End input -->
 {% endif %}
 <div class="dropdown">
-  <button class="drop-btn" id="company" type="button">
+  <button class="drop-btn" id="compania" type="button">
     Compañia
     <span class="indicator">
       <i class="bx bxs-right-arrow"></i>
     </span>
   </button>
 
-  <ul class="drop-menu" id="menu-company">
+  <ul class="drop-menu" id="menu-compania">
     <li>
       <div class="drop-search">
-        <input type="search" id="search-company" class="drop-input" autocomplete="off" />
+        <input type="search" id="search-compania" class="drop-input" autocomplete="off" />
         <i class="bx bx-search"></i>
       </div>
     </li>
     <li>
-      <label for="all-company" class="input-check select-all">
+      <label for="all-compania" class="input-check select-all">
         Seleccionar todas
-        <input type="checkbox" id="all-company" />
+        <input type="checkbox" id="all-compania" />
         <span class="checkmark"></span>
       </label>
     </li>
@@ -93,7 +93,7 @@
     <li class="search-item">
       <label for="{{compania}}" class="input-check">
         {{compania}}
-        <input type="checkbox" name="compania" value="{{compania}}" id="{{compania}}" />
+        <input type="checkbox" name="compania" value="{{compania}}" id="{{compania}}" {% for c in companias_usuario %}{% if c|slugify == compania|slugify %}checked{% endif %}{% endfor %} />
         <span class="checkmark"></span>
       </label>
     </li>
@@ -128,7 +128,7 @@
       <!-- ! Genera un error -->
       <label for="{{sucursal}}" class="input-check">
         {{sucursal}}
-        <input type="checkbox" name="ubicacion" value="{{sucursal}}" id="{{sucursal}}" />
+        <input type="checkbox" name="ubicacion" value="{{sucursal}}" id="{{sucursal}}" {% for s in sucursales_usuario %}{% if s|slugify == sucursal|slugify %}checked{% endif %}{% endfor %} />
         <span class="checkmark"></span>
       </label>
     </li>
@@ -137,24 +137,24 @@
 </div>
 
 <div class="dropdown">
-  <button class="drop-btn" id="app" type="button">
+  <button class="drop-btn" id="aplicacion" type="button">
     Aplicación
     <span class="indicator">
       <i class="bx bxs-right-arrow"></i>
     </span>
   </button>
 
-  <ul class="drop-menu" id="menu-app">
+  <ul class="drop-menu" id="menu-aplicacion">
     <li>
       <div class="drop-search">
-        <input type="search" id="search-app" class="drop-input" autocomplete="off" />
+        <input type="search" id="search-aplicacion" class="drop-input" autocomplete="off" />
         <i class="bx bx-search"></i>
       </div>
     </li>
     <li>
-      <label for="all-app" class="input-check select-all">
+      <label for="all-aplicacion" class="input-check select-all">
         Seleccionar todas
-        <input type="checkbox" id="all-app" />
+        <input type="checkbox" id="all-aplicacion" />
         <span class="checkmark"></span>
       </label>
     </li>
@@ -162,7 +162,7 @@
     <li class="search-item">
       <label for="{{aplicacion}}" class="input-check">
         {{aplicacion}}
-        <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" />
+        <input type="checkbox" name="aplicacion" value="{{aplicacion}}" id="{{aplicacion}}" {% for a in aplicaciones_usuario %}{% if a|slugify == aplicacion|slugify %}checked{% endif %}{% endfor %} />
         <span class="checkmark"></span>
       </label>
     </li>
@@ -196,7 +196,7 @@
     <li class="search-item">
       <label for="{{taller}}" class="input-check">
         {{taller}}
-        <input type="checkbox" name="taller" value="{{taller}}" id="{{taller}}" />
+        <input type="checkbox" name="taller" value="{{taller}}" id="{{taller}}" {% for t in talleres_usuario %}{% if t|slugify == taller|slugify %}checked{% endif %}{% endfor %} />
         <span class="checkmark"></span>
       </label>
     </li>

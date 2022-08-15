@@ -375,6 +375,7 @@ class Llanta(models.Model):
     presion_de_salida = models.IntegerField(blank=True, null=True)
     presion_actual = models.IntegerField(blank=True, null=True)
     fecha_de_inflado = models.DateTimeField(null=True, blank=True)
+    primera_inspeccion = models.ForeignKey(Inspeccion, null=True, blank=True, on_delete=models.SET_NULL, related_name="inspecciones_first")
     ultima_inspeccion = models.ForeignKey(Inspeccion, null=True, blank=True, on_delete=models.SET_NULL, related_name="inspecciones")
     profundidad_izquierda = models.FloatField(blank=True, null=True)
     profundidad_central = models.FloatField(blank=True, null=True)
@@ -810,6 +811,7 @@ class LlantasSeleccionadas(models.Model):
 
 class Rendimiento(models.Model):
     # Modelo de la Bitácora del Desecho
+    year = models.IntegerField()
     mes = models.IntegerField(null=True, blank=True)
     llanta = models.ForeignKey(Llanta, on_delete=models.CASCADE, null=True, blank=True)
     mm_desgastados = models.FloatField(null=True, blank=True)
@@ -831,12 +833,49 @@ class Presupuesto(models.Model):
 
 
 class Tendencia(models.Model):
+    #? Tendencias por clase de vehiculo
     # Modelo de la Bitácora del Desecho
     fecha = models.DateField()
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
     clase = models.CharField(max_length=255 ,null=True, blank=True)
+    correctas_pulpo = models.FloatField()
+    inspecciones_a_tiempo = models.FloatField()
+    health = models.FloatField()
+    buena_presion = models.FloatField()
+    
+
+class TendenciaAplicacion(models.Model):
+    #? Tendencias por aplicacion
+    # Modelo de la Bitácora del Desecho
+    fecha = models.DateField()
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
+    aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
+    correctas_pulpo = models.FloatField()
+    inspecciones_a_tiempo = models.FloatField()
+    health = models.FloatField()
+    buena_presion = models.FloatField()
+    
+    
+class TendenciaUbicacion(models.Model):
+    #? Tendencias por aplicacion
+    # Modelo de la Bitácora del Desecho
+    fecha = models.DateField()
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
+    correctas_pulpo = models.FloatField()
+    inspecciones_a_tiempo = models.FloatField()
+    health = models.FloatField()
+    buena_presion = models.FloatField()
+    
+    
+class TendenciaCompania(models.Model):
+    #? Tendencias por aplicacion
+    # Modelo de la Bitácora del Desecho
+    fecha = models.DateField()
+    compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     health = models.FloatField()

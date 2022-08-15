@@ -6,11 +6,11 @@
             let tireTs = tire;
             const id = tireTs.dataset.id;
             const modal = document.querySelector(`[data-modal="${id}"]`);
-            modal === null || modal === void 0 ? void 0 : modal.classList.add('active');
+            modal?.classList.add('active');
             document.addEventListener('click', (e) => {
                 const target = e.target;
                 if (target.matches('.close-modal')) {
-                    modal === null || modal === void 0 ? void 0 : modal.classList.remove('active');
+                    modal?.classList.remove('active');
                 }
             });
         });
@@ -96,6 +96,14 @@
             </p>
             `
             : ''}
+            ${servicio.otroVehiculo.length >= 1
+            ? `
+            <p>
+              <strong>Vehículo Destino:</strong> 
+              ${servicio.otroVehiculo}
+            </p>
+            `
+            : ''}
             ${servicio.nuevaLlanta.length >= 1
             ? `<p><strong>Nueva llanta</strong>: ${servicio.nuevaLlanta}</p>`
             : ''}
@@ -103,7 +111,7 @@
             ? `<p><strong>Stock origen</strong>: ${servicio.stock}</p>`
             : ''}
             ${servicio.almacen_desmontaje.length >= 1
-            ? `<p><strong>Stock origen</strong>: ${servicio.almacen_desmontaje}</p>`
+            ? `<p><strong>Stock destino</strong>: ${servicio.almacen_desmontaje}</p>`
             : ''}
           </div>
       </div>
@@ -115,27 +123,34 @@
         const card = document.querySelector(`[data-servicioid="${serviceId}"]`);
         const modal = document.querySelector(`[data-modal="${tireId}"] form`);
         saveData = saveData.filter((item) => item.id_servicio !== serviceId);
-        card === null || card === void 0 ? void 0 : card.remove();
-        modal === null || modal === void 0 ? void 0 : modal.querySelectorAll('input, select, button').forEach((item) => {
+        card?.remove();
+        modal
+            ?.querySelectorAll('input, select, button')
+            .forEach((item) => {
             item.disabled = false;
         });
-        modal === null || modal === void 0 ? void 0 : modal.querySelectorAll('.form__services input').forEach((item) => {
+        modal
+            ?.querySelectorAll('.form__services input')
+            .forEach((item) => {
             item.checked = false;
         });
-        modal === null || modal === void 0 ? void 0 : modal.querySelectorAll('.card__config-modal input').forEach((item) => {
+        modal
+            ?.querySelectorAll('.card__config-modal input')
+            .forEach((item) => {
             if (item.type === 'radio') {
                 item.checked = false;
             }
             const tires = document.querySelector(`[data-rotar-id="${tireId}"] input[value="${tireId}"]`);
             tires.disabled = true;
         });
-        modal === null || modal === void 0 ? void 0 : modal.querySelectorAll('.form__view-body select').forEach((item) => {
+        modal
+            ?.querySelectorAll('.form__view-body select')
+            .forEach((item) => {
             item.value = '';
         });
         formHidden.value = JSON.stringify(saveData);
     };
     document.addEventListener('submit', (e) => {
-        var _a, _b;
         const target = e.target;
         if (target.matches('#taller-form')) {
             const date = document.querySelector('input[type="date"]'), time = document.querySelector('input[type="time"]'), user = document.querySelector('select[name="usuario"]'), km = document.querySelector('input[name="km_montado"]'), noKm = document.querySelector('input[name="no_km"]');
@@ -157,9 +172,10 @@
             const data = Object.fromEntries(new FormData(form));
             const formHidden = document.getElementById('hoja-servicio');
             formHidden.value = JSON.stringify(data);
-            (_a = document
-                .querySelector('.alert__success')) === null || _a === void 0 ? void 0 : _a.classList.add('active');
-            setTimeout(() => { var _a; return (_a = document.querySelector('.alert__success')) === null || _a === void 0 ? void 0 : _a.classList.remove('active'); }, 2000);
+            document
+                .querySelector('.alert__success')
+                ?.classList.add('active');
+            setTimeout(() => document.querySelector('.alert__success')?.classList.remove('active'), 2000);
             return;
         }
         e.preventDefault();
@@ -173,13 +189,22 @@
             .forEach((input) => (input.disabled = true));
         saveData.push(data);
         formHidden.value = JSON.stringify(saveData);
-        (_b = document
-            .querySelector('.alert__success')) === null || _b === void 0 ? void 0 : _b.classList.add('active');
-        setTimeout(() => { var _a; return (_a = document.querySelector('.alert__success')) === null || _a === void 0 ? void 0 : _a.classList.remove('active'); }, 2000);
+        document
+            .querySelector('.alert__success')
+            ?.classList.add('active');
+        setTimeout(() => document.querySelector('.alert__success')?.classList.remove('active'), 2000);
     });
     document.addEventListener('change', (e) => {
-        var _a;
         const target = e.target;
+        if (target.name === 'no_km') {
+            const kmInput = document.querySelector('[name="km_montado"]');
+            if (target.checked) {
+                kmInput.disabled = true;
+            }
+            else {
+                kmInput.disabled = false;
+            }
+        }
         if (target.type === 'date' ||
             target.type === 'time' ||
             target.name === 'usuario') {
@@ -187,9 +212,10 @@
             const data = Object.fromEntries(new FormData(form));
             const formHidden = document.getElementById('hoja-servicio');
             formHidden.value = JSON.stringify(data);
-            (_a = document
-                .querySelector('.alert__success')) === null || _a === void 0 ? void 0 : _a.classList.add('active');
-            setTimeout(() => { var _a; return (_a = document.querySelector('.alert__success')) === null || _a === void 0 ? void 0 : _a.classList.remove('active'); }, 2000);
+            document
+                .querySelector('.alert__success')
+                ?.classList.add('active');
+            setTimeout(() => document.querySelector('.alert__success')?.classList.remove('active'), 2000);
         }
         if (target.matches('[data-vehicleFix]')) {
             const formHidden = document.getElementById('vehiculo-data');
@@ -264,10 +290,10 @@
 })();
 (() => {
     document.addEventListener('change', (e) => {
-        var _a;
         const target = e.target;
         if (target.name === 'stock') {
-            const llanta = (_a = target.nextElementSibling) === null || _a === void 0 ? void 0 : _a.nextElementSibling;
+            const llanta = target.nextElementSibling
+                ?.nextElementSibling;
             switch (target.value) {
                 case 'nueva':
                     fetch('/api/tiresearchtaller?inventario=Nueva')
@@ -320,27 +346,34 @@
 (() => {
     document.addEventListener('change', (e) => {
         const target = e.target;
-        const origen = document.getElementById(`origen-llanta-${target.dataset.radioid}`);
-        const vehiculoOrigen = document.getElementById(`origen-vehiculo-${target.dataset.radioid}`);
-        const kmMontado = document.getElementById(`origen-km_montadoo-${target.dataset.radioid}`);
         if (target.value === 'mismo') {
             const tires = document.querySelector(`[data-rotar-id="${target.dataset.radioid}"] input[value="${target.dataset.radioid}"]`);
             tires.disabled = true;
         }
         if (target.value === 'otro') {
+            const origen = document.getElementById(`origen-llanta-${target.dataset.radioid}`);
+            const vehiculoOrigen = document.getElementById(`origen-vehiculo-${target.dataset.radioid}`);
+            const kmMontado = document.getElementById(`origen-km_montadoo-${target.dataset.radioid}`);
+            const container = origen.parentElement?.parentElement;
+            const destinoVehiculo = container?.querySelector('[name="destino-vehiculo"]');
+            const destinoLlanta = container?.querySelector('[name="destino-llanta"]');
+            origen.addEventListener('change', (e) => {
+                destinoLlanta.value = origen.value;
+            });
             origen.innerHTML = `<option value="">Seleccione una llanta</option>`;
             const inputOrigen = vehiculoOrigen.previousElementSibling;
             let list = [];
             fetch('/api/vehicleandtiresearchtaller')
                 .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                 .then((json) => {
+                console.log(json);
                 json.vehiculos_list.forEach((item) => {
-                    vehiculoOrigen.innerHTML += `<option value="${item.id}">${item.numero_economico}</option>`;
+                    vehiculoOrigen.innerHTML += `<option value="${item.numero_economico}"></option>`;
                 });
                 list = Array(...vehiculoOrigen.querySelectorAll('option')).map((item) => item.value);
             })
                 .catch((error) => console.error(error));
-            inputOrigen === null || inputOrigen === void 0 ? void 0 : inputOrigen.addEventListener('change', (e) => {
+            inputOrigen?.addEventListener('change', (e) => {
                 if (inputOrigen.value === '')
                     return;
                 if (!list.includes(inputOrigen.value)) {
@@ -349,14 +382,15 @@
                     return;
                 }
                 fetch('/api/vehicleandtiresearchtaller?id_select=' +
-                    inputOrigen.value.toLocaleLowerCase())
+                    inputOrigen.value)
                     .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-                    .then((json) => {
-                    kmMontado.max = json.km_max || '';
-                    kmMontado.min = json.km_min || '';
+                    .then(({ km_max, km_min, llantas }) => {
+                    console.log(llantas);
+                    kmMontado.max = km_max || '';
+                    kmMontado.min = km_min || '';
                     origen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
-                    origen.innerHTML += json.llantas.map((item) => {
-                        return `<option value="${item.id}">${item.posicion}</option>`;
+                    origen.innerHTML += llantas.map((item) => {
+                        return `<option value="${item.id}">${item.numero_economico} - ${item.posicion}</option>`;
                     });
                 })
                     .catch((error) => console.error(error));

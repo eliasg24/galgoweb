@@ -12,7 +12,7 @@ import numpy
 
 from dashboards.functions import functions
 from dashboards.functions.functions import DiffDays, CastDate, min_profundidad, porcentaje
-from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Presupuesto, Tendencia, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
+from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Presupuesto, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
 
 from utilidades.functions import functions as utilidades
 class CompaniaData(View):
@@ -218,8 +218,8 @@ class LlantaData(View):
         compania = perfil.compania
         llantas = Llanta.objects.filter(compania=compania
         ).annotate(
-            health=Case(When(observaciones__color__in=["Rojo"], then=False), default=True)
-        ).annotate(
+            health=Case(When(observaciones__color__in=["Rojo", "Amarillo"], then=False), default=True),
+        
             punto_de_retiro = Case(
                 When(nombre_de_eje="Dirección", then=F("vehiculo__compania__punto_retiro_eje_direccion")),
                 When(nombre_de_eje="Tracción", then=F("vehiculo__compania__punto_retiro_eje_traccion")),
@@ -233,21 +233,21 @@ class LlantaData(View):
                 When(Q(profundidad_izquierda=None) & Q(profundidad_central=None), then=Value(3)), 
                 When(Q(profundidad_izquierda=None), then=Value(4)), 
                 When(Q(profundidad_central=None), then=Value(5)), 
-                When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField())
-        ).annotate(min_profundidad=
-            Case(
-                When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")),
-                When(p1=1, then=F("profundidad_izquierda")), 
-                When(p1=2, then=F("profundidad_central")), 
-                When(p1=3, then=F("profundidad_derecha")), 
-                When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), 
-                When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), 
-                When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), 
-                output_field=FloatField())
-        ).annotate(
+                When(Q(profundidad_derecha=None), then=Value(6)), default=0, output_field=IntegerField()),
+            min_profundidad=
+                Case(
+                    When(p1=0, then=Least("profundidad_izquierda", "profundidad_central", "profundidad_derecha")),
+                    When(p1=1, then=F("profundidad_izquierda")), 
+                    When(p1=2, then=F("profundidad_central")), 
+                    When(p1=3, then=F("profundidad_derecha")), 
+                    When(p1=4, then=Least("profundidad_central", "profundidad_derecha")), 
+                    When(p1=5, then=Least("profundidad_izquierda", "profundidad_derecha")), 
+                    When(p1=6, then=Least("profundidad_izquierda", "profundidad_central")), 
+                    output_field=FloatField()),
+        
             ubicacion_llanta = F('vehiculo__ubicacion__nombre'),
             aplicacion_llanta = F('vehiculo__aplicacion__nombre'),
-        ).annotate(
+        
             presion_establecida = Case(
                  When(eje=1, then=F('vehiculo__presion_establecida_1')),
                  When(eje=2, then=F('vehiculo__presion_establecida_2')),
@@ -271,7 +271,7 @@ class LlantaData(View):
                 When( min_profundidad__lte = F('punto_de_retiro'), then = Value('baja') ),
                 default = Value('buena')
             )
-        )
+        ).distinct()
         #Serializar data
         llantas = list(llantas.values(
                             "status_presion",
@@ -479,6 +479,7 @@ class RendimientoData(View):
             km_montado = F('llanta__km_montado')
             
         ).annotate(
+            year_ = F('year'),
             mes_ = F('mes'),
             numero_economico_ = F('numero_economico'),
             mm_desgastados_ = F('mm_desgastados'),
@@ -515,6 +516,7 @@ class RendimientoData(View):
             sucursal_vehiculo, aplicacion_vehiculo, ultimo_vehiculo, posicion, fecha_de_entrada_inventario, vida, taller
             """
         rendimientos = list(rendimientos.values(
+            "year_",
             "mes_",
             "numero_economico_",
             "mm_desgastados_",
@@ -659,6 +661,7 @@ class RendimientoActualData(View):
                 default = F('producto__precio') / F('km_actual')
             )
             ).annotate(
+            year_ = Value(date.today().year),
             mes_ = F('mes'),
             numero_economico_ = F('numero_economico'),
             mm_desgastados_ = F('mm_desgastados'),
@@ -698,6 +701,7 @@ class RendimientoActualData(View):
             sucursal_vehiculo, aplicacion_vehiculo, ultimo_vehiculo, posicion, fecha_de_entrada_inventario, vida, taller
             """
         rendimientos = list(rendimientos.values(
+            "year_",
             "mes_",
             "numero_economico_",
             "mm_desgastados_",
@@ -1052,6 +1056,90 @@ class TendenciaData(View):
             "ubicacion__nombre",
             "aplicacion__nombre",
             "clase",
+            "correctas_pulpo",
+            "inspecciones_a_tiempo",
+            "health",
+            "buena_presion",
+        ))
+        
+        dict_context = {
+            'tendencias': tendencias,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
+
+class TendenciaDataAplicacion(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        tendencias = TendenciaAplicacion.objects.filter(compania=compania)
+        #Serializar data
+        tendencias = list(tendencias.values(
+            "fecha",
+            "compania__compania",
+            "ubicacion__nombre",
+            "aplicacion__nombre",
+            "correctas_pulpo",
+            "inspecciones_a_tiempo",
+            "health",
+            "buena_presion",
+        ))
+        
+        dict_context = {
+            'tendencias': tendencias,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+    
+class TendenciaDataUbicacion(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        tendencias = TendenciaUbicacion.objects.filter(compania=compania)
+        #Serializar data
+        tendencias = list(tendencias.values(
+            "fecha",
+            "compania__compania",
+            "ubicacion__nombre",
+            "correctas_pulpo",
+            "inspecciones_a_tiempo",
+            "health",
+            "buena_presion",
+        ))
+        
+        dict_context = {
+            'tendencias': tendencias,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+
+class TendenciaDataCompania(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        tendencias = TendenciaCompania.objects.filter(compania=compania)
+        #Serializar data
+        tendencias = list(tendencias.values(
+            "fecha",
+            "compania__compania",
             "correctas_pulpo",
             "inspecciones_a_tiempo",
             "health",

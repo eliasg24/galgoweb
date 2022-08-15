@@ -30,6 +30,27 @@
         <input
           class="form__field"
           type="text"
+          placeholder="compania"
+          name="compania"
+          list="compania"
+          {% if renovador.compania %}value="{{renovador.compania}}"{% endif %}
+          autocomplete="off"
+          required
+        />
+        <datalist id="compania">
+          {% for compania in companias %}
+            <option value="{{compania}}">{{compania}}</option>
+          {% endfor %}
+        </datalist>
+        <label for="compania" class="form__label">
+          Compania
+        </label>
+      </div>
+
+      <div class="form__group field">
+        <input
+          class="form__field"
+          type="text"
           placeholder="ciudad"
           name="ciudad"
           {% if renovador.ciudad %}value="{{renovador.ciudad}}"{% endif %}

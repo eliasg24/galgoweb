@@ -6,7 +6,7 @@ from django.contrib import admin
 # Models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import RelatedField
-from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, Presupuesto, ServicioLlanta, ServicioVehiculo, Tendencia, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden, Bitacora_Desecho, Rendimiento
+from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, HistoricoLlanta, InspeccionVehiculo, LlantasSeleccionadas, OrdenDesecho, Presupuesto, ServicioLlanta, ServicioVehiculo, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Tendencias, Ubicacion, Vehiculo, Perfil, Bitacora, Llanta, Inspeccion, Producto, Renovador, Desecho, Observacion, Rechazo, Taller, Orden, Bitacora_Desecho, Rendimiento
 
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
@@ -14,6 +14,20 @@ class BitacorasAdmin(admin.ModelAdmin):
     list_display = ('vehiculo', 'presion_de_entrada', 'presion_de_salida', 'compania', 'fecha_de_inflado')
     search_fields= ('vehiculo__numero_economico',)
     list_filter = ('fecha_de_inflado', 'compania')
+    readonly_fields = (
+        "llanta_1",
+        "llanta_2",
+        "llanta_3",
+        "llanta_4",
+        "llanta_5",
+        "llanta_6",
+        "llanta_7",
+        "llanta_8",
+        "llanta_9",
+        "llanta_10",
+        "llanta_11",
+        "llanta_12"
+)
     def clase(self, obj):
         if obj.vehiculo:
             return obj.vehiculo.clase
@@ -25,6 +39,21 @@ class BitacorasProAdmin(admin.ModelAdmin):
     search_fields= ('vehiculo__numero_economico',)
     list_filter = ('fecha_de_inflado', 'compania')
     verbose_name_plural = "Bitacoras Pro"
+    readonly_fields = (
+        "llanta_1",
+        "llanta_2",
+        "llanta_3",
+        "llanta_4",
+        "llanta_5",
+        "llanta_6",
+        "llanta_7",
+        "llanta_8",
+        "llanta_9",
+        "llanta_10",
+        "llanta_11",
+        "llanta_12"
+)
+
 
 @admin.register(Bitacora_Desecho)
 class BitacorasDesechoAdmin(admin.ModelAdmin):
@@ -71,9 +100,11 @@ class VehiculosAdmin(admin.ModelAdmin):
 @admin.register(Llanta)
 class LlantasAdmin(admin.ModelAdmin):
     # Admin de las Llantas
-    list_display = ('numero_economico', "compania", "km_actual", "km_montado", "vehiculo", "producto", 'posicion', "profundidad_izquierda", "profundidad_central", "profundidad_derecha", 'tirecheck', "vehiculo", 'presion_de_entrada', 'presion_de_salida', 'fecha_de_inflado', 'ultima_inspeccion', 'nombre_de_eje', 'vida', 'tipo_de_eje', 'eje')
+    list_display = ('numero_economico', 'inventario', 'posicion', 'tipo_de_eje', 'eje', "compania", "patito", "km_actual", "km_montado", "vehiculo", "producto", "profundidad_izquierda", "profundidad_central", "profundidad_derecha", 'tirecheck', "vehiculo", 'presion_de_entrada', 'presion_de_salida', 'fecha_de_inflado', 'ultima_inspeccion', 'nombre_de_eje', 'vida')
     search_fields= ('numero_economico',)
-    list_filter = ('compania', "km_actual", "km_montado", "inventario", "vehiculo", 'tipo_de_eje')
+    list_filter = ("patito", 'compania', "km_actual", "km_montado", "inventario", "vehiculo", 'tipo_de_eje')
+    readonly_fields = ("primera_inspeccion", "ultima_inspeccion")
+    
     
 
 @admin.register(Inspeccion)
@@ -82,6 +113,8 @@ class InspeccionesAdmin(admin.ModelAdmin):
     list_display = ('id', 'llanta', "profundidad_izquierda", "profundidad_central", "profundidad_derecha", 'fecha_hora', "km_vehiculo")
     search_fields= ('llanta__numero_economico',)
     list_filter = ('llanta__compania', 'llanta')
+    readonly_fields = ("llanta", "inspeccion_vehiculo")
+    
     def get_view_count(self, obj):
         return obj.llanta.producto
     
@@ -156,7 +189,7 @@ class OrdenAdmin(admin.ModelAdmin):
 @admin.register(OrdenDesecho)
 class OrdenDesechoAdmin(admin.ModelAdmin):
     #Admin de órdenes
-    list_display = ('folio', 'compania')
+    list_display = ('folio', 'compania', 'desecho')
     
 @admin.register(LlantasSeleccionadas)
 class LlantasSeleccionadasAdmin(admin.ModelAdmin):
@@ -180,12 +213,32 @@ class ServicioLlantaAdmin(admin.ModelAdmin):
 @admin.register(Rendimiento)
 class RendimientoAdmin(admin.ModelAdmin):
     # Admin del Perfil
-    list_display = ('mes', 'llanta')
+    list_display = ('year' ,'mes', 'llanta')
 
 @admin.register(Tendencia)
 class TendenciaAdmin(admin.ModelAdmin):
     # Admin del Perfil
-    list_display = ('fecha', 'clase', 'compania')
+    list_display = ('fecha', 'compania', 'ubicacion', 'aplicacion',  'clase')
+    list_filter = ('compania',)
+    
+    
+@admin.register(TendenciaAplicacion)
+class TendenciaAppAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('fecha', 'compania', 'ubicacion', 'aplicacion')
+    list_filter = ('compania',)
+
+@admin.register(TendenciaUbicacion)
+class TendenciaUbiAdmin(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('fecha', 'compania', 'ubicacion')
+    list_filter = ('compania',)
+    
+@admin.register(TendenciaCompania)
+class TendenciaComp(admin.ModelAdmin):
+    # Admin del Perfil
+    list_display = ('fecha', 'compania')
+    list_filter = ('compania',)
 
 @admin.register(Presupuesto)
 class PresupuestoAdmin(admin.ModelAdmin):

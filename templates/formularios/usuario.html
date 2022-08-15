@@ -14,7 +14,7 @@
 
   <header class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/aeto.svg' %}" alt="logo">
+      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
     </div>
 
     <h1>Formulario de usuario</h1>
@@ -150,21 +150,46 @@
     );
 
     selector.addEventListener('change', (e) => {
-      selector.checked
-        ? checkboxs.forEach((check) => (check.checked = true))
-        : checkboxs.forEach((check) => (check.checked = false));
+      if (selector.checked) {
+        checkboxs.forEach((check) => (check.checked = true));
+      } else {
+        checkboxs.forEach((check) => (check.checked = false));
+      }
     });
-
+    
     checkboxs.forEach((item) => {
       item.addEventListener('change', (e) => {
         let notAll = false;
-
+        
         checkboxs.forEach((item) => {
-          if (!item.checked) notAll = true;
-          if (notAll) selector.checked = false;
+          if (!item.checked) {
+            notAll = true;
+          } 
+          
+          if (notAll) {
+            selector.checked = false
+          }
         });
+        
+        // Manejar el seleccionador
+        if (item.checked) {
+          if (item.name === 'ubicacion') {
+            document.getElementById('sucursal').style.color = 'mediumspringgreen';
+            return;
+          } 
+          
+          document.getElementById(item.name).style.color = 'mediumspringgreen'
+        } else {
+          if (item.name === 'ubicacion') {
+            document.getElementById('sucursal').style.color = 'var(--colorv20)';
+            return;
+          } 
+          document.getElementById(item.name).style.color = 'var(--colorv20)';
+        }
+
       });
     });
+
   };
 
   const dropdown = (button = '', menu = '') => {
@@ -189,13 +214,13 @@
       });
   };
 
-  handleSelectAll({ container: 'menu-company', selectAll: 'all-company' });
+  handleSelectAll({ container: 'menu-compania', selectAll: 'all-compania' });
   handleSelectAll({ container: 'menu-sucursal', selectAll: 'all-sucursal' });
-  handleSelectAll({ container: 'menu-app', selectAll: 'all-app' });
+  handleSelectAll({ container: 'menu-aplicacion', selectAll: 'all-aplicacion' });
   handleSelectAll({ container: 'menu-taller', selectAll: 'all-taller' });
-  dropdown('company', 'menu-company');
+  dropdown('compania', 'menu-compania');
   dropdown('sucursal', 'menu-sucursal');
-  dropdown('app', 'menu-app');
+  dropdown('aplicacion', 'menu-aplicacion');
   dropdown('taller', 'menu-taller');
 </script>
 

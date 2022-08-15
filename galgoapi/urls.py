@@ -8,7 +8,11 @@ from galgoapi import views
 urlpatterns = [
     
     #-----------------------A-----------------------
-    
+    path(
+        route="api/GalgoAplicaciones/",
+        view=views.GalgoAplicaciones.as_view(),
+        name="GalgoAplicaciones"
+    ),
     #-----------------------B-----------------------
      
     #-----------------------C-----------------------
@@ -21,18 +25,13 @@ urlpatterns = [
     
     #-----------------------G-----------------------
     
-    path(
-        route="api/GalgoSucursales/",
-        view=views.GalgoSucursales.as_view(),
-        name="GalgoSucursales"
-    ),
     
-    path(
-        route="api/GalgoAplicaciones/",
-        view=views.GalgoAplicaciones.as_view(),
-        name="GalgoAplicaciones"
-    )
-        
+    
+   
+    
+    
+    
+  
     #-----------------------H-----------------------
 
     #-----------------------I-----------------------
@@ -42,6 +41,12 @@ urlpatterns = [
     #-----------------------K-----------------------
     
     #-----------------------L-----------------------
+    
+    path(
+        route="api/GalgoLlantas/",
+        view=views.GalgoLlantas.as_view(),
+        name="GalgoLlantas"
+    ),
     
     #-----------------------M-----------------------
     
@@ -58,13 +63,23 @@ urlpatterns = [
     #-----------------------R-----------------------
 
     #-----------------------S-----------------------
-
+    path(
+        route="api/GalgoSucursales/",
+        view=views.GalgoSucursales.as_view(),
+        name="GalgoSucursales"
+    ),
     #-----------------------T-----------------------
 
     #-----------------------U-----------------------
     
     #-----------------------V-----------------------
-
+    
+    path(
+        route="api/GalgoVehiculos/",
+        view=views.GalgoVehiculos.as_view(),
+        name="GalgoVehiculos"
+    ),
+  
     #-----------------------W-----------------------
 
     #-----------------------X-----------------------

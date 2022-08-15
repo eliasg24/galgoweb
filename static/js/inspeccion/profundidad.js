@@ -109,7 +109,7 @@ const tresProfundidades = ({
       .querySelectorAll('[data-icon-desgaste]')
       .forEach((icon) => icon.classList.remove('visible'));
     container
-      .querySelector('[data-icon-desgaste="Desgaste  costilla interna"]')
+      .querySelector('[data-icon-desgaste="Desgaste de baja presion"]')
       .classList.add('visible');
     colorProf(tag, puntoRetiro, container);
   }
@@ -147,6 +147,7 @@ const validaciones = (tireObject, target) => {
   const leftValue = parseFloat(left.value);
   const centerValue = parseFloat(center.value);
   const rightValue = parseFloat(right.value);
+
   const mm = parseFloat(
     document.querySelector('.double-tire')?.getAttribute('data-mm-dif')
   );
@@ -327,8 +328,6 @@ const validaciones = (tireObject, target) => {
       desdualizacion(tag, mm);
 
       dif = maxValue - minValue;
-
-      console.log({ dif, companyFloat });
 
       if (dif > companyFloat) {
         if (anteriorLlanta === 'None') {

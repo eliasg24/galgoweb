@@ -25,13 +25,16 @@ from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Roun
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+import pytz
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, TemplateView, DetailView, DeleteView, UpdateView, FormView
 from django.views.generic.base import View
 from psycopg2 import IntegrityError
 from requests import request
-
+from openpyxl.styles import Font
+import logging
+logging.basicConfig( level=logging.DEBUG )
 # Functions
 from dashboards.functions import functions, functions_ftp, functions_create, functions_excel
 from dashboards.functions.functions import DiffDays, CastDate, mala_entrada, presion_establecida, presupuesto
@@ -59,21 +62,13 @@ import openpyxl
 from openpyxl.chart import BarChart, Reference
 import os
 import pandas as pd
-from spyne import ComplexModel, Iterable, Array
-from spyne.application import Application
-from spyne.decorator import rpc
-from spyne.model.fault import Fault
-from spyne.model.primitive import Unicode, Integer, String, Float, Date
-from spyne.protocol.http import HttpRpc
-from spyne.protocol.json import JsonDocument
-from spyne.protocol.soap import Soap11, Soap12
-from spyne.server.django import DjangoApplication
-from spyne.server.wsgi import WsgiApplication
-from spyne.service import ServiceBase
+
 import statistics
 import xlwt
 
 from dashboards.views.views_rest import CarritoLlantasApi
+
+import dashboards.GoogleDrive
 
 class LoginView(auth_views.LoginView):
     # Vista de Login
@@ -1044,6 +1039,7 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                         
             if id_actual in reemplazar:
                 print(f"Remplazando: {id_actual}".center(50, '-'))
+                print(economico_post)
                 llanta_actual_referencia = Llanta.objects.get(pk = ids_post)
                 llanta_actual = Llanta.objects.get(pk = ids_post)
                 llanta_nueva = Llanta.objects.get(pk = ids_post)
@@ -1051,7 +1047,8 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                 llanta_nueva.ultima_inspeccion = None
                 llanta_nueva.km_actual = None
                 llanta_nueva.km_montado = None
-                llanta_actual.numero_economico = economico_post
+                llanta_actual.numero_economico = llanta_actual.numero_economico + '- Archivado'
+                llanta_nueva.numero_economico = economico_post
                 producto_cam = Producto.objects.get(producto = producto_post)
                 llanta_nueva.producto = producto_cam
                 llanta_nueva.vida = vida_post
@@ -1075,6 +1072,8 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                     llanta_actual.save()
                     
             else:
+                if id_actual in reemplazar:
+                    continue
                 print(f"Actualizando: {id_actual}".center(50, '-'))
                 llanta_actual_referencia = Llanta.objects.get(pk = ids_post)
                 llanta_actual = Llanta.objects.get(pk = ids_post)
@@ -1126,7 +1125,7 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                         
                         elif llanta_actual.km_montado == None:
                             inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
-                            inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos)
+                            inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos, vida = llanta_actual.vida)
                             #inspecciones = Inspeccion.objects.filter(llanta = llanta_actual)
                             if len(inspecciones) >= 2:
                                 print('Sin km de montado pero con inspecciones suficinetes')
@@ -1152,37 +1151,27 @@ class diagramaView(LoginRequiredMixin, TemplateView):
                             evento_raw = evento_raw.replace("\'", "\"")
                             evento_act = json.loads(evento_raw)
                             if 'economico' in cambios:
-                                print('economico')
                                 evento_act['numero_economico_mod'] = economico_post
                                 
                             if 'producto' in cambios:
-                                print('producto')
                                 evento_act['producto_mod'] = producto_post
                                 
                             if 'vida' in cambios:
-                                print('vida')
                                 evento_act["vida_mod"] = vida_post
                                 
                             if 'cambio_km' in cambios:
-                                print('Cambio de km')
                                 evento_act['km_mod'] = vehiculo.km 
                                 
                             if 'profundidad_derecha' in cambios:
-                                print('profundidad_derecha')
                                 evento_act["profundidad_derecha_mod"] = profundidad_derecha_post
                             
                             if 'profundidad_central' in cambios:
-                                print('profundidad_central')
-                                print(evento_act["profundidad_central_mod"])
                                 evento_act["profundidad_central_mod"] = profundidad_central_post
-                                print(evento_act["profundidad_central_mod"])
                             
                             if 'profundidad_izquierda' in cambios:
-                                print('profundidad_izquierda')
                                 evento_act["profundidad_izquierda_mod"] = profundidad_central_post
                             
                             if 'presion_actual' in cambios:
-                                print('presion_mod')
                                 evento_act["presion_mod"] = presion_post
                             evento_str = str(evento_act)
                             inspeccion_actual.edicion_manual = True
@@ -1811,6 +1800,176 @@ class catalogoProductoView(LoginRequiredMixin, MultiModelFormView):
     def get_success_url(self):
         return reverse_lazy("dashboards:catalogoProductos")
 
+
+class catalogoProductoExcelView(LoginRequiredMixin, TemplateView):
+    # Vista de catalogoProductosView
+
+    template_name = "catalogoProductosExcel.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        print(request.FILES)
+        user = request.user
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        
+        file = self.request.FILES.get("file")
+        print(file)
+        libro = openpyxl.load_workbook(file)
+        sh  = libro.active
+        # iterate through excel and display data
+        rechazo = []
+        productos = []
+        for i in range(1, sh.max_row+1):
+            
+            if i == 1:
+                continue
+            print("\n")
+            print("Row ", i, " data :")
+            marca:str
+            dibujo:str
+            rango:str
+            dimension:str
+            profundidad_inicial:float
+            aplicacion:str
+            vida:str
+            precio:float
+            km_esperado:int
+
+            producto:str
+            compania:str
+            for j in range(1, sh.max_column+1):
+                
+                #print(j)
+                #print()
+                cell_obj = sh.cell(row=i, column=j)
+                #if j == 1:
+                #    pass
+                #elif j == 5:
+                #    if str(type(j)) == "<class 'int'>":
+                #        print('sdfsdfsdf')
+                    
+                if j == 1:
+                    marca = cell_obj.value
+                    
+                elif j == 2:
+                    dibujo = cell_obj.value
+                elif j == 3:
+                    rango = cell_obj.value
+                    
+                elif j == 4:
+                    dimension = cell_obj.value
+                    
+                elif j == 5:
+                    profundidad_inicial = cell_obj.value
+                        
+                elif j == 6:
+                    aplicacion = cell_obj.value
+                    
+                elif j == 7:
+    
+                    vida = cell_obj.value
+                                            
+                elif j == 8:
+                    precio = cell_obj.value
+                    
+                elif j == 9:
+                    km_esperado = cell_obj.value
+                        
+            
+            
+            try:
+                float(profundidad_inicial)
+            except:
+                rechazo.append(i)
+                continue   
+            
+            try:
+                float(precio)
+            except:
+                rechazo.append(i)
+                continue
+            
+            try:
+                int(km_esperado)
+            except:
+                rechazo.append(i)
+                continue
+            
+            
+            if vida == 'Nueva' or vida == 'Renovada' or vida == 'Vitacasco':
+                pass
+            else:
+                rechazo.append(i)
+                continue
+            
+            
+            
+            if (
+                aplicacion == 'Dirección' 
+                or 
+                aplicacion == 'Tracción' 
+                or 
+                aplicacion == 'Arrastre' 
+                or 
+                aplicacion == 'Mixta'
+                or 
+                aplicacion == 'Regional' 
+                or 
+                aplicacion == 'Urbano'):
+                pass
+            else:
+                rechazo.append(i)
+                continue
+            
+            prodcto = f'{marca} {dibujo} {rango} {dimension}'
+            
+            coincidencia = Producto.objects.filter(compania = compania, producto = prodcto)
+            if coincidencia.count() > 0:
+                rechazo.append(i)
+                continue
+             
+            print(f'marca {marca}')
+            print(f'dibujo {dibujo}')
+            print(f'rango {rango}')
+            print(f'dimension {dimension}')
+            print(f'profundidad_inicial {profundidad_inicial}')
+            print(f'aplicacion {aplicacion}')
+            print(f'vida {vida}')
+            print(f'precio {precio}')
+            print(f'km_esperado {km_esperado}')
+            print(f'compania {compania}')
+            print(f'prodcto {prodcto}')
+            
+            
+            productos.append(
+                Producto(
+                marca = marca,
+                dibujo = dibujo,
+                rango = rango,
+                dimension = dimension,
+                profundidad_inicial = profundidad_inicial,
+                aplicacion = aplicacion,
+                vida = vida,
+                precio = precio,
+                km_esperado = km_esperado,
+                compania = compania,
+                producto = prodcto
+                )
+            )
+            
+            
+        Producto.objects.bulk_create(productos)
+        print()
+        print(rechazo)
+        return redirect('dashboards:catalogoProductoExcelView')
+    #def get_success_url(self):
+    #    return reverse_lazy("dashboards:catalogoProductos")
+
 class catalogoProductoEditView(LoginRequiredMixin, DetailView, UpdateView):
     # Vista de catalogoProductoEditView
 
@@ -1824,7 +1983,7 @@ class catalogoProductoEditView(LoginRequiredMixin, DetailView, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        productos = Producto.objects.all()[::-1]
+        productos = Producto.objects.filter(compania=Compania.objects.get(compania=self.request.user.perfil.compania))[::-1]
         context["productos"] = productos
 
         return context
@@ -1850,9 +2009,13 @@ class catalogoRenovadoresView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         compania = Compania.objects.get(compania=self.request.user.perfil.compania)
-        renovadores = Renovador.objects.all()[::-1]
+        companias = self.request.user.perfil.companias.all()
+        renovadores = Renovador.objects.filter(compania__in=companias)
+        print("companias", companias)
+        print("renovadores", renovadores)
         context["renovadores"] = renovadores
         context["compania"] = compania
+        context["companias"] = companias
 
         return context
     
@@ -1868,14 +2031,16 @@ class catalogoRenovadoresEditView(LoginRequiredMixin, DetailView, UpdateView):
     queryset = Renovador.objects.all()
     context_object_name = "renovador"
     model = Renovador
-    fields = ["id", "nombre", 'ciudad', 'marca']
+    fields = ["id", "nombre", 'compania', 'ciudad', 'marca']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compania = Compania.objects.get(compania=self.request.user.perfil.compania)
-        renovadores = Renovador.objects.all()[::-1]
+        companias = self.request.user.perfil.companias.all()
+        renovadores = Renovador.objects.filter(compania__in=companias)
         context["renovadores"] = renovadores
         context["compania"] = compania
+        context["companias"] = companias
 
         return context
 
@@ -2309,15 +2474,24 @@ class usuarioFormularioEditView(LoginRequiredMixin, DetailView, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        usuario = User.objects.get(id=self.kwargs['pk'])
         companias = Compania.objects.all()
+        companias_usuario = usuario.perfil.companias.all()
         ubicaciones = Ubicacion.objects.all()
+        ubicaciones_usuario = usuario.perfil.ubicaciones.all()
         aplicaciones = Aplicacion.objects.all()
+        aplicaciones_usuario = usuario.perfil.aplicaciones.all()
         talleres = Taller.objects.all()
+        talleres_usuario = usuario.perfil.talleres.all()
         usuarios = User.objects.all()
         context["aplicaciones"] = aplicaciones
+        context["aplicaciones_usuario"] = aplicaciones_usuario
         context["companias"] = companias
+        context["companias_usuario"] = companias_usuario
         context["sucursales"] = ubicaciones
+        context["sucursales_usuario"] = ubicaciones_usuario
         context["talleres"] = talleres
+        context["talleres_usuario"] = talleres_usuario
         context["usuarios"] = usuarios
         return context
 
@@ -2863,7 +3037,6 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
         
         cant_ejes = len(ejes)
         
-        
         #obvervaciones manuales
         observaciones_manuales=Observacion.objects.filter(nivel='Llanta', automatico=False)
         observaciones_automaticas=Observacion.objects.filter(nivel='Llanta', automatico=True).exclude(observacion='Ponchado seguro').exclude(observacion='Mala entrada')
@@ -3047,6 +3220,10 @@ class inspeccionVehiculo(LoginRequiredMixin, TemplateView):
                         })
                     )
                     inspeccion_nueva.save()
+                    
+                    if llanta_actual.primera_inspeccion == None and inspeccion_nueva.vida == llanta_actual.vida:
+                        llanta_actual.primera_inspeccion = inspeccion_nueva
+                        
                     llanta_actual.ultima_inspeccion = inspeccion_nueva
                     llanta_actual.save()
                     #Actualizacion de los datos de la llante
@@ -3263,711 +3440,6 @@ class vehiculosformularioView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         return reverse_lazy("dashboards:webservices")
 
-class Inspecciones(ComplexModel):
-    _namespace_ = "inspecciones"
-    id = Integer
-    llanta__numero_economico = String
-    posicion = String
-    profundidad_izquierda = Integer
-
-class InspeccionesService(ServiceBase):
-
-    @rpc(Integer, Integer, Date, Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), Integer(nillable=True), _returns=Array(Inspecciones))
-    def add(ctx, id_vehiculo, km_vehiculo, fecha, id_llanta_1, presion_1, profundidad_izquierda_1, profundidad_central_1, profundidad_derecha_1, id_llanta_2, presion_2, profundidad_izquierda_2, profundidad_central_2, profundidad_derecha_2, id_llanta_3, presion_3, profundidad_izquierda_3, profundidad_central_3, profundidad_derecha_3, id_llanta_4, presion_4, profundidad_izquierda_4, profundidad_central_4, profundidad_derecha_4, id_llanta_5, presion_5, profundidad_izquierda_5, profundidad_central_5, profundidad_derecha_5, id_llanta_6, presion_6, profundidad_izquierda_6, profundidad_central_6, profundidad_derecha_6, id_llanta_7, presion_7, profundidad_izquierda_7, profundidad_central_7, profundidad_derecha_7, id_llanta_8, presion_8, profundidad_izquierda_8, profundidad_central_8, profundidad_derecha_8, id_llanta_9, presion_9, profundidad_izquierda_9, profundidad_central_9, profundidad_derecha_9, id_llanta_10, presion_10, profundidad_izquierda_10, profundidad_central_10, profundidad_derecha_10, id_llanta_11, presion_11, profundidad_izquierda_11, profundidad_central_11, profundidad_derecha_11, id_llanta_12, presion_12, profundidad_izquierda_12, profundidad_central_12, profundidad_derecha_12, id_llanta_13, presion_13, profundidad_izquierda_13, profundidad_central_13, profundidad_derecha_13, id_llanta_14, presion_14, profundidad_izquierda_14, profundidad_central_14, profundidad_derecha_14, id_llanta_15, presion_15, profundidad_izquierda_15, profundidad_central_15, profundidad_derecha_15, id_llanta_16, presion_16, profundidad_izquierda_16, profundidad_central_16, profundidad_derecha_16, id_llanta_17, presion_17, profundidad_izquierda_17, profundidad_central_17, profundidad_derecha_17, id_llanta_18, presion_18, profundidad_izquierda_18, profundidad_central_18, profundidad_derecha_18):
-
-
-        kilometraje = [km_vehiculo]
-        fecha = functions.convertir_fecha2(str(fecha))
-        print(f'id_vehiculo: {id_vehiculo}')
-        print(f'kilometraje: {kilometraje}')
-        #Llantas
-
-        ids = [id_llanta_1, id_llanta_2, id_llanta_3, id_llanta_4, id_llanta_5, id_llanta_6, id_llanta_7, id_llanta_8, id_llanta_9, id_llanta_10, id_llanta_11, id_llanta_12, id_llanta_13, id_llanta_14, id_llanta_15, id_llanta_16, id_llanta_17, id_llanta_18]
-        ids = [i for i in ids if i] 
-        print(ids)
-
-        llanta = [Llanta.objects.get(id=i).numero_economico for i in ids]
-        producto = [Llanta.objects.get(id=i).producto for i in ids]
-        vida = [Llanta.objects.get(id=i).vida for i in ids]
-        profundidad_derecha = [profundidad_derecha_1, profundidad_derecha_2, profundidad_derecha_3, profundidad_derecha_4, profundidad_derecha_5, profundidad_derecha_6, profundidad_derecha_7, profundidad_derecha_8, profundidad_derecha_9, profundidad_derecha_10, profundidad_derecha_11, profundidad_derecha_12, profundidad_derecha_13, profundidad_derecha_14, profundidad_derecha_15, profundidad_derecha_16, profundidad_derecha_17, profundidad_derecha_18]
-        profundidad_derecha = [i if i else "" for i in profundidad_derecha]
-        profundidad_central = [profundidad_central_1, profundidad_central_2, profundidad_central_3, profundidad_central_4, profundidad_central_5, profundidad_central_6, profundidad_central_7, profundidad_central_8, profundidad_central_9, profundidad_central_10, profundidad_central_11, profundidad_central_12, profundidad_central_13, profundidad_central_14, profundidad_central_15, profundidad_central_16, profundidad_central_17, profundidad_central_18]
-        profundidad_central = [i if i else "" for i in profundidad_central]
-        print(profundidad_central)
-        profundidad_izquierda = [profundidad_izquierda_1, profundidad_izquierda_2, profundidad_izquierda_3, profundidad_izquierda_4, profundidad_izquierda_5, profundidad_izquierda_6, profundidad_izquierda_7, profundidad_izquierda_8, profundidad_izquierda_9, profundidad_izquierda_10, profundidad_izquierda_11, profundidad_izquierda_12, profundidad_izquierda_13, profundidad_izquierda_14, profundidad_izquierda_15, profundidad_izquierda_16, profundidad_izquierda_17, profundidad_izquierda_18]
-        profundidad_izquierda = [i if i else "" for i in profundidad_izquierda]
-        presion = [presion_1, presion_2, presion_3, presion_4, presion_5, presion_6, presion_7, presion_8, presion_9, presion_10, presion_11, presion_12, presion_13, presion_14, presion_15, presion_16, presion_17, presion_18]
-        presion = [i if i else "" for i in presion if i]
-
-        #print(f'ids: {ids}')
-        #print(f'llanta: {llanta}')
-        #print(f'producto: {producto}')
-        #print(f'vida: {vida}')
-        #print(f'profundidad_derecha: {profundidad_derecha}')
-        #print(f'profundidad_central: {profundidad_central}')
-        #print(f'profundidad_izquierda: {profundidad_izquierda}')
-        #print(f'presion: {presion}')
-        #print(f'observaciones: {observaciones}')
-        #print(f'reemplazar: {reemplazar}')
-        cambios = []
-        diferencia_presion_duales_list = []
-        desdualizacion_list=[]
-        elementos = 0
-        
-        #Cambio al vehiculo
-        vehiculo_referencia = Vehiculo.objects.get(pk = id_vehiculo)
-        km_ref = (float(vehiculo_referencia.km) if vehiculo_referencia.km!=None else -99999999)
-        vehiculo = Vehiculo.objects.get(pk = id_vehiculo)
-        
-            #Creacion de la bitacora del vehicul
-        vehiculo_inspeccion = InspeccionVehiculo.objects.create(
-            vehiculo = vehiculo,
-            fecha = fecha
-        )
-        
-            #Km del vehiculo
-        if kilometraje[0] != vehiculo_referencia.km:
-            if kilometraje[0] == "":
-                vehiculo.km = None
-                vehiculo_inspeccion.km = None
-            else:
-                vehiculo.km = kilometraje[0]
-                vehiculo_inspeccion.km = kilometraje[0]
-            #Observaciones del vehiculo
-        vehiculo.observaciones.clear()
-        vehiculo.save()
-        vehiculo_inspeccion.save()
-        
-        #Cambio de llantas
-        for id_actual in ids:
-            cambios = []
-
-            print(f"Actualizando: {id_actual}".center(50, '-'))
-            
-            llanta_referencia = Llanta.objects.get(pk = ids[elementos])
-            llanta_actual = Llanta.objects.get(pk = ids[elementos])
-            #Actualzacion de km llanta
-            if vehiculo.km != None:
-                if float(kilometraje[0]) != km_ref:
-                    cambios.append('0')
-                    if llanta_actual.km_montado != None:
-                        km_actual_nuevo = functions.actualizar_km_actual(llanta_actual, llanta_referencia, vehiculo, vehiculo_referencia)
-                        llanta_actual.km_actual = km_actual_nuevo
-                        llanta_actual.save()
-                    
-            #Creando Nueva Inspeccion
-            economico = llanta[elementos]
-            producto_post = Producto.objects.get(producto=producto[elementos])
-            vida_post = vida[elementos]
-            profundidad_izquierda_post = (float(profundidad_izquierda[elementos]) if profundidad_izquierda[elementos]!='' else None)
-            profundidad_central_post = (float(profundidad_central[elementos]) if profundidad_central[elementos]!='' else None)
-            profundidad_derecha_post = (float(profundidad_derecha[elementos]) if profundidad_derecha[elementos]!='' else None)
-            presion_post = (presion[elementos] if presion[elementos] != '' else llanta_actual.presion_actual)
-            if vida_post != llanta_referencia.vida:
-                functions.cambio_de_vida(llanta_referencia)
-                print('Cambio de vida')
-                cambios.append('1')
-            if str(profundidad_izquierda_post) != str(llanta_referencia.profundidad_izquierda):
-                cambios.append('2')
-            if str(profundidad_central_post) != str(llanta_referencia.profundidad_central):
-                cambios.append('3')
-            if str(profundidad_derecha_post) != str(llanta_referencia.profundidad_derecha):
-                cambios.append('4')
-            if str(presion_post) != str(llanta_referencia.presion_actual):
-                cambios.append('5')
-            
-            if llanta_actual.km_actual == None:
-                km_act = 0
-            else:
-                km_act = llanta_actual.km_actual
-            cambios.append('default')    
-            if len(cambios) > 0:
-                
-                usuario_actual = None
-                inspeccion_nueva = Inspeccion.objects.create(
-                    tipo_de_evento = 'Inspección',
-                    inspeccion_vehiculo = vehiculo_inspeccion,
-                    llanta = llanta_actual,
-                    posicion = llanta_actual.posicion,
-                    tipo_de_eje = llanta_actual.tipo_de_eje,
-                    eje = llanta_actual.eje,
-                    usuario = usuario_actual,
-                    vehiculo = vehiculo,
-                    fecha_hora = fecha,
-                    vida = vida_post,
-                    km_vehiculo = vehiculo.km,
-                    presion = presion_post,
-                    presion_establecida = functions.presion_establecida(llanta_actual),
-                    profundidad_izquierda = profundidad_izquierda_post,
-                    profundidad_central = profundidad_central_post,
-                    profundidad_derecha = profundidad_derecha_post,
-                    evento = str({\
-                    "llanta_inicial" : str(llanta_actual.id), "llanta_mod" : "",\
-                    "numero_economico": economico, "numero_economico_mod": "",
-                    "producto_inicial" : str(producto_post), "producto_mod" : "",\
-                    "vida_inicial" : vida_post, "vida_mod" : "",\
-                    "km_inicial" : str(vehiculo.km), "km_mod" : "",\
-                    "presion_inicial" : str(presion_post), "presion_mod" : "",\
-                    "profundidad_izquierda_inicial" : str(profundidad_izquierda_post), "profundidad_izquierda_mod" : "",\
-                    "profundidad_central_inicial" : str(profundidad_central_post), "profundidad_central_mod" : "",\
-                    "profundidad_derecha_inicial" : str(profundidad_derecha_post), "profundidad_derecha_mod" : ""\
-                    })
-                )
-                inspeccion_nueva.save()
-                llanta_actual.ultima_inspeccion = inspeccion_nueva
-                llanta_actual.save()
-                #Actualizacion de los datos de la llante
-                llanta_actual.numero_economico = economico
-                llanta_actual.producto = producto_post
-                llanta_actual.vida = vida_post
-                llanta_actual.presion_actual = presion_post
-                llanta_actual.profundidad_izquierda = profundidad_izquierda_post
-                llanta_actual.profundidad_central = profundidad_central_post
-                llanta_actual.profundidad_derecha = profundidad_derecha_post
-                llanta_actual.save()
-                
-                inspecciones_vehiculos = InspeccionVehiculo.objects.filter(vehiculo = llanta_actual.vehiculo).exclude(km = None)
-                if vehiculo.km != None:
-                    if kilometraje[0] != vehiculo_referencia.km:
-                        if llanta_actual.km_montado == None:
-                            inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos)
-                            #inspecciones = Inspeccion.objects.filter(llanta = llanta_actual)
-                            if len(inspecciones) >= 2:
-                                print('Sin km de montado pero con inspecciones suficinetes')
-                                print(llanta_actual.id)
-                                primer_inspeccion = inspecciones.first()
-                                ultima_inspeccion = inspecciones.last()
-                                km_teorico = functions.actualizar_km_actual_no_km_montado(primer_inspeccion, ultima_inspeccion)
-                                print(km_teorico)
-                                if km_teorico != None:
-                                    llanta_actual.km_actual = km_teorico
-                                    llanta_actual.save()
-                            else:
-                                print('Sin km de montado y sin inspecciones suficinetes')
-                                print(llanta_actual.id)
-                
-                print('Si paso to')
-            else:
-                print('No paso na')
-            elementos += 1
-            
-        elementos = 0
-            
-        for id_actual in ids:
-            cambios = []
-
-            print(f"Actualizando: {id_actual}".center(50, '-'))
-            
-            llanta_referencia = Llanta.objects.get(pk = ids[elementos])
-            llanta_actual = Llanta.objects.get(pk = ids[elementos])   
-            #observaciones
-            llanta_actual.observaciones.clear()
-            
-            compania = llanta_actual.vehiculo.compania
-            presiones_establecidas = [
-                llanta_actual.vehiculo.presion_establecida_1,
-                llanta_actual.vehiculo.presion_establecida_2,
-                llanta_actual.vehiculo.presion_establecida_3,
-                llanta_actual.vehiculo.presion_establecida_4,
-                llanta_actual.vehiculo.presion_establecida_5,
-                llanta_actual.vehiculo.presion_establecida_6,
-                llanta_actual.vehiculo.presion_establecida_7,
-            ]
-            establecida = presiones_establecidas[(llanta_actual.eje - 1)]
-            presion_minima = establecida - (establecida * (compania.objetivo/100))
-            presion_maxima = establecida + (establecida * (compania.objetivo/100))
-            if llanta_actual.presion_actual != None:
-                if float(llanta_actual.presion_actual) < presion_minima:
-                    baja_presion = Observacion.objects.get(observacion = 'Baja presión')
-                    llanta_actual.observaciones.add(baja_presion)
-                    print(baja_presion)
-                    
-            if llanta_actual.presion_actual != None:    
-                if float(llanta_actual.presion_actual) > presion_maxima:
-                    alta_presion = Observacion.objects.get(observacion = 'Alta presion')
-                    llanta_actual.observaciones.add(alta_presion)
-                    print(alta_presion)
-            
-            if '4' in llanta_actual.tipo_de_eje:
-                print('Duales')
-                eje = str(llanta_actual.eje)
-                posicion = llanta_actual.posicion[1:]
-                #print(eje+posicion)
-                if posicion == 'LO':
-                    dual = 'LI'
-                elif posicion == 'LI':
-                    dual = 'LO'
-                elif posicion == 'RI':
-                    dual = 'RO'
-                elif posicion == 'RO':
-                    dual = 'RI'
-                dual_completo = eje + dual
-                llantas_comparacion = Llanta.objects.filter(vehiculo = llanta_actual.vehiculo, inventario="Rodante")
-                for llanta_i in llantas_comparacion:
-                    if llanta_i.posicion == dual_completo:
-                        dual_llanta = llanta_i
-                if llanta_actual.presion_actual != None and dual_llanta.presion_actual != None:
-                    presion_actual = float(llanta_actual.presion_actual) if float(llanta_actual.presion_actual) != 0 else 1
-                    presion_dual = dual_llanta.presion_actual if dual_llanta.presion_actual != 0 else 1
-                    porcentaje_dif = (float(presion_actual) - presion_dual) / float(presion_actual)
-                    #porcentaje_dif = (float(llanta_actual.presion_actual) - dual_llanta.presion_actual) / float(llanta_actual.presion_actual)
-                    if llanta_actual in diferencia_presion_duales_list:
-                    
-                        diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
-                        llanta_actual.observaciones.add(diferencia_presion_duales)
-                        llanta_actual.ultima_inspeccion.observaciones.add(diferencia_presion_duales)
-                        llanta_actual.ultima_inspeccion.save()
-                        print(diferencia_presion_duales)
-                    else:
-
-                        if porcentaje_dif > 0.1:
-                            #Poner a los 2 duales
-                            diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
-                            llanta_actual.observaciones.add(diferencia_presion_duales)
-                            dual_llanta.observaciones.add(diferencia_presion_duales)
-                            dual_llanta.save()
-                            diferencia_presion_duales_list.append(dual_llanta)
-                            print(diferencia_presion_duales)
-                        
-                if llanta_actual in desdualizacion_list:
-                    desdualización = Observacion.objects.get(observacion = 'Desdualización')
-                    llanta_actual.observaciones.add(desdualización)
-                    llanta_actual.ultima_inspeccion.observaciones.add(desdualización)
-                    llanta_actual.ultima_inspeccion.save()
-                    print(desdualización)
-                else:
-                    print(functions.min_profundidad(llanta_actual))
-                    print(functions.min_profundidad(dual_llanta))
-                    print(compania.mm_de_diferencia_entre_duales)
-                    if (functions.min_profundidad(llanta_actual) - functions.min_profundidad(dual_llanta)) >= compania.mm_de_diferencia_entre_duales:
-                        #Poner a los 2 duales
-                        desdualización = Observacion.objects.get(observacion = 'Desdualización')
-                        llanta_actual.observaciones.add(desdualización)
-                        dual_llanta.observaciones.add(desdualización)
-                        dual_llanta.save()
-                        desdualizacion_list.append(dual_llanta)
-                        print(desdualización)
-                
-            if "S" in llanta_actual.tipo_de_eje:
-                punto_retiro = compania.punto_retiro_eje_direccion
-            elif "D" in llanta_actual.tipo_de_eje:
-                punto_retiro = compania.punto_retiro_eje_traccion
-            elif "T" in llanta_actual.tipo_de_eje:
-                punto_retiro = compania.punto_retiro_eje_arrastre
-            elif "C" in llanta_actual.tipo_de_eje:
-                punto_retiro = compania.punto_retiro_eje_loco
-            elif "L" in llanta_actual.tipo_de_eje:
-                punto_retiro = compania.punto_retiro_eje_retractil
-            
-            if functions.min_profundidad(llanta_actual) < punto_retiro:
-                baja_profundidad = Observacion.objects.get(observacion = 'Baja profundidad')
-                llanta_actual.observaciones.add(baja_profundidad)
-                print(baja_profundidad)
-                
-            if functions.min_profundidad(llanta_actual) == (punto_retiro + 0.6):
-                en_punto_retiro = Observacion.objects.get(observacion = 'En punto de retiro')
-                llanta_actual.observaciones.add(en_punto_retiro)
-                print(en_punto_retiro)
-            izquierda = llanta_actual.profundidad_izquierda
-            central = llanta_actual.profundidad_central
-            derecha = llanta_actual.profundidad_derecha
-            functions.desgaste_profundidad(izquierda, central , derecha, llanta_actual)
-
-            
-            llanta_actual.save()
-            if len(llanta_actual.observaciones.all()) > 0:
-                for observacion in llanta_actual.observaciones.all():
-                    llanta_actual.ultima_inspeccion.observaciones.add(observacion)
-                llanta_actual.ultima_inspeccion.save()
-            #print(llanta_act.ultima_inspeccion)
-                
-            elementos += 1
-                
-        elementos = 0    
-        for id_actual in ids: 
-            llanta_referencia = Llanta.objects.get(pk = ids[elementos])
-            llanta_actual = Llanta.objects.get(pk = ids[elementos]) 
-            for obs in llanta_actual.observaciones.all():
-                llanta_actual.ultima_inspeccion.observaciones.add(obs)
-                llanta_actual.ultima_inspeccion.save()
-                llanta_actual.save()
-            elementos += 1
-                    
-            
-            
-        #CREACION DE BITACORA
-        """print(diferencias)
-        if len(diferencias) > 0:
-            if id_bitacora == None:
-                ""bitacora_cambios = Bitacora_Edicion.objects.create(
-                    vehiculo = llanta_ref.vehiculo,
-                    tipo = 'inspeccion'
-                    )
-                bitacora_cambios.save()
-                id_bitacora = bitacora_cambios.id
-                
-            else:
-                try:
-                    bitacora_cambios = Bitacora_Edicion.objects.get(pk = id_bitacora)
-                except:
-                    pass""
-            
-            for diferencia in diferencias:
-                registro = Registro_Bitacora.objects.create(
-                    bitacora = bitacora_cambios,
-                    evento = diferencia
-                )
-                registro.save()"""
-        return redirect('dashboards:detail', id_vehiculo)
-        #return redirect('dashboards:inspeccionVehiculo', self.kwargs['pk'])
-
-if __name__ == '__main__':
-    # Python daemon boilerplate
-    from wsgiref.simple_server import make_server
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Instantiate the application by giving it:
-    #   * The list of services it should wrap,
-    #   * A namespace string.
-    #   * An input protocol.
-    #   * An output protocol.
-    application = Application([InspeccionesService], 'django.soap.example',
-        # The input protocol is set as HttpRpc to make our service easy to
-        # call. Input validation via the 'soft' engine is enabled. (which is
-        # actually the the only validation method for HttpRpc.)
-        in_protocol=HttpRpc(validator='soft'),
-
-        # The ignore_wrappers parameter to JsonDocument simplifies the reponse
-        # dict by skipping outer response structures that are redundant when
-        # the client knows what object to expect.
-        out_protocol=JsonDocument(ignore_wrappers=True),
-    )
-
-    # Now that we have our application, we must wrap it inside a transport.
-    # In this case, we use Spyne's standard Wsgi wrapper. Spyne supports
-    # popular Http wrappers like Twisted, Django, Pyramid, etc. as well as
-    # a ZeroMQ (REQ/REP) wrapper.
-    wsgi_application = WsgiApplication(application)
-
-    # More daemon boilerplate
-    server = make_server('127.0.0.1', 8000, wsgi_application)
-
-    logging.info("listening to http://127.0.0.1:8000")
-    logging.info("wsdl is at: http://localhost:8000/?wsdl")
-
-    server.serve_forever()
-
-soap_inspeccion = Application(
-    [InspeccionesService],
-    tns="django.soap.example",
-    in_protocol=Soap11(validator="lxml"),
-    out_protocol=Soap11(),
-    )
-
-def my_soap_inspeccion():
-    django_app = DjangoApplication(soap_inspeccion)
-    my_soap_app = csrf_exempt(django_app)
-
-    return my_soap_app
-
-class Bases(ComplexModel):
-    _namespace_ = "bases"
-    id = Integer
-    nombre = String
-    email = String
-    compania = Integer
-
-
-class BasesService(ServiceBase):
-
-    @rpc(String(nillable=False), _returns=Array(Bases))
-    def list(ctx, user):
-        compania = Perfil.objects.get(id=user).compania
-        
-        listado = Ubicacion.objects.filter(compania=compania).annotate(id_base=F("id"), id_compania=F("compania")).values("id_base", "nombre", "email", "id_compania")
-        return listado
-
-
-if __name__ == '__main__':
-    # Python daemon boilerplate
-    from wsgiref.simple_server import make_server
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Instantiate the application by giving it:
-    #   * The list of services it should wrap,
-    #   * A namespace string.
-    #   * An input protocol.
-    #   * An output protocol.
-    application = Application([BasesService], 'django.soap.example',
-        # The input protocol is set as HttpRpc to make our service easy to
-        # call. Input validation via the 'soft' engine is enabled. (which is
-        # actually the the only validation method for HttpRpc.)
-        in_protocol=HttpRpc(validator='soft'),
-
-        # The ignore_wrappers parameter to JsonDocument simplifies the reponse
-        # dict by skipping outer response structures that are redundant when
-        # the client knows what object to expect.
-        out_protocol=JsonDocument(ignore_wrappers=True),
-    )
-
-    # Now that we have our application, we must wrap it inside a transport.
-    # In this case, we use Spyne's standard Wsgi wrapper. Spyne supports
-    # popular Http wrappers like Twisted, Django, Pyramid, etc. as well as
-    # a ZeroMQ (REQ/REP) wrapper.
-    wsgi_application = WsgiApplication(application)
-
-    # More daemon boilerplate
-    server = make_server('127.0.0.1', 8000, wsgi_application)
-
-    logging.info("listening to http://127.0.0.1:8000")
-    logging.info("wsdl is at: http://localhost:8000/?wsdl")
-
-    server.serve_forever()
-
-base_soap = Application(
-    [BasesService],
-    tns='django.soap.example',
-    in_protocol=Soap11(validator='lxml'),
-    out_protocol=Soap11(),
-)
-
-def my_soap_base():
-    django_app = DjangoApplication(base_soap)
-    my_soap_app = csrf_exempt(django_app)
-
-    return my_soap_app
-
-class Rutas(ComplexModel):
-    _namespace_ = "rutas"
-    id_ruta = Integer
-    nombre = String
-    id_compania = Integer
-    id_base = Integer
-
-class RutasService(ServiceBase):
-
-    @rpc(String(nillable=False), _returns=Array(Rutas))
-    def list(ctx, user):
-        compania = Perfil.objects.get(id=user).compania
-        
-        listado = Aplicacion.objects.filter(compania=compania).annotate(id_ruta=F("id"), id_compania=F("compania"), id_base=F("ubicacion")).values("id_ruta", "nombre", "id_compania", "id_base")
-        return listado
-
-if __name__ == '__main__':
-    # Python daemon boilerplate
-    from wsgiref.simple_server import make_server
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Instantiate the application by giving it:
-    #   * The list of services it should wrap,
-    #   * A namespace string.
-    #   * An input protocol.
-    #   * An output protocol.
-    application = Application([RutasService], 'django.soap.example',
-        # The input protocol is set as HttpRpc to make our service easy to
-        # call. Input validation via the 'soft' engine is enabled. (which is
-        # actually the the only validation method for HttpRpc.)
-        in_protocol=HttpRpc(validator='soft'),
-
-        # The ignore_wrappers parameter to JsonDocument simplifies the reponse
-        # dict by skipping outer response structures that are redundant when
-        # the client knows what object to expect.
-        out_protocol=JsonDocument(ignore_wrappers=True),
-    )
-
-    # Now that we have our application, we must wrap it inside a transport.
-    # In this case, we use Spyne's standard Wsgi wrapper. Spyne supports
-    # popular Http wrappers like Twisted, Django, Pyramid, etc. as well as
-    # a ZeroMQ (REQ/REP) wrapper.
-    wsgi_application = WsgiApplication(application)
-
-    # More daemon boilerplate
-    server = make_server('127.0.0.1', 8000, wsgi_application)
-
-    logging.info("listening to http://127.0.0.1:8000")
-    logging.info("wsdl is at: http://localhost:8000/?wsdl")
-
-    server.serve_forever()
-
-ruta_soap = Application(
-    [RutasService],
-    tns="django.soap.example",
-    in_protocol=Soap11(validator="lxml"),
-    out_protocol=Soap11(),
-    )
-
-def my_soap_ruta():
-    django_app = DjangoApplication(ruta_soap)
-    my_soap_app = csrf_exempt(django_app)
-
-    return my_soap_app
-
-class Vehiculos(ComplexModel):
-    _namespace_ = "vehiculos"
-    id_vehiculo = Integer
-    numero_economico = String
-    modelo = String
-    marca = String
-    id_compania = Integer
-    id_base = Integer
-    id_ruta = Integer
-    numero_de_llantas = Integer
-    clase = String
-    configuracion = String
-    presion_establecida_1 = Integer
-    presion_establecida_2 = Integer
-    presion_establecida_3 = Integer
-    presion_establecida_4 = Integer
-    presion_establecida_5 = Integer
-    presion_establecida_6 = Integer
-    presion_establecida_7 = Integer
-    km = Integer
-    km_diario_maximo = Integer
-    fecha_de_creacion = Date
-
-class VehiculosService(ServiceBase):
-
-    @rpc(String(nillable=False), _returns=Array(Vehiculos))
-    def list(ctx, user):
-        compania = Perfil.objects.get(id=user).compania
-        
-        listado = Vehiculo.objects.filter(compania=compania).annotate(id_vehiculo=F("id"), id_compania=F("compania"), id_base=F("ubicacion"), id_ruta=F("aplicacion")).values("id_vehiculo", "numero_economico", "modelo", "marca", "id_compania", "id_base", "id_ruta", "numero_de_llantas", "clase", "configuracion", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7", "km", "km_diario_maximo", "fecha_de_creacion")
-        return listado
-
-if __name__ == '__main__':
-    # Python daemon boilerplate
-    from wsgiref.simple_server import make_server
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Instantiate the application by giving it:
-    #   * The list of services it should wrap,
-    #   * A namespace string.
-    #   * An input protocol.
-    #   * An output protocol.
-    application = Application([VehiculosService], 'django.soap.example',
-        # The input protocol is set as HttpRpc to make our service easy to
-        # call. Input validation via the 'soft' engine is enabled. (which is
-        # actually the the only validation method for HttpRpc.)
-        in_protocol=HttpRpc(validator='soft'),
-
-        # The ignore_wrappers parameter to JsonDocument simplifies the reponse
-        # dict by skipping outer response structures that are redundant when
-        # the client knows what object to expect.
-        out_protocol=JsonDocument(ignore_wrappers=True),
-    )
-
-    # Now that we have our application, we must wrap it inside a transport.
-    # In this case, we use Spyne's standard Wsgi wrapper. Spyne supports
-    # popular Http wrappers like Twisted, Django, Pyramid, etc. as well as
-    # a ZeroMQ (REQ/REP) wrapper.
-    wsgi_application = WsgiApplication(application)
-
-    # More daemon boilerplate
-    server = make_server('127.0.0.1', 8000, wsgi_application)
-
-    logging.info("listening to http://127.0.0.1:8000")
-    logging.info("wsdl is at: http://localhost:8000/?wsdl")
-
-    server.serve_forever()
-
-vehiculo_soap = Application(
-    [VehiculosService],
-    tns="django.soap.example",
-    in_protocol=Soap11(validator="lxml"),
-    out_protocol=Soap11(),
-    )
-
-def my_soap_vehiculo():
-    django_app = DjangoApplication(vehiculo_soap)
-    my_soap_app = csrf_exempt(django_app)
-
-    return my_soap_app
-
-class Llantas(ComplexModel):
-    _namespace_ = "llantas"
-    id_llanta = Integer
-    numero_economico = String
-    id_compania = Integer
-    id_vehiculo = Integer
-    id_base = Integer
-    id_ruta = Integer
-    id_taller = Integer
-    vida = String
-    tipo_de_eje = String
-    eje = Integer
-    posicion = String
-    nombre_de_eje = String
-    presion_actual = Integer
-    profundidad_izquierda = Float
-    profundidad_central = Float
-    profundidad_derecha = Float
-    km_actual = Integer
-    km_montado = Integer
-    id_producto = Integer
-    inventario = String
-
-class LlantasService(ServiceBase):
-
-    @rpc(String(nillable=False), _returns=Array(Llantas))
-    def list(ctx, user):
-        compania = Perfil.objects.get(id=user).compania
-        
-        listado = Llanta.objects.filter(compania=compania, inventario="Rodante").annotate(id_llanta=F("id"), id_vehiculo=F("vehiculo"), id_compania=F("compania"), id_base=F("ubicacion"), id_ruta=F("aplicacion"), id_taller=F("taller"), id_producto=F("producto")).values("id_llanta", "numero_economico", "id_compania", "id_vehiculo", "id_base", "id_ruta", "id_taller", "vida", "tipo_de_eje", "eje", "posicion", "nombre_de_eje", "presion_actual", "profundidad_izquierda", "profundidad_central", "profundidad_derecha", "km_actual", "km_montado", "id_producto", "inventario")
-        return listado
-
-if __name__ == '__main__':
-    # Python daemon boilerplate
-    from wsgiref.simple_server import make_server
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Instantiate the application by giving it:
-    #   * The list of services it should wrap,
-    #   * A namespace string.
-    #   * An input protocol.
-    #   * An output protocol.
-    application = Application([LlantasService], 'django.soap.example',
-        # The input protocol is set as HttpRpc to make our service easy to
-        # call. Input validation via the 'soft' engine is enabled. (which is
-        # actually the the only validation method for HttpRpc.)
-        in_protocol=HttpRpc(validator='soft'),
-
-        # The ignore_wrappers parameter to JsonDocument simplifies the reponse
-        # dict by skipping outer response structures that are redundant when
-        # the client knows what object to expect.
-        out_protocol=JsonDocument(ignore_wrappers=True),
-    )
-
-    # Now that we have our application, we must wrap it inside a transport.
-    # In this case, we use Spyne's standard Wsgi wrapper. Spyne supports
-    # popular Http wrappers like Twisted, Django, Pyramid, etc. as well as
-    # a ZeroMQ (REQ/REP) wrapper.
-    wsgi_application = WsgiApplication(application)
-
-    # More daemon boilerplate
-    server = make_server('127.0.0.1', 8000, wsgi_application)
-
-    logging.info("listening to http://127.0.0.1:8000")
-    logging.info("wsdl is at: http://localhost:8000/?wsdl")
-
-    server.serve_forever()
-
-llanta_soap = Application(
-    [LlantasService],
-    tns="django.soap.example",
-    in_protocol=Soap11(validator="lxml"),
-    out_protocol=Soap11(),
-    )
-
-def my_soap_llanta():
-    django_app = DjangoApplication(llanta_soap)
-    my_soap_app = csrf_exempt(django_app)
-
-    return my_soap_app
 
 class formularioView(LoginRequiredMixin, TemplateView):
     # Vista de formularioView
@@ -4156,7 +3628,7 @@ class formularioView(LoginRequiredMixin, TemplateView):
                     if vehiculo.km != None:
                         if kilometraje[0] != vehiculo_referencia.km:
                             if llanta_actual.km_montado == None:
-                                inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos)
+                                inspecciones = Inspeccion.objects.filter(llanta = llanta_actual, inspeccion_vehiculo__in = inspecciones_vehiculos, vida = llanta_actual.vida)
                                 #inspecciones = Inspeccion.objects.filter(llanta = llanta_actual)
                                 if len(inspecciones) >= 2:
                                     print('Sin km de montado pero con inspecciones suficinetes')
@@ -4380,9 +3852,24 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
         elif self.kwargs['tipo'] == 'pulpopro':
             bitacora = Bitacora_Pro.objects.get(pk = self.kwargs['pk'])
             tipo_bit = 'pulpopro'
+
+        vehiculo = bitacora.vehiculo
+        bitacoraa = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+        bitacoraa_pro = Bitacora_Pro.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+
+        bitacoraas = bitacoraa.annotate(presion_de_entrada_1=F("presion_de_entrada"), presion_de_salida_1=F("presion_de_salida"), presion_de_entrada_2=Value(None, output_field=IntegerField()), presion_de_salida_2=Value(None, output_field=IntegerField()), presion_de_entrada_3=Value(None, output_field=IntegerField()), presion_de_salida_3=Value(None, output_field=IntegerField()), presion_de_entrada_4=Value(None, output_field=IntegerField()), presion_de_salida_4=Value(None, output_field=IntegerField()), presion_de_entrada_5=Value(None, output_field=IntegerField()), presion_de_salida_5=Value(None, output_field=IntegerField()), presion_de_entrada_6=Value(None, output_field=IntegerField()), presion_de_salida_6=Value(None, output_field=IntegerField()), presion_de_entrada_7=Value(None, output_field=IntegerField()), presion_de_salida_7=Value(None, output_field=IntegerField()), presion_de_entrada_8=Value(None, output_field=IntegerField()), presion_de_salida_8=Value(None, output_field=IntegerField()), presion_de_entrada_9=Value(None, output_field=IntegerField()), presion_de_salida_9=Value(None, output_field=IntegerField()), presion_de_entrada_10=Value(None, output_field=IntegerField()), presion_de_salida_10=Value(None, output_field=IntegerField()), presion_de_entrada_11=Value(None, output_field=IntegerField()), presion_de_salida_11=Value(None, output_field=IntegerField()), presion_de_entrada_12=Value(None, output_field=IntegerField()), presion_de_salida_12=Value(None, output_field=IntegerField())).order_by("id")
+        bitacoraas = list(bitacoraas.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+
+        bitacoraas_pro = list(bitacoraa_pro.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+       
+        bitacoraas.extend(bitacoraas_pro)
+
+        bitacoras = sorted(bitacoraas, key=lambda x:x["fecha_de_inflado"], reverse=False)
+
+        entradas_correctas = functions.entrada_correcta_ambas(bitacoras)
+
         hoy = date.today()
         user = User.objects.get(username=self.request.user)
-        vehiculo = bitacora.vehiculo
         llantas = Llanta.objects.filter(vehiculo = vehiculo, inventario="Rodante")
         
         objetivo = vehiculo.compania.objetivo
@@ -4493,7 +3980,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
                 bitacora.presion_de_salida_12,
             ]
 
-            numero = 0       
+            numero = 0
             for eje in ejes:
                 for ej in eje:
                     ej.append(presiones_entrada[numero])
@@ -4512,6 +3999,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
         numero = 0
         #print(vehiculo.id)
         
+        observacion_doble = Observacion.objects.get(observacion="Doble mala entrada")
         for eje in ejes:
             for ej in eje:
                 
@@ -4527,6 +4015,7 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
                 else:
                     color_entrada = 'bad'
                     icono_entrada = "icon-cross"
+
                 ej.append(color_entrada) # 3
                 ej.append(icono_entrada) # 4
                 #Cheking precion_ salida
@@ -4536,8 +4025,29 @@ class reporteVehiculoView(LoginRequiredMixin, TemplateView):
                 else:
                     color_salida = 'bad'
                     icono_salida = "icon-cross"
+
+                if entradas_correctas[bitacora.id] == "Doble":
+                    doble_entrada = True
+                else:
+                    doble_entrada = False
+
+                if doble_entrada and icono_entrada == "icon-cross":
+                    icono_entrada2 = "icon-cross"
+                else:
+                    icono_entrada2 = None
+
+                if doble_entrada and icono_salida == "icon-cross":
+                    icono_salida2 = "icon-cross"
+                else:
+                    icono_salida2 = None
+
+                print("icono_entrada", icono_entrada)
+                print("icono_salida2", icono_salida2)
+
                 ej.append(color_salida) # 5
                 ej.append(icono_salida) # 6
+                ej.append(icono_entrada2) # 7
+                ej.append(icono_salida2) # 8
             numero += 1
             #print(precion_establecida)    
         if self.kwargs['tipo'] == 'pulpo':
@@ -5069,6 +4579,13 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         return context
     
     def post(self, request, *args, **kwargs):
+        id = request.POST.getlist('id')[0]
+        
+        ids = request.GET.get('ids')
+        ids = functions.int_list_element(ids.replace('[', '').replace(']', '').split(','))
+        
+        ids.pop( ids.index( int(id) ) )
+        
         usuario = self.request.user
         perfil = Perfil.objects.get(user = usuario)
         compania = perfil.compania
@@ -5078,8 +4595,12 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         zona = request.POST.getlist('zona')[0]
         razon = request.POST.getlist('razon')[0]
         profundidad = request.POST.getlist('profundidad')[0]
-        id = request.POST.getlist('id')[0]
-        image = request.FILES.getlist('image')[0]
+        
+        try:
+            image = request.FILES.getlist('image')[0]
+        except:
+            image = None
+            
         print(condicion)
         print(zona)
         print(razon)
@@ -5088,7 +4609,7 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         print(image)
         hoy = date.today()
         llanta = Llanta.objects.get(pk = id)
-        desecho = Desecho.objects.get(compania = compania, condicion = condicion, zona_de_llanta = zona, razon = razon)
+        desecho = Desecho.objects.get(condicion = condicion, zona_de_llanta = zona, razon = razon)
         orden = OrdenDesecho.objects.create(
             usuario = perfil,
             llanta = llanta,
@@ -5113,7 +4634,12 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         llanta.save()
         #Borrar llanta del carrito
         LlantasSeleccionadas.objects.get(perfil=perfil, inventario = 'Antes de Desechar').llantas.remove(llanta)
-        return redirect('dashboards:almacen')
+        if len(ids) == 0:
+            return redirect('dashboards:almacen')
+        else:
+            current_id = str(ids).replace(' ', '')
+            url = f"%s?ids={current_id}&inventario=Antes de Desechar" % reverse("dashboards:procesoDesecho")
+            return redirect(url)
 class ordenSalidaRenView(LoginRequiredMixin, TemplateView):
     # Vista de ordenSalidaRenView
     template_name = "ordenSalidaRen.html"
@@ -5362,6 +4888,7 @@ class ordenEntradaView(LoginRequiredMixin, TemplateView):
                 llanta.profundidad_central = producto.profundidad_inicial
                 llanta.profundidad_derecha = producto.profundidad_inicial
                 llanta.km_actual = 0
+                llanta.primera_inspeccion = None
                 functions.quitar_todo_profundidad(llanta)
             if status == 'aprobado':
                 llanta.inventario = 'Renovada'
@@ -5376,7 +4903,9 @@ class ordenEntradaView(LoginRequiredMixin, TemplateView):
                                     'profundidad_izquierda', 
                                     'profundidad_central', 
                                     'profundidad_derecha',
-                                    'km_actual'])
+                                    'km_actual',
+                                    'primera_inspeccion'
+                                    ])
         #! Elimina del carrito solo los ids actuales
         carrito = LlantasSeleccionadas.objects.get(perfil = perfil, inventario = 'Con renovador')
         for id in ids:
@@ -5468,6 +4997,16 @@ class reporteDesechoView(LoginRequiredMixin, TemplateView):
         
         return context
 
+class imagenDesechoView(TemplateView):
+    # Vista de reporteDesechoView
+    template_name = "imagenes/imagen-desecho.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        desecho = OrdenDesecho.objects.get(id = self.kwargs['id'])
+        context['desecho'] = desecho
+        return context
+    
+    
 class historialDesechoView(LoginRequiredMixin, TemplateView):
     # Vista de historialDesechoView
 
@@ -5886,7 +5425,7 @@ class resumenView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         perfil = Perfil.objects.get(user=user)
         compania = perfil.compania
-        vehiculos = Vehiculo.objects.select_related().filter(compania = compania).exclude(configuracion=None).values('id').order_by('id')
+        vehiculos = Vehiculo.objects.select_related().filter(compania = compania).exclude(configuracion=None).exclude(estatus_activo=False).values('id').order_by('id')
         total_vehiculos = vehiculos.count()
         current_vehiculos = functions.list_vehicle_id(vehiculos)
         llantas = Llanta.objects.filter(vehiculo__id__in = current_vehiculos, inventario = 'Rodante')
@@ -6072,18 +5611,20 @@ class resumenView(LoginRequiredMixin, TemplateView):
     
 class planTallerView(LoginRequiredMixin, TemplateView):
 # Vista de planTallerView
-
+ 
     template_name = "planTaller.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #? Se obtiene el vehiculo
         vehiculo = Vehiculo.objects.filter(pk=self.kwargs['pk'])
+        
+        
         km = vehiculo[0].km
         km_max = functions.km_max(vehiculo[0])
         km_min = functions.km_min(vehiculo[0])
-        km_max = ''
-        km_min = ''
+        #km_max = ''
+        #km_min = ''
         print('-------')
         print(km_max)
         print(km_min)
@@ -6116,6 +5657,9 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         #? Checar si existe un taller abierto
         servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo[0], estado = 'abierto')
         
+        
+        llantas_no_validas = llantas.filter(producto=None)
+        num_llantas_no_validas = llantas_no_validas.filter(producto=None).count()
 
         
         context['vehiculo_acomodado'] = vehiculo_acomodado
@@ -6131,6 +5675,8 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         context['km'] = km
         context['km_max'] = km_max
         context['km_min'] = km_min
+        context['llantas_no_validas'] = llantas_no_validas
+        context['num_llantas_no_validas'] = num_llantas_no_validas
         print(datetime.now())
         return context
     
@@ -6258,7 +5804,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     
                 #? Se llama la llanta a montar
                 nuevaLlanta = data['nuevaLlanta']
-                llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta)
+                llanta_nueva = Llanta.objects.get(numero_economico = nuevaLlanta, compania = perfil.compania)
                 
                 #? Se obtienen los datos del desmontaje
                 razon = data['razon']
@@ -6302,6 +5848,8 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 functions.quitar_llanta_de_carritos(llanta_nueva, perfil)
                 functions.check_dualizacion(llanta_nueva)
                 functions.check_dif_presion_duales(llanta_nueva)
+                
+                functions.quitar_todo_observaciones(llanta)
                 print('---------------')
                                 
         for data in dataPOST:
@@ -6519,6 +6067,9 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     functions.check_dualizacion(llanta_rotar)
                     functions.check_dif_presion_duales(llanta_rotar)
                     
+                    functions.check_dualizacion(llanta)
+                    functions.check_dif_presion_duales(llanta)
+                    
                 print('---------------')
         
         #? Rectificar observaciones deñ vehiculo
@@ -6608,7 +6159,8 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
                 ).filter(
                     **search_query).exclude(
                         **exclude_query
-                        ).exclude(configuracion=None).values('id').order_by('id')
+                        ).exclude(configuracion=None).exclude(estatus_activo=False).values('id').order_by('id')
+                    
         else:
             vehiculos = Vehiculo.objects.select_related().filter(
                 compania = compania,
@@ -6616,7 +6168,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
                 #! **search_query
                 ).exclude(
                     **exclude_query
-                    ).exclude(configuracion=None).values('id').order_by('id')
+                    ).exclude(configuracion=None).exclude(estatus_activo=False).values('id').order_by('id')
                 
             clauses = (Q(configuracion__icontains=p) for p in ejes.split(','))
             query = reduce(operator.or_, clauses)
@@ -6633,8 +6185,7 @@ class vehicleListView(LoginRequiredMixin, TemplateView):
                                         **alineacion_inicio_query,
                                         **alineacion_final_query)
         vehiculos = vehiculos.filter(**search_query).distinct()
-        print(vehiculos)
-        vehiculos = functions.ordenar_por_status(vehiculos)
+        #vehiculos = functions.ordenar_por_status(vehiculos)
         ids_vehiculo = functions.list_vehicle_id(vehiculos)
         
         #Obtencion de los parametros iniciales de la paginación
@@ -6776,6 +6327,16 @@ class dashboardOperativoView(LoginRequiredMixin, TemplateView):
 # Vista de dashboardOperativoView
 
     template_name = "dashboardOperativo.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        print(user)
+        perfil = Perfil.objects.get(user=user)
+        link_operativo = perfil.link_operativo
+        context['link_operativo'] = link_operativo
+        return context
+    
 
 class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
     # Vista de Logout
@@ -6871,19 +6432,18 @@ class PulpoProAPI(View):
 
     def post(self, request):
         jd = json.loads(request.body)
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        print(jd)
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
-        print('*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*')
+        
+        log = logging.getLogger("Pulpo Pro")
+        log.info(jd)
+        
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
-        vehiculo.fecha_de_inflado=datetime.now()
+        
+        vehiculo.fecha_de_inflado=timezone.now()
         llantas = Llanta.objects.filter(vehiculo=vehiculo, inventario='Rodante').exclude(tipo_de_eje = 'SP1')
         presiones_de_entrada = eval(jd['presiones_de_entrada'])
         presiones_de_salida = eval(jd['presiones_de_salida'])
         numero_de_llantas = vehiculo.numero_de_llantas
+
         num_ejes = vehiculo.configuracion.split('.')
         if num_ejes[-1] == "SP1":
             numero_de_llantas = numero_de_llantas - 1
@@ -6903,7 +6463,6 @@ class PulpoProAPI(View):
                     ejes_no_ordenados.append(list_temp)
             
             for eje in ejes_no_ordenados:
-                print(len(eje))
                 if len(eje) == 2:
                     lista_temp = ['', '']
                     for llanta_act in eje:
@@ -6930,21 +6489,19 @@ class PulpoProAPI(View):
                     print('00---00')
                 else:
                     pass
-            print('-----')
-            print(ejes)
             loop_llantas = 0
             for eje in ejes:
                 for llanta in eje:
                     llanta[0].presion_de_entrada = presiones_de_entrada[loop_llantas]
                     llanta[0].presion_de_salida = presiones_de_salida[loop_llantas]
                     llanta[0].presion_actual = presiones_de_salida[loop_llantas]
-                    llanta[0].fecha_de_inflado=datetime.now()
+                    llanta[0].fecha_de_inflado=timezone.now()
                     llanta[0].save()
                     loop_llantas += 1
                     
             bi = Bitacora_Pro.objects.create(vehiculo=vehiculo,
                                     compania=Compania.objects.get(compania=jd['compania']),
-                                    fecha_de_inflado=datetime.now(),
+                                    fecha_de_inflado=timezone.now(),
                                     tiempo_de_inflado=jd['tiempo_de_inflado'],
             )
             print("jd['presiones_de_entrada']", jd['presiones_de_entrada'])
@@ -6997,8 +6554,7 @@ class PulpoProAPI(View):
                 for llanta in llantas:
                     min_presion = functions.min_presion(llanta)
                     max_presion = functions.max_presion(llanta)
-                    print("min_presion", min_presion)
-                    print("max_presion", max_presion)
+                    
                     nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
                     condicional = nueva_condicional
                     functions.check_dif_presion_duales(llanta)
@@ -7043,6 +6599,7 @@ class PulpoProAPI(View):
                         
                     numero += 1
                 bi.save()
+                
                 functions.check_presion__entre_duales_pulpo(vehiculo)
                 functions.send_mail(bi, 'pulpopro')
                 return JsonResponse(jd)
@@ -7082,7 +6639,6 @@ class PulpoView(LoginRequiredMixin, ListView):
         #functions_excel.excel_productos()
         #functions_excel.excel_observaciones()
         #functions_create.borrar_ultima_inspeccion_vehiculo()
-        #functions_create.convertir_vehiculos()
         #functions_create.asignar_ultima_fecha_de_inflado()
         #functions_ftp.ftp_diario()
         ultimo_mes = hoy - timedelta(days=31)
@@ -7525,7 +7081,7 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
                     cantidad_llantas_vehiculo += 1
                     llantas_por_vehiculo.append(numero_economico)
                 except:
-                    pass                
+                    pass             
 
             for i in range(sheet_obj.max_row):
                 numero_economico = sheet_obj.cell(row=i + 2, column=1).value
@@ -7600,10 +7156,19 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
 
 
                         numero_de_llantas = functions.cantidad_llantas(configuracion)
+                        
+                        if self.request.user.groups.filter(name__in=['Aeto Manager']):
+                            ubicacion = Ubicacion.objects.get(nombre=ubicacion)
 
-                        ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
+                            aplicacion = Aplicacion.objects.get(nombre=aplicacion)
 
-                        aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
+                            compania = ubicacion.compania
+                            
+                        else:   
+                            ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
+
+                            aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
+                            
 
                         vehiculo_nuevo = Vehiculo.objects.create(numero_economico=numero_economico,
                                             modelo=modelo,
@@ -7639,108 +7204,130 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
             wb_obj.close()
             os.remove(os.path.abspath(archivo))
         elif self.request.method=='POST' and self.request.FILES.get("file2"):
-            file = self.request.FILES.get("file2")
-            archivo = dir + r"\files.xlsx"
-            fp = open(archivo,'wb')
-            for chunk in file.chunks():
-                fp.write(chunk)
-  
-            wb_obj = openpyxl.load_workbook(archivo)
-            sheet_obj = wb_obj.active
-            
-            for i in range(sheet_obj.max_row):
-                try:
+            try:
+                file = self.request.FILES.get("file2")
+                archivo = dir + r"\files.xlsx"
+                fp = open(archivo,'wb')
+                for chunk in file.chunks():
+                    fp.write(chunk)
+    
+                print("archivo", archivo)
+                wb_obj = openpyxl.load_workbook(file)
+                sheet_obj = wb_obj.active
+                
+                for i in range(sheet_obj.max_row):
                     numero_economico = str(sheet_obj.cell(row=i + 2, column=1).value)
+                    numero_economico_nuevo = str(sheet_obj.cell(row=i + 2, column=2).value)
+                    vehiculo = str(sheet_obj.cell(row=i + 2, column=3).value)
+                    ubicacion = str(sheet_obj.cell(row=i + 2, column=4).value)
+                    aplicacion = str(sheet_obj.cell(row=i + 2, column=5).value)
+                    vida = str(sheet_obj.cell(row=i + 2, column=6).value)
+                    posicion = str(sheet_obj.cell(row=i + 2, column=7).value)
+                    presion_actual = str(sheet_obj.cell(row=i + 2, column=8).value)
+                    profundidad_izquierda = str(sheet_obj.cell(row=i + 2, column=9).value)
+                    profundidad_central = str(sheet_obj.cell(row=i + 2, column=10).value)
+                    profundidad_derecha = str(sheet_obj.cell(row=i + 2, column=11).value)
+                    km_actual = str(sheet_obj.cell(row=i + 2, column=12).value)
+                    producto = str(sheet_obj.cell(row=i + 2, column=13).value)
+                    inventario = str(sheet_obj.cell(row=i + 2, column=14).value)
+                    km_montado = str(sheet_obj.cell(row=i + 2, column=15).value)                            
+
+                    print("hola1", vehiculo)
+                    print("hola2")
+                    vehiculo = Vehiculo.objects.get(numero_economico=vehiculo, compania=compania)
+                    ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
+                    print("hola3")
+                    aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
+                    print("hola4")
+                    print("hola6")
+                    print("producto", producto)
+                    print("compania", compania)
+                    producto = Producto.objects.get(producto=producto, compania=compania)
+                    inventario = "Rodante"
+                    print("presion_actual", presion_actual)
+
                     try:
-                        llanta = Llanta.objects.get(numero_economico=numero_economico, compania=Compania.objects.get(compania=compania))
+                        presion_actual = int(presion_actual)
                     except:
-                        vehiculo = str(sheet_obj.cell(row=i + 2, column=2).value)
-                        ubicacion = str(sheet_obj.cell(row=i + 2, column=3).value)
-                        aplicacion = str(sheet_obj.cell(row=i + 2, column=4).value)
-                        vida = str(sheet_obj.cell(row=i + 2, column=5).value)
-                        posicion = str(sheet_obj.cell(row=i + 2, column=6).value)
-                        presion_actual = str(sheet_obj.cell(row=i + 2, column=7).value)
-                        profundidad_izquierda = str(sheet_obj.cell(row=i + 2, column=8).value)
-                        profundidad_central = str(sheet_obj.cell(row=i + 2, column=9).value)
-                        profundidad_derecha = str(sheet_obj.cell(row=i + 2, column=10).value)
-                        km_actual = str(sheet_obj.cell(row=i + 2, column=11).value)
-                        producto = str(sheet_obj.cell(row=i + 2, column=12).value)
-                        inventario = str(sheet_obj.cell(row=i + 2, column=13).value)
-                        km_montado = str(sheet_obj.cell(row=i + 2, column=14).value)
+                        presion_actual = None
 
-                        vehiculo = Vehiculo.objects.get(numero_economico=vehiculo)
-                        ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
-                        aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
-                        tipo_de_eje = vehiculo.configuracion.split(".")[int(posicion[0]) - 1]
-                        eje = posicion[0]
-                        if tipo_de_eje == "SP1":
-                            nombre_de_eje = "Refacción"
-                        elif tipo_de_eje[0] == "S":
-                            nombre_de_eje = "Dirección"
-                        elif tipo_de_eje[0] == "D":
-                            nombre_de_eje = "Tracción"
-                        elif tipo_de_eje[0] == "T":
-                            nombre_de_eje = "Arrastre"
-                        elif tipo_de_eje[0] == "C":
-                            nombre_de_eje = "Loco"
-                        elif tipo_de_eje[0] == "L":
-                            nombre_de_eje = "Retractil"
-                        producto = Producto.objects.get(producto=producto, compania=Compania.objects.get(compania=compania))
-                        inventario = "Rodante"
+                    print("hola7")
+                    try:
+                        profundidad_izquierda = float(profundidad_izquierda)
+                        if producto.profundidad_inicial:
+                            if 0 < profundidad_izquierda <= producto.profundidad_inicial:
+                                pass
+                            else:
+                                profundidad_izquierda = producto.profundidad_inicial
+                    except:
+                        profundidad_izquierda = producto.profundidad_inicial
 
-                        try:
-                            presion_actual = int(presion_actual)
-                        except:
-                            presion_actual = None
+                    try:
+                        profundidad_central = float(profundidad_central)
+                        if producto.profundidad_inicial:
+                            if 0 < profundidad_central <= producto.profundidad_inicial:
+                                pass
+                            else:
+                                profundidad_central = producto.profundidad_inicial
+                    except:
+                        profundidad_central = producto.profundidad_inicial
 
-                        try:
-                            profundidad_izquierda = int(profundidad_izquierda)
-                        except:
-                            profundidad_izquierda = producto.profundidad_inicial
+                    try:
+                        profundidad_derecha = float(profundidad_derecha)
+                        if producto.profundidad_inicial:
+                            if 0 < profundidad_derecha <= producto.profundidad_inicial:
+                                pass
+                            else:
+                                profundidad_derecha = producto.profundidad_inicial
+                    except:
+                        profundidad_derecha = producto.profundidad_inicial
 
-                        try:
-                            profundidad_central = int(profundidad_central)
-                        except:
-                            profundidad_central = producto.profundidad_inicial
+                    print("hola8")
+                    try:
+                        km_actual = int(km_actual)
+                    except:
+                        km_actual = None
 
-                        try:
-                            profundidad_derecha = int(profundidad_derecha)
-                        except:
-                            profundidad_derecha = producto.profundidad_inicial
+                    print("hola9")
+                    try:
+                        km_montado = int(km_montado)
+                        if km_montado > vehiculo.km:
+                            km_montado = int(vehiculo.km)
+                    except:
+                        km_montado = None
+                    print("hola10")
 
-                        try:
-                            km_actual = int(km_actual)
-                        except:
-                            km_actual = None
 
-                        try:
-                            km_montado = int(km_montado)
-                        except:
-                            km_montado = None
+                    llanta_id = Llanta.objects.get(numero_economico=numero_economico, compania=Compania.objects.get(compania=compania))
+                    if numero_economico_nuevo:
+                        for i in numero_economico_nuevo:
+                            print(i)
+                        print(numero_economico_nuevo)
+                        print(type(numero_economico_nuevo))
+                        if numero_economico_nuevo != "None":
+                            llanta_id.numero_economico=numero_economico_nuevo
+                    llanta_id.ubicacion=ubicacion
+                    llanta_id.aplicacion=aplicacion
+                    llanta_id.vida=vida
+                    llanta_id.presion_actual=presion_actual
+                    llanta_id.profundidad_izquierda=profundidad_izquierda
+                    llanta_id.profundidad_central=profundidad_central
+                    llanta_id.profundidad_derecha=profundidad_derecha
+                    llanta_id.km_actual=km_actual
+                    llanta_id.producto=producto
+                    llanta_id.inventario=inventario
+                    print("hola14")
+                    llanta_id.fecha_de_entrada_inventario=date.today()
+                    llanta_id.km_montado=km_montado
 
-                        Llanta.objects.create(numero_economico=numero_economico,
-                                            compania=compania,
-                                            vehiculo=vehiculo,
-                                            ubicacion=ubicacion,
-                                            aplicacion=aplicacion,
-                                            vida=vida,
-                                            tipo_de_eje=tipo_de_eje,
-                                            eje=int(eje),
-                                            posicion=posicion,
-                                            presion_actual=presion_actual,
-                                            profundidad_izquierda=profundidad_izquierda,
-                                            profundidad_central=profundidad_central,
-                                            profundidad_derecha=profundidad_derecha,
-                                            km_actual=km_actual,
-                                            nombre_de_eje=nombre_de_eje,
-                                            producto=producto,
-                                            inventario=inventario,
-                                            fecha_de_entrada_inventario=date.today(),
-                                            km_montado=km_montado
-                                            )
-                except:
-                    pass
-
+                    print("hola15")
+                    llanta_id.patito = False
+                    llanta_id.save()
+                    print("hola16")
+                    print(llanta_id.profundidad_izquierda)
+            except Exception as ex:
+                print(ex)
+                    
         context["if_vehiculo"] = if_vehiculo
         context["user"] = user
         context["groups_names"] = groups_names
@@ -7932,17 +7519,29 @@ class tireDetailView(LoginRequiredMixin, DetailView):
                     #vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), 
                     compania=Compania.objects.get(compania=self.request.user.perfil.compania),
                     llantas__in = [llanta]   
-                    ).order_by("-id")
+                    ).order_by("id")
                 bitacora_pro = Bitacora_Pro.objects.filter(
                     #vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico), 
                     compania=Compania.objects.get(compania=self.request.user.perfil.compania),
                     llantas__in = [llanta]   
-                    ).order_by("-id")
+                    ).order_by("id")
             except:
                 bitacora_normal = None 
                 bitacora_pro = None
-                
-            entradas_correctas = functions.entrada_correcta(bitacora, bitacora_pro)
+
+            bitacora = Bitacora.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+            bitacora_pro = Bitacora_Pro.objects.filter(vehiculo=Vehiculo.objects.get(numero_economico=vehiculo.numero_economico, compania=Compania.objects.get(compania=self.request.user.perfil.compania)), compania=Compania.objects.get(compania=self.request.user.perfil.compania)).order_by("id")
+
+            bitacoras = bitacora.annotate(presion_de_entrada_1=F("presion_de_entrada"), presion_de_salida_1=F("presion_de_salida"), presion_de_entrada_2=Value(None, output_field=IntegerField()), presion_de_salida_2=Value(None, output_field=IntegerField()), presion_de_entrada_3=Value(None, output_field=IntegerField()), presion_de_salida_3=Value(None, output_field=IntegerField()), presion_de_entrada_4=Value(None, output_field=IntegerField()), presion_de_salida_4=Value(None, output_field=IntegerField()), presion_de_entrada_5=Value(None, output_field=IntegerField()), presion_de_salida_5=Value(None, output_field=IntegerField()), presion_de_entrada_6=Value(None, output_field=IntegerField()), presion_de_salida_6=Value(None, output_field=IntegerField()), presion_de_entrada_7=Value(None, output_field=IntegerField()), presion_de_salida_7=Value(None, output_field=IntegerField()), presion_de_entrada_8=Value(None, output_field=IntegerField()), presion_de_salida_8=Value(None, output_field=IntegerField()), presion_de_entrada_9=Value(None, output_field=IntegerField()), presion_de_salida_9=Value(None, output_field=IntegerField()), presion_de_entrada_10=Value(None, output_field=IntegerField()), presion_de_salida_10=Value(None, output_field=IntegerField()), presion_de_entrada_11=Value(None, output_field=IntegerField()), presion_de_salida_11=Value(None, output_field=IntegerField()), presion_de_entrada_12=Value(None, output_field=IntegerField()), presion_de_salida_12=Value(None, output_field=IntegerField())).order_by("id")
+            bitacoras = list(bitacoras.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+
+            bitacoras_pro = list(bitacora_pro.values("id", "vehiculo__id", "vehiculo__configuracion", "compania__id", "fecha_de_inflado", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "vehiculo__presion_establecida_1", "vehiculo__presion_establecida_2", "vehiculo__presion_establecida_3", "vehiculo__presion_establecida_4", "vehiculo__presion_establecida_5", "vehiculo__presion_establecida_6", "vehiculo__presion_establecida_7"))
+        
+            bitacoras.extend(bitacoras_pro)
+
+            bitacoras = sorted(bitacoras, key=lambda x:x["fecha_de_inflado"], reverse=False)
+
+            entradas_correctas = functions.entrada_correcta_ambas(bitacoras)
 
             print(f'bitacora_normal: {bitacora_normal}')
             print(f'bitacora_pro: {bitacora_pro}')
@@ -8237,6 +7836,7 @@ class DetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         vehiculo = Vehiculo.objects.get(pk=self.kwargs['pk'])
         llantas = Llanta.objects.filter(vehiculo=vehiculo, tirecheck=False, inventario = 'Rodante')
+        llantas_ordenadas = functions.llantas_ordenadas(llantas)
         inspecciones = Inspeccion.objects.filter(llanta__in=llantas)
         inspecciones_vehiculo = InspeccionVehiculo.objects.filter(vehiculo=vehiculo)
         ultima_inspeccion_img = []
@@ -8263,8 +7863,7 @@ class DetailView(LoginRequiredMixin, DetailView):
         entradas_correctas = functions.entrada_correcta_ambas(bitacoras)
         fecha = functions.convertir_fecha(str(vehiculo.fecha_de_inflado))
         servicios = ServicioVehiculo.objects.filter(vehiculo = vehiculo).order_by('-id').exclude(estado='abierto')
-        print(vehiculo)
-        print(servicios)
+        
         if vehiculo.fecha_de_inflado:
             inflado = 1
         else:
@@ -8273,10 +7872,8 @@ class DetailView(LoginRequiredMixin, DetailView):
         eventos = []
         inspecciones_list = []
         for bit in bitacora:
-            print("bit", bit.id)
             eventos.append([bit.fecha_de_inflado, bit, 'pulpo'])
         for bit in bitacora_pro:
-            print("bit", bit.id)
             eventos.append([bit.fecha_de_inflado, bit, 'pulpopro'])
 
         for inspeccion in inspecciones_vehiculo:
@@ -8297,7 +7894,6 @@ class DetailView(LoginRequiredMixin, DetailView):
             eventos.append([datetime.combine(servicio.fecha_inicio, datetime.min.time(), timezone.utc), servicio, 'servicio', 'icon-checkmark good-text'])
         eventos = sorted(eventos, key=lambda x:x[0], reverse=True)
         context["eventos"] = eventos
-        print(eventos)
         hoy = date.today()
 
         mes_1 = hoy.strftime("%b")
@@ -8374,11 +7970,7 @@ class DetailView(LoginRequiredMixin, DetailView):
             except:
                 pass
 
-            print("doble_entrada", doble_entrada)
-            print("doble_mala_entrada", doble_mala_entrada)
-
-            print("message_pro", message_pro)
-            print("message", message)
+            
 
             configuracion = vehiculo.configuracion
             cantidad_llantas = functions.cantidad_llantas(configuracion)
@@ -8477,22 +8069,11 @@ class DetailView(LoginRequiredMixin, DetailView):
 
         #Generacion de ejes dinamico
         vehiculo_actual = Vehiculo.objects.get(pk = self.kwargs['pk'])
-        llantas_actuales = Llanta.objects.filter(vehiculo = self.kwargs['pk'], tirecheck=False, inventario="Rodante")
+
+        llantas_actuales = Llanta.objects.filter(vehiculo = vehiculo_actual, tirecheck=False, inventario="Rodante")
         inspecciones_actuales = Inspeccion.objects.filter(llanta__in=llantas_actuales)
 
-        #Obtencion de la lista de las llantas
-
-        filtro_sospechoso = functions.vehiculo_sospechoso_llanta(inspecciones_actuales)
-        #filtro_sospechoso = {}
-        llantas_sospechosas = llantas_actuales.filter(numero_economico__in=filtro_sospechoso)
-
-        filtro_rojo = functions.vehiculo_rojo_llanta(llantas_actuales)
-        llantas_rojas = llantas_actuales.filter(numero_economico__in=filtro_rojo).exclude(id__in=llantas_sospechosas)
-
-        filtro_amarillo = functions.vehiculo_amarillo_llanta(llantas_actuales)
-        llantas_amarillas = llantas_actuales.filter(numero_economico__in=filtro_amarillo).exclude(id__in=llantas_sospechosas).exclude(id__in=llantas_rojas)
-
-        llantas_azules = llantas_actuales.exclude(id__in=llantas_sospechosas).exclude(id__in=llantas_rojas).exclude(id__in=llantas_amarillas)
+        
 
         #Obtencion de la data
         num_ejes = vehiculo_actual.configuracion.split('.')
@@ -8554,17 +8135,9 @@ class DetailView(LoginRequiredMixin, DetailView):
             ejes_no_ordenados.append(list_temp)
             numero += 1
         
-        print('---------------------------------------')
-        for i in ejes_no_ordenados:
-            print(i)
-        print('---------------------------------------')
-        
         ejes = functions.acomodo_ejes(ejes_no_ordenados)
         color = functions.entrada_correcta_actual(vehiculo_actual)
-        print('---------------------------------------')
-        for i in ejes:
-            print(i)
-        print('---------------------------------------')
+        
         #print(color)
         if bitacora:
             if doble_mala_entrada:
@@ -8687,12 +8260,12 @@ class DetailView(LoginRequiredMixin, DetailView):
 
         problemas = []
         ultima_inspeccion_vehiculo = InspeccionVehiculo.objects.filter(vehiculo=vehiculo).last()
-        print(ultima_inspeccion_vehiculo)
         current_isnpec = False
         if ultima_inspeccion_vehiculo != None:
-            ultimas_inspecciones = Inspeccion.objects.filter(inspeccion_vehiculo = ultima_inspeccion_vehiculo)
+            ultimas_inspecciones = Inspeccion.objects.filter(inspeccion_vehiculo = ultima_inspeccion_vehiculo).exclude(
+                llanta__inventario = 'Archivado'
+            )
             current_isnpec = True
-            print(ultimas_inspecciones)
         if current_isnpec:
             for observacion in vehiculo.observaciones.all():
                 color_obs = functions.color_observaciones_one(observacion)
@@ -8723,13 +8296,13 @@ class DetailView(LoginRequiredMixin, DetailView):
                 else:
                     signo = 'icon-checkmark good-text'
                 problemas.append([llanta.posicion, observacion, signo])
-        print(vehiculo.observaciones.all())
         context['problemas'] = problemas
         context["llantas"] = llantas
+        context["llantas_ordenadas"] = llantas_ordenadas
         return context
 
 class reporteEdicionLlanta(ListView):
-    template_name= 'ReporteEdicion.html'
+    template_name= 'reporteEdicion.html'
     model = Inspeccion
     
     def get_context_data(self, **kwargs):
@@ -8796,7 +8369,7 @@ class reporteEdicionLlanta(ListView):
         return context
     
 class ReporteEdicion(ListView):
-    template_name= 'ReporteEdicion.html'
+    template_name= 'reporteEdicion.html'
     model = InspeccionVehiculo
     
     def get_context_data(self, **kwargs):
@@ -8865,7 +8438,7 @@ class ReporteEdicion(ListView):
         return context
     
 class ReporteInspeccion(ListView):
-    template_name= 'ReporteInspeccion.html'
+    template_name= 'reporteInspeccion.html'
     model = InspeccionVehiculo
     
     def get_queryset(self):
@@ -9849,51 +9422,119 @@ def ftp_newpick(request):
 def download_llantas_rodantes(request):
     # Define Django project base directory
     # content-type of response
-    llantas_patito = Llanta.objects.filter(compania=Compania.objects.get(compania=request.user.perfil.compania), patito=True)
+    #compania=Compania.objects.get(compania=request.user.perfil.compania)
+    #print(compania)
+    #llantas_patito = Llanta.objects.filter(compania = compania, patito=True)
+#
+    #response = HttpResponse(content_type='application/ms-excel')
+#
+	##decide file name
+    #response['Content-Disposition'] = 'attachment; filename="Llantas_info.xls"'
+#
+	##creating workbook
+    #wb = xlwt.Workbook(encoding='utf-8')
+#
+	##adding sheet
+    #ws = wb.add_sheet("Llantas")
+#
+	## Sheet header, first row
+    #row_num = 0
+#
+    #font_style = xlwt.XFStyle()
+	## headers are bold
+    #font_style.font.bold = True
+#
+	##column header names, you can use your own headers here
+    #columns = ['Número Económico', 'Número económico nuevo', 'Vehículo', 'Sucursal', 'Aplicación', 'Vida', 'Posición', 'Presión actual', 'Profundidad izquierda', "Profundidad central", "Profundidad derecha", "Km actual", "Producto", "Inventario", "Km de montado"]
+#
+    ##write column headers in sheet
+    #for col_num in range(len(columns)):
+    #    ws.write(row_num, col_num, columns[col_num], font_style)
+#
+    ## Sheet body, remaining rows
+    #font_style = xlwt.XFStyle()
+#
+    ##get your data, from database or from a text file...
+    #for my_row in range(len(llantas_patito)):
+    #    ws.write(my_row + 1, 0, str(llantas_patito.values("numero_economico")[my_row]["numero_economico"]), font_style)
+    #    ws.write(my_row + 1, 2, str(llantas_patito.values("vehiculo__numero_economico")[my_row]["vehiculo__numero_economico"]), font_style)
+    #    ws.write(my_row + 1, 3, str(llantas_patito.values("ubicacion__nombre")[my_row]["ubicacion__nombre"]), font_style)
+    #    ws.write(my_row + 1, 4, str(llantas_patito.values("aplicacion__nombre")[my_row]["aplicacion__nombre"]), font_style)
+    #    ws.write(my_row + 1, 5, str(llantas_patito.values("vida")[my_row]["vida"]), font_style)
+    #    ws.write(my_row + 1, 6, str(llantas_patito.values("posicion")[my_row]["posicion"]), font_style)
+    #    ws.write(my_row + 1, 7, str(llantas_patito.values("presion_actual")[my_row]["presion_actual"]), font_style)
+    #    ws.write(my_row + 1, 13, str(llantas_patito.values("inventario")[my_row]["inventario"]), font_style)
+#
+    #wb.save(response)
+    
+    
+    usuario = request.user
+    perfil = Perfil.objects.get(user = usuario)
+    compania = perfil.compania
+    llantas_patito = Llanta.objects.filter(compania = compania, patito=True)
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet.append( (
+            'Número Económico',
+            'Número económico nuevo',
+            'Vehículo',
+            'Sucursal',
+            'Aplicación',
+            'Vida',
+            'Posición',
+            'Presión actual',
+            'Profundidad izquierda',
+            "Profundidad central",
+            "Profundidad derecha",
+            "Km actual",
+            "Producto",
+            "Inventario",
+            "Km de montado"
+        ) )
+    fuente = Font(bold=True)
+    celdas_en_negrita = sheet["A1":"O1"]
+    for row in celdas_en_negrita:
+        for cell in row:
+            cell.font = fuente
 
-    response = HttpResponse(content_type='application/ms-excel')
-
-	#decide file name
-    response['Content-Disposition'] = 'attachment; filename="Llantas_info.xls"'
-
-	#creating workbook
-    wb = xlwt.Workbook(encoding='utf-8')
-
-	#adding sheet
-    ws = wb.add_sheet("Llantas")
-
-	# Sheet header, first row
-    row_num = 0
-
-    font_style = xlwt.XFStyle()
-	# headers are bold
-    font_style.font.bold = True
-
-	#column header names, you can use your own headers here
-    columns = ['Número Económico', 'Número económico nuevo', 'Vehículo', 'Sucursal', 'Aplicación', 'Vida', 'Posición', 'Presión actual', 'Profundidad izquierda', "Profundidad central", "Profundidad derecha", "Km actual", "Producto", "Inventario", "Km de montado"]
-
-    #write column headers in sheet
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
-
-    # Sheet body, remaining rows
-    font_style = xlwt.XFStyle()
-
-    #get your data, from database or from a text file...
-    for my_row in range(len(llantas_patito)):
-        ws.write(my_row + 1, 0, str(llantas_patito.values("numero_economico")[my_row]["numero_economico"]), font_style)
-        ws.write(my_row + 1, 2, str(llantas_patito.values("vehiculo__numero_economico")[my_row]["vehiculo__numero_economico"]), font_style)
-        ws.write(my_row + 1, 3, str(llantas_patito.values("ubicacion__nombre")[my_row]["ubicacion__nombre"]), font_style)
-        ws.write(my_row + 1, 4, str(llantas_patito.values("aplicacion__nombre")[my_row]["aplicacion__nombre"]), font_style)
-        ws.write(my_row + 1, 5, str(llantas_patito.values("vida")[my_row]["vida"]), font_style)
-        ws.write(my_row + 1, 6, str(llantas_patito.values("posicion")[my_row]["posicion"]), font_style)
-        ws.write(my_row + 1, 7, str(llantas_patito.values("presion_actual")[my_row]["presion_actual"]), font_style)
-        ws.write(my_row + 1, 13, str(llantas_patito.values("inventario")[my_row]["inventario"]), font_style)
-
-    wb.save(response)
+    
     for llanta in llantas_patito:
-        llanta.patito = False
-        llanta.save()
+        sheet.append( (
+                llanta.numero_economico,
+                None,
+                llanta.vehiculo.numero_economico,
+                llanta.ubicacion.nombre,
+                llanta.aplicacion.nombre,
+                llanta.vida,
+                llanta.posicion,
+                llanta.presion_actual,
+                llanta.profundidad_izquierda,
+                llanta.profundidad_central,
+                llanta.profundidad_derecha,
+                llanta.km_actual,
+                llanta.producto,
+                llanta.inventario,
+                llanta.km_montado,
+        ) )
+    sheet.column_dimensions [ 'A' ]. ancho = 500
+    sheet.column_dimensions [ 'B' ]. ancho = 500
+    sheet.column_dimensions [ 'C' ]. ancho = 500
+    sheet.column_dimensions [ 'D' ]. ancho = 500
+    sheet.column_dimensions [ 'E' ]. ancho = 500
+    sheet.column_dimensions [ 'F' ]. ancho = 500
+    sheet.column_dimensions [ 'G' ]. ancho = 500
+    sheet.column_dimensions [ 'H' ]. ancho = 500
+    sheet.column_dimensions [ 'I' ]. ancho = 500
+    sheet.column_dimensions [ 'J' ]. ancho = 500
+    sheet.column_dimensions [ 'K' ]. ancho = 500
+    sheet.column_dimensions [ 'L' ]. ancho = 500
+    sheet.column_dimensions [ 'M' ]. ancho = 500
+    sheet.column_dimensions [ 'N' ]. ancho = 500
+    sheet.column_dimensions [ 'O' ]. ancho = 500
+    response = HttpResponse(content_type='application/msexcel')
+    response['Content-Disposition'] = f'attachment; filename=Catalogo de Productos {compania}.xlsx'
+    book.save(response)
+    return response
     return response
 
 # Consumo de llantas = Cantidad llantas rodantes * Km recorridos / Rendimiento de la llanta
@@ -9987,3 +9628,99 @@ def redireccionOrden(request, id):
     elif status == 'ConRenovador':
         url = f"%s?id={orden.id}" % reverse('dashboards:ordenEntrada')
         return redirect(url)
+    
+def descargarCatalogoProducto(request):
+    usuario = request.user
+    perfil = Perfil.objects.get(user = usuario)
+    compania = perfil.compania
+    productos = Producto.objects.filter(compania = compania)
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet.append( (
+        "Marca",
+        "Dibujo",
+        "Rango",
+        "Dimencion",
+        "Producto",
+        "Profundidad Inicial",
+        "Aplicacion",
+        "Vida",
+        "Precio actual",
+        "KM esperado"
+        ) )
+    fuente = Font(bold=True)
+    celdas_en_negrita = sheet["A1":"J1"]
+    for row in celdas_en_negrita:
+        for cell in row:
+            cell.font = fuente
+
+    
+    for producto in productos:
+        sheet.append( (
+            producto.marca,
+            producto.dibujo,
+            producto.rango,
+            producto.dimension,
+            producto.producto,
+            producto.profundidad_inicial,
+            producto.aplicacion,
+            producto.vida,
+            producto.precio,
+            producto.km_esperado,
+        ) )
+    sheet.column_dimensions [ 'A' ]. ancho = 500
+    sheet.column_dimensions [ 'B' ]. ancho = 500
+    sheet.column_dimensions [ 'C' ]. ancho = 500
+    sheet.column_dimensions [ 'D' ]. ancho = 500
+    sheet.column_dimensions [ 'E' ]. ancho = 500
+    sheet.column_dimensions [ 'F' ]. ancho = 500
+    sheet.column_dimensions [ 'G' ]. ancho = 500
+    sheet.column_dimensions [ 'H' ]. ancho = 500
+    sheet.column_dimensions [ 'I' ]. ancho = 500
+    sheet.column_dimensions [ 'J' ]. ancho = 500
+    response = HttpResponse(content_type='application/msexcel')
+    response['Content-Disposition'] = f'attachment; filename=Catalogo de Productos {compania}.xlsx'
+    book.save(response)
+    return response
+
+
+
+
+def descargarCatalogoProductoVacio(request):
+    usuario = request.user
+    perfil = Perfil.objects.get(user = usuario)
+    compania = perfil.compania
+    productos = Producto.objects.filter(compania = compania)
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet.append( (
+        "Marca",
+        "Dibujo",
+        "Rango",
+        "Dimencion",
+        "Profundidad Inicial",
+        "Aplicacion",
+        "Vida",
+        "Precio actual",
+        "KM esperado"
+        ) )
+    fuente = Font(bold=True)
+    celdas_en_negrita = sheet["A1":"J1"]
+    for row in celdas_en_negrita:
+        for cell in row:
+            cell.font = fuente
+            
+    sheet.column_dimensions [ 'A' ]. ancho = 500
+    sheet.column_dimensions [ 'B' ]. ancho = 500
+    sheet.column_dimensions [ 'C' ]. ancho = 500
+    sheet.column_dimensions [ 'D' ]. ancho = 500
+    sheet.column_dimensions [ 'E' ]. ancho = 500
+    sheet.column_dimensions [ 'F' ]. ancho = 500
+    sheet.column_dimensions [ 'G' ]. ancho = 500
+    sheet.column_dimensions [ 'H' ]. ancho = 500
+    sheet.column_dimensions [ 'I' ]. ancho = 500
+    sheet.column_dimensions [ 'J' ]. ancho = 500
+    response = HttpResponse(content_type='application/msexcel')
+    response['Content-Disposition'] = f'attachment; filename=Catalogo de Productos.xlsx'
+    book.save(response)
+    return response

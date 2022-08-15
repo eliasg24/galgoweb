@@ -4,8 +4,10 @@ import { profundidad } from './profundidad.js';
 document.addEventListener('DOMContentLoaded', (e) => {
   onSelectTire();
   profundidad();
+  // handleForms();
   handleTire();
 
+  // validateInputList('#llanta', 'llanta');
   validateInputList('#producto', 'producto');
   // noDoubleValues();
 
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
   vehiculoManual('data-vehiculo-item');
 
   search('#vehiculo-search', '#vehiculo-observaciones', '.search-item');
+  dual();
 });
 
 const diferenciaDual = (duales = document.documentElement) => {
@@ -22,8 +25,6 @@ const diferenciaDual = (duales = document.documentElement) => {
     const input = document.querySelector(
       `input[data-input-id="${tire.getAttribute('data-tire-id')}"]`
     );
-
-    if (!input) return;
 
     input.addEventListener('input', (e) => {
       let presion1 = tires[0].querySelector('[data-tag-id]').textContent;
@@ -38,8 +39,6 @@ const diferenciaDual = (duales = document.documentElement) => {
       let container2 = tires[1].getAttribute('data-tire-id');
 
       let ids = [container1, container2];
-
-      console.log(presion1, presion2);
 
       let porcentajeDif1 = (presion1 - presion2) / presion1;
       let porcentajeDif2 = (presion2 - presion1) / presion2;
@@ -80,14 +79,14 @@ const dual = () => {
   });
 };
 
-dual();
-
 const vehiculoManual = (item = '') => {
   const observations = document.querySelectorAll(`[${item}]`);
 
   observations.forEach((observation) => {
     observation.addEventListener('input', () => {
-      let container = document.querySelector('.observations__container');
+      let container = document.querySelector(
+        '.modal__container .observations__container'
+      );
       if (observation.checked) {
         container
           .querySelector(`[data-icon-type="${observation.value}"]`)
@@ -198,7 +197,6 @@ const handleTire = () => {
   });
 };
 
-
 const onSelectTire = () => {
   const tires = document.querySelectorAll('.tire');
   const hidden = document.querySelector("input[type='hidden']");
@@ -222,14 +220,14 @@ const onSelectTire = () => {
   button.addEventListener('click', (e) => {
     modal.classList.add('active');
   });
-  
+
   close.addEventListener('click', (e) => {
     modal.classList.remove('active');
   });
 
   document.addEventListener('keyup', (e) => {
-    if (e.key === "Escape") {
-      if (modal.classList.contains('active')) modal.classList.remove('active')
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('active')) modal.classList.remove('active');
     }
   });
 })();
@@ -237,13 +235,91 @@ const onSelectTire = () => {
 (() => {
   document.addEventListener('submit', (e) => {
     const campos = e.target.querySelectorAll('[data-required]');
+    const profundidades = e.target.querySelectorAll(
+      '[name="profundidad_izquierda"], [name="profundidad_central"], [name="profundidad_derecha"]'
+    );
+    const kmVehiculo = document.querySelector('[data-vehiculomax]');
 
-    campos.forEach(item => {
-      if (item.value.length <= 0) {
-        Swal.fire('Erro en el formulario', `El campo ${item.name} de la posición ${ item.dataset.posicion } esta vacío`, 'error');
+    // if (
+    //   parseFloat(kmVehiculo.value) > parseFloat(kmVehiculo.dataset.vehiculomax)
+    // ) {
+    //   Swal.fire(
+    //     'Error en el KM del vehículo',
+    //     'El KM del vehículo es mayor al permitido',
+    //     'error'
+    //   );
+    //   return;
+    // }
+    
+    if (parseFloat(kmVehiculo.value) < parseFloat(kmVehiculo.dataset.min)) {
+      Swal.fire(
+        'Error en el KM del vehículo',
+        'El KM del vehículo es menor al permitido',
+        'error'
+      );
+      return;
+    }
+
+    profundidades.forEach((input) => {
+      let { value } = input;
+
+      if (isNaN(value) || isNaN(input.dataset.llantamax)) return;
+      let max = parseFloat(input.dataset.llantamax);
+
+      value = parseFloat(value);
+
+      if (value > max) {
+        Swal.fire(
+          'El valor no puede ser mayor al máximo',
+          `Alguna profundidad de la posición ${input.dataset.posicion} es mayor de lo permitido (${max})`,
+          'error'
+        );
         return;
       }
-    })
-  })
-})()
+    });
 
+    campos.forEach((item) => {
+      if (item.value.length <= 0) {
+        Swal.fire(
+          'Error en el formulario',
+          `El campo ${item.name} de la posición ${item.dataset.vehiculo} esta vacío`,
+          'error'
+        );
+        return;
+      }
+    });
+  });
+})();
+
+const getMaxProf = async (producto = '', target) => {
+  const inputs = target.parentElement?.querySelectorAll(
+    '[data-profundidad-id] input'
+  );
+  try {
+    const resp = await fetch(`/api/profundidad_inicial?producto=${producto}`);
+    const { profundidad_inicial } = await resp.json();
+
+    inputs.forEach((input) => {
+      input.value = '';
+      input.dataset.llantamax = profundidad_inicial;
+      input.nextElementSibling.querySelector(
+        '.profundidad__max'
+      ).textContent = `(${profundidad_inicial})`;
+    });
+  } catch (error) {
+    console.error(error);
+    Swal.fire(
+      'Algo salió mal',
+      'Por favor contacte con el administrador',
+      'error'
+    );
+  }
+};
+
+document.addEventListener('change', (e) => {
+  if (e.target.name === 'producto') {
+    if (!e.target.value) return;
+
+    getMaxProf(e.target.value, e.target);
+  }
+});

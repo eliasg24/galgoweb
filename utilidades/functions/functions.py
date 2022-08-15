@@ -92,7 +92,10 @@ def percentil(numeros: list, num_q:int, numero_elementos=None):
         indice = round((25/100) * total_num)
     elif num_q == 3:
         indice = round((75/100) * total_num)
-    
+    print(f'numeros {numeros}')
+    print(f'num_q {num_q}')
+    print(f'numero_elementos {numero_elementos}')
+    print(f'indice {indice}')
     pq = numeros[(indice-1)]
     
     return pq

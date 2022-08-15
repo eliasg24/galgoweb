@@ -18,7 +18,7 @@
 
       <header class="head-cont">
         <div class="logo">
-          <img src="{% static 'images/aeto.svg' %}" alt="logo aeto">
+          <img src="{% static 'images/perro-galgo.png' %}" alt="logo aeto">
         </div>
 
         <h1 class="main-title">Edición manual</h1>
@@ -282,15 +282,16 @@
                   class="form__field"
                   type="number"
                   {% if vehiculo_actual.km == None %}
-                    min="0"
+                    data-min="0"
                   {% else %}
-                    min="{{vehiculo_actual.km}}"
+                    data-min=""
                   {% endif %}
                   step="any"
                   placeholder=""
                   name="km_vehiculo"
                   autocomplete="off"
                   value = "{% if vehiculo_actual.km == None %}{% else %}{{vehiculo_actual.km}}{% endif %}"
+                  data-vehiculomax
                 />
                 <label for="" class="form__label">
                   Km de vehículo actual: {{vehiculo_actual.km}}
@@ -390,7 +391,7 @@
                         {% endfor %}
                 
                       </datalist>
-  
+                      
                       <!-- End input -->
                       <label for="producto">
                         Producto
@@ -399,7 +400,9 @@
                         <option value="">Seleccione un producto...</option>
                         <option value="{{ ej.0.producto }}" selected>{{ej.0.producto}}</option>
                         {% for i in ej.2.producto %}
-                          <option value="{{i.data.label}}" {% if i.data.label == ej.0.producto %} selected {% endif %} >{{i.data.label}}</option>  
+                          {% if i.data.label != '---------' %}
+                            <option value="{{i.data.label}}" {% if i.data.label == ej.0.producto %} selected {% endif %} >{{i.data.label}}</option>  
+                          {% endif %}
                         {% endfor %}
                       </select>
                       <div class="alert__warn">
@@ -452,15 +455,17 @@
                             <input
                               class="form__field"
                               type="number"
-                              max = {{ej.0.producto.profundidad_inicial}}
+                              data-llantamax = {{ej.0.producto.profundidad_inicial}}
                               step="any"
                               placeholder="Profundidad izquierda"
                               name="profundidad_izquierda"
                               autocomplete="off"
                               value="{{ej.0.profundidad_izquierda}}"
+                              data-posicion="{{ ej.0.posicion }}"
                             />
                             <label for="profundidad" class="form__label">
                               Izquierda
+                              <span class="profundidad__max"></span>
                             </label>
                           </div>
   
@@ -468,15 +473,17 @@
                             <input
                               class="form__field"
                               type="number"
-                              max = {{ej.0.producto.profundidad_inicial}}
+                              data-llantamax = {{ej.0.producto.profundidad_inicial}}
                               step="any"
                               placeholder="Profundidad central"
                               name="profundidad_central"
                               autocomplete="off"
                               value="{{ej.0.profundidad_central}}"
+                              data-posicion="{{ ej.0.posicion }}"
                             />
                             <label for="profundidad" class="form__label">
                               Central
+                              <span class="profundidad__max"></span>
                             </label>
                           </div>
                           
@@ -484,15 +491,17 @@
                             <input
                               class="form__field"
                               type="number"
-                              max = {{ej.0.producto.profundidad_inicial}}
+                              data-llantamax = {{ej.0.producto.profundidad_inicial}}
                               step="any"
                               placeholder="Profundidad derecha"
                               name="profundidad_derecha"
                               autocomplete="off"
                               value="{{ej.0.profundidad_derecha}}"
+                              data-posicion="{{ ej.0.posicion }}"
                             />
                             <label for="profundidad" class="form__label">
                               Derecha
+                              <span class="profundidad__max"></span>
                             </label>
                           </div>  
                         
@@ -656,7 +665,6 @@
             }
           }); 
 
-          console.log('Duplicado', duplicate)
           
           if ( duplicate > 0 ) {
             return false;
@@ -715,7 +723,6 @@
           }
         });
 
-        console.log(counter);
 
         if (counter >= inputs.length) {
           return true;
@@ -732,7 +739,6 @@
           const duplicate = noDoubleValues('llanta');
           const empty = emptyProfs();
           const economic = validateEconomic();
-          console.log('economic', economic)
 
           if (duplicate) return;
 

@@ -15,7 +15,7 @@
 <main class="main-cont">
     <header class="head-cont animate__animated animate__fadeIn">
         <div class="logo">
-            <img src="{% static 'images/aeto.svg' %}" alt="logo">
+            <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
         </div>
 
         <nav class="flex-row" id="nav-dash">
@@ -23,12 +23,12 @@
                 <span class="icon-truck"></span>
                 Vehículo
             </button>
-            {% if grupo != "Pulpo Manager" %}
             <button class="btn btn-aeto-crunch" id="btn-chart">
+            {% if grupo != "Pulpo Manager" %}
             <span class="icon-tireeye"></span>
                 Tire Eye
-            </button>
             {% endif %}
+            </button>
             <button class="btn btn-aeto-crunch" id="btn-pulpo">
                 <span class="icon-pulpo"></span>
                 Pulpo
@@ -47,26 +47,26 @@
 
                 {% else %}
                     <div class="config__buttons">
-                        {% if grupo != "Pulpo Manager" %}
                         <a 
                             href="{% url 'dashboards:configuracionVehiculo' vehiculo.id %}" 
                             class="btn btn-download relative">
                             <span class="icon-brain"></span>
                             <div class="pop-out">Smart View</div>
                         </a>
+                        {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                         <a 
                             href="{% url 'dashboards:diagrama' vehiculo.id %}" 
                             class="btn btn-download relative">
                             <span class="icon-pencil"></span>
                             <div class="pop-out">Edición Manual</div>
-                        </a>  
+                        </a>
+                        {% endif %}
                         <a 
                             href="{% url 'dashboards:inspeccionVehiculo' vehiculo.id %}" 
                             class="btn btn-download relative">
                             <span class="icon-magnifier"></span>
                             <div class="pop-out">Inspección</div>
                         </a> 
-                        {% endif %}
                     </div>
 
                     <h2 id="km-vehiculo">KM: {{vehiculo.km}}</h2> 
@@ -339,23 +339,31 @@
                                             <td class="td-table2"><span class="{{llanta.2}}"></span></td>
                                         </tr>
                                     {% endfor %}
+                                </tbody>
+                                
+                            </table>
 
-                                    {% if ultima_inspeccion_img|length != 0 %}
+                            {% if ultima_inspeccion_img|length != 0 %}
+                                <table class="config__table" style="margin-top: 1rem;">
+                                    <thead>
+                                        <th>Posición</th>
+                                        <th>Imagen</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
                                         {% for llanta in ultima_inspeccion_img %}
                                             <tr>
                                                 <td class="td-table2">{{llanta.posicion}}</td>
                                                 <td class="td-table2">Imagen</td>
-                                                <td class="td-table2"><a href="{{llanta.ultima_inspeccion.imagen.url}}" target="_blank">Ver imagen</a></td>
-
+                                                <td class="td-table2">
+                                                    <a href="{{llanta.ultima_inspeccion.imagen.url}}" target="_blank">Ver imagen</a>
+                                                </td>
                                             </tr>
-                                        
                                         {% endfor %}
-                                
-                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
 
-                                </tbody>
-                                
-                            </table>
                         </div>
 
                         <div class="tables__table" id="llantas">
@@ -369,7 +377,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for llanta in llantas %}
+                                    {% for llanta in llantas_ordenadas %}
                                         <tr>
                                             <td class="td-table1">{{llanta.posicion}}</td>
                                             <td class="td-table1">{{llanta.numero_economico}}</td>
@@ -972,9 +980,9 @@
         //                         }
         //                     }
         //                 });
-//licencia de anyChart
-anychart.licenseKey("aeto.com.mx-16056097-34281685");
     }
+    //licencia de anyChart
+    anychart.licenseKey("aeto.com.mx-16056097-34281685");
 
 anychart.onDocumentReady(function () {
 
