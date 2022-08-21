@@ -39,6 +39,8 @@
   background-color: var(--colorv00);
   border-radius: 0.5rem;
   padding: 1rem;
+  overflow: auto;
+  max-height: 100vh;
 }
 
 .modal__header {
@@ -108,6 +110,24 @@
 
 .btn.red {
   background-color: var(--colorv07);
+}
+
+.service-done {
+  border-bottom: thin solid #fff;
+  padding: 0.5rem;
+  padding-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.service-done .service-title {
+  font-weight: 700;
+}
+
+.service-done .service-desc {
+  /* color: springgreen; */
+  color: lightgray;
+  font-weight: 400;
 }
 
 @media screen and (min-width: 1024px) {

@@ -4,7 +4,7 @@ from django.views.generic import CreateView, ListView, TemplateView, DetailView,
 from django.contrib.auth.mixins import LoginRequiredMixin
 import numpy
 
-from dashboards.models import Aplicacion, Compania, Inspeccion, InspeccionVehiculo, Llanta, Rendimiento, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Ubicacion, Vehiculo
+from dashboards.models import Aplicacion, Compania, Inspeccion, InspeccionVehiculo, Llanta, Rendimiento, ServicioLlanta, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Ubicacion, Vehiculo
 
 from utilidades.functions import functions
 from dashboards.functions import functions as func
@@ -243,6 +243,7 @@ class DailyDataTendenciasCompanias(View):
             
             buena_presion = ( ( vehiculos_buena_presion * 100 ) / num_vehiculos_clase ) / 100
             
+            """
             print(f'a_tiempo_pulpo: {a_tiempo_pulpo}')
             print(f'correctas_pulpo: {correctas_pulpo}')
             print(f'inspeccion_a_timepo: {inspecciones_a_tiempo}')
@@ -250,6 +251,7 @@ class DailyDataTendenciasCompanias(View):
             print(f'buena_presion: {buena_presion}')
             print(num_vehiculos_clase)
             print('--------')
+            """
             
             datos_data.append( TendenciaCompania(
                 fecha = date.today(),
@@ -369,6 +371,7 @@ class DailyDataTendenciasUbicaciones(View):
                 
                 buena_presion = ( ( vehiculos_buena_presion * 100 ) / num_vehiculos_clase ) / 100
                 
+                """
                 print(f'a_tiempo_pulpo: {a_tiempo_pulpo}')
                 print(f'correctas_pulpo: {correctas_pulpo}')
                 print(f'inspeccion_a_timepo: {inspecciones_a_tiempo}')
@@ -376,6 +379,7 @@ class DailyDataTendenciasUbicaciones(View):
                 print(f'buena_presion: {buena_presion}')
                 print(num_vehiculos_clase)
                 print('--------')
+                """
                 
                 datos_data.append( TendenciaUbicacion(
                     fecha = date.today(),
@@ -503,6 +507,7 @@ class DailyDataTendenciasAplicaciones(View):
                     
                     buena_presion = ( ( vehiculos_buena_presion * 100 ) / num_vehiculos_clase ) / 100
                     
+                    """
                     print(f'a_tiempo_pulpo: {a_tiempo_pulpo}')
                     print(f'correctas_pulpo: {correctas_pulpo}')
                     print(f'inspeccion_a_timepo: {inspecciones_a_tiempo}')
@@ -510,6 +515,7 @@ class DailyDataTendenciasAplicaciones(View):
                     print(f'buena_presion: {buena_presion}')
                     print(num_vehiculos_clase)
                     print('--------')
+                    """
                     
                     datos_data.append( TendenciaAplicacion(
                         fecha = date.today(),
@@ -637,6 +643,7 @@ class DailyDataTendencias(View):
                         
                         buena_presion = ( ( vehiculos_buena_presion * 100 ) / num_vehiculos_clase ) / 100
                         
+                        """
                         print(clase)
                         print(f'a_tiempo_pulpo: {a_tiempo_pulpo}')
                         print(f'correctas_pulpo: {correctas_pulpo}')
@@ -645,6 +652,7 @@ class DailyDataTendencias(View):
                         print(f'buena_presion: {buena_presion}')
                         print(num_vehiculos_clase)
                         print('--------')
+                        """
                         
                         datos_data.append( Tendencia(
                             fecha = date.today(),
@@ -819,6 +827,27 @@ class CorregirPrimeraInspeccion(View):
         llantas = list(llantas.values('pk'))
         dict_context = {
             'compania': llantas,
+        }
+        
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+    
+    
+class AgregarProductoAcciones(View):
+    def get(self, request , *args, **kwargs):
+        
+        servicios = ServicioLlanta.objects.all()
+        for servicio in servicios:
+            servicio.tipo_de_eje = servicio.llanta.tipo_de_eje
+            servicio.eje = servicio.llanta.eje
+            servicio.producto = servicio.llanta.producto
+            servicio.nombre_de_eje = servicio.llanta.nombre_de_eje
+            servicio.save()
+            
+        
+        dict_context = {
+            'compania': 'servicios',
         }
         
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)

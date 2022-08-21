@@ -15,21 +15,25 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
-from aetoappapi.serializers import CompaniasPerfilSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer
+from aetoappapi.serializers import AplicacionDataSerializer, CompaniasPerfilSerializer, TalleresDataSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer
+from galgoapi.functions import functions as galgofunc
 
 from dashboards import models
+#? view para la imformacion del user
 class UserData(generics.ListCreateAPIView):
     #queryset = User.objects.all()
     serializer_class = UserDataSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    
     def get(self, request, *args, **kwargs):   
         user = request.user
         print(user)
         perfil = models.Perfil.objects.filter(user=user)
         self.queryset = perfil
         return self.list(request, *args, **kwargs)
-
+    
+#? view para la informacion de 
 class CompaniasPerfilData(generics.ListCreateAPIView):
     #queryset = User.objects.all()
     serializer_class = CompaniasPerfilSerializer
@@ -42,12 +46,13 @@ class CompaniasPerfilData(generics.ListCreateAPIView):
         self.queryset = perfil
         return self.list(request, *args, **kwargs)
 
-
+#? view para la informacion de las ubicaciones de  user
 class UbicacionData(generics.ListCreateAPIView):
     #queryset = User.objects.all()
     serializer_class = UbicacionDataSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    
     def get(self, request, *args, **kwargs):   
         user = request.user
         perfil = models.Perfil.objects.get(user=user)
@@ -55,27 +60,67 @@ class UbicacionData(generics.ListCreateAPIView):
             id = int(request.GET.get('id', None))
         except:
             return Response(status = status.HTTP_400_BAD_REQUEST)
+        
         ubicaciones_perfil = perfil.ubicaciones.all()
         print(ubicaciones_perfil)     
         app = models.Ubicacion.objects.filter(compania_id = id, id__in = ubicaciones_perfil)
         self.queryset = app
         return self.list(request, *args, **kwargs)
     
-
-class UmbicacionData(generics.ListCreateAPIView):
+    
+#? view para la informacion de las aplicacion
+class AplicacionPerfilData(generics.ListCreateAPIView):
     #queryset = User.objects.all()
-    serializer_class = UbicacionDataSerializer
+    serializer_class = AplicacionDataSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    
     def get(self, request, *args, **kwargs):   
         user = request.user
         perfil = models.Perfil.objects.get(user=user)
+        
         try:
-            id = int(request.GET.get('id', None))
+            id = request.GET.get('id', None)
+            id = galgofunc.str_to_list_int(id)
         except:
             return Response(status = status.HTTP_400_BAD_REQUEST)
-        ubicaciones_perfil = perfil.ubicaciones.all()
-
+        
+        aplicacion = models.Aplicacion.objects.filter(ubicacion__id__in=id)
+        aplicaciones_perfil = perfil.aplicaciones.all()
+        
+        aplicacion = models.Aplicacion.objects.filter(ubicacion__id__in=id, id__in=aplicaciones_perfil).order_by('ubicacion__id')
+        
+        self.queryset = aplicacion
+        return self.list(request, *args, **kwargs)
+    
+#? view para la informacion de las talleres
+class TalleresPerfilData(generics.ListCreateAPIView):
+    
+    #queryset = User.objects.all()
+    serializer_class = TalleresDataSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    
+    def get(self, request, *args, **kwargs):   
+        user = request.user
+        perfil = models.Perfil.objects.get(user=user)
+        
+        try:
+            id = request.GET.get('id', None)
+            id = galgofunc.str_to_list_int(id)
+        except:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        
+        
+        talleres = models.Taller.objects.filter(compania__id__in=id)
+        teller_perfil = perfil.talleres.all()
+        
+        talleres = models.Taller.objects.filter(compania__id__in=id, id__in=teller_perfil).order_by('compania__id')
+        
+        print(talleres)
+        self.queryset = talleres 
+        return self.list(request, *args, **kwargs)
+    
 
 
 

@@ -15,10 +15,15 @@
 {% block content %}
   <div class="all-cont animate__animated animate__fadeIn">
     <header class="header">
+      <a href="{% url 'dashboards:config' %}">
+        <button class="btn btn-download not-allowed" id="prev">
+        <span class="icon-arrow-left2"></span>
+        </button>
+      </a>
       <div class="logo">
-        <img class="img-logo" src="{% static 'images/perro-galgo.png'%}" alt="logo" />
+        <img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
       </div>
-      <h1 class="main-title">CATÁLOGO DE OBSERVACIONES</h1>
+      <h1 class="main-title">Catálogo de observaciones</h1>
     </header>
     <main class="main-cont">
         <div class="cont-left">

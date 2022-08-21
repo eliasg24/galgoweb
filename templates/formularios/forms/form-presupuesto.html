@@ -88,9 +88,9 @@
 </div> -->
 <!-- End input -->
 
-<label for="compania" class="select-label">Compañia</label>
+<label for="compania" class="select-label">Compañía</label>
 <select name="compania" id="compania" required class="select-input">
-  <option value="">Seleccione una compañia...</option>
+  <option value="">Seleccione una compañía...</option>
   {% if presupuesto.compania %}<option value="{{presupuesto.compania}}" selected>{{presupuesto.compania}}</option>{% endif %}
   {% for c in companias %}
     <option value="{{c}}">{{c}}</option>
@@ -113,7 +113,7 @@
     Sucursal
   </label>
   <datalist id="ubicacion">
-    <option value="">Seleccione una compañia...</option>
+    <option value="">Seleccione una compañía...</option>
     {% if presupuesto.ubicacion %}<option value="{{presupuesto.ubicacion}}" selected>{{presupuesto.ubicacion}}</option>{% endif %}
     {% for sucursal in sucursales %}
       <option value="{{sucursal}}">{{sucursal}}</option>

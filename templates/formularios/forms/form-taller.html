@@ -43,9 +43,9 @@
 </div> -->
 <!-- End input -->
 
-<label for="compania" class="select-label">Compañia</label>
+<label for="compania" class="select-label">Compañía</label>
 <select name="compania" id="compania" required class="select-input">
-  <option value="">Seleccione una compañia...</option>
+  <option value="">Seleccione una compañía...</option>
   {% if taller.compania %}<option value="{{taller.compania}}" selected>{{taller.compania}}</option>{% endif %}
   {% for compania in companias %}
     <option value="{{compania}}">{{compania}}</option>

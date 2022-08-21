@@ -320,7 +320,7 @@ class TireSearch(LoginRequiredMixin, View):
                 )} if  end_date != None else {})
 
         
-        renovador = (Renovador.objects.get(nombre=request.GET['renovador']) if 'renovador' in request.GET else None)
+        renovador = (Renovador.objects.get(nombre=request.GET['renovador'], compania = compania) if 'renovador' in request.GET else None)
         renovador_query = ({'renovador': renovador} if  renovador != None else {})
         
         #Color de llanta
@@ -919,7 +919,8 @@ class ProcesoDesechoApi(LoginRequiredMixin, View):
                             'id',
                             'numero_economico',
                             'min_profundidad',
-                            product=F('producto__producto')
+                            product=F('producto__producto'),
+                            profundidad_maxima=F('producto__profundidad_inicial'),
                         )
             
 
@@ -955,6 +956,8 @@ class OpcionesDesechoApi(LoginRequiredMixin, View):
         compania = perfil.compania
         #Trae todos el catalogo
         opciones_desecho = Desecho.objects.filter()
+        opciones_desecho_compania = Desecho.objects.filter(compania = compania)
+        opciones_desecho = opciones_desecho | opciones_desecho_compania
         condiciones = list(opciones_desecho.values('condicion').distinct())
         zonas = list(opciones_desecho.filter(condicion = condicion).values('zona_de_llanta').distinct())
         razones = list(opciones_desecho.filter(condicion = condicion, zona_de_llanta = zona).values('razon').distinct())

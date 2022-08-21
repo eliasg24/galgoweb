@@ -7,11 +7,16 @@
 
 <main class="main-cont">
   <header class="head-cont">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo" />
+      <img src="{% static 'images/aeto.svg' %}" alt="logo" />
     </div>
 
-    <h1>Formulario de compañia</h1>
+    <h1>Formulario de compañía</h1>
   </header>
 
   <section class="form-body">
@@ -53,17 +58,17 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th>Compania</th>
+                <th>Companía</th>
                 <th>Periodo de inflado 1</th>
                 <th>Periodo de inflado 2</th>
-                <th>Presion fuera rango</th>
+                <th>Presión fuera rango</th>
                 <th>Periodo sin vista 1</th>
                 <th>Periodo sin vista 2</th>
-                <th>Punto de retiro direccion</th>
-                <th>Punto de retiro traccion</th>
+                <th>Punto de retiro dirección</th>
+                <th>Punto de retiro tracción</th>
                 <th>Punto de retiro arrastre</th>
                 <th>Punto de retiro loco</th>
-                <th>Punto de retiro retractil</th>
+                <th>Punto de retiro retráctil</th>
                 <th>Profundidad de descuate</th>
                 <th>Profundidad de desgaste irregular</th>
                 <th>Valor de casco nuevo</th>
@@ -75,7 +80,7 @@
                 <th>Unidades de presión</th>
                 <th>Unidades de distancia</th>
                 <th>Unidades de profundidad</th>
-                <th>Parametros de desgaste sospechoso</th>
+                <th>Parámetros de desgaste sospechoso</th>
               </tr>
             </thead>
             <tbody>
@@ -99,28 +104,28 @@
                   </div>
                 </td>
                 <td>{{compania}}</td>
-                <td>{{compania.periodo1_inflado}}</td>
-                <td>{{compania.periodo2_inflado}}</td>
-                <td>{{compania.objetivo}}</td>
-                <td>{{compania.periodo1_inspeccion}}</td>
-                <td>{{compania.periodo2_inspeccion}}</td>
-                <td>{{compania.punto_retiro_eje_direccion}}</td>
-                <td>{{compania.punto_retiro_eje_traccion}}</td>
-                <td>{{compania.punto_retiro_eje_arrastre}}</td>
-                <td>{{compania.punto_retiro_eje_loco}}</td>
-                <td>{{compania.punto_retiro_eje_retractil}}</td>
-                <td>{{compania.mm_de_diferencia_entre_duales}}</td>
-                <td>{{compania.mm_de_desgaste_irregular}}</td>
-                <td>{% if compania.valor_casco_nuevo %}{{compania.valor_casco_nuevo}}{% endif %}</td>
-                <td>{% if compania.valor_casco_1r %}{{compania.valor_casco_1r}}0{% endif %}</td>
-                <td>{% if compania.valor_casco_2r %}{{compania.valor_casco_2r}}0{% endif %}</td>
-                <td>{% if compania.valor_casco_3r %}{{compania.valor_casco_3r}}0{% endif %}</td>
-                <td>{% if compania.valor_casco_4r %}{{compania.valor_casco_4r}}0{% endif %}</td>
-                <td>{% if compania.valor_casco_5r %}{{compania.valor_casco_5r}}0{% endif %}</td>
+                <td class="formato_numero" >{{compania.periodo1_inflado}}</td>
+                <td class="formato_numero" >{{compania.periodo2_inflado}}</td>
+                <td class="formato_numero" >{{compania.objetivo}}</td>
+                <td class="formato_numero" >{{compania.periodo1_inspeccion}}</td>
+                <td class="formato_numero" >{{compania.periodo2_inspeccion}}</td>
+                <td class="formato_numero" >{{compania.punto_retiro_eje_direccion}}</td>
+                <td class="formato_numero" >{{compania.punto_retiro_eje_traccion}}</td>
+                <td class="formato_numero" >{{compania.punto_retiro_eje_arrastre}}</td>
+                <td class="formato_numero" >{{compania.punto_retiro_eje_loco}}</td>
+                <td class="formato_numero" >{{compania.punto_retiro_eje_retractil}}</td>
+                <td class="formato_numero" >{{compania.mm_de_diferencia_entre_duales}}</td>
+                <td class="formato_numero" >{{compania.mm_de_desgaste_irregular}}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_nuevo %}{{compania.valor_casco_nuevo}}{% endif %}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_1r %}{{compania.valor_casco_1r}}0{% endif %}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_2r %}{{compania.valor_casco_2r}}0{% endif %}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_3r %}{{compania.valor_casco_3r}}0{% endif %}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_4r %}{{compania.valor_casco_4r}}0{% endif %}</td>
+                <td class="formato_numero" >{% if compania.valor_casco_5r %}{{compania.valor_casco_5r}}0{% endif %}</td>
                 <td>{{compania.unidades_presion}}</td>
                 <td>{{compania.unidades_distancia}}</td>
                 <td>{{compania.unidades_profundidad}}</td>
-                <td>{{compania.mm_parametro_sospechoso}}</td>
+                <td class="formato_numero" >{{compania.mm_parametro_sospechoso}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -133,6 +138,23 @@
 
 <script src="{% static 'js/inputChange.js' %}"></script>
 <script>
+
+  // Formato numero
+  const separator = (numb) => {
+      let str = numb.toString().split(".");
+      str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return str.join(".");
+  }
+
+  const decimalConverter = () => {
+      const numbers = document.querySelectorAll('.formato_numero');
+
+      numbers.forEach( (number) => {
+          number.textContent = separator(number.textContent);
+      } );
+  }
+  decimalConverter();
+
   document.addEventListener('submit', (e) => {
     if (e.target.matches('.delete-form')) {
       e.preventDefault();

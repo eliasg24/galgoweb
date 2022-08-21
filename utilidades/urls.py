@@ -9,6 +9,12 @@ urlpatterns = [
     
     #-----------------------A-----------------------
     
+    path(
+        route="utilidades/AgregarProductoAcciones",
+        view=views.AgregarProductoAcciones.as_view(),
+        name="AgregarProductoAcciones"
+    ),    
+    
     #-----------------------B-----------------------
     
     path(

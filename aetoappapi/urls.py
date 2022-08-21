@@ -12,20 +12,18 @@ urlpatterns = [
     
     #-----------------------A-----------------------
     path(
-        route="api/user/",
-        view=views.UserList.as_view(),
-        name="userList"
+        route="app/aplicacion/",
+        view=views.AplicacionPerfilData.as_view(),
+        name="apiAplicacion"
     ),   
+    
+    
+    
     
     #-----------------------B-----------------------
        
     #-----------------------C-----------------------
-    
-    path(
-       route="app/companiasperfildata/",
-       view=views.CompaniasPerfilData.as_view(),
-       name="companiasperfildata"
-    ),   
+      
 
     #-----------------------D-----------------------
 
@@ -35,9 +33,9 @@ urlpatterns = [
     
     #-----------------------G-----------------------
     path(
-       route="app/generate_token/",
+       route="app/login/",
        view=rest.obtain_auth_token,
-       name="generate_token"
+       name="login"
         ),   
     
     #-----------------------H-----------------------
@@ -67,11 +65,19 @@ urlpatterns = [
     #-----------------------S-----------------------
 
     #-----------------------T-----------------------
+    path(
+       route="app/talleres/",
+       view=views.TalleresPerfilData.as_view(),
+       name="talleresData"
+    ),   
 
     #-----------------------U-----------------------
+
+    
+    
     
     path(
-       route="app/userdata/",
+       route="app/user_compania_data/",
        view=views.UserData.as_view(),
        name="userdata"
     ),   
@@ -80,6 +86,7 @@ urlpatterns = [
        route="app/ubicacionesdata/",
        view=views.UbicacionData.as_view(),
        name="ubicacionesdata"
+       
     ),  
     #-----------------------V-----------------------
 
@@ -94,8 +101,3 @@ urlpatterns = [
 ]
 
 
-#path(
-#   route="utilidades/DailyDataTendencias",
-#   view=views.DailyDataTendencias.as_view(),
-#   name="DailyDataTendencias"
-#    ),   

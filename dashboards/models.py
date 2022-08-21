@@ -264,6 +264,11 @@ class Vehiculo(models.Model):
         return f"{self.numero_economico}"
 
 class InspeccionVehiculo(models.Model):
+    opciones_evento = (("Inspección", "Inspección"),
+                       ("Inspección Galgo", "Inspección Galgo")
+                )
+    tipo_de_evento = models.CharField(max_length=1000, choices=opciones_evento, default='Inspección')
+    
     usuario = models.ForeignKey(Perfil, on_delete=models.CASCADE, null=True, blank=True)
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
     km = models.IntegerField(blank=True, null=True)
@@ -711,11 +716,15 @@ class ServicioVehiculo(models.Model):
         ("cerrado", "cerrado"),
         )
     estado = models.CharField(max_length=255, null=True, blank=True, choices=estatus)
-
+    hoja = models.JSONField(null=True, blank=True)
 
 class ServicioLlanta(models.Model):
     serviciovehiculo = models.ForeignKey(ServicioVehiculo, on_delete=models.CASCADE)
     llanta = models.ForeignKey(Llanta, null=True, on_delete=models.SET_NULL)
+    nombre_de_eje = models.CharField(max_length=40, null=True, blank=True)
+    tipo_de_eje = models.CharField(max_length=4, null=True, blank=True)
+    eje = models.IntegerField(blank=True, null=True)
+    producto = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True, blank=True)
     inflado = models.BooleanField(default=False)
     balanceado = models.BooleanField(default=False)
     reparado = models.BooleanField(default=False)
@@ -726,7 +735,8 @@ class ServicioLlanta(models.Model):
     rotar_otro = models.BooleanField(default=False)
     desmontaje = models.BooleanField(default=False)
     llanta_cambio = models.ForeignKey(Llanta, null=True, on_delete=models.SET_NULL, related_name='NuevaLlanta')
-    opciones_de_inventario = (("Nueva", "Nueva"),
+    opciones_de_inventario = (
+                        ("Nueva", "Nueva"),
                         ("Antes de Renovar", "Antes de Renovar"),
                         ("Antes de Desechar", "Antes de Desechar"),
                         ("Renovada", "Renovada"),
@@ -739,6 +749,7 @@ class ServicioLlanta(models.Model):
     inventario_de_desmontaje = models.CharField(max_length=200, choices=opciones_de_inventario, null=True, blank=True)
     taller_de_desmontaje = models.ForeignKey(Taller, on_delete=models.SET_NULL, blank=True, null=True)
     razon_de_desmontaje = models.CharField(max_length=200, null=True, blank=True)
+    km_desmontaje = models.IntegerField(null=True)
 
 
 class TareasServicio(models.Model):
@@ -841,6 +852,7 @@ class Tendencia(models.Model):
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
     clase = models.CharField(max_length=255 ,null=True, blank=True)
     correctas_pulpo = models.FloatField()
+    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
@@ -854,6 +866,7 @@ class TendenciaAplicacion(models.Model):
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
+    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
@@ -866,6 +879,7 @@ class TendenciaUbicacion(models.Model):
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
+    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
@@ -877,6 +891,7 @@ class TendenciaCompania(models.Model):
     fecha = models.DateField()
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
+    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()

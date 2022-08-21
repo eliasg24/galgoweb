@@ -95,7 +95,7 @@ class VehiculosAdmin(admin.ModelAdmin):
     # Admin de los Vehículos
     list_display = ('numero_economico', 'tirecheck', "compania", "km", "presion_establecida_1", 'clase', 'ubicacion', 'aplicacion', 'configuracion', 'fecha_de_creacion')
     search_fields= ('numero_economico',)
-    list_filter = ('compania', 'tirecheck', 'fecha_de_creacion', 'clase', "configuracion")
+    list_filter = ('compania', 'tirecheck', 'fecha_de_creacion', 'clase', "configuracion", "fecha_de_inflado")
 
 @admin.register(Llanta)
 class LlantasAdmin(admin.ModelAdmin):

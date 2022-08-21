@@ -37,7 +37,20 @@ class CalendarioApi(LoginRequiredMixin, View):
             title = F('vehiculo__numero_economico'),
             
             )
-        calendarios = list(calendarios.values('id', 'horario_start_str', 'horario_end_str', 'title', 'estado', 'color', 'reporte', 'id_servicio', 'vehiculo__id'))
+        calendarios = list(calendarios.values(
+            'id',
+            'horario_start_str',
+            'horario_end_str',
+            'title',
+            'estado',
+            'color',
+            'reporte',
+            'id_servicio',
+            'vehiculo__id',
+            'servicio__hoja',
+            'servicio__alineacion'
+
+            ))
         
         dict_context = {
             'calendarios': calendarios,

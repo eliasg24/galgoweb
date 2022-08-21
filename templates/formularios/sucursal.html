@@ -13,8 +13,13 @@
 <main class="main-cont">
 
   <header class="head-cont">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de sucursal</h1>
@@ -39,7 +44,7 @@
               <tr>
                 <th>Acciones</th>
                 <th>Nombre</th>
-                <th>Compañia</th>
+                <th>Compañía</th>
                 <th>Nueva a 1R</th>
                 <th>1R a 2R</th>
                 <th>2R a 3R</th>
@@ -69,14 +74,14 @@
                 </td>
                 <td>{{sucursal}}</td>
                 <td>{{sucursal.compania}}</td>
-                <td>{{sucursal.rendimiento_de_nueva}}</td>
-                <td>{{sucursal.rendimiento_de_primera}}</td>
-                <td>{{sucursal.rendimiento_de_segunda}}</td>
-                <td>{{sucursal.rendimiento_de_tercera}}</td>
-                <td>{{sucursal.rendimiento_de_cuarta}}</td>
-                <td>{{sucursal.precio_nueva_direccion}}</td>
-                <td>{{sucursal.precio_nueva}}</td>
-                <td>{{sucursal.precio_renovada}}</td>
+                <td class="formato_numero" >{{sucursal.rendimiento_de_nueva}}</td>
+                <td class="formato_numero" >{{sucursal.rendimiento_de_primera}}</td>
+                <td class="formato_numero" >{{sucursal.rendimiento_de_segunda}}</td>
+                <td class="formato_numero" >{{sucursal.rendimiento_de_tercera}}</td>
+                <td class="formato_numero" >{{sucursal.rendimiento_de_cuarta}}</td>
+                <td class="formato_numero" >${{sucursal.precio_nueva_direccion}}</td>
+                <td class="formato_numero" >${{sucursal.precio_nueva}}</td>
+                <td class="formato_numero" >${{sucursal.precio_renovada}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -110,6 +115,23 @@
       })
     }
   });
+
+// Formato numero
+const separator = (numb) => {
+      let str = numb.toString().split(".");
+      str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return str.join(".");
+  }
+
+  const decimalConverter = () => {
+      const numbers = document.querySelectorAll('.formato_numero');
+
+      numbers.forEach( (number) => {
+          number.textContent = separator(number.textContent);
+      } );
+  }
+  decimalConverter();
+
 </script>
 
 {% endblock %}

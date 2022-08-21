@@ -10,7 +10,6 @@
 
       for (const event of json.calendarios) {
         const { horario_start_str, horario_end_str, ...restEvent } = event;
-
         newEvents = [
           ...newEvents,
           {
@@ -30,13 +29,76 @@
   let calendarEvents = await getEvents();
 
   const modal = (event) => {
-    const modalContainer = document.querySelector('.modal__container');
+    const modalContainer = document.querySelector('.modal__container'),
+      modalBody = modalContainer.querySelector('.modal__body');
     const anchor = modalContainer.querySelector('#reporte');
     const closeBtn = document.querySelector('.btn.close');
     const { extendedProps } = event;
 
+    modalBody.innerHTML = '';
+
     modalContainer.classList.add('active');
     modalContainer.querySelector('.modal-title').textContent = event.title;
+
+    if (extendedProps.servicio__alineacion) {
+      modalBody.innerHTML = ``;
+    }
+
+    const servicios = extendedProps.servicio__hoja
+      ? Object.values(extendedProps.servicio__hoja)
+      : null;
+
+    if (servicios) {
+      servicios.forEach((servicio) => {
+        const serviceContainer = document.createElement('div');
+        serviceContainer.classList.add('service-done');
+
+        /* It's converting the object into an array of arrays. */
+        const list = Object.entries(servicio);
+        /* It's filtering the array of arrays, removing the empty values. */
+        let servicesDone = list.filter((item = []) => {
+          if (!item.some((item) => item === false || item === null)) {
+            return item;
+          }
+        });
+
+        servicesDone.forEach((serviceDone = []) => {
+          let taskDone = serviceDone[0];
+          switch (taskDone) {
+            case 'llanta_cambio':
+              taskDone = 'Llanta destino';
+              break;
+
+            case 'rotar_mismo':
+              taskDone = 'Rotación en dentro del vehículo';
+              break;
+
+            case 'rotar_otro':
+              taskDone = 'Rotación a otro vehículo';
+              break;
+
+            default:
+              taskDone =
+                taskDone.slice(0, 1).toUpperCase() +
+                taskDone.slice(1, taskDone.length).replace('_', ' ');
+              break;
+          }
+
+          serviceContainer.innerHTML += `
+            <div>
+              <span class="service-title">
+                ${taskDone}: 
+              </span>
+              <span class="service-desc">
+                ${serviceDone[1] === true ? 'Hecho' : serviceDone[1]}
+              </span>
+            </div>
+          `;
+        });
+
+        modalBody.appendChild(serviceContainer);
+      });
+    }
 
     closeBtn.addEventListener('click', (e) => {
       modalContainer.classList.remove('active');
@@ -72,7 +134,6 @@
             fetch(`/api/cerrartaller?servicio=${extendedProps.id_servicio}`)
               .then((resp) => (resp.ok ? resp.json() : Promise.reject(resp)))
               .then((json) => {
-                console.log(json);
                 Swal.fire('Guardado!', '', 'success');
                 setTimeout(async () => {
                   modalContainer.classList.remove('active');
@@ -109,7 +170,6 @@
             fetch(`/api/archivartaller?vehiculo=${extendedProps.vehiculo__id}`)
               .then((resp) => (resp.ok ? resp.json() : Promise.reject(resp)))
               .then((json) => {
-                console.log(json);
                 Swal.fire('Eliminado', '', 'success');
                 setTimeout(async () => {
                   modalContainer.classList.remove('active');

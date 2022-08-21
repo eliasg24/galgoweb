@@ -11,8 +11,8 @@ from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Roun
 import numpy
 
 from dashboards.functions import functions
-from dashboards.functions.functions import DiffDays, CastDate, min_profundidad, porcentaje
-from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Presupuesto, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
+from dashboards.functions.functions import DiffDays, CastDate, min_profundidad, porcentaje, reemplazo_actual
+from dashboards.models import Bitacora_Desecho, Observacion, OrdenDesecho, Perfil, Presupuesto, ServicioVehiculo, Tendencia, TendenciaAplicacion, TendenciaCompania, TendenciaUbicacion, Vehiculo, Compania, Ubicacion, Aplicacion, Taller, Llanta, Producto, Desecho, Rendimiento, InspeccionVehiculo, Inspeccion, Bitacora, Bitacora_Pro, ServicioLlanta
 
 from utilidades.functions import functions as utilidades
 class CompaniaData(View):
@@ -134,6 +134,39 @@ class PerfilData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
+
+class ProductosData(View):
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        productos = Producto.objects.filter(compania=compania)
+        #Serializar data
+        productos = list(productos.values(
+            "id",
+            "producto",
+            "compania__compania",
+            "marca",
+            "dibujo",
+            "rango",
+            "dimension",
+            "profundidad_inicial",
+            "aplicacion",
+            "vida",
+            "precio",
+            "km_esperado",
+        ))
+        
+        dict_context = {
+            'productos': productos,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
 class VehicleData(View):
     def get(self, request , *args, **kwargs):
         #Queryparams
@@ -146,7 +179,7 @@ class VehicleData(View):
                 dias_sin_inspeccion=DiffDays(CastDate(Now())-CastDate(F('fecha_ultima_inspeccion')), output_field=IntegerField()), 
                 dias_sin_inflar=DiffDays(CastDate(Now())-CastDate(F('fecha_de_inflado')), output_field=IntegerField()),
                 vencido=Case(
-                    When(dias_sin_inspeccion__gt=F("compania__periodo2_inspeccion"), then=True),
+                    When(dias_sin_inspeccion__gt=F("compania__periodo1_inspeccion"), then=True),
                     When(fecha_ultima_inspeccion=None, then=True),
                     default=False
                     )
@@ -270,7 +303,36 @@ class LlantaData(View):
             status_profundidad = Case(
                 When( min_profundidad__lte = F('punto_de_retiro'), then = Value('baja') ),
                 default = Value('buena')
+            ),
+            primera = Case(
+                When(primera_inspeccion = None, then=0),
+                default=1
+            ),
+            ultima = Case(
+                When(ultima_inspeccion = None, then=0),
+                default=2
+            ),
+            operacion_des = F('primera') + F('ultima'),
+            primera_profundidad = Least(
+                "primera_inspeccion__profundidad_izquierda", 
+                "primera_inspeccion__profundidad_central", 
+                "primera_inspeccion__profundidad_derecha"
+                ),
+            ultima_profundidad = Least(
+                "ultima_inspeccion__profundidad_izquierda", 
+                "ultima_inspeccion__profundidad_central", 
+                "ultima_inspeccion__profundidad_derecha"
+                ),
+            desgaste_diario = Case(
+                When(operacion_des = 3, then=F('primera_profundidad') - F('ultima_profundidad')),
+                When(operacion_des = 2, then=Value(0.0)),
+                default=None
+            ),
+            reemplazo = Case(
+                When( observaciones__observacion__in=["En punto de retiro", "Baja profundidad"], then=Value('REEMPLAZO') ),
+                default=Value('SIN REEMPLAZO')
             )
+            
         ).distinct()
         #Serializar data
         llantas = list(llantas.values(
@@ -305,7 +367,9 @@ class LlantaData(View):
                             "min_profundidad",
                             "ubicacion_llanta",
                             "aplicacion_llanta",
-                            "status_profundidad"
+                            "status_profundidad",
+                            "desgaste_diario",
+                            "reemplazo"
                             ))
         
         dict_context = {
@@ -964,14 +1028,37 @@ class BitacorasData(View):
 
         return HttpResponse(json_context, content_type='application/json')
 
-class AccionData(View):
+class AccionData(View): 
     def get(self, request , *args, **kwargs):
         #Queryparams
         usuario = kwargs['usuario']
         user = User.objects.get(username = usuario)
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
-        servicios_llantas = ServicioLlanta.objects.filter(llanta__compania=compania).annotate(punto_de_retiro=Case(When(llanta__nombre_de_eje="Dirección", then=F("llanta__compania__punto_retiro_eje_direccion")),When(llanta__nombre_de_eje="Tracción", then=F("llanta__compania__punto_retiro_eje_traccion")),When(llanta__nombre_de_eje="Arrastre", then=F("llanta__compania__punto_retiro_eje_arrastre")),When(llanta__nombre_de_eje="Loco", then=F("llanta__compania__punto_retiro_eje_loco")),When(llanta__nombre_de_eje="Retractil", then=F("llanta__compania__punto_retiro_eje_retractil")))).values("id", "serviciovehiculo__folio", "llanta__numero_economico", "serviciovehiculo__fecha_inicio", "serviciovehiculo__vehiculo__numero_economico", "llanta__posicion", "llanta__nombre_de_eje", "punto_de_retiro", "serviciovehiculo__vehiculo__ubicacion__nombre", "serviciovehiculo__vehiculo__aplicacion__nombre", "serviciovehiculo__vehiculo__configuracion", "serviciovehiculo__usuario__username", "llanta_cambio__numero_economico", "inventario_de_desmontaje", "taller_de_desmontaje", "razon_de_desmontaje")
+        servicios_llantas = ServicioLlanta.objects.filter(llanta__compania=compania).values(
+            "id",
+            "serviciovehiculo_id",
+            "serviciovehiculo__fecha_inicio",
+            "llanta__numero_economico",
+            "nombre_de_eje",
+            "tipo_de_eje",
+            "eje",
+            "producto__producto",
+            "inflado",
+            "balanceado",
+            "reparado",
+            "valvula_reparada",
+            "costado_reparado",
+            "rotar",
+            "rotar_mismo",
+            "rotar_otro",
+            "desmontaje",
+            "llanta_cambio__numero_economico",
+            "inventario_de_desmontaje",
+            "taller_de_desmontaje__nombre",
+            "razon_de_desmontaje",
+            "km_desmontaje"
+        )
         #Serializar data
         servicios_llantas = list(servicios_llantas)
         
@@ -982,6 +1069,39 @@ class AccionData(View):
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
 
         return HttpResponse(json_context, content_type='application/json')
+
+class AccionVehiculoData(View): 
+    def get(self, request , *args, **kwargs):
+        #Queryparams
+        usuario = kwargs['usuario']
+        user = User.objects.get(username = usuario)
+        perfil = Perfil.objects.get(user = user)
+        compania = perfil.compania
+        servicios_vehiculo = ServicioVehiculo.objects.filter(vehiculo__compania=compania).values(
+            "id",
+            "folio",
+            "vehiculo__numero_economico",
+            "usuario__username",
+            "fecha_inicio",
+            "horario_inicio",
+            "fecha_final",
+            "horario_final",
+            "ubicacion__nombre",
+            "aplicacion__nombre",
+            "alineacion",
+            "estado",
+        )
+        #Serializar data
+        servicios_vehiculo = list(servicios_vehiculo)
+        
+        dict_context = {
+            'servicios_vehiculo': servicios_vehiculo,
+        }
+
+        json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
+
+        return HttpResponse(json_context, content_type='application/json')
+
 
 class ReemplazoData(View):
     def get(self, request , *args, **kwargs):
@@ -1057,6 +1177,7 @@ class TendenciaData(View):
             "aplicacion__nombre",
             "clase",
             "correctas_pulpo",
+            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "health",
             "buena_presion",
@@ -1086,6 +1207,7 @@ class TendenciaDataAplicacion(View):
             "ubicacion__nombre",
             "aplicacion__nombre",
             "correctas_pulpo",
+            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "health",
             "buena_presion",
@@ -1114,6 +1236,7 @@ class TendenciaDataUbicacion(View):
             "compania__compania",
             "ubicacion__nombre",
             "correctas_pulpo",
+            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "health",
             "buena_presion",
@@ -1141,6 +1264,7 @@ class TendenciaDataCompania(View):
             "fecha",
             "compania__compania",
             "correctas_pulpo",
+            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "health",
             "buena_presion",

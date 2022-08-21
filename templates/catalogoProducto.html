@@ -9,18 +9,23 @@
   />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-  <title>Catalogo de productos</title>
+  <title>Catálogo de productos</title>
 {% endblock %}
 
 {% block content %}
 <div class="all-cont animate__animated animate__fadeIn">
   <header class="header">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img class="img-logo" src="{% static 'images/perro-galgo.png'%}" alt="logo" />
+      <img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
     </div>
-    <h1 class="main-title">CATÁLOGO DE PRODUCTOS</h1>
+    <h1 class="main-title">Catálogo de productos</h1>
     <a href="{% url 'dashboards:descargarCatalogoProducto' %}">Descargar catalogo</a>
-    <a href="{% url 'dashboards:catalogoProductoExcelView' %}">Subir productos por excel</a>
+    <a href="{% url 'dashboards:catalogoProductoExcelView' %}">Subir productos por Excel</a>
   </header>
   <main class="main-cont">
       <div class="cont-left">
@@ -80,8 +85,8 @@
                     <td>{{producto}}</td>
                     <td>{{producto.aplicacion}}</td>
                     <td>{{producto.vida}}</td>
-                    <td>${{producto.precio}}</td>
-                    <td>{{producto.km_esperado}}</td>
+                    <td class="formato_numero">${{producto.precio}}</td>
+                    <td class="formato_numero">{{producto.km_esperado}}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -93,6 +98,23 @@
 </div>
 
 <script>
+
+  // Formato numero
+  const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('.formato_numero');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+    decimalConverter();
+
   const createProduct = () => {
     const inputProduct = document.getElementById('producto');
     

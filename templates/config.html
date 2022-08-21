@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
-<title>Configuracion</title>
+<title>Configuración</title>
 {% endblock head %}
 
 {% block content %}
@@ -19,24 +19,24 @@
         <div class="form__container">
 
             <nav class="head-cont">
-                <h1 class="con-title__text">CONFIGURACIÓN</h1>
+                <h1 class="con-title__text">Configuración</h1>
             </nav>
 
             <nav class="buttonsC">
                 <button class="btn btn-aeto-crunch active" id="btn-operacion">
-                    Parametros de Operación
+                    Parámetros de operación
                 </button>
                 <button class="btn btn-aeto-crunch" id="btn-usuario">
-                    Parametros de Usuario
+                    Parámetros de usuario
                 </button>
                 <button class="btn btn-aeto-crunch" id="btn-vehiculos">
-                    Alta Vehículos
+                    Alta vehículos
                 </button>
                 <button class="btn btn-aeto-crunch" id="btn-llantas">
-                    Alta Llantas
+                    Alta llantas
                 </button>
                 <button class="btn btn-aeto-crunch" id="btn-catalogos">
-                    Catalogos
+                    Catálogos
                 </button>
                 <button class="btn btn-aeto-crunch" id="btn-contexto">
                     Alta Contexto
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-    
+                    
                     {% if request.user.groups.get|stringformat:"s" == "Aeto Manager" %}
                         <div class="con" id="contexto">
                             <div class="con-title">
@@ -104,7 +104,7 @@
                             <div class="wrapper">
                                 <div class="con-sec">
                                     <a href="{% url 'dashboards:companyFormulario' %}" class="btn btn-redirect">
-                                        Compañia
+                                        Compañía
                                     </a>
                                     <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-redirect">
                                         Sucursal
@@ -115,9 +115,12 @@
                                     <a href="{% url 'dashboards:tallerFormulario' %}" class="btn btn-redirect">
                                         Taller
                                     </a>
+                                    {% if request.user.username|stringformat:"s" == "GalgoTest" %}
+                                    {% else %}
                                     <a href="{% url 'dashboards:usuarioFormulario' %}" class="btn btn-redirect">
                                         Usuario
                                     </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -133,7 +136,7 @@
                             <div class="wrapper">
                                 <div class="con-sec">
                                     <a href="{% url 'dashboards:companyFormulario' %}" class="btn btn-redirect">
-                                        Compañia
+                                        Compañía
                                     </a>
                                     <a href="{% url 'dashboards:sucursalFormulario' %}" class="btn btn-redirect">
                                         Sucursal
@@ -156,7 +159,7 @@
                         <div class="con-title">
                             <h2 class="con-title__text">
                                 <span class="icon-upload-cloud"></span>
-                                ALTA VEHÍCULOS
+                                Alta vehículos
                             </h2>
                         </div>
                         <div class="wrapper">
@@ -167,7 +170,7 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="compania" value="{{user.perfil.compania}}">
                                             <label>
-                                                <input type="file" name="file"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                                <input type="file" name="file"><p class="agregar">Agregar a la lista de Excel</p>
                                             </label>
                                             <button class="btn btn-download w-100" value="excelform" type="submit">Continuar</button>
                                         </form>
@@ -210,7 +213,7 @@
                         <div class="con-title">
                             <h2 class="con-title__text">
                                 <span class="icon-upload-cloud"></span>
-                                ALTA VEHÍCULOS
+                                Alta vehículos
                             </h2>
                         </div>
                         <div class="wrapper">
@@ -221,7 +224,7 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="compania" value="{{user.perfil.compania}}">
                                             <label>
-                                                <input type="file" name="file"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                                <input type="file" name="file"><p class="agregar">Agregar a la lista de Excel</p>
                                             </label>
                                             <button class="btn btn-download w-100" value="excelform" type="submit">Continuar</button>
                                         </form>
@@ -251,12 +254,12 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="compania" value="{{user.perfil.compania}}">
                                             <label>
-                                                <input type="file" name="file2"><p class="agregar">AGREGAR A LA LISTA DE EXCEL</p>
+                                                <input type="file" name="file2"><p class="agregar">Agregar a la lista de Excel</p>
                                             </label>
                                             <button class="btn btn-download w-100" type="submit">Continuar</button>
                                         </form>
                                     </div>
-                                    <a href="{% url 'dashboards:download_llantas_rodantes' %}" class="btn btn-redirect">DESCARGAR FORMATO EXCEL</a>
+                                    <a href="{% url 'dashboards:download_llantas_rodantes' %}" class="btn btn-redirect">Descarga formato Excel</a>
                                 </div>
                             </div>
                         </div>
@@ -266,7 +269,7 @@
                     <div class="con on-view" id="operacion" >
                         <div class="con-title">
                             <h2 class="con-title__text">
-                                Parametros de operación
+                                Parámetros de operación
                             </h2>
                         </div>
         
@@ -282,7 +285,7 @@
         
                         <div class="con-title">
                             <h2 class="con-title__text">
-                               <span class="icon-cog5"></span> Parametros de Usuario
+                               <span class="icon-cog5"></span> Parámetros de usuario
                             </h2>
                         </div>
                         

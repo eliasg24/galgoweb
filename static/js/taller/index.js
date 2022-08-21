@@ -1,4 +1,43 @@
 "use strict";
+const getSelectInputs = (id) => {
+    const views = Array(...document.querySelectorAll(`[data-view="${id}"]`)), servicios = Array(...views[0].querySelectorAll('input, select')), montajes = Array(...views[1].querySelectorAll('input, select'));
+    const isVehicle = servicios.some((input) => input.value === 'mismo' && input.checked === true);
+    const isOtherVehicle = servicios.some((input) => input.value === 'otro' && input.checked === true);
+    const totalServicios = servicios.filter((item) => {
+        if (item.checked === true) {
+            return item;
+        }
+        if (item.type !== 'checkbox' && item.type !== 'radio') {
+            if (item.value)
+                return item;
+        }
+    });
+    const totalMontajes = montajes.filter((item) => {
+        if (item.checked === true) {
+            return item;
+        }
+        if (item.type !== 'checkbox' && item.type !== 'radio') {
+            if (item.value)
+                return item;
+        }
+    });
+    return {
+        totalMontajes,
+        totalServicios,
+        servicios,
+        montajes,
+        isVehicle,
+        isOtherVehicle,
+    };
+};
+(() => {
+    document.addEventListener('DOMContentLoaded', (e) => {
+        const form = document.querySelector('.service-page');
+        const data = Object.fromEntries(new FormData(form));
+        const formHidden = document.getElementById('hoja-servicio');
+        formHidden.value = JSON.stringify(data);
+    });
+})();
 (() => {
     const tires = document.querySelectorAll('.tire');
     tires.forEach((tire) => {
@@ -104,6 +143,14 @@
             </p>
             `
             : ''}
+            ${servicio.destino_llanta
+            ? `
+              <p>
+                <strong>Llanta y Posición Destino:</strong> 
+                ${servicio.destino_llanta}
+              </p>
+              `
+            : ''}
             ${servicio.nuevaLlanta.length >= 1
             ? `<p><strong>Nueva llanta</strong>: ${servicio.nuevaLlanta}</p>`
             : ''}
@@ -183,12 +230,47 @@
         const dataForm = new FormData(form);
         dataForm.append('id_servicio', String(Math.floor(Math.random() * 10000)));
         const data = Object.fromEntries(dataForm);
+        const formContainer = form.parentElement;
+        const { totalMontajes, totalServicios, montajes, isVehicle, isOtherVehicle, } = getSelectInputs(form.parentElement?.dataset.modal);
+        const otroVehiculo = form.querySelector('.otro-vehiculo'), ovInputs = Array(...otroVehiculo?.querySelectorAll('input, select')).filter((item) => item.type !== 'hidden');
+        const imposibleKm = ovInputs.find((input) => input.name === 'no_km' && input.checked === true);
+        let rotarIsComplete = true;
+        if (ovInputs[0].value) {
+            if (!imposibleKm) {
+                rotarIsComplete = ovInputs.some((input) => !input.value);
+            }
+            else {
+                ovInputs[1].value
+                    ? (rotarIsComplete = false)
+                    : (rotarIsComplete = true);
+            }
+        }
+        if (isVehicle) {
+            let inputs = Array(...form.querySelectorAll('.card__config-modal input')), isSelectInput = inputs.some((input) => input.checked === true);
+            if (!isSelectInput) {
+                return Swal.fire('Rotación incompleta', 'Seleccione una llanta para completar la rotación', 'warning');
+            }
+        }
+        if (isOtherVehicle) {
+            if (rotarIsComplete) {
+                return Swal.fire('Algo anda mal', 'Faltan datos para completar la rotación', 'warning');
+            }
+        }
+        if (totalMontajes.length === 0 && totalServicios.length <= 1) {
+            return Swal.fire('Ups, no se ha realizado nada', 'No puede guardar si no ha realizado un servicio', 'error');
+        }
+        if (totalMontajes.length > 0) {
+            if (totalMontajes.length < montajes.length) {
+                return Swal.fire('Montaje incompleto', 'El montaje no se ha completado', 'warning');
+            }
+        }
         addEvent(data);
         form
             .querySelectorAll('input, select, .btn-taller')
             .forEach((input) => (input.disabled = true));
         saveData.push(data);
         formHidden.value = JSON.stringify(saveData);
+        formContainer?.classList.remove('active');
         document
             .querySelector('.alert__success')
             ?.classList.add('active');
@@ -196,7 +278,7 @@
     });
     document.addEventListener('change', (e) => {
         const target = e.target;
-        if (target.name === 'no_km') {
+        if (target.matches('#no_km')) {
             const kmInput = document.querySelector('[name="km_montado"]');
             if (target.checked) {
                 kmInput.disabled = true;
@@ -230,19 +312,32 @@
             formHidden.value = JSON.stringify(formData);
         }
         if (target.name === 'rotar') {
+            const container = document.querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`);
             switch (target.value) {
                 case 'no':
                     document
                         .querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`)
                         .forEach((label) => (label.style.display = 'none'));
+                    container[0]
+                        .querySelectorAll('input, select')
+                        .forEach((input) => (input.value = ''));
+                    container[1]
+                        .querySelectorAll('input, select')
+                        .forEach((input) => (input.checked = false));
                     break;
                 case 'mismo':
-                    document.querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`)[0].style.display = 'none';
-                    document.querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`)[1].style.display = 'flex';
+                    container[0].style.display = 'none';
+                    container[1].style.display = 'flex';
+                    container[0]
+                        .querySelectorAll('input, select')
+                        .forEach((input) => (input.value = ''));
                     break;
                 case 'otro':
-                    document.querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`)[0].style.display = 'block';
-                    document.querySelectorAll(`[data-rotar-id="${target.dataset.radioid}"]`)[1].style.display = 'none';
+                    container[0].style.display = 'block';
+                    container[1].style.display = 'none';
+                    container[1]
+                        .querySelectorAll('input')
+                        .forEach((input) => (input.checked = false));
                     break;
                 default:
                     break;
@@ -357,16 +452,12 @@
             const container = origen.parentElement?.parentElement;
             const destinoVehiculo = container?.querySelector('[name="destino-vehiculo"]');
             const destinoLlanta = container?.querySelector('[name="destino-llanta"]');
-            origen.addEventListener('change', (e) => {
-                destinoLlanta.value = origen.value;
-            });
             origen.innerHTML = `<option value="">Seleccione una llanta</option>`;
             const inputOrigen = vehiculoOrigen.previousElementSibling;
             let list = [];
             fetch('/api/vehicleandtiresearchtaller')
                 .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                 .then((json) => {
-                console.log(json);
                 json.vehiculos_list.forEach((item) => {
                     vehiculoOrigen.innerHTML += `<option value="${item.numero_economico}"></option>`;
                 });
@@ -381,11 +472,9 @@
                     Swal.fire('Error', 'El número economico no existe', 'error');
                     return;
                 }
-                fetch('/api/vehicleandtiresearchtaller?id_select=' +
-                    inputOrigen.value)
+                fetch('/api/vehicleandtiresearchtaller?id_select=' + inputOrigen.value)
                     .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                     .then(({ km_max, km_min, llantas }) => {
-                    console.log(llantas);
                     kmMontado.max = km_max || '';
                     kmMontado.min = km_min || '';
                     origen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
@@ -395,6 +484,40 @@
                 })
                     .catch((error) => console.error(error));
             });
+        }
+    });
+})();
+(() => {
+    document.addEventListener('change', (e) => {
+        const target = e.target;
+        if (target.matches('[data-view] input, [data-view] select')) {
+            const id = target.dataset.idpadre;
+            const { totalMontajes, totalServicios } = getSelectInputs(id);
+            if (totalServicios.length > 1) {
+                document.querySelector(`[data-nav="${target.dataset.idpadre}"][value="desmontaje"]`).disabled = true;
+            }
+            else {
+                document.querySelector(`[data-nav="${target.dataset.idpadre}"][value="desmontaje"]`).disabled = false;
+            }
+            if (totalMontajes.length > 0) {
+                document.querySelector(`[data-nav="${target.dataset.idpadre}"][value="sr"]`).disabled = true;
+            }
+            else {
+                document.querySelector(`[data-nav="${target.dataset.idpadre}"][value="sr"]`).disabled = false;
+            }
+        }
+    });
+})();
+(() => {
+    document.addEventListener('change', (e) => {
+        const target = e.target;
+        if (target.name === 'llantaOrigen') {
+            const id = target.dataset.idpadre;
+            const options = Array(...target.querySelectorAll('option'));
+            let selectedOption = options.find((item) => item.value === target.value)?.textContent;
+            const destinoLlanta = document.querySelector(`[name="destino_llanta"][data-idpadre="${id}"]`);
+            console.log({ destinoLlanta });
+            destinoLlanta.value = selectedOption;
         }
     });
 })();

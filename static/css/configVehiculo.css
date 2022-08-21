@@ -22,7 +22,7 @@
 
 .axle {
   display: flex;
-  background-color: var(--colorv46);
+  border: 2px solid var(--colorv02);
   height: 1rem;
 }
 
@@ -109,7 +109,7 @@
   gap: 0.5rem;
 }
 
-.icon-tire2 {
+.icon-llanta-outline {
   font-size: 5rem;
 }
 
@@ -174,7 +174,7 @@
     width: 50%;
   }
 
-  .ejes__1 > .tire > .icon-tire2 {
+  .ejes__1 > .tire > .icon-llanta-outline {
     font-size: 34vmin;
   }
 
@@ -192,11 +192,11 @@
     width: 50%;
   }
 
-  .ejes__2 > .tire > .icon-tire2 {
+  .ejes__2 > .tire > .icon-llanta-outline {
     font-size: 24vmin;
   }
 
-  .par-doble-llanta.ejes__2 .icon-tire2 {
+  .par-doble-llanta.ejes__2 .icon-llanta-outline {
     font-size: 24vmin;
   }
 
@@ -214,11 +214,11 @@
     width: 40%;
   }
 
-  .ejes__3 > .tire > .icon-tire2 {
+  .ejes__3 > .tire > .icon-llanta-outline {
     font-size: 22vmin;
   }
 
-  .par-doble-llanta.ejes__3 .icon-tire2 {
+  .par-doble-llanta.ejes__3 .icon-tireicon-llanta-outline {
     font-size: 22vmin;
   }
 
@@ -236,11 +236,11 @@
     width: 30%;
   }
 
-  .ejes__4 > .tire > .icon-tire2 {
+  .ejes__4 > .tire > .icon-llanta-outline {
     font-size: 20vmin;
   }
 
-  .par-doble-llanta.ejes__4 .icon-tire2 {
+  .par-doble-llanta.ejes__4 .icon-llanta-outline {
     font-size: 20vmin;
   }
 
@@ -258,11 +258,11 @@
     width: 30%;
   }
 
-  .ejes__5 > .tire > .icon-tire2 {
+  .ejes__5 > .tire > .icon-llanta-outline {
     font-size: 18vmin;
   }
 
-  .par-doble-llanta.ejes__5 .icon-tire2 {
+  .par-doble-llanta.ejes__5 .icon-llanta-outline {
     font-size: 18vmin;
   }
 
@@ -280,11 +280,11 @@
     width: 28%;
   }
 
-  .ejes__6 > .tire > .icon-tire2 {
+  .ejes__6 > .tire > .icon-llanta-outline {
     font-size: 16vmin;
   }
 
-  .par-doble-llanta.ejes__6 .icon-tire2 {
+  .par-doble-llanta.ejes__6 .icon-llanta-outline {
     font-size: 16vmin;
   }
 
@@ -302,11 +302,11 @@
     width: 26%;
   }
 
-  .ejes__7 > .tire > .icon-tire2 {
+  .ejes__7 > .tire > .icon-llanta-outline {
     font-size: 14vmin;
   }
 
-  .par-doble-llanta.ejes__7 .icon-tire2 {
+  .par-doble-llanta.ejes__7 .icon-llanta-outline {
     font-size: 14vmin;
   }
 
@@ -315,7 +315,7 @@
   }
   /*end ejes__7*/
 
-  .icon-tire2 {
+  .icon-llanta-outline {
     font-size: 20vmin;
   }
 

@@ -9,6 +9,11 @@
 {% block content %}
 <form class="main__container animate__animated animate__fadeIn">
   <header class="head-cont">
+    <a href="{% url 'dashboards:almacen' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <h1>Renovada</h1>
 
     <div class="drop-search">
@@ -46,7 +51,7 @@
   <div class="icon-spinner2"></div>
 
   <div class="alert__success">
-    Item agregado con exito
+    Item agregado con éxito
   </div>
 </form>
 

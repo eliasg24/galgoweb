@@ -13,8 +13,13 @@
 <main class="main-cont">
 
   <header class="head-cont">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de usuario</h1>
@@ -43,7 +48,7 @@
               <tr>
                 <th>Acciones</th>
                 <th>Nombre</th>
-                <th>Compañias</th>
+                <th>Compañías</th>
                 <th>Sucursales</th>
                 <th>Aplicaciones</th>
                 <th>Talleres</th>

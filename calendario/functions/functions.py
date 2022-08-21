@@ -45,7 +45,12 @@ def servicio_llanta_desmomtaje(servicio, preguardado_llantas_raw):
                 llanta_cambio = llanta_nueva,
                 inventario_de_desmontaje = almacen_desmontaje,
                 taller_de_desmontaje = taller_desmontaje,
-                razon_de_desmontaje = razon
+                razon_de_desmontaje = razon,
+                km_desmontaje = llanta.km_actual,
+                tipo_de_eje = llanta.tipo_de_eje,
+                eje = llanta.eje,
+                producto = llanta.producto,
+                nombre_de_eje = llanta.nombre_de_eje
             )
             
 

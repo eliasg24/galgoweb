@@ -5,17 +5,21 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/catalogos.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-<title>Catalogo de renovadores</title>
+<title>Catálogo de renovadores</title>
 {% endblock %}
 
 {% block content %}
 <div class="all-cont animate__animated animate__fadeIn">
-
 	<header class="header">
+		<a href="{% url 'dashboards:config' %}">
+			<button class="btn btn-download not-allowed" id="prev">
+			<span class="icon-arrow-left2"></span>
+			</button>
+		</a>
 		<div class="logo">
-			<img class="img-logo" src="{% static 'images/perro-galgo.png'%}" alt="logo" />
+			<img class="img-logo" src="{% static 'images/aeto.svg'%}" alt="logo" />
 		</div>
-		<h1 class="main-title">CATÁLOGO DE RENOVADORES</h1>
+		<h1 class="main-title">Catálogo de renovadores</h1>
 	</header>
 
 	<main class="main-cont">
@@ -40,7 +44,7 @@
 						<tr>
 		            	    <th>Acciones</th>
 							<th>Nombre</th>
-							<th>Compania</th>
+							<th>Compañía</th>
 							<th>Ciudad</th>
 							<th>Marca</th>
 						</tr>

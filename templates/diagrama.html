@@ -18,7 +18,7 @@
 
       <header class="head-cont">
         <div class="logo">
-          <img src="{% static 'images/perro-galgo.png' %}" alt="logo aeto">
+          <img src="{% static 'images/aeto.svg' %}" alt="logo aeto">
         </div>
 
         <h1 class="main-title">Edición manual</h1>
@@ -28,7 +28,7 @@
         <div class="config__container">
 
           <header class="config__header flex-row">
-            <h1>VEHÍCULO {{vehiculo_actual}}</h1>
+            <h1>Vehículo {{vehiculo_actual}}</h1>
 
             <button class="btn modal" type="button">
               <i class="icon-truck"></i>
@@ -56,7 +56,7 @@
                         </span>
                       </div>
                       
-                      <span class="icon-tire2"></span>
+                      <span class="icon-llanta-outline"></span>
                       
                       <div class="tire__bottom {{eje.0.1}}">
                           <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}">
@@ -90,7 +90,7 @@
                         </span>
                       </div>
                       
-                      <span class="icon-tire2"></span>
+                      <span class="icon-llanta-outline"></span>
                       
                       <div class="tire__bottom {{eje.1.1}}">
                           <span class="tire__data" data-prof-tag="profundidad-{{ eje.1.0.id }}">
@@ -123,7 +123,7 @@
                           </span>
                         </div>
                         
-                        <span class="icon-tire2"></span>
+                        <span class="icon-llanta-outline"></span>
                         
                         <div class="tire__bottom {{eje.0.1}}">
                             <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}">
@@ -150,7 +150,7 @@
                           </span>
                         </div>
                         
-                        <span class="icon-tire2"></span>
+                        <span class="icon-llanta-outline"></span>
                         
                         <div class="tire__bottom {{eje.1.1}}">
                             <span class="tire__data" data-prof-tag="profundidad-{{ eje.1.0.id }}">
@@ -186,7 +186,7 @@
                           </span>
                         </div>
                         
-                        <span class="icon-tire2"></span>
+                        <span class="icon-llanta-outline"></span>
                         
                         <div class="tire__bottom {{eje.2.1}}">
                             <span class="tire__data" data-prof-tag="profundidad-{{ eje.2.0.id }}">
@@ -213,7 +213,7 @@
                           </span>
                         </div>
                         
-                        <span class="icon-tire2"></span>
+                        <span class="icon-llanta-outline"></span>
                         
                         <div class="tire__bottom {{eje.3.1}}">
                             <span class="tire__data" data-prof-tag="profundidad-{{ eje.3.0.id }}">
@@ -247,7 +247,7 @@
                         </span>
                       </div>
                       
-                      <span class="icon-tire2"></span>
+                      <span class="icon-llanta-outline"></span>
                       
                       <div class="tire__bottom {{eje.0.1}}">
                           <span class="tire__data" data-prof-tag="profundidad-{{ eje.0.0.id }}">
@@ -379,7 +379,7 @@
                           El valor no se encuentra en la lista de llantas, por favor seleccione opción una valida.
                         </div>
                         <div class="alert__warn">
-                          El campo no puede estar vacio 
+                          El campo no puede estar vacío 
                         </div>
                       </div>
                       <datalist id="llantas_option">
@@ -406,7 +406,7 @@
                         {% endfor %}
                       </select>
                       <div class="alert__warn">
-                        El campo no puede estar vacio 
+                        El campo no puede estar vacío 
                       </div>
           
                       <!-- Start input -->
@@ -622,7 +622,7 @@
                       <input type="hidden" name="id" value="">
                       <!-- ! NO QUITAR -->
                       {% else %}
-                      Agrege una inspeccion para poder hacer una edicion manual
+                      Agregue una inspección para poder hacer una edición manual
                       {% endif %}
                     </div>
                   {% endfor %}

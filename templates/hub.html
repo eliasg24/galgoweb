@@ -7,7 +7,7 @@
 <div class="container animate__animated animate__fadeIn">
   <div class="head-cont">
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
     <h1>Dashboards y formularios</h1>
   </div>
@@ -18,7 +18,7 @@
           class="reporte-link"
           href="https://drive.google.com/uc?id=1GD0kC__oUYfTNarsSBweN3JdBxOCb1kg&export=download"
         >
-          <h2>Informe de diesel</h2>
+          <h2>Informe de diésel</h2>
         </a>
       </div>
 
@@ -34,28 +34,28 @@
     <div class="cont-dashboards">
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:pulpo' %}">
-          <h2>PULPO</h2>
+          <h2>Pulpo</h2>
         </a>
       </div>
       {% if grupo != "Pulpo Manager" %}
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:tireDB1' %}">
-          <h2>ESTATUS DE FLOTA</h2>
+          <h2>Estatus de flota</h2>
         </a>
       </div>
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:tireDB2' %}">
-          <h2>REEMPLAZO ESTIMADO</h2>
+          <h2>Reemplazo estimado</h2>
         </a>
       </div>
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:tireDB3' %}">
-          <h2>RENDIMIENTO DE LLANTA</h2>
+          <h2>Rendimiento de la llanta</h2>
         </a>
       </div>
       <div class="dashboard">
         <a class="dashboard-link" href="{% url 'dashboards:dashboardOperativo' %}">
-          <h2>DASHBOARD OPERATIVO</h2>
+          <h2>Dashboard operativo</h2>
         </a>
       </div>
       {% endif %}

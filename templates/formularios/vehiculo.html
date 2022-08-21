@@ -13,11 +13,17 @@
 <main class="main-cont">
 
   <header class="head-cont">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de vehiculo</h1>
+    <a href="{% url 'dashboards:descargarCatalogoVehiculos' %}">Descargar catalogo</a>
   </header>
 
   <section class="form-body">
@@ -55,7 +61,7 @@
                 <th>Presión establecida 5</th>
                 <th>Presión establecida 6</th>
                 <th>Presión establecida 7</th>
-                <th>KM diario máximo</th>
+                <th>Km diario máximo</th>
                 <th>Estatus</th>
                 <th>Nuevo</th>
               </tr>
@@ -83,16 +89,16 @@
                 <td>{{vehiculo.aplicacion}}</td>
                 <td>{{vehiculo.clase}}</td>
                 <td>{{vehiculo.configuracion}}</td>
-                <td>{{vehiculo.presion_establecida_1}}</td>
-                <td>{{vehiculo.presion_establecida_2}}</td>
-                <td>{{vehiculo.presion_establecida_3}}</td>
-                <td>{{vehiculo.presion_establecida_4}}</td>
-                <td>{{vehiculo.presion_establecida_5}}</td>
-                <td>{{vehiculo.presion_establecida_6}}</td>
-                <td>{{vehiculo.presion_establecida_7}}</td>
-                <td>{{vehiculo.km_diario_maximo}}</td>
-                <td>{{vehiculo.estatus_activo}}</td>
-                <td>{{vehiculo.nuevo}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_1}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_2}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_3}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_4}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_5}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_6}}</td>
+                <td class="formato_numero" >{{vehiculo.presion_establecida_7}}</td>
+                <td class="formato_numero" >{{vehiculo.km_diario_maximo}}</td>
+                <td >{{vehiculo.estatus_activo}}</td>
+                <td >{{vehiculo.nuevo}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -107,6 +113,23 @@
 
 <script src="{% static 'js/inputChange.js' %}"></script>
 <script>
+
+  // Formato numero
+  const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('.formato_numero');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+    decimalConverter();
+
   document.addEventListener('submit', (e) => {
     if (e.target.matches('.delete-form')) {
       e.preventDefault();

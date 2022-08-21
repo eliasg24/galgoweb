@@ -18,16 +18,16 @@
   <form class="taller-form" method='POST'>
     {% csrf_token %}
     <legend>
-      <h2>TALLER DESTINO DE LA LLANTA</h2>
+      <h2>Taller destino de la llanta</h2>
     </legend>
     <hr>
     <label for="" class="form-label">
-      FECHA
+      Fecha
     </label>
     <span class="fecha">{{fecha.day}}/{{fecha.month}}/{{fecha.year}}</span>
     
     <label for="" class="form-label">
-      TALLER DE DESTINO
+      Taller de destino
     </label>
 
     <select name="taller" id="" required>
@@ -38,15 +38,15 @@
     </select>
     
     <label for="" class="form-label">
-      USUARIO
+      Usuario
     </label>
     <span class="almohadilla">{{perfil}}</span>
     {% for taller in llantas_list %}
       <label for="" class="form-label">
-        TALLER DE ORIGEN
+        Taller de origen
       </label>
       <span class="almohadilla">{{taller.taller}}</span>
-      <h3>LISTA DE # ECONÓMICOS</h3>
+      <h3>Lista de # económicos</h3>
       
         {% for llanta in taller.ecos %}
 

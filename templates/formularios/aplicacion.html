@@ -13,8 +13,13 @@
 <main class="main-cont">
 
   <header class="head-cont">
+    <a href="{% url 'dashboards:config' %}">
+      <button class="btn btn-download not-allowed" id="prev">
+      <span class="icon-arrow-left2"></span>
+      </button>
+    </a>
     <div class="logo">
-      <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+      <img src="{% static 'images/aeto.svg' %}" alt="logo">
     </div>
 
     <h1>Formulario de aplicación</h1>
@@ -54,13 +59,13 @@
               <tr>
                 <th>Acciones</th>
                 <th>Nombre</th>
-                <th>Compañia</th>
+                <th>Compañía</th>
                 <th>Sucursal</th>
                 <th>Parámetro de desgaste de dirección</th>
                 <th>Parámetro de desgaste de tracción</th>
                 <th>Parámetro de desgaste de arrastre</th>
                 <th>Parámetro de desgaste de loco</th>
-                <th>Parámetro de desgaste de retractil</th>
+                <th>Parámetro de desgaste de retráctil</th>
               </tr>
             </thead>
             <tbody>

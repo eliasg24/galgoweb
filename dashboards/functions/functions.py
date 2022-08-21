@@ -4415,9 +4415,7 @@ def check_dual(llanta):
 def check_dualizacion(llanta):
     compania = llanta.vehiculo.compania
     dual_llanta = check_dual(llanta)
-    print('***************************************')
-    print(dual_llanta)
-    print('***************************************')
+    
     desdualización = Observacion.objects.get(observacion = 'Desdualización')
     if dual_llanta != None:
         if (
@@ -4982,8 +4980,13 @@ def rectificar_observaciones_llantas(vehiculo):
                 vehiculo.observaciones_llanta.add(observacion)
 
 def rectificar_observaciones_vehiculo(vehiculos_lista):
-    for vehiculo in vehiculos_lista:
-        rectificar_observaciones_llantas(vehiculo)
+    try:
+        for vehiculo in vehiculos_lista:
+            rectificar_observaciones_llantas(vehiculo)
+    except:
+        vehiculos_lista = [vehiculos_lista]
+        for vehiculo in vehiculos_lista:
+            rectificar_observaciones_llantas(vehiculo)
 
 
 def reduce(func, items):
@@ -5071,6 +5074,8 @@ def send_mail(bitacora, tipo):
     thread = threading.Thread(target=mail, args=(bitacora, tipo))
     print('Crear hilo')
     thread.start()
+    return print("Cerrar hilo".center(50, '-')) 
+    
 
 def eje_a_str(vehiculo_acomodado):
     vehiculo_id = vehiculo_acomodado[0]['vehiculo'].id
@@ -5118,6 +5123,30 @@ def bitacora_servicios(pk: int, request, acciones_vehiculo: list, dataPOST: list
     servicio_de_vehiculo = servicio_vehiculo(pk, request, acciones_vehiculo)
     servicio_llanta_desmomtaje(dataPOST, servicio_de_vehiculo)
     servicio_llanta_servicio(dataPOST, llantas_desmontadas, servicio_de_vehiculo, request)
+    guardar_mensaje_calendario(servicio_de_vehiculo)
+
+
+
+def guardar_mensaje_calendario(servicio):
+    servicios = ServicioLlanta.objects.filter(serviciovehiculo = servicio)
+    a = {}
+    for servicio_ in servicios:
+        a[str(servicio_.llanta.numero_economico)] = {
+            'inflado': servicio_.inflado,
+            'balanceado': servicio_.balanceado,
+            'reparado': servicio_.reparado,
+            'valvula_reparada': servicio_.valvula_reparada,
+            'costado_reparado': servicio_.costado_reparado,
+            'rotar': servicio_.rotar,
+            'rotar_mismo': servicio_.rotar_mismo,
+            'rotar_otro': servicio_.rotar_otro,
+            'desmontaje': servicio_.desmontaje,
+            'llanta': servicio_.llanta.numero_economico,
+
+            'llanta_cambio': servicio_.llanta_cambio.numero_economico if servicio_.llanta_cambio != None else None
+        }
+    servicio.hoja = a
+    servicio.save()
 
 
 def fecha_str_vehiculo(vehiculo_acomodado):
@@ -5286,6 +5315,7 @@ def validar_eje(config):
         "S2.C4.D4",
         "S2.D4",
         "S2.D4.SP1",
+        "S2.D4.C2",
         "S2.D4.C4.SP1",
         "S2.D4.D4",
         "S2.D4.D4.D4",
@@ -5326,6 +5356,7 @@ def crear_llantas_nuevos_vehiculos(vehiculo):
     eje_valido = validar_eje(vehiculo.configuracion)
     if eje_valido == False:
         print('EJE NO VALIDOO')
+        print(vehiculo)
         return 'Eje no valido'
     
     for tipo_de_eje in configuracion:
@@ -5493,7 +5524,12 @@ def servicio_llanta_desmomtaje(dataPOST, servicio_vehiculo_id):
                 llanta_cambio = llanta_nueva,
                 inventario_de_desmontaje = almacen_desmontaje,
                 taller_de_desmontaje = taller_desmontaje,
-                razon_de_desmontaje = razon
+                razon_de_desmontaje = razon,
+                km_desmontaje = llanta.km_actual,
+                tipo_de_eje = llanta.tipo_de_eje,
+                eje = llanta.eje,
+                producto = llanta.producto,
+                nombre_de_eje = llanta.nombre_de_eje
             )
 
 
@@ -5631,7 +5667,7 @@ def mail(bitacora, tipo):
                     elif 'RI' in llanta_act[0].posicion:
                         lista_temp[1] = llanta_act
                 ejes.append(lista_temp)
-            elif len(ejes) == 4:
+            elif len(eje) == 4:
                 lista_temp = ['', '', '', '']
                 for llanta_act in eje:
                     if 'LO' in llanta_act[0].posicion:
@@ -5700,7 +5736,9 @@ def mail(bitacora, tipo):
                 #print(objetivo)
                 #print(precion_establecida)
                 eje_act += 1
+        
         try:
+            
             templete = get_template('email.html')
             context = {'ejes': ejes, 'ubicacion': ubicacion, 'vehiculo': vehiculo, 'bitacora': bitacora.id, 'tipo': tipo}
             content = templete.render(context)
@@ -5711,12 +5749,12 @@ def mail(bitacora, tipo):
                     [str(ubicacion.email)],
                 )
             email.attach_alternative(content, "text/html")
-            email.send()
-            return print("Envio de email correcto".center(50, '-')) 
+            email.send(fail_silently=False)
+            print("Envio de email correcto".center(50, '-')) 
         except Exception as e:
-            return print(f'No se envio email. Error tipo {e}'.center(50, '-'))
+            print(f'No se envio email. Error tipo {e}'.center(50, '-'))
     else:
-        return print('No hay email definido')
+        print('No hay email definido')
     #!Terminar funcion
     
 

@@ -6435,6 +6435,7 @@ class PulpoProAPI(View):
         
         log = logging.getLogger("Pulpo Pro")
         log.info(jd)
+        print(f'Pulpo Pro: {jd} ')
         
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
         
@@ -7039,8 +7040,9 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
         dir_actual = os.path.dirname(os.path.abspath(__file__))
         dir = separador.join(dir_actual.split(separador)[:-2])
         print(dir)
-
+        print('hola')
         if self.request.method=='POST' and 'periodo1_inflado' in self.request.POST:
+            print(request.POST)
             compania.periodo1_inflado = self.request.POST.get("periodo1_inflado")
             compania.periodo2_inflado = self.request.POST.get("periodo2_inflado")
             compania.objetivo = self.request.POST.get("objetivo")
@@ -7214,117 +7216,103 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
                 print("archivo", archivo)
                 wb_obj = openpyxl.load_workbook(file)
                 sheet_obj = wb_obj.active
-                
+                print(sheet_obj.max_row)
+                print()
                 for i in range(sheet_obj.max_row):
-                    numero_economico = str(sheet_obj.cell(row=i + 2, column=1).value)
-                    numero_economico_nuevo = str(sheet_obj.cell(row=i + 2, column=2).value)
-                    vehiculo = str(sheet_obj.cell(row=i + 2, column=3).value)
-                    ubicacion = str(sheet_obj.cell(row=i + 2, column=4).value)
-                    aplicacion = str(sheet_obj.cell(row=i + 2, column=5).value)
-                    vida = str(sheet_obj.cell(row=i + 2, column=6).value)
-                    posicion = str(sheet_obj.cell(row=i + 2, column=7).value)
-                    presion_actual = str(sheet_obj.cell(row=i + 2, column=8).value)
-                    profundidad_izquierda = str(sheet_obj.cell(row=i + 2, column=9).value)
-                    profundidad_central = str(sheet_obj.cell(row=i + 2, column=10).value)
-                    profundidad_derecha = str(sheet_obj.cell(row=i + 2, column=11).value)
-                    km_actual = str(sheet_obj.cell(row=i + 2, column=12).value)
-                    producto = str(sheet_obj.cell(row=i + 2, column=13).value)
-                    inventario = str(sheet_obj.cell(row=i + 2, column=14).value)
-                    km_montado = str(sheet_obj.cell(row=i + 2, column=15).value)                            
-
-                    print("hola1", vehiculo)
-                    print("hola2")
-                    vehiculo = Vehiculo.objects.get(numero_economico=vehiculo, compania=compania)
-                    ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
-                    print("hola3")
-                    aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
-                    print("hola4")
-                    print("hola6")
-                    print("producto", producto)
-                    print("compania", compania)
-                    producto = Producto.objects.get(producto=producto, compania=compania)
-                    inventario = "Rodante"
-                    print("presion_actual", presion_actual)
-
                     try:
-                        presion_actual = int(presion_actual)
+                        numero_economico = str(sheet_obj.cell(row=i + 2, column=1).value)
+                        numero_economico_nuevo = str(sheet_obj.cell(row=i + 2, column=2).value)
+                        vehiculo = str(sheet_obj.cell(row=i + 2, column=3).value)
+                        ubicacion = str(sheet_obj.cell(row=i + 2, column=4).value)
+                        aplicacion = str(sheet_obj.cell(row=i + 2, column=5).value)
+                        vida = str(sheet_obj.cell(row=i + 2, column=6).value)
+                        posicion = str(sheet_obj.cell(row=i + 2, column=7).value)
+                        presion_actual = str(sheet_obj.cell(row=i + 2, column=8).value)
+                        profundidad_izquierda = str(sheet_obj.cell(row=i + 2, column=9).value)
+                        profundidad_central = str(sheet_obj.cell(row=i + 2, column=10).value)
+                        profundidad_derecha = str(sheet_obj.cell(row=i + 2, column=11).value)
+                        km_actual = str(sheet_obj.cell(row=i + 2, column=12).value)
+                        producto = str(sheet_obj.cell(row=i + 2, column=13).value)
+                        inventario = str(sheet_obj.cell(row=i + 2, column=14).value)
+                        km_montado = str(sheet_obj.cell(row=i + 2, column=15).value)                            
+
+                        vehiculo = Vehiculo.objects.get(numero_economico=vehiculo, compania=compania)
+                        ubicacion = Ubicacion.objects.get(nombre=ubicacion, compania=compania)
+                        aplicacion = Aplicacion.objects.get(nombre=aplicacion, compania=compania)
+                        producto = Producto.objects.get(producto=producto, compania=compania)
+                        inventario = "Rodante"
+
+                        try:
+                            presion_actual = int(presion_actual)
+                        except:
+                            presion_actual = None
+
+                        try:
+                            profundidad_izquierda = float(profundidad_izquierda)
+                            if producto.profundidad_inicial:
+                                if 0 < profundidad_izquierda <= producto.profundidad_inicial:
+                                    pass
+                                else:
+                                    profundidad_izquierda = producto.profundidad_inicial
+                        except:
+                            profundidad_izquierda = producto.profundidad_inicial
+
+                        try:
+                            profundidad_central = float(profundidad_central)
+                            if producto.profundidad_inicial:
+                                if 0 < profundidad_central <= producto.profundidad_inicial:
+                                    pass
+                                else:
+                                    profundidad_central = producto.profundidad_inicial
+                        except:
+                            profundidad_central = producto.profundidad_inicial
+
+                        try:
+                            profundidad_derecha = float(profundidad_derecha)
+                            if producto.profundidad_inicial:
+                                if 0 < profundidad_derecha <= producto.profundidad_inicial:
+                                    pass
+                                else:
+                                    profundidad_derecha = producto.profundidad_inicial
+                        except:
+                            profundidad_derecha = producto.profundidad_inicial
+
+                        try:
+                            km_actual = int(km_actual)
+                        except:
+                            km_actual = None
+
+                        try:
+                            km_montado = int(km_montado)
+                            if km_montado > vehiculo.km:
+                                km_montado = int(vehiculo.km)
+                        except:
+                            km_montado = None
+
+
+                        llanta_id = Llanta.objects.get(numero_economico=numero_economico, compania=Compania.objects.get(compania=compania))
+                        if numero_economico_nuevo:
+                            
+                            if numero_economico_nuevo != "None":
+                                llanta_id.numero_economico=numero_economico_nuevo
+                                llanta_id.patito = False
+                                
+                        llanta_id.ubicacion=ubicacion
+                        llanta_id.aplicacion=aplicacion
+                        llanta_id.vida=vida
+                        llanta_id.presion_actual=presion_actual
+                        llanta_id.profundidad_izquierda=profundidad_izquierda
+                        llanta_id.profundidad_central=profundidad_central
+                        llanta_id.profundidad_derecha=profundidad_derecha
+                        llanta_id.km_actual=km_actual
+                        llanta_id.producto=producto
+                        llanta_id.inventario=inventario
+                        llanta_id.fecha_de_entrada_inventario=date.today()
+                        llanta_id.km_montado=km_montado
+
+                        llanta_id.save()
                     except:
-                        presion_actual = None
-
-                    print("hola7")
-                    try:
-                        profundidad_izquierda = float(profundidad_izquierda)
-                        if producto.profundidad_inicial:
-                            if 0 < profundidad_izquierda <= producto.profundidad_inicial:
-                                pass
-                            else:
-                                profundidad_izquierda = producto.profundidad_inicial
-                    except:
-                        profundidad_izquierda = producto.profundidad_inicial
-
-                    try:
-                        profundidad_central = float(profundidad_central)
-                        if producto.profundidad_inicial:
-                            if 0 < profundidad_central <= producto.profundidad_inicial:
-                                pass
-                            else:
-                                profundidad_central = producto.profundidad_inicial
-                    except:
-                        profundidad_central = producto.profundidad_inicial
-
-                    try:
-                        profundidad_derecha = float(profundidad_derecha)
-                        if producto.profundidad_inicial:
-                            if 0 < profundidad_derecha <= producto.profundidad_inicial:
-                                pass
-                            else:
-                                profundidad_derecha = producto.profundidad_inicial
-                    except:
-                        profundidad_derecha = producto.profundidad_inicial
-
-                    print("hola8")
-                    try:
-                        km_actual = int(km_actual)
-                    except:
-                        km_actual = None
-
-                    print("hola9")
-                    try:
-                        km_montado = int(km_montado)
-                        if km_montado > vehiculo.km:
-                            km_montado = int(vehiculo.km)
-                    except:
-                        km_montado = None
-                    print("hola10")
-
-
-                    llanta_id = Llanta.objects.get(numero_economico=numero_economico, compania=Compania.objects.get(compania=compania))
-                    if numero_economico_nuevo:
-                        for i in numero_economico_nuevo:
-                            print(i)
-                        print(numero_economico_nuevo)
-                        print(type(numero_economico_nuevo))
-                        if numero_economico_nuevo != "None":
-                            llanta_id.numero_economico=numero_economico_nuevo
-                    llanta_id.ubicacion=ubicacion
-                    llanta_id.aplicacion=aplicacion
-                    llanta_id.vida=vida
-                    llanta_id.presion_actual=presion_actual
-                    llanta_id.profundidad_izquierda=profundidad_izquierda
-                    llanta_id.profundidad_central=profundidad_central
-                    llanta_id.profundidad_derecha=profundidad_derecha
-                    llanta_id.km_actual=km_actual
-                    llanta_id.producto=producto
-                    llanta_id.inventario=inventario
-                    print("hola14")
-                    llanta_id.fecha_de_entrada_inventario=date.today()
-                    llanta_id.km_montado=km_montado
-
-                    print("hola15")
-                    llanta_id.patito = False
-                    llanta_id.save()
-                    print("hola16")
-                    print(llanta_id.profundidad_izquierda)
+                        pass
             except Exception as ex:
                 print(ex)
                     
@@ -7336,7 +7324,7 @@ class ConfigView(LoginRequiredMixin, MultiModelFormView):
 
 
 class SearchView(LoginRequiredMixin, ListView):
-    # Vista del dashboard buscar_vehiculos
+    # Vista del dashboard buscar_vehiculosf
     template_name = "buscar_vehiculos.html"
     model = Vehiculo
     ordering = ("-fecha_de_creacion")
@@ -9684,6 +9672,125 @@ def descargarCatalogoProducto(request):
     return response
 
 
+def descargarCatalogoVehiculos(request):
+    usuario = request.user
+    perfil = Perfil.objects.get(user = usuario)
+    compania = perfil.compania
+    vehiculos = Vehiculo.objects.filter(compania = compania)
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet.append( (
+        "Numero Economico",
+        "Modelo",
+        "Marca",
+        "Aplicacion",
+        "clase",
+        "configuracion",
+        "Presion Establecida 1",
+        "Presion Establecida 2",
+        "Presion Establecida 3",
+        "Presion Establecida 4",
+        'Presion Establecida 5',
+        'Presion Establecida 6',
+        'Presion Establecida 7',
+        'km diario maximo',
+        'Estado',
+        'Nuevo',
+        ) )
+    fuente = Font(bold=True)
+    celdas_en_negrita = sheet["A1":"J1"]
+    for row in celdas_en_negrita:
+        for cell in row:
+            cell.font = fuente
+
+    
+    for vehiculo in vehiculos:
+        if vehiculo.estatus_activo == True:
+            status = "Activo"
+        else:
+            status = "Inactivo"
+    
+        if vehiculo.nuevo == True:
+            new = "Nuevo"
+        else: 
+            new = "Usado"
+            
+        sheet.append( (
+            vehiculo.numero_economico,
+            vehiculo.modelo,
+            vehiculo.marca,
+            vehiculo.aplicacion.nombre,
+            vehiculo.clase,
+            vehiculo.configuracion,
+            vehiculo.presion_establecida_1,
+            vehiculo.presion_establecida_2,
+            vehiculo.presion_establecida_3,
+            vehiculo.presion_establecida_4,
+            vehiculo.presion_establecida_5,
+            vehiculo.presion_establecida_6,
+            vehiculo.presion_establecida_7,
+            vehiculo.km_diario_maximo,
+            status,
+            new,
+        ) ) 
+    sheet.column_dimensions [ 'A' ]. ancho = 500
+    sheet.column_dimensions [ 'B' ]. ancho = 500
+    sheet.column_dimensions [ 'C' ]. ancho = 500
+    sheet.column_dimensions [ 'D' ]. ancho = 500
+    sheet.column_dimensions [ 'E' ]. ancho = 500
+    sheet.column_dimensions [ 'F' ]. ancho = 500
+    sheet.column_dimensions [ 'G' ]. ancho = 500
+    sheet.column_dimensions [ 'H' ]. ancho = 500
+    sheet.column_dimensions [ 'I' ]. ancho = 500
+    sheet.column_dimensions [ 'J' ]. ancho = 500
+    response = HttpResponse(content_type='application/msexcel')
+    response['Content-Disposition'] = f'attachment; filename=Catalogo de vehiculos {compania}.xlsx'
+    book.save(response)
+    return response
+
+
+def descargarCatalogoPresupuesto(request):
+    usuario = request.user
+    perfil = Perfil.objects.get(user = usuario)
+    compania = perfil.compania
+    Presupuestos = Presupuesto.objects.filter(compania = compania)
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet.append( (
+        "Mes y año",
+        "Compania",
+        "Sucursal",
+        "Presupuesto",
+        "Gasto Real",
+        "Kilometros Recorridos",
+        ) )
+    fuente = Font(bold=True)
+    celdas_en_negrita = sheet["A1":"J1"]
+    for row in celdas_en_negrita:
+        for cell in row:
+            cell.font = fuente
+
+    
+    for presupuesto in Presupuestos:
+        sheet.append( (
+            presupuesto.mes_ano ,
+            presupuesto.compania.compania,
+            presupuesto.ubicacion.nombre,
+            presupuesto.presupuesto,
+            presupuesto.gasto_real,
+            presupuesto.km_recorridos,
+        ) ) 
+    sheet.column_dimensions [ 'A' ]. ancho = 500
+    sheet.column_dimensions [ 'B' ]. ancho = 500
+    sheet.column_dimensions [ 'C' ]. ancho = 500
+    sheet.column_dimensions [ 'D' ]. ancho = 500
+    sheet.column_dimensions [ 'E' ]. ancho = 500
+    sheet.column_dimensions [ 'F' ]. ancho = 500
+    
+    response = HttpResponse(content_type='application/msexcel')
+    response['Content-Disposition'] = f'attachment; filename=Catalogo de vehiculos {compania}.xlsx'
+    book.save(response)
+    return response
 
 
 def descargarCatalogoProductoVacio(request):

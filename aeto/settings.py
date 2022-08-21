@@ -55,9 +55,11 @@ INSTALLED_APPS = [
     "utilidades",
     "galgoapi",
     "aetoappapi",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,7 +67,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 
 #REST_FRAMEWORK = {
 #  'DEFAULT_RENDERER_CLASSES': (
@@ -74,6 +83,11 @@ MIDDLEWARE = [
 #    'rest_framework.renderers.BrowsableAPIRenderer',
 #  )
 #}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
 
 ROOT_URLCONF = 'aeto.urls'
 
@@ -179,7 +193,7 @@ EMAIL_HOST='smtp.gmail.com'
 EMAIL_USE_TLS=True
 EMAIL_PORT=587
 EMAIL_HOST_USER='aetoreportes@gmail.com'
-EMAIL_HOST_PASSWORD='mofqcgpicxctweat'
+EMAIL_HOST_PASSWORD='mmcduuwfygvnlvdc'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -63,7 +63,7 @@
             <span
               class="card_title_icon icon-published_with_changes"
             ></span>
-            CON RENOVADOR
+            Con renovador
           </h2>
         </div>
         <h2 class="card_number" id="con_renovador"></h2>
@@ -74,7 +74,7 @@
         <div class="card_title">
           <h2>
             <span class="card_title_icon icon-loop"></span>
-            RENOVADA
+            Renovada
           </h2>
         </div>
         <h2 class="card_number" id="renovada"></h2>
@@ -85,7 +85,7 @@
         <div class="card_title">
           <h2>
             <span class="card_title_icon icon-spin1"></span>
-            ANTES DE DESECHAR
+            Antes de desechar
           </h2>
         </div>
         <h2 class="card_number" id="antes_de_desechar"></h2>
@@ -96,7 +96,7 @@
         <div class="card_title">
           <h2>
             <span class="card_title_icon icon-flag"></span>
-            DESECHO FINAL
+            Desecho final 
           </h2>
         </div>
         <h2 class="card_number" id="desecho_final"></h2>
@@ -107,7 +107,7 @@
         <div class="card_title">
           <h2>
             <span class="card_title_icon icon-tools1"></span>
-            SERVICIO
+            Servicio
           </h2>
         </div>
         <h2 class="card_number" id="servicio"></h2>
@@ -118,7 +118,7 @@
         <div class="card_title">
           <h2>
             <span class="card_title_icon icon-tire"></span>
-            RODANTE
+            Rodante
           </h2>
         </div>
         <h2 class="card_number" id="rodante"></h2>
@@ -205,6 +205,7 @@
 
 <script src="{% static 'js/almacen/tire-search/getTires.js' %}"></script>
 <script>
+  
   document.addEventListener('DOMContentLoaded', (e) => {
     searchView();
 
@@ -251,6 +252,23 @@
     });
 
   };
+
+  
+  // Formato numero
+  const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('.card_number');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+    decimalConverter();
 
 </script>
 {% endblock content %}

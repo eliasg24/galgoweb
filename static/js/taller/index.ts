@@ -33,12 +33,15 @@ interface Servicio {
   almacen_desmontaje: string;
   balancear: string;
   costado: string;
+  destino_llanta: string;
   id_servicio: string;
   inflar: string;
   llantaId: string;
   llantaOrigen: string;
   nuevaLlanta: string;
+  numero_economico: string;
   otroVehiculo: string;
+  posicion: string;
   razon: string;
   reparar: string;
   rotar: string;
@@ -46,9 +49,69 @@ interface Servicio {
   taller_desmontaje: string;
   tipoServicio: string;
   valvula: string;
-  numero_economico: string;
-  posicion: string;
 }
+
+// ? Utilidades
+
+const getSelectInputs = (id: string) => {
+  const views = Array(...document.querySelectorAll(`[data-view="${id}"]`)),
+    servicios = Array(
+      ...views[0].querySelectorAll<HTMLInputElement>('input, select')
+    ),
+    montajes = Array(
+      ...views[1].querySelectorAll<HTMLInputElement>('input, select')
+    );
+  const isVehicle = servicios.some(
+    (input) => input.value === 'mismo' && input.checked === true
+  );
+  const isOtherVehicle = servicios.some(
+    (input) => input.value === 'otro' && input.checked === true
+  );
+
+  const totalServicios = servicios.filter((item) => {
+    if (item.checked === true) {
+      return item;
+    }
+
+    if (item.type !== 'checkbox' && item.type !== 'radio') {
+      if (item.value) return item;
+    }
+  });
+  const totalMontajes = montajes.filter((item) => {
+    if (item.checked === true) {
+      return item;
+    }
+
+    if (item.type !== 'checkbox' && item.type !== 'radio') {
+      if (item.value) return item;
+    }
+  });
+
+  return {
+    totalMontajes,
+    totalServicios,
+    servicios,
+    montajes,
+    isVehicle,
+    isOtherVehicle,
+  };
+};
+
+// * Add KM on load page
+
+(() => {
+  document.addEventListener('DOMContentLoaded', (e) => {
+    const form: HTMLFormElement = document.querySelector(
+      '.service-page'
+    ) as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form));
+
+    const formHidden = document.getElementById(
+      'hoja-servicio'
+    ) as unknown as HTMLInputElement;
+    formHidden.value = JSON.stringify(data);
+  });
+})();
 
 // * Modal
 
@@ -196,6 +259,16 @@ interface Servicio {
                 : ''
             }
             ${
+              servicio.destino_llanta
+                ? `
+              <p>
+                <strong>Llanta y Posición Destino:</strong> 
+                ${servicio.destino_llanta}
+              </p>
+              `
+                : ''
+            }
+            ${
               servicio.nuevaLlanta.length >= 1
                 ? `<p><strong>Nueva llanta</strong>: ${servicio.nuevaLlanta}</p>`
                 : ''
@@ -338,6 +411,90 @@ interface Servicio {
     const dataForm = new FormData(form);
     dataForm.append('id_servicio', String(Math.floor(Math.random() * 10000)));
     const data = Object.fromEntries(dataForm) as unknown as Servicio;
+    const formContainer = form.parentElement;
+    const {
+      totalMontajes,
+      totalServicios,
+      montajes,
+      isVehicle,
+      isOtherVehicle,
+    } = getSelectInputs(form.parentElement?.dataset.modal!);
+
+    const otroVehiculo = form.querySelector('.otro-vehiculo'),
+      ovInputs = Array(
+        ...otroVehiculo?.querySelectorAll<HTMLInputElement & HTMLSelectElement>(
+          'input, select'
+        )!
+      ).filter((item) => item.type !== 'hidden');
+
+    const imposibleKm = ovInputs.find(
+      (input) => input.name === 'no_km' && input.checked === true
+    );
+
+    let rotarIsComplete: boolean | null = true;
+
+    if (ovInputs[0].value) {
+      if (!imposibleKm) {
+        rotarIsComplete = ovInputs.some((input) => !input.value);
+      } else {
+        ovInputs[1].value
+          ? (rotarIsComplete = false)
+          : (rotarIsComplete = true);
+      }
+    }
+
+    if (isVehicle) {
+      let inputs = Array(
+          ...form.querySelectorAll<HTMLInputElement>(
+            '.card__config-modal input'
+          )
+        ),
+        isSelectInput = inputs.some((input) => input.checked === true);
+
+      if (!isSelectInput) {
+        return Swal.fire(
+          'Rotación incompleta',
+          'Seleccione una llanta para completar la rotación',
+          'warning'
+        );
+      }
+    }
+
+    if (isOtherVehicle) {
+      if (rotarIsComplete) {
+        return Swal.fire(
+          'Algo anda mal',
+          'Faltan datos para completar la rotación',
+          'warning'
+        );
+      }
+    }
+
+    // if (input.name === 'kmMontadoOtro' && !imposibleKm) {
+    //   return Swal.fire(
+    //     'Los datos estan incompletos',
+    //     'Por favor complete todos los datos de rotación',
+    //     'warning'
+    //   );
+    // }
+
+    if (totalMontajes.length === 0 && totalServicios.length <= 1) {
+      return Swal.fire(
+        'Ups, no se ha realizado nada',
+        'No puede guardar si no ha realizado un servicio',
+        'error'
+      );
+    }
+
+    if (totalMontajes.length > 0) {
+      if (totalMontajes.length < montajes.length) {
+        return Swal.fire(
+          'Montaje incompleto',
+          'El montaje no se ha completado',
+          'warning'
+        );
+      }
+    }
 
     addEvent(data);
 
@@ -348,6 +505,8 @@ interface Servicio {
     saveData.push(data);
 
     formHidden.value = JSON.stringify(saveData);
+
+    formContainer?.classList.remove('active');
 
     document
       .querySelector('.alert__success')
@@ -363,8 +522,10 @@ interface Servicio {
   document.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement;
 
-    if (target.name === 'no_km') {
-      const kmInput = document.querySelector('[name="km_montado"]') as HTMLInputElement;
+    if (target.matches('#no_km')) {
+      const kmInput = document.querySelector(
+        '[name="km_montado"]'
+      ) as HTMLInputElement;
       if (target.checked) {
         kmInput.disabled = true;
       } else {
@@ -414,6 +575,9 @@ interface Servicio {
     }
 
     if (target.name === 'rotar') {
+      const container = document.querySelectorAll<HTMLDivElement>(
+        `[data-rotar-id="${target.dataset.radioid}"]`
+      );
       switch (target.value) {
         case 'no':
           document
@@ -421,24 +585,30 @@ interface Servicio {
               `[data-rotar-id="${target.dataset.radioid}"]`
             )
             .forEach((label) => (label.style.display = 'none'));
+
+          container[0]
+            .querySelectorAll<HTMLInputElement>('input, select')
+            .forEach((input) => (input.value = ''));
+          container[1]
+            .querySelectorAll<HTMLInputElement>('input, select')
+            .forEach((input) => (input.checked = false));
           break;
 
         case 'mismo':
-          document.querySelectorAll<HTMLInputElement>(
-            `[data-rotar-id="${target.dataset.radioid}"]`
-          )[0].style.display = 'none';
-          document.querySelectorAll<HTMLInputElement>(
-            `[data-rotar-id="${target.dataset.radioid}"]`
-          )[1].style.display = 'flex';
+          container[0].style.display = 'none';
+          container[1].style.display = 'flex';
+
+          container[0]
+            .querySelectorAll<HTMLInputElement>('input, select')
+            .forEach((input) => (input.value = ''));
           break;
 
         case 'otro':
-          document.querySelectorAll<HTMLInputElement>(
-            `[data-rotar-id="${target.dataset.radioid}"]`
-          )[0].style.display = 'block';
-          document.querySelectorAll<HTMLInputElement>(
-            `[data-rotar-id="${target.dataset.radioid}"]`
-          )[1].style.display = 'none';
+          container[0].style.display = 'block';
+          container[1].style.display = 'none';
+          container[1]
+            .querySelectorAll<HTMLInputElement>('input')
+            .forEach((input) => (input.checked = false));
           break;
 
         default:
@@ -618,12 +788,16 @@ interface Servicio {
 
       // * Sacar los hidden inputs seleccionados
       const container = origen.parentElement?.parentElement;
-      const destinoVehiculo = container?.querySelector('[name="destino-vehiculo"]') as HTMLInputElement;
-      const destinoLlanta = container?.querySelector('[name="destino-llanta"]') as HTMLInputElement;
+      const destinoVehiculo = container?.querySelector(
+        '[name="destino-vehiculo"]'
+      ) as HTMLInputElement;
+      const destinoLlanta = container?.querySelector(
+        '[name="destino-llanta"]'
+      ) as HTMLInputElement;
 
-      origen.addEventListener('change', (e) => {
-        destinoLlanta.value = origen.value;
-      });
+      // origen.addEventListener('change', (e) => {
+      //   destinoLlanta.value = origen.value;
+      // });
 
       origen.innerHTML = `<option value="">Seleccione una llanta</option>`;
       const inputOrigen =
@@ -635,7 +809,6 @@ interface Servicio {
       fetch('/api/vehicleandtiresearchtaller')
         .then((res) => (res.ok ? res.json() : Promise.reject(res)))
         .then((json) => {
-          console.log(json)
           json.vehiculos_list.forEach((item: any) => {
             vehiculoOrigen.innerHTML += `<option value="${item.numero_economico}"></option>`;
           });
@@ -659,23 +832,75 @@ interface Servicio {
           return;
         }
 
-        fetch(
-          '/api/vehicleandtiresearchtaller?id_select=' +
-            inputOrigen.value
-        )
+        fetch('/api/vehicleandtiresearchtaller?id_select=' + inputOrigen.value)
           .then((res) => (res.ok ? res.json() : Promise.reject(res)))
           .then(({ km_max, km_min, llantas }: RotarResponse) => {
-            console.log(llantas)
             kmMontado.max = km_max || '';
             kmMontado.min = km_min || '';
             origen.innerHTML = `<option value="">Seleccione un vehiculo</option>`;
             origen.innerHTML += llantas.map((item) => {
               return `<option value="${item.id}">${item.numero_economico} - ${item.posicion}</option>`;
             });
-
           })
           .catch((error) => console.error(error));
       });
+    }
+  });
+})();
+
+// * validar selección en modal
+
+(() => {
+  document.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+
+    if (target.matches('[data-view] input, [data-view] select')) {
+      const id = target.dataset.idpadre;
+      const { totalMontajes, totalServicios } = getSelectInputs(id!);
+
+      if (totalServicios.length > 1) {
+        document.querySelector<HTMLInputElement>(
+          `[data-nav="${target.dataset.idpadre}"][value="desmontaje"]`
+        )!.disabled = true;
+      } else {
+        document.querySelector<HTMLInputElement>(
+          `[data-nav="${target.dataset.idpadre}"][value="desmontaje"]`
+        )!.disabled = false;
+      }
+
+      if (totalMontajes.length > 0) {
+        document.querySelector<HTMLInputElement>(
+          `[data-nav="${target.dataset.idpadre}"][value="sr"]`
+        )!.disabled = true;
+      } else {
+        document.querySelector<HTMLInputElement>(
+          `[data-nav="${target.dataset.idpadre}"][value="sr"]`
+        )!.disabled = false;
+      }
+    }
+  });
+})();
+
+(() => {
+  document.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+
+    if (target.name === 'llantaOrigen') {
+      const id = target.dataset.idpadre;
+      const options = Array(
+        ...target.querySelectorAll<HTMLOptionElement>('option')
+      );
+      let selectedOption = options.find(
+        (item) => item.value === target.value
+      )?.textContent;
+
+      const destinoLlanta = document.querySelector<HTMLInputElement>(
+        `[name="destino_llanta"][data-idpadre="${id}"]`
+      );
+
+      console.log({ destinoLlanta });
+
+      destinoLlanta!.value = selectedOption!;
     }
   });
 })();

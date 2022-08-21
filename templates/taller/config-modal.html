@@ -6,7 +6,7 @@
   <!--Tire-->
   <div class="config__row double-shaft">
     <label for="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-      <input type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
+      <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
       <div class="tire">
         <div class="tag__middle">
           <div class="pos {{eje.0.color_middle}}">
@@ -23,7 +23,7 @@
     </div>
 
     <label for="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-      <input type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
+      <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
       <div class="tire">
         <div class="tag__middle">
           <div class="pos {{eje.1.color_middle}}">
@@ -43,7 +43,7 @@
   <div class="config__row">
     <div class="double__tire">
       <label for="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-        <input type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
+        <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.0.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.0.llanta.id }}">
         <div class="tire">
           <div class="tag__middle">
             <div class="pos {{eje.0.color_middle}}">
@@ -56,7 +56,7 @@
       </label>
 
       <label for="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-        <input type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
+        <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.1.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.1.llanta.id }}">
         <div class="tire">
           <div class="tag__middle">
             <div class="pos {{eje.1.color_middle}}">
@@ -75,7 +75,7 @@
 
     <div class="double__tire">
       <label for="{{  eje.2.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-        <input type="radio" name="origenLlanta" id="{{  eje.2.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.2.llanta.id }}">
+        <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.2.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.2.llanta.id }}">
         <div class="tire">
           <div class="tag__middle">
             <div class="pos {{eje.2.color_middle}}">
@@ -87,7 +87,7 @@
       </label>
 
       <label for="{{  eje.3.llanta.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-        <input type="radio" name="origenLlanta" id="{{  eje.3.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.3.llanta.id }}">
+        <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{  eje.3.llanta.posicion }}-{{ llanta.llanta.id }}" value="{{ eje.3.llanta.id }}">
         <div class="tire">
           <div class="tag__middle">
             <div class="pos {{eje.3.color_middle}}">
@@ -105,7 +105,7 @@
   {% if vehiculo.sp1 == True %}
     <div class="config__row sp1">
       <label for="{{  llanta_sp1.posicion }}-{{ llanta.llanta.id }}" style="width: auto;" class="label-check">
-        <input type="radio" name="origenLlanta" id="{{ llanta_sp1.posicion }}-{{ llanta.llanta.id }}" value="{{ llanta_sp1.id }}">
+        <input data-idpadre="{{ llanta.llanta.id }}" type="radio" name="origenLlanta" id="{{ llanta_sp1.posicion }}-{{ llanta.llanta.id }}" value="{{ llanta_sp1.id }}">
         <div class="tire">
           <div class="tag__middle">
             <div class="pos good">

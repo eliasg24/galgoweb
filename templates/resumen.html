@@ -43,7 +43,7 @@
 
       <div class="score-card">
         <header class="score-card_header">
-          <h3>Duales inparejos</h3>
+          <h3>Desdualizado</h3>
         </header>
         <div class="score-card_body">
           <span class="score-number">{{duales_impares}}</span>
@@ -52,7 +52,7 @@
 
       <div class="score-card">
         <header class="score-card_header">
-          <h3>Total de vehiculos</h3>
+          <h3>Total de vehículos</h3>
         </header>
         <div class="score-card_body">
           <span class="score-number">{{total_vehiculos}}</span>
@@ -75,48 +75,85 @@
         <tbody>
           <tr>
             <td>Dirección</td>
-            <td>{{direccion_baja_presion}}</td>
-            <td>{{direccion_alta_presion}}</td>
-            <td>{{direccion_baja_profundidad}}</td>
-            <td>{{direccion_desgaste_irregular}}</td>
+            <td class="format-number">{{direccion_baja_presion}}</td>
+            <td class="format-number">{{direccion_alta_presion}}</td>
+            <td class="format-number">{{direccion_baja_profundidad}}</td>
+            <td class="format-number">{{direccion_desgaste_irregular}}</td>
           </tr>
           <tr>
             <td>Libre</td>
-            <td>{{libre_baja_presion}}</td>
-            <td>{{libre_alta_presion}}</td>
-            <td>{{libre_baja_profundidad}}</td>
-            <td>{{libre_desgaste_irregular}}</td>
+            <td class="format-number">{{libre_baja_presion}}</td>
+            <td class="format-number">{{libre_alta_presion}}</td>
+            <td class="format-number">{{libre_baja_profundidad}}</td>
+            <td class="format-number">{{libre_desgaste_irregular}}</td>
           </tr>
           <tr>
-            <td>Retractil</td>
-            <td>{{retractil_baja_presion}}</td>
-            <td>{{retractil_alta_presion}}</td>
-            <td>{{retractil_baja_profundidad}}</td>
-            <td>{{retractil_desgaste_irregular}}</td>
+            <td>Retráctil</td>
+            <td class="format-number">{{retractil_baja_presion}}</td>
+            <td class="format-number">{{retractil_alta_presion}}</td>
+            <td class="format-number">{{retractil_baja_profundidad}}</td>
+            <td class="format-number">{{retractil_desgaste_irregular}}</td>
           </tr>
           <tr>
             <td>Tracción</td>
-            <td>{{traccion_baja_presion}}</td>
-            <td>{{traccion_alta_presion}}</td>
-            <td>{{traccion_baja_profundidad}}</td>
-            <td>{{traccion_desgaste_irregular}}</td>
+            <td class="format-number">{{traccion_baja_presion}}</td>
+            <td class="format-number">{{traccion_alta_presion}}</td>
+            <td class="format-number">{{traccion_baja_profundidad}}</td>
+            <td class="format-number">{{traccion_desgaste_irregular}}</td>
           </tr>
           <tr>
             <td>Arrastre</td>
-            <td>{{arrastre_baja_presion}}</td>
-            <td>{{arrastre_alta_presion}}</td>
-            <td>{{arrastre_baja_profundidad}}</td>
-            <td>{{arrastre_desgaste_irregular}}</td>
+            <td class="format-number">{{arrastre_baja_presion}}</td>
+            <td class="format-number">{{arrastre_alta_presion}}</td>
+            <td class="format-number">{{arrastre_baja_profundidad}}</td>
+            <td class="format-number">{{arrastre_desgaste_irregular}}</td>
           </tr>
           <tr>
             <td>Total</td>
-            <td>{{total_alta_presion}}</td>
-            <td>{{total_baja_presion}}</td>
-            <td>{{total_baja_profundidad}}</td>
-            <td>{{total_desgaste_irregular}}</td>
+            <td class="format-number">{{total_alta_presion}}</td>
+            <td class="format-number">{{total_baja_presion}}</td>
+            <td class="format-number">{{total_baja_profundidad}}</td>
+            <td class="format-number">{{total_desgaste_irregular}}</td>
           </tr>
         </tbody>
       </table>
     </section>
   </main>
+
+  <script>
+    
+  // Formato numero
+  const separator = (numb) => {
+          let str = numb.toString().split(".");
+          str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return str.join(".");
+      }
+  
+      const decimalConverter = () => {
+          const numbers = document.querySelectorAll('.score-number');
+  
+          numbers.forEach( (number) => {
+              number.textContent = separator(number.textContent);
+          } );
+      }
+      decimalConverter();
+
+  // Formato numero
+  const separator_table = (numb) => {
+          let str = numb.toString().split(".");
+          str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return str.join(".");
+      }
+  
+      const decimalConverter_table = () => {
+          const numbers = document.querySelectorAll('.format-number');
+  
+          numbers.forEach( (number) => {
+              number.textContent = separator(number.textContent);
+          } );
+      }
+      decimalConverter_table();
+
+  </script>
 {% endblock content %}
+

@@ -15,7 +15,7 @@
 <main class="main-cont">
     <header class="head-cont animate__animated animate__fadeIn">
         <div class="logo">
-            <img src="{% static 'images/perro-galgo.png' %}" alt="logo">
+            <img src="{% static 'images/aeto.svg' %}" alt="logo">
         </div>
 
         <nav class="flex-row" id="nav-dash">
@@ -41,7 +41,7 @@
             
             <div class="{% if sin_llantas %} config__container none {% else %} config__container  {% endif %}">
                 <header class="config__header">
-                    <h1 class="detail__title">VEHÍCULO {{vehiculo.numero_economico}}</h1>
+                    <h1 class="detail__title">Vehículo {{vehiculo.numero_economico}}</h1>
                 </header>
                 {% if sin_llantas %}
 
@@ -69,7 +69,7 @@
                         </a> 
                     </div>
 
-                    <h2 id="km-vehiculo">KM: {{vehiculo.km}}</h2> 
+                    <h2 id="km-vehiculo">Km: {{vehiculo.km}}</h2> 
                 {% endif %}
                 <div class="{% if sin_llantas %} alert__container {% else %} config__config {% endif %}">
 
@@ -101,7 +101,7 @@
                                                     </span>
                                                 </div>
                                                 
-                                                <span class="icon-tire2"></span>
+                                                <span class="icon-llanta-outline"></span>
                                                 
                                                 <div class="tire__bottom {{eje.0.1}}">
                                                     <span class="tire__data">
@@ -128,7 +128,7 @@
                                                     </span>
                                                 </div>
                                                 
-                                                <span class="icon-tire2"></span>
+                                                <span class="icon-llanta-outline"></span>
                                                 
                                                 <div class="tire__bottom {{eje.1.1}}">
                                                     <span class="tire__data">
@@ -156,7 +156,7 @@
                                                         </span>
                                                     </div>
                                                     
-                                                    <span class="icon-tire2"></span>
+                                                    <span class="icon-llanta-outline"></span>
                                                     
                                                     <div class="tire__bottom {{eje.0.1}}">
                                                         <span class="tire__data">
@@ -177,7 +177,7 @@
                                                         </span>
                                                     </div>
                                                     
-                                                    <span class="icon-tire2"></span>
+                                                    <span class="icon-llanta-outline"></span>
                                                     
                                                     <div class="tire__bottom {{eje.1.1}}">
                                                         <span class="tire__data">
@@ -207,7 +207,7 @@
                                                         </span>
                                                     </div>
                                                     
-                                                    <span class="icon-tire2"></span>
+                                                    <span class="icon-llanta-outline"></span>
                                                     
                                                     <div class="tire__bottom {{eje.2.1}}">
                                                         <span class="tire__data">
@@ -228,7 +228,7 @@
                                                         </span>
                                                     </div>
                                                     
-                                                    <span class="icon-tire2"></span>
+                                                    <span class="icon-llanta-outline"></span>
                                                     
                                                     <div class="tire__bottom {{eje.3.1}}">
                                                         <span class="tire__data">
@@ -255,7 +255,7 @@
                                                     </span>
                                                 </div>
                                                 
-                                                <span class="icon-tire2"></span>
+                                                <span class="icon-llanta-outline"></span>
                                                 
                                                 <div class="tire__bottom {{eje.0.1}}">
                                                     <span class="tire__data">
@@ -295,7 +295,7 @@
                                 Info Llantas
                             </button>
                             <button class="btn btn-aeto-crunch alt active" id="btn-bitacora">
-                                Bitacora
+                                Bitácora
                             </button>
                         </div>            
                     </nav>
@@ -397,7 +397,7 @@
                                             <th class="header" scope="col">Evento</th>
                                             <th class="header" scope="col">Fecha</th>
                                             <th class="header" scope="col">Encontrado</th>
-                                            <th class="header" scope="col">ID</th>
+                                            <th class="header" scope="col">Id</th>
                                             <th class="header" scope="col">Reporte</th>
                                         </tr>
                                     </thead>
@@ -435,7 +435,11 @@
                                             {% elif evento.2 == 'inspeccion'%}  
                                             
                                                 <tr id="paragraph {{evento.1.id}}">
-                                                    <td class="td-table4"><span class="icon-magnifier"></span></td>
+                                                    {% if evento.1.tipo_de_evento == "Inspección" %}
+                                                        <td class="td-table4"><span class="icon-magnifier"></span></td>
+                                                    {% else %}
+                                                        <td class="td-table4"><span class="icon-clipboard4"></span></td>
+                                                    {% endif %}
                                                     <td class="td-table4">{{evento.1.fecha.day}}/{{evento.1.fecha.month}}/{{evento.1.fecha.year}}</td>
                                                     <td class="td-table4"><span class="{{evento.3}}"></span></span></td>
                                                     <td class="td-table4">{{evento.1.id}}</td>
@@ -488,7 +492,7 @@
                     <div class="dash__content page active" id="page-1">
                         <div class="dash__data">
                             <div class="score-card">
-                                <h2>DÍAS SIN INFLAR</h2>
+                                <h2>Días sin  inflar</h2>
                                 
                                 <div class="circle">
                                     <span id="days">
@@ -550,7 +554,7 @@
             </div>
             <div class="chart__container" id="km-mm">
                 <nav class="chart__container-nav">
-                    <h2>Km por mm por Eje</h2>
+                    <h2>Km por mm por eje</h2>
                     <div class="flex-row"></div>
                 </nav>
                 <div class="container_fluid">
@@ -560,7 +564,7 @@
             <div class="chart__container" id="tire-axle">
                 <div class="dash__data">
                     <div class="score-card">
-                        <h2>Necesidad de llanta por tipo de Eje</h2>
+                        <h2>Necesidad de llanta por tipo de eje</h2>
                         <div class="flex-row-nowrap space-around">
                             {% for eje, cantidad in reemplazo_actual_ejes.items %}
                                 <div class="circle">
@@ -584,7 +588,7 @@
             <div class="chart__container">
                 <div class="dash__data">
                     <div class="score-card">
-                        <h2>DÍAS SIN INFLAR</h2>
+                        <h2>Días sin inflar</h2>
                         
                         <div class="circle">
                             <span id="days2">
@@ -1057,7 +1061,7 @@ anychart.onDocumentReady(function () {
 
     // create second series with mapped data
     var series_2 = chart.line(seriesData_2);
-    series_2.name('Mala Entrada');
+    series_2.name('Mala entrada');
     series_2.normal().stroke("#A349A4", 4);
     series_2.hovered().stroke("#A349A4", 2);
     series_2.selected().stroke("#A349A4", 6);
@@ -1079,7 +1083,7 @@ anychart.onDocumentReady(function () {
 
     // create third series with mapped data
     var series_3 = chart.spline(seriesData_3);
-    series_3.name('Doble Entrada');
+    series_3.name('Doble entrada');
     series_3.normal().stroke("#F0412C", 4);
     series_3.hovered().stroke("#F0412C", 2);
     series_3.selected().stroke("#F0412C", 6);

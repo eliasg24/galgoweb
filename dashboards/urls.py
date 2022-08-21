@@ -623,6 +623,11 @@ urlpatterns = [
         name="download_llantas_rodantes"
     ),
     path(
+        route="descargarCatalogoPresupuesto",
+        view=views.descargarCatalogoPresupuesto,
+        name="descargarCatalogoPresupuesto"
+    ),
+    path(
         route="descargarCatalogoProducto",
         view=views.descargarCatalogoProducto,
         name="descargarCatalogoProducto"
@@ -631,6 +636,11 @@ urlpatterns = [
         route="descargarCatalogoProductoVacio",
         view=views.descargarCatalogoProductoVacio,
         name="descargarCatalogoProductoVacio"
+    ),
+    path(
+        route="descargarCatalogoVehiculos",
+        view=views.descargarCatalogoVehiculos,
+        name="descargarCatalogoVehiculos"
     ),
     #----------------------APIS---------------------
     
@@ -896,6 +906,11 @@ urlpatterns = [
         name="accionesapi"
     ),
     path(
+        route="api/accionesvehiculo/<str:usuario>",
+        view=views_pbi.AccionVehiculoData.as_view(),
+        name="accionesvehiculoapi"
+    ),
+    path(
         route="api/reemplazos/<str:usuario>",
         view=views_pbi.ReemplazoData.as_view(),
         name="reemplazosapi"
@@ -928,6 +943,12 @@ urlpatterns = [
         view=views_pbi.TendenciaDataCompania.as_view(),
         name="tendenciadatacompania"
     ),
+    path(
+        route="api/productosdata/<str:usuario>",
+        view=views_pbi.ProductosData.as_view(),
+        name="productosdata"
+    ),
+    #------
     
     path(
         route="api/copiarvehiculo/",

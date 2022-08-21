@@ -11,6 +11,7 @@ cryptography==36.0.2
 cssselect2==0.6.0
 cycler==0.11.0
 Django==4.0.3
+django-cors-headers==3.13.0
 django-multi-form-view==2.0.1
 djangorestframework==3.13.1
 et-xmlfile==1.1.0

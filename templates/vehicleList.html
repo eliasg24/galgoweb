@@ -3,7 +3,7 @@
 {% block head %}
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/vehicleList.css' %}">
-  <title>Lista de Vehiculos</title>
+  <title>Lista de Vehículos</title>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
 
   <div class="main__container">
     <header class="head-cont">
-      <h1 style="text-align: left;">Lista de Vehiculos</h1>
+      <h1 style="text-align: left;">Lista de Vehículos</h1>
     
       <div class="drop-search">
         <form method='POST'>
@@ -19,7 +19,7 @@
           {% if search != '' and search != None %}
             <input type="search" name="search" id="" value={{search}} class="drop-input">
           {% else %}
-            <input type="search" name="search" id="" placeholder="Buscar vehiculo..." class="drop-input">
+            <input type="search" name="search" id="" placeholder="Buscar vehículo..." class="drop-input">
           {% endif %}
           
           <input type="hidden" name="buscar" value="buscar">
