@@ -1,43 +1,44 @@
 /* New colors */
 
 :root {
-  --colorv00: #363636;
-  --colorv01: #242424;
-  --colorv02: #fff;
+
+  --colorv00: #cccccc;
+  --colorv01: #0a2a75;
+  --colorv02: #333;
   --colorv03: #606060;
-  --colorv04: #026cf5;
+  --colorv04: #ed2a3d;
   --colorv05: #dbc002;
-  --colorv06: #8a2be2;
+  --colorv06: #2c72ff;
   --colorv07: #f0412c;
-  --colorv08: #009345;
-  --colorv09: #ff1493;
-  --colorv10: #23252b;
-  --colorv11: #2f5161;
-  --colorv12: #213944;
+  --colorv08: #026cf5;
+  --colorv09: #ed2a3d;
+  --colorv10: #fff;
+  --colorv11: #4973f2;
+  --colorv12: #0a2a75;
   --colorv13: #f47521;
-  --colorv14: #00e5f3;
-  --colorv15: #222;
-  --colorv16: #000;
+  --colorv14: #2254eb;
+  --colorv15: #fff;
+  --colorv16: #929292;
   --colorv17: #808080;
   --colorv18: transparent;
   --colorv19: #eee;
   --colorv20: #ccc;
   --colorv21: #9b9b9b;
   --colorv22: #ff0000;
-  --colorv23: #dcdcdc;
+  --colorv23: #353535;
   --colorv24: #90ee90;
-  --colorv25: #171717;
-  --colorv26: #111;
-  --colorv27: #202020;
+  --colorv25: #fff;
+  --colorv26: #05112c;
+  --colorv27: #fff;
   --colorv28: #21664d;
   --colorv29: #00558f;
-  --colorv30: #1f1f1f;
+  --colorv30: #cccccc;
   --colorv31: rgb(255, 255, 255, 0.7);
-  --colorv32: #4d4d4d;
+  --colorv32: #0a2a75;
   --colorv33: #0071bc;
   --colorv34: #ddd;
   --colorv35: #9147ff;
-  --colorv36: rgb(255, 255, 255, 0.25);
+  --colorv36 :rgb(255, 255, 255, 0.25);
   --colorv37: #333;
   --colorv38: #646464;
   --colorv39: #353535;
@@ -46,11 +47,11 @@
   --colorv42: #4caf50;
   --colorv43: #555;
   --colorv44: #f1f1f1;
-  --colorv45: #242424;
-  --colorv46: #fff;
-  --colorv47: #213944;
-  --colorv48: #606060;
-  --font-family: "Poppins", Arial, Helvetica, sans-serif;
+  --colorv45: #fff;
+  --colorv46: #707070;
+  --colorv47: #bdd1ff; 
+  --colorv48: #fff;
+  --font-family: 'Poppins', Arial, Helvetica, sans-serif;
   --font-size: 16px;
   --font-size-button: 1.25rem;
 }
@@ -64,7 +65,7 @@
 html {
   background-color: var(--colorv00);
   color: var(--colorv02);
-  font-family: "Poppins", Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
   word-wrap: break-word;
 }
 
@@ -181,46 +182,18 @@ h6 {
 .head-cont {
   align-items: center;
   background-color: var(--colorv01);
+  color: var(--colorv10);
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   padding: 0.5rem 1rem;
   text-align: center;
-  position: relative;
-}
-
-.head-cont::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 151, 240, 1) 0%,
-    rgba(18, 188, 200, 1) 100%
-  );
-  left: 0;
-  bottom: 0;
 }
 
 @media screen and (min-width: 1024px) {
   .head-cont {
     justify-content: space-between;
   }
-}
-
-*::-webkit-scrollbar {
-  width: 4px;
-}
-
-*::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: var(--colorv17);
-}
-
-*::-webkit-scrollbar-track {
-  border-radius: 5px;
-  background-color: #292929;
 }
 
 /* End header */
@@ -238,10 +211,9 @@ h6 {
 
 .drop-btn {
   align-items: center;
-  background-color: var(--colorv15);
   background: none;
   border: none;
-  color: var(--colorv02);
+  color: var(--colorv10);
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
@@ -298,44 +270,15 @@ h6 {
   pointer-events: none;
 }
 
-input,
-select {
-  /* border-radius: 0.5rem; */
-  background: transparent;
-  border: none;
-  border: 2px solid lightgray;
+.drop-input {
+  background: var(--colorv18);
+  border: thin solid var(--colorv02); 
   color: var(--colorv02);
-  cursor: pointer;
   font-family: inherit;
-  font-size: 1rem;
-  font-weight: 500;
   outline: none;
   padding: 0.5rem;
-  transition: all 0.3s ease;
-  /* width: auto; */
+  padding-right: 1rem;
   width: 100%;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-  width: auto;
-}
-
-select option {
-  color: #000;
-}
-
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: 0;
-  border-bottom: 2px solid var(--colorv21);
-  outline: 0;
-  font-size: 1.3rem;
-  color: var(--colorv02);
-  padding: 7px 0;
-  background: var(--colorv18);
-  transition: border-color 0.2s;
 }
 
 .search-item {
@@ -410,7 +353,7 @@ select option {
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-  content: "";
+  content: '';
   position: absolute;
   display: none;
 }
@@ -440,8 +383,8 @@ select option {
 }
 
 .btn-aeto-crunch {
-  background-color: var(--colorv10);
-  color: var(--colorv02);
+  background-color: var(--colorv03);
+  color: var(--colorv10);
   padding: 0.75rem;
   transition: background-color 0.2s ease;
 }
@@ -453,6 +396,7 @@ select option {
 .btn-aeto-crunch.active {
   border-top: thin solid var(--colorv13);
   background-color: var(--colorv12);
+  color: var(--colorv10);
   font-weight: bold;
 }
 
@@ -546,6 +490,19 @@ select option {
   color: var(--colorv22);
 }
 
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid var(--colorv21);
+  outline: 0;
+  font-size: 1.3rem;
+  color: var(--colorv02);
+  padding: 7px 0;
+  background: var(--colorv18);
+  transition: border-color 0.2s;
+}
+
 .form__field::placeholder {
   color: var(--colorv18);
 }
@@ -570,7 +527,7 @@ select option {
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
-  border-color: var(--colorv08);
+  border-color: var(--colorv14);
 }
 
 .form__field:focus ~ .form__label {
@@ -579,7 +536,7 @@ select option {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: var(--colorv08);
+  color: var(--colorv14);
   font-weight: 700;
 }
 
@@ -597,11 +554,11 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
-input[type="search"]::-webkit-search-cancel-button {
+input[type='search']::-webkit-search-cancel-button {
   /* Remove default */
   -webkit-appearance: none;
 }
@@ -628,7 +585,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .popout-text p {
   font-family: var(--font);
-  color: var(--colorv02);
+  color: var(--colorv10);
   font-size: 0.85rem;
   margin: 0.25rem 0;
 }
@@ -721,7 +678,7 @@ input[type="search"]::-webkit-search-cancel-button {
   pointer-events: all;
 }
 
-input[type="date"]::-webkit-inner-spin-button,
+input[type='date']::-webkit-inner-spin-button,
 ::-webkit-calendar-picker-indicator {
   filter: invert(100%);
 }
