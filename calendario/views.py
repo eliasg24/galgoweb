@@ -5,10 +5,10 @@ from django.shortcuts import render
 from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func, Sum
 from django.views.generic.base import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.utils import timezone
 
 from calendario.models import Calendario
-from dashboards.models import Llanta, Observacion, Perfil, ServicioVehiculo, Taller, Vehiculo
+from dashboards.models import Llanta, Observacion, Perfil, Producto, ServicioVehiculo, Taller, Vehiculo
 from dashboards.functions import functions as func
 from calendario.functions import functions
 
@@ -69,6 +69,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
         user = self.request.user
         perfil = Perfil.objects.get(user = user)
         compania = perfil.compania
+        compania_act = perfil.compania
         hoy = datetime.today()
         
         servicio = (request.GET['servicio'] if 'servicio' in request.GET else None)
@@ -190,6 +191,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                     #?Se llama la llanta
                     llanta = Llanta.objects.get(pk=data['llanta'])
                     #? Se verifican que servicios se realizaron
+                    srvcarretera = True if data['srvcarretera'] == 'True' else False
                     inflar = True if data['inflar'] == 'True' else False
                     balancear = True if data['balancear'] == 'True' else False
                     reparar = True if data['reparar'] == 'True' else False
@@ -198,7 +200,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
 
                     rotar = data['rotar'] if data['rotar'] != 'False' else False
 
-
+                    print(f'srvcarretera:{srvcarretera}')
                     print(f'inflar:{inflar}')
                     print(f'balancear:{balancear}')
                     print(f'reparar:{reparar}')
@@ -208,6 +210,50 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                     print(f'rotar:{rotar}')
 
                     #? Servicios
+                    if srvcarretera:
+                        producto, created = Producto.objects.get_or_create(producto ='CAMBIO EN CARRETERA NULL NULL NULL', defaults={
+                            'producto': 'CAMBIO EN CARRETERA NULL NULL NULL',
+                            'compania': compania_act,
+                            'marca': 'NULL',
+                            'dibujo': 'NULL',
+                            'rango': 'NULL',
+                            'dimension': 'NULL',
+                            'profundidad_inicial': 25,
+                            'aplicacion': 'Dirección',
+                            'vida': 'Nueva',
+                            'precio': 0,
+                            'km_esperado': 0,
+                        }
+                        )
+
+                        llanta_nueva = Llanta.objects.create(
+                            numero_economico = f'{vehiculo.numero_economico}{llanta.eje}{llanta.posicion}',
+                            compania = llanta.compania,
+                            vehiculo = llanta.vehiculo,
+                            ubicacion = llanta.ubicacion,
+                            aplicacion = llanta.aplicacion,
+                            vida = 'Nueva',
+                            tipo_de_eje = llanta.tipo_de_eje,
+                            eje = llanta.eje,
+                            posicion = llanta.posicion,
+                            nombre_de_eje = llanta.nombre_de_eje,
+                            presion_actual = func.presion_establecida(llanta),
+                            profundidad_izquierda = llanta.profundidad_izquierda,
+                            profundidad_central = llanta.profundidad_central,
+                            profundidad_derecha = llanta.profundidad_derecha,
+                            km_montado = None,
+                            producto = producto,
+                            inventario = llanta.inventario,
+                            fecha_de_entrada_inventario = timezone.now(),
+                        )
+                        llanta_nueva.numero_economico = llanta_nueva.numero_economico + str(llanta_nueva.id)
+                        llanta.inventario = 'Archivado'
+                        llanta.numero_economico = llanta.numero_economico + 'Archivado'
+                        Llanta.objects.bulk_update([llanta, llanta_nueva], ['numero_economico', 'inventario'])
+                        llanta = None
+                        llanta = llanta_nueva
+                        
+                    
                     if inflar:
                         print('Se inflo')
                         presion_establecida = func.presion_establecida(llanta)

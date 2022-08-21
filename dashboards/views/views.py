@@ -5685,11 +5685,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
         #? Usuarios
         usuario = self.request.user
         perfil = Perfil.objects.get(user = usuario)
+        compania_act = perfil.compania
         if request.POST.getlist('formulario')[0] == 'agendar':
             servicio_vehiculo = functions.servicio_vehiculo_preguardado(pk, request)
             functions.archivar_taller(request.POST, pk, servicio_vehiculo)
             return redirect('dashboards:calendario')
-        print('-*-*-*-*-*--*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-')
         print(request.POST)
         #? Obtencion de los datos de la hoja de servicio
         hoja = request.POST['hoja']
@@ -5728,6 +5728,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 dataPOST.append(
                     {
                     "tipoServicio":"sr",
+                    "srvcarretera":"",
                     "inflar":"on",
                     "balancear":"",
                     "reparar":"",
@@ -5759,6 +5760,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 dataPOST.append(
                     {
                     "tipoServicio":"sr",
+                    "srvcarretera":"",
                     "inflar":"on",
                     "balancear":"",
                     "reparar":"",
@@ -5858,6 +5860,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 #?Se llama la llanta
                 llanta = Llanta.objects.get(pk=data['llantaId'])
                 #? Se verifican que servicios se realizaron
+                srvcarretera = True if data['srvcarretera'] == 'on' else False
                 inflar = True if data['inflar'] == 'on' else False
                 balancear = True if data['balancear'] == 'on' else False
                 reparar = True if data['reparar'] == 'on' else False
@@ -5866,7 +5869,7 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 
                 rotar = data['rotar'] if data['rotar'] != 'no' else False
                 
-                
+                print(f'srvcarretera:{srvcarretera}')
                 print(f'inflar:{inflar}')
                 print(f'balancear:{balancear}')
                 print(f'reparar:{reparar}')
@@ -5876,6 +5879,49 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                 print(f'rotar:{rotar}')
                 
                 #? Servicios
+                if srvcarretera:
+                    producto, created = Producto.objects.get_or_create(producto ='CAMBIO EN CARRETERA NULL NULL NULL', defaults={
+                        'producto': 'CAMBIO EN CARRETERA NULL NULL NULL',
+                        'compania': compania_act,
+                        'marca': 'NULL',
+                        'dibujo': 'NULL',
+                        'rango': 'NULL',
+                        'dimension': 'NULL',
+                        'profundidad_inicial': 25,
+                        'aplicacion': 'Dirección',
+                        'vida': 'Nueva',
+                        'precio': 0,
+                        'km_esperado': 0,
+                    }
+                    )
+
+                    llanta_nueva = Llanta.objects.create(
+                        numero_economico = f'{vehiculo.numero_economico}{llanta.eje}{llanta.posicion}',
+                        compania = llanta.compania,
+                        vehiculo = llanta.vehiculo,
+                        ubicacion = llanta.ubicacion,
+                        aplicacion = llanta.aplicacion,
+                        vida = 'Nueva',
+                        tipo_de_eje = llanta.tipo_de_eje,
+                        eje = llanta.eje,
+                        posicion = llanta.posicion,
+                        nombre_de_eje = llanta.nombre_de_eje,
+                        presion_actual = functions.presion_establecida(llanta),
+                        profundidad_izquierda = llanta.profundidad_izquierda,
+                        profundidad_central = llanta.profundidad_central,
+                        profundidad_derecha = llanta.profundidad_derecha,
+                        km_montado = None,
+                        producto = producto,
+                        inventario = llanta.inventario,
+                        fecha_de_entrada_inventario = timezone.now(),
+                    )
+                    llanta_nueva.numero_economico = llanta_nueva.numero_economico + str(llanta_nueva.id)
+                    llanta.inventario = 'Archivado'
+                    llanta.numero_economico = llanta.numero_economico + 'Archivado'
+                    Llanta.objects.bulk_update([llanta, llanta_nueva], ['numero_economico', 'inventario'])
+                    llanta = None
+                    llanta = llanta_nueva
+                    
                 if inflar:
                     print('Se inflo')
                     presion_establecida = functions.presion_establecida(llanta)

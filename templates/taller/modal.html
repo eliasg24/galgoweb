@@ -37,6 +37,20 @@
     >
       <legend>Servicios</legend>
       <nav class="form__services">
+        
+        <label for="srvcarretera-{{ llanta.llanta.id }}" class="label-check">
+          <input
+            data-idpadre="{{ llanta.llanta.id }}" type="hidden" name="srvcarretera" value="" />
+          <input
+            data-idpadre="{{ llanta.llanta.id }}"
+            type="checkbox"
+            name="srvcarretera"
+            id="srvcarretera-{{ llanta.llanta.id }}"
+            data-tireid="{{ llanta.llanta.id }}"
+          />
+          <div class="btn-filter">Cambio en carretera</div>
+        </label>
+
         <label for="inflar-{{ llanta.llanta.id }}" class="label-check">
           <input
             data-idpadre="{{ llanta.llanta.id }}" type="hidden" name="inflar" value="" />

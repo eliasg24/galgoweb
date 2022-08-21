@@ -92,6 +92,7 @@ def archivar_taller(POST, pk, servicio_vehiculo):
             dataPOST.append(
                 {
                 "tipoServicio":"sr",
+                "srvcarretera":"",
                 "inflar":"on",
                 "balancear":"",
                 "reparar":"",
@@ -125,6 +126,7 @@ def archivar_taller(POST, pk, servicio_vehiculo):
             dataPOST.append(
                 {
                 "tipoServicio":"sr",
+                "srvcarretera":"",
                 "inflar":"on",
                 "balancear":"",
                 "reparar":"",
@@ -176,6 +178,7 @@ def archivar_taller(POST, pk, servicio_vehiculo):
             #?Se llama la llanta
             llanta = Llanta.objects.get(pk=data['llantaId'])
             #? Se verifican que servicios se realizaron
+            srvcarretera = True if data['srvcarretera'] == 'on' else False
             inflar = True if data['inflar'] == 'on' else False
             balancear = True if data['balancear'] == 'on' else False
             reparar = True if data['reparar'] == 'on' else False
@@ -207,6 +210,7 @@ def archivar_taller(POST, pk, servicio_vehiculo):
             lista_itenciones.append({
                     'tipoServicio': 'sr',
                     'llanta': llanta.id,
+                    "srvcarretera": str(srvcarretera),
                     'inflar': str(inflar),
                     'balancear': str(balancear),
                     'reparar': str(reparar),
