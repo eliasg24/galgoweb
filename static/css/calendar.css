@@ -126,7 +126,7 @@
 
 .service-done .service-desc {
   /* color: springgreen; */
-  color: lightgray;
+  color: var(--color23);
   font-weight: 400;
 }
 

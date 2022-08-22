@@ -65,7 +65,7 @@
 html {
   background-color: var(--colorv00);
   color: var(--colorv02);
-  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
   word-wrap: break-word;
 }
 
@@ -188,12 +188,41 @@ h6 {
   justify-content: center;
   padding: 0.5rem 1rem;
   text-align: center;
+  position: relative;
+}
+
+.head-cont::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 151, 240, 1) 0%,
+    rgba(18, 188, 200, 1) 100%
+  );
+  left: 0;
+  bottom: 0;
 }
 
 @media screen and (min-width: 1024px) {
   .head-cont {
     justify-content: space-between;
   }
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: var(--colorv17);
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: var(--colorv10);
 }
 
 /* End header */
@@ -211,9 +240,11 @@ h6 {
 
 .drop-btn {
   align-items: center;
+  background-color: var(--colorv15);
+  color: var(--colorv10);
   background: none;
   border: none;
-  color: var(--colorv10);
+  color: var(--colorv02);
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
@@ -270,15 +301,44 @@ h6 {
   pointer-events: none;
 }
 
-.drop-input {
-  background: var(--colorv18);
-  border: thin solid var(--colorv02); 
+input,
+select {
+  /* border-radius: 0.5rem; */
+  background: transparent;
+  border: none;
+  border: 2px solid lightgray;
   color: var(--colorv02);
+  cursor: pointer;
   font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
   outline: none;
   padding: 0.5rem;
-  padding-right: 1rem;
+  transition: all 0.3s ease;
+  /* width: auto; */
   width: 100%;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+}
+
+select option {
+  color: #000;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid var(--colorv21);
+  outline: 0;
+  font-size: 1.3rem;
+  color: var(--colorv02);
+  padding: 7px 0;
+  background: var(--colorv18);
+  transition: border-color 0.2s;
 }
 
 .search-item {
@@ -353,7 +413,7 @@ h6 {
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-  content: '';
+  content: "";
   position: absolute;
   display: none;
 }
@@ -396,7 +456,6 @@ h6 {
 .btn-aeto-crunch.active {
   border-top: thin solid var(--colorv13);
   background-color: var(--colorv12);
-  color: var(--colorv10);
   font-weight: bold;
 }
 
@@ -490,19 +549,6 @@ h6 {
   color: var(--colorv22);
 }
 
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: 0;
-  border-bottom: 2px solid var(--colorv21);
-  outline: 0;
-  font-size: 1.3rem;
-  color: var(--colorv02);
-  padding: 7px 0;
-  background: var(--colorv18);
-  transition: border-color 0.2s;
-}
-
 .form__field::placeholder {
   color: var(--colorv18);
 }
@@ -554,11 +600,11 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-input[type='search']::-webkit-search-cancel-button {
+input[type="search"]::-webkit-search-cancel-button {
   /* Remove default */
   -webkit-appearance: none;
 }
@@ -678,7 +724,7 @@ input[type='search']::-webkit-search-cancel-button {
   pointer-events: all;
 }
 
-input[type='date']::-webkit-inner-spin-button,
+input[type="date"]::-webkit-inner-spin-button,
 ::-webkit-calendar-picker-indicator {
   filter: invert(100%);
 }
