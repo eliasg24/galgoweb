@@ -23,7 +23,11 @@ urlpatterns = [
     #-----------------------B-----------------------
        
     #-----------------------C-----------------------
-      
+      path(
+        route="app/ContextoPerfil/",
+        view=views.ContextoPerfil.as_view(),
+        name="app/ContextoPerfil/"
+    ),   
 
     #-----------------------D-----------------------
 

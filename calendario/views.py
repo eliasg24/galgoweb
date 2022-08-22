@@ -44,6 +44,7 @@ class CalendarioApi(LoginRequiredMixin, View):
             'title',
             'estado',
             'color',
+            'hoja',
             'reporte',
             'id_servicio',
             'vehiculo__id',
@@ -259,7 +260,14 @@ class CerrarServicioApi(LoginRequiredMixin, View):
                         presion_establecida = func.presion_establecida(llanta)
                         llanta.presion_actual = presion_establecida
                         presion = Observacion.objects.get(observacion = 'Baja presión')
+                        alta_presion = Observacion.objects.get(observacion = 'Alta presion')
+                        mala_entrada = Observacion.objects.get(observacion = 'Mala entrada')
+                        doble_mala_entrada = Observacion.objects.get(observacion = 'Doble mala entrada')
                         llanta.observaciones.remove(presion)
+                        llanta.observaciones.remove(alta_presion)
+                        llanta.observaciones.remove(mala_entrada)
+                        llanta.observaciones.remove(doble_mala_entrada)
+                        
                     if balancear:
                         print('Se balanceo')
                         llanta.fecha_de_balanceado = date.today()
@@ -406,6 +414,7 @@ class CerrarServicioApi(LoginRequiredMixin, View):
             functions.servicio_vehiculo_guardado(servicio, preguardado_vehiculo)        
             functions.servicio_llanta_desmomtaje(servicio, preguardado_llantas)
             functions.servicio_llanta_servicio(llantas_desmontadas, servicio, preguardado_llantas)
+            func.guardar_mensaje_calendario(servicio)
             #? Rectificar observaciones deñ vehiculo
             func.rectificar_observaciones_vehiculo(vehiculos_lista) 
             dict_data = {

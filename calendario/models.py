@@ -15,7 +15,8 @@ class Calendario(models.Model):
     horario_end_str = models.CharField(max_length=255, null=True, blank=True)
     title_current = models.CharField(max_length=255, null=True, blank=True)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
+    hoja = models.JSONField(null=True, blank=True)
+    
+    def __str__(self): 
         # Retorna el nombre de la compañía
         return f"start: {self.start}, end: {self.end}, title: {self.title_current}"

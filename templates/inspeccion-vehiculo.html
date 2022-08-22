@@ -38,6 +38,7 @@
         <!-- Start input -->
         <div class="form__group field">
           <input
+            id="formato_numero"
             class="form__field"
             type="number"
             {% if vehiculo_actual.km == None %}
@@ -112,6 +113,24 @@
 <script src="{% static 'js/inspeccion/index.js' %}" type="module"></script>
 
 <script>
+
+  
+  // Formato numero
+  const separator = (numb) => {
+        let str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+    }
+
+    const decimalConverter = () => {
+        const numbers = document.querySelectorAll('#formato_numero');
+
+        numbers.forEach( (number) => {
+            number.textContent = separator(number.textContent);
+        } );
+    }
+    decimalConverter();
+
   document.addEventListener('DOMContentLoaded', (e) => {
     handlePresion();
     confirmAlert()

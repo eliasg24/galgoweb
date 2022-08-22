@@ -5927,9 +5927,11 @@ class planTallerView(LoginRequiredMixin, TemplateView):
                     presion_establecida = functions.presion_establecida(llanta)
                     llanta.presion_actual = presion_establecida
                     presion = Observacion.objects.get(observacion = 'Baja presión')
+                    alta_presion = Observacion.objects.get(observacion = 'Alta presion')
                     mala_entrada = Observacion.objects.get(observacion = 'Mala entrada')
                     doble_mala_entrada = Observacion.objects.get(observacion = 'Doble mala entrada')
                     llanta.observaciones.remove(presion)
+                    llanta.observaciones.remove(alta_presion)
                     llanta.observaciones.remove(mala_entrada)
                     llanta.observaciones.remove(doble_mala_entrada)
                 if balancear:

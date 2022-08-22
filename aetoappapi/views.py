@@ -1,3 +1,4 @@
+from urllib import response
 from django.shortcuts import render, redirect
 from rest_framework import generics
 from django.urls import reverse_lazy
@@ -15,12 +16,18 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
-from aetoappapi.serializers import AplicacionDataSerializer, CompaniasPerfilSerializer, TalleresDataSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer
+from yaml import serialize
+from aetoappapi.serializers import AplicacionDataSerializer, CompaniasPerfilSerializer, ContextPerfilSerializer, TalleresDataSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer
 from galgoapi.functions import functions as galgofunc
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+
 
 from dashboards import models
+from rest_framework import mixins
+from rest_framework.generics import GenericAPIView
+
 #? view para la imformacion del user
-class UserData(generics.ListCreateAPIView):
+class UserData(generics.GenericAPIView):
     #queryset = User.objects.all()
     serializer_class = UserDataSerializer
     permission_classes = [IsAuthenticated]
@@ -29,9 +36,11 @@ class UserData(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):   
         user = request.user
         print(user)
-        perfil = models.Perfil.objects.filter(user=user)
-        self.queryset = perfil
-        return self.list(request, *args, **kwargs)
+        perfil = models.Perfil.objects.get(user=user)
+        #self.queryset = perfil
+        serializer = self.get_serializer(perfil)
+        return Response(serializer.data) 
+    
     
 #? view para la informacion de 
 class CompaniasPerfilData(generics.ListCreateAPIView):
@@ -66,6 +75,7 @@ class UbicacionData(generics.ListCreateAPIView):
         app = models.Ubicacion.objects.filter(compania_id = id, id__in = ubicaciones_perfil)
         self.queryset = app
         return self.list(request, *args, **kwargs)
+    
     
     
 #? view para la informacion de las aplicacion
@@ -121,7 +131,33 @@ class TalleresPerfilData(generics.ListCreateAPIView):
         self.queryset = talleres 
         return self.list(request, *args, **kwargs)
     
+#? Metodo para modificar el contyexto de perfil
 
+class ContextoPerfil(mixins.UpdateModelMixin, GenericAPIView):
+    
+    #serializer_class = ContextPerfilSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    
+   
+    def get(self, request, *args, **kwargs):   
+        user = request.user
+        perfil = models.Perfil.objects.get(user=user)
+        serializer = self.get_serializer(perfil)
+        return Response(status = status.HTTP_200_OK)
+    
+    
+    """
+    def put(self, request, *args, **kwargs):
+
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+
+        return self.partial_update(request, *args, **kwargs)
+
+    
+    """
 
 
 

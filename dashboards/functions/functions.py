@@ -5264,6 +5264,72 @@ def calendarioTaller(servicio):
     end = datetime.strptime(dateStringEnd, dateFormatter)
     horario_start_str = str(servicio.fecha_inicio) + 'T' + str(servicio.horario_inicio) + '-05:00'
     horario_end_str = str(servicio.fecha_final) + 'T' + str(servicio.horario_final) + '-05:00'
+    
+    a = {}
+
+    try:
+        servicio_load = json.loads( (servicio.preguardado_llantas).replace("\'", "\"") )
+    except:
+        servicio_load = {}
+    for dato in servicio_load:
+        print(dato)
+        if len(dato) == 0:
+            continue
+        if dato['tipoServicio'] == 'sr':
+            llanta_ = Llanta.objects.get(pk = int(dato['llanta']))
+            inflado = True if dato['inflar'] == 'True' else False
+            balanceado = True if dato['balancear'] == 'True' else False
+            reparado = True if dato['reparar'] == 'True' else False
+            valvula_reparada = True if dato['valvula'] == 'True' else False
+            costado_reparado = True if dato['costado'] == 'True' else False
+            rotar = dato['rotar']
+
+            desmontaje = False
+            llanta = dato['llanta']
+            llanta_cambio = None
+
+            a[str(llanta_.numero_economico)] = {
+                'inflado': inflado,
+                'balanceado': balanceado,
+                'reparado': reparado,
+                'valvula_reparada': valvula_reparada,
+                'costado_reparado': costado_reparado,
+                'rotar': True if rotar != 'False' else False,
+                'rotar_mismo': True if rotar == 'mismo' else False,
+                'rotar_otro': True if rotar == 'otro' else False,
+                'desmontaje': desmontaje,
+                'llanta': llanta_.numero_economico,
+                'llanta_cambio': llanta_cambio
+            }
+        elif dato['tipoServicio'] == 'desmontaje':
+            llanta_ = Llanta.objects.get(pk = int(dato['llanta']))
+            llanta_c = Llanta.objects.get(pk = int(dato['llanta_nueva']))
+            inflado = False
+            balanceado = False
+            reparado = False
+            valvula_reparada = False
+            costado_reparado = False
+            rotar = 'False'
+
+            desmontaje = False
+            llanta = dato['llanta']
+            llanta_cambio = llanta_c.numero_economico
+
+            a[str(llanta_.numero_economico)] = {
+                'inflado': inflado,
+                'balanceado': balanceado,
+                'reparado': reparado,
+                'valvula_reparada': valvula_reparada,
+                'costado_reparado': costado_reparado,
+                'rotar': False,
+                'rotar_mismo': False,
+                'rotar_otro': False,
+                'desmontaje': True,
+                'llanta': llanta_.numero_economico,
+                'llanta_cambio': llanta_cambio
+            }
+    
+    
     Calendario.objects.create(
         servicio = servicio,
         vehiculo = servicio.vehiculo,
@@ -5272,7 +5338,8 @@ def calendarioTaller(servicio):
         title_current = titulo,
         horario_start_str = horario_start_str,
         horario_end_str = horario_end_str,
-        compania = servicio.vehiculo.compania
+        compania = servicio.vehiculo.compania,
+        hoja = a
     )
 
 

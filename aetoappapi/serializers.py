@@ -85,3 +85,16 @@ class TalleresDataSerializer(serializers.ModelSerializer):
             'id_compania',
             'nombre_compania',
         )
+        
+#? serializador para la modificacion del contexto
+class ContextPerfilSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Perfil
+        fields =(
+            'id',
+            'compania',
+            'ubicacion',
+            'aplicacion',
+            'taller'
+        )

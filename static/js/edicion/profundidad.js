@@ -325,6 +325,14 @@ const validaciones = (tireObject, target) => {
 
       colorProf(tag, puntoRetiro, container);
       desdualizacion(tag, mm);
+      tresProfundidades({
+        rightValue,
+        leftValue,
+        centerValue,
+        container,
+        tag,
+        puntoRetiro,
+      });
 
       dif = maxValue - minValue;
 

@@ -1,3 +1,5 @@
+import { insertServices } from './helpers/insert-services.js';
+
 (async () => {
   const getEvents = async () => {
     try {
@@ -41,63 +43,28 @@
     modalContainer.querySelector('.modal-title').textContent = event.title;
 
     if (extendedProps.servicio__alineacion) {
-      modalBody.innerHTML = ``;
+      modalBody.innerHTML = `
+        <div class="service-done">
+          <span class="service-title">
+            Servicio de Alineación: 
+          </span>
+          <span class="service-desc">
+            Hecho
+          </span>
+        </div>
+      `;
     }
+
+    const hoja = extendedProps.hoja ? Object.values(extendedProps.hoja) : null;
 
     const servicios = extendedProps.servicio__hoja
       ? Object.values(extendedProps.servicio__hoja)
       : null;
 
-    if (servicios) {
-      servicios.forEach((servicio) => {
-        const serviceContainer = document.createElement('div');
-        serviceContainer.classList.add('service-done');
-
-        /* It's converting the object into an array of arrays. */
-        const list = Object.entries(servicio);
-        /* It's filtering the array of arrays, removing the empty values. */
-        let servicesDone = list.filter((item = []) => {
-          if (!item.some((item) => item === false || item === null)) {
-            return item;
-          }
-        });
-
-        servicesDone.forEach((serviceDone = []) => {
-          let taskDone = serviceDone[0];
-          switch (taskDone) {
-            case 'llanta_cambio':
-              taskDone = 'Llanta destino';
-              break;
-
-            case 'rotar_mismo':
-              taskDone = 'Rotación en dentro del vehículo';
-              break;
-
-            case 'rotar_otro':
-              taskDone = 'Rotación a otro vehículo';
-              break;
-
-            default:
-              taskDone =
-                taskDone.slice(0, 1).toUpperCase() +
-                taskDone.slice(1, taskDone.length).replace('_', ' ');
-              break;
-          }
-
-          serviceContainer.innerHTML += `
-            <div>
-              <span class="service-title">
-                ${taskDone}: 
-              </span>
-              <span class="service-desc">
-                ${serviceDone[1] === true ? 'Hecho' : serviceDone[1]}
-              </span>
-            </div>
-          `;
-        });
-
-        modalBody.appendChild(serviceContainer);
-      });
+    if (hoja) {
+      insertServices(hoja, modalBody);
+    } else if (servicios) {
+      insertServices(servicios, modalBody);
     }
 
     closeBtn.addEventListener('click', (e) => {
@@ -162,7 +129,7 @@
           icon: 'info',
           showDenyButton: true,
           showCancelButton: false,
-          confirmButtonText: 'Guardar',
+          confirmButtonText: 'Eliminar',
           denyButtonText: `Cancelar`,
         }).then((result) => {
           /* Read more about isConfirmed, isDenied below */

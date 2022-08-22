@@ -126,7 +126,7 @@ select option {
   justify-content: center;
 }
 
-.card__img .icon-tire2 {
+.card__img .icon-llanta-outline {
   /* font-size: 18vmin; */
   color: var(--colorv02);
   font-size: 10rem;

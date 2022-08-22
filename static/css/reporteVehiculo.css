@@ -132,7 +132,7 @@ img {
   width: 90%;
 }
 
-.tire .icon-tire2 {
+.tire .icon-llanta-outline {
   color: #000; /*No cambia*/
   font-size: 5rem;
 }
@@ -350,11 +350,11 @@ img {
   font-size: 1rem;
 }
 
-/* .ejes__1 .icon-tire2 {
+/* .ejes__1 .icon-llanta-outline {
   font-size: 15rem;
 } */
 
-.ejes__2 .icon-tire2 {
+.ejes__2 .icon-llanta-outline {
   font-size: 10.5rem;
 }
 
@@ -362,7 +362,7 @@ img {
   margin-bottom: 12rem;
 }
 
-.ejes__3 .icon-tire2 {
+.ejes__3 .icon-llanta-outline {
   font-size: 9rem;
 }
 
@@ -370,7 +370,7 @@ img {
   margin-bottom: 3rem;
 }
 
-.ejes__4 .icon-tire2 {
+.ejes__4 .icon-llanta-outline {
   font-size: 6rem;
 }
 
@@ -384,8 +384,8 @@ img {
   font-size: 0.65rem;
 }
 
-.ejes__5 .icon-tire2,
-.ejes__6 .icon-tire2 {
+.ejes__5 .icon-llanta-outline,
+.ejes__6 .icon-llanta-outline {
   font-size: 6.75rem;
 }
 

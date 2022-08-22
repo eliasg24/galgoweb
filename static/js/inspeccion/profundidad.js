@@ -78,10 +78,8 @@ const tresProfundidades = ({
   tag,
   puntoRetiro,
 }) => {
-  if (
-    (rightValue < leftValue && rightValue < centerValue) ||
-    (rightValue < leftValue && rightValue === centerValue)
-  ) {
+
+  if (rightValue < leftValue && rightValue < centerValue) {
     container
       .querySelectorAll('[data-icon-desgaste]')
       .forEach((icon) => icon.classList.remove('visible'));
@@ -91,10 +89,7 @@ const tresProfundidades = ({
     colorProf(tag, puntoRetiro, container);
   }
 
-  if (
-    (leftValue < centerValue && leftValue < rightValue) ||
-    (leftValue < rightValue && leftValue === centerValue)
-  ) {
+  if (leftValue < centerValue && leftValue < rightValue) {
     container
       .querySelectorAll('[data-icon-desgaste]')
       .forEach((icon) => icon.classList.remove('visible'));
@@ -326,6 +321,14 @@ const validaciones = (tireObject, target) => {
 
       colorProf(tag, puntoRetiro, container);
       desdualizacion(tag, mm);
+      tresProfundidades({
+        rightValue,
+        leftValue,
+        centerValue,
+        container,
+        tag,
+        puntoRetiro,
+      });
 
       dif = maxValue - minValue;
 
