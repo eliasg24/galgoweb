@@ -27,6 +27,7 @@ td {
 
 thead {
   background-color: var(--colorv08);
+  color: #fff; /* No cambia */
 }
 
 tbody tr {
@@ -37,9 +38,9 @@ tr:nth-child(even) {
   background-color: var(--colorv15);
 }
 
-a {
+/* a {
   color: var(--colorv02);
-}
+} */
 
 .main__content {
   display: grid;

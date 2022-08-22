@@ -170,6 +170,7 @@ select option {
 
 .drop-input {
   font-size: 1rem;
+  border: 2px solid var(--colorv23);
 }
 
 @media screen and (min-width: 1024px) {

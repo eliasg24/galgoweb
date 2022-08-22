@@ -41,6 +41,7 @@ p {
 
 .top__search h2 {
   font-size: 2rem;
+  color: #fff; /* No cambia */
   background-color: var(--colorv08);
   margin: 0;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -94,7 +95,7 @@ input[type="search"] {
   box-shadow: 0 0 6px 1px var(--colorv02);
 }
 
-.icon-tire2 {
+.icon-llanta-outline {
   font-size: 28vmin;
 }
 
@@ -108,6 +109,7 @@ input[type="search"] {
 .cont__right h2 {
   font-size: 2rem;
   background-color: var(--colorv08);
+  color: #fff; /* No cambia */
   margin: 0;
   border-radius: 0.25rem 0.25rem 0 0;
   text-align: center;
@@ -185,7 +187,7 @@ input {
     grid-template-columns: 1fr 2fr;
   }
 
-  .icon-tire2 {
+  .icon-llanta-outline {
     font-size: 12vmin;
   }
 

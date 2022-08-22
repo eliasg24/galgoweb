@@ -24,10 +24,10 @@ select {
 }
 
 .btn-config {
-  background-color: #fff; /*No cambia*/
+  background-color: var(--colorv46); /*No cambia*/
   border: thin solid #a5a5a5; /*No cambia*/
   border-radius: 0.25rem;
-  color: var(--colorv16);
+  color: var(--colorv10);
   font-weight: 500;
   padding: 0.5rem;
 }
@@ -203,6 +203,7 @@ select {
 .top__list {
   align-items: center;
   background: var(--colorv08);
+  color: #fff; /* No cambia */
   display: flex;
   gap: 1rem;
   justify-content: space-between;
@@ -224,7 +225,7 @@ select {
     left: 5vw;
   }
 
-  .icon-tire2 {
+  .icon-llanta-outline {
     font-size: 12vmin;
   }
 }
