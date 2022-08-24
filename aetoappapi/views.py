@@ -139,19 +139,65 @@ class ContextoPerfil(mixins.UpdateModelMixin, GenericAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     
-   
+    """
     def get(self, request, *args, **kwargs):   
         user = request.user
         perfil = models.Perfil.objects.get(user=user)
         serializer = self.get_serializer(perfil)
         return Response(status = status.HTTP_200_OK)
-    
-    
     """
     def put(self, request, *args, **kwargs):
-
-        return self.update(request, *args, **kwargs)
-
+        user = request.user
+        perfil = models.Perfil.objects.get(user=user)
+        
+        #Obtener parametros
+        compania = request.GET.get('compania', None)
+        ubicaciones = request.GET.get('ubicaciones', None)
+        aplicaciones = request.GET.get('aplicaciones', None)
+        talleres = request.GET.get('talleres', None)
+    
+        #CONVERSION 
+        try:
+            compania = int(compania)
+            ubicaciones = galgofunc.str_to_list_int(ubicaciones)
+            aplicaciones = galgofunc.str_to_list_int(aplicaciones)
+            talleres = galgofunc.str_to_list_int(talleres)
+            print(compania)
+            print(ubicaciones)
+            print(aplicaciones)
+            print(talleres)
+                
+        except:  
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+    
+        #Consultas 
+        compania = models.Compania.objects.get(id = compania)
+        ubicaciones = models.Ubicacion.objects.filter(id__in = ubicaciones)
+        aplicaciones = models.Aplicacion.objects.filter(id__in = aplicaciones)
+        talleres = models.Taller.objects.filter(id__in = talleres)
+        
+        #? Limpiar datos
+        
+        
+        perfil.ubicacion.clear()
+        perfil.aplicacion.clear()
+        perfil.taller.clear()
+        
+        perfil.compania = compania
+        
+        for ubicacion in ubicaciones:
+            perfil.ubicacion.add(ubicacion)
+    
+        for aplicacion in aplicaciones:
+            perfil.aplicacion.add(aplicacion)
+            
+        for  taller in  talleres:
+            perfil.taller.add(taller)
+               
+        perfil.save()
+        
+        return Response(status = status.HTTP_200_OK)
+    """
     def patch(self, request, *args, **kwargs):
 
         return self.partial_update(request, *args, **kwargs)

@@ -462,6 +462,8 @@ class Bitacora(models.Model):
     
     llantas = models.ManyToManyField(Llanta)
     
+    estado = models.CharField(max_length=255, default='Buena') #Buena, Mala, Doble
+    
 
     def __str__(self):
         # Retorna el número económico
@@ -538,6 +540,7 @@ class Bitacora_Pro(models.Model):
     
     llantas = models.ManyToManyField(Llanta)
 
+    estado = models.CharField(max_length=255, default='Buena') #Buena, Mala, Doble
 
     def __str__(self):
         # Retorna el número económico
@@ -797,7 +800,7 @@ class OrdenDesecho(models.Model):
     fecha = models.DateField(null=True, blank=True)
     min_profundidad = models.FloatField(blank=True, null=True)
     desecho = models.ForeignKey(Desecho, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='desecho', null=True)
+    imagen = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "OrdenesDesechos"
@@ -855,6 +858,7 @@ class Tendencia(models.Model):
     correctas_pulpo = models.FloatField()
     correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
+    pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
     
@@ -869,6 +873,7 @@ class TendenciaAplicacion(models.Model):
     correctas_pulpo = models.FloatField()
     correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
+    pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
     
@@ -882,6 +887,7 @@ class TendenciaUbicacion(models.Model):
     correctas_pulpo = models.FloatField()
     correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
+    pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()
     
@@ -894,5 +900,6 @@ class TendenciaCompania(models.Model):
     correctas_pulpo = models.FloatField()
     correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
+    pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
     buena_presion = models.FloatField()

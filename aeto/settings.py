@@ -32,7 +32,7 @@ else:
     DEBUG = False
     
 if config('DEBUG') == 'True':
-    ALLOWED_HOSTS = ['192.168.100.23','192.168.100.109', '192.168.100.94','192.168.100.91', 'localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['*']
 else:
     ALLOWED_HOSTS = ['www.aetoweb.com']
     
@@ -197,3 +197,5 @@ EMAIL_HOST_PASSWORD='mmcduuwfygvnlvdc'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.TemporaryFileUploadHandler']

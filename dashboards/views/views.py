@@ -20,6 +20,7 @@ from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, 
 from django.db.models.functions import Least
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse, HttpResponse
+from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models.aggregates import Min, Max, Count
 from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear
 from django.shortcuts import get_object_or_404, redirect, render
@@ -68,7 +69,7 @@ import xlwt
 
 from dashboards.views.views_rest import CarritoLlantasApi
 
-import dashboards.GoogleDrive
+import dashboards.GoogleDrive as Google
 
 class LoginView(auth_views.LoginView):
     # Vista de Login
@@ -4598,8 +4599,15 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
         
         try:
             image = request.FILES.getlist('image')[0]
+            print()
+            ruta_archivo = TemporaryUploadedFile.temporary_file_path(image)
+            id_folder = '1kEOreah3tuxntZwAUGc5Wzgu-LqFWKoE'
+            nombre = ''
+            print()
+            a = Google.subir_archivo(ruta_archivo,id_folder, nombre)
+            print(a)
         except:
-            image = None
+            image = ''
             
         print(condicion)
         print(zona)
@@ -4617,7 +4625,7 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
             fecha = hoy,
             min_profundidad = profundidad,
             desecho = desecho,
-            imagen = image,
+            imagen = a,
         )
         folio = str('OD' + str(perfil) + str(hoy.year)+ str(hoy.month)+ str(hoy.day) + str(orden.id))
         orden.folio = folio

@@ -41,8 +41,8 @@ p {
 
 .top__search h2 {
   font-size: 2rem;
-  color: #fff; /* No cambia */
   background-color: var(--colorv08);
+  color: #fff; /* No cambia */
   margin: 0;
   border-radius: 0.25rem 0.25rem 0 0;
 }

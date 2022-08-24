@@ -7,8 +7,10 @@
     <title>Title</title>
 </head>
 <body>
-    <img src="{{desecho.imagen.url}}" alt="">
-    <br>
-    sdd
+    {% if desecho.imagen == '' %}
+    {% else %}
+        <img src='http://drive.google.com/uc?export=view&id={{desecho.imagen}}'>
+    {% endif %}
+
 </body>
 </html>

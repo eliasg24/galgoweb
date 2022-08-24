@@ -1179,6 +1179,7 @@ class TendenciaData(View):
             "correctas_pulpo",
             "correctas_inspeccion",
             "inspecciones_a_tiempo",
+            "pulpos_a_tiempo",
             "health",
             "buena_presion",
         ))
@@ -1209,6 +1210,7 @@ class TendenciaDataAplicacion(View):
             "correctas_pulpo",
             "correctas_inspeccion",
             "inspecciones_a_tiempo",
+            "pulpos_a_tiempo",
             "health",
             "buena_presion",
         ))
@@ -1238,6 +1240,7 @@ class TendenciaDataUbicacion(View):
             "correctas_pulpo",
             "correctas_inspeccion",
             "inspecciones_a_tiempo",
+            "pulpos_a_tiempo",
             "health",
             "buena_presion",
         ))
@@ -1266,6 +1269,7 @@ class TendenciaDataCompania(View):
             "correctas_pulpo",
             "correctas_inspeccion",
             "inspecciones_a_tiempo",
+            "pulpos_a_tiempo",
             "health",
             "buena_presion",
         ))

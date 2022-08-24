@@ -258,6 +258,7 @@ class DailyDataTendenciasCompanias(View):
                 compania = compania,
                 correctas_pulpo = correctas_pulpo,
                 inspecciones_a_tiempo = inspecciones_a_tiempo,
+                pulpos_a_tiempo = a_tiempo_pulpo,
                 health = health,
                 buena_presion = buena_presion
             ) ) 
@@ -387,6 +388,7 @@ class DailyDataTendenciasUbicaciones(View):
                     ubicacion = ubicacion,
                     correctas_pulpo = correctas_pulpo,
                     inspecciones_a_tiempo = inspecciones_a_tiempo,
+                    pulpos_a_tiempo = a_tiempo_pulpo,
                     health = health,
                     buena_presion = buena_presion
                 ) ) 
@@ -524,6 +526,7 @@ class DailyDataTendenciasAplicaciones(View):
                         aplicacion = aplicacion,
                         correctas_pulpo = correctas_pulpo,
                         inspecciones_a_tiempo = inspecciones_a_tiempo,
+                        pulpos_a_tiempo = a_tiempo_pulpo,
                         health = health,
                         buena_presion = buena_presion
                     ) ) 
@@ -662,6 +665,7 @@ class DailyDataTendencias(View):
                             clase = clase,
                             correctas_pulpo = correctas_pulpo,
                             inspecciones_a_tiempo = inspecciones_a_tiempo,
+                            pulpos_a_tiempo = a_tiempo_pulpo,
                             health = health,
                             buena_presion = buena_presion
                         ) ) 
