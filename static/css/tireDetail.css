@@ -80,7 +80,7 @@
 
 .card__circle {
   background-color: var(--colorv00);
-  margin: 1rem;
+  margin: 0.5rem;
   display: grid;
   justify-items: center;
   align-items: center;
