@@ -4607,6 +4607,7 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
             a = Google.subir_archivo(ruta_archivo,id_folder, nombre)
             print(a)
         except:
+            a = ''
             image = ''
             
         print(condicion)
