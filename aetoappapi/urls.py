@@ -59,6 +59,18 @@ urlpatterns = [
     #-----------------------Ñ-----------------------
     
     #-----------------------O-----------------------
+     path(
+       route="app/ordenaminto_vehiculo/",
+       view=views.Ordenamientovehiculollantas.as_view(),
+       name="ordenaminto_vehiculo"
+       
+    ),  
+      path(
+       route="app/ordenamintoLlantas/",
+       view=views.Ordenamientollantas.as_view(),
+       name="ordenamintoLlantas"
+       
+    ),  
 
     #-----------------------P-----------------------
 

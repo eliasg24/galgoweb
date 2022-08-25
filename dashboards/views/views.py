@@ -9556,7 +9556,7 @@ def download_llantas_rodantes(request):
                 llanta.profundidad_central,
                 llanta.profundidad_derecha,
                 llanta.km_actual,
-                llanta.producto,
+                llanta.producto.producto,
                 llanta.inventario,
                 llanta.km_montado,
         ) )
