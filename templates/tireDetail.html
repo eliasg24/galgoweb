@@ -24,7 +24,7 @@
 <main class="main-cont">
   <header class="head-cont animate__animated animate__fadeIn">
     <div class="logo">
-      <img src="{% static 'images/aeto.svg' %}">
+      <img src="{% static 'images/aeto.png' %}">
     </div>
     {% if vehiculo_boolean %}
     <a href="{% url 'dashboards:detail' vehiculo.id %}">
@@ -633,18 +633,18 @@
     // adjust x axis
     chart.xAxis()
             .title('')
-            .stroke("#DCDCDC")
-            .labels().fontColor("#DCDCDC");
+            .stroke("#000")
+            .labels().fontColor("#000");
             
     // adjust y axis       
     chart.yAxis()
             .title('')
-            .stroke("#DCDCDC")
-            .labels().fontColor("#DCDCDC");
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     var legend = chart.legend();
         legend.enabled(true)
-                .fontColor("#DCDCDC")
+                .fontColor("#000")
                 .fontSize(12);
 
     // set container id for the chart
@@ -697,7 +697,7 @@
     // create a spline series and set the data
     var series = chart.spline(data);
     series.name("Desgaste");
-    series.stroke({ keys: [{ color: '#A349A4' }], thickness: 4 });
+    series.stroke({ keys: [{ color: '#F0412C' }], thickness: 4 });
 
     // adjust scales
     var xScale = anychart.scales.linear();
@@ -708,29 +708,29 @@
     // adjust x axis
     chart.xAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
             
     // adjust y axis       
     chart.yAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     // enable major grids
     chart.xGrid().enabled(true);
     chart.yGrid().enabled(true);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({color: "#fff"});
+    chart.xGrid().stroke({color: "#000"});
     // set grid stroke appearance
-    chart.yGrid().stroke({color: "#fff"});
+    chart.yGrid().stroke({color: "#000"});
 
     // set the chart title
     chart.title('Comportamiento de Desgaste');
     var title = chart.title();
     title.align('center');
-    title.fontColor('#fff');
+    title.fontColor('#000');
     title.fontSize(18);
     title.fontWeight(600);
 
@@ -749,11 +749,11 @@
     xLabels.format("{%value}{groupsSeparator:\\,, decimalsCount:3}");
 
     //tooltip
+    series.tooltip().titleFormat("{%seriesName}");
     series.tooltip().format("{%seriesName}: {%value}{groupsSeparator:\\,, decimalsCount:3}");
-
+    
     // set the container id
     chart.container('spline-chart');
-
 
     //Set Background
     var background = chart.background();
