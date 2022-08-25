@@ -1,9 +1,9 @@
 <div class="vehicle__card">
   <header class="card__header">
     <h2>
-      <a href="{% url 'dashboards:detail' vehiculo.vehiculo.id %}">
+      <span>
         {{vehiculo.vehiculo.numero_economico}}
-      </a>
+      </span>
     </h2>
 
     <div class="flex-row">
@@ -12,6 +12,9 @@
       </a>
       <a href="{% url 'dashboards:inspeccionVehiculo' vehiculo.vehiculo.id %}" class="btn btn-primary">
         <i class="icon-magnifier"></i>
+      </a>
+      <a href="{% url 'dashboards:detail' vehiculo.vehiculo.id %}" class="btn btn-primary">
+        Ver vehículo
       </a>
     </div>
   </header>
