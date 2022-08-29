@@ -179,3 +179,4 @@ desktop.ini
 *.png
 *.pyc
 dashboards/__pycache__/
+aeto/credentials.py
