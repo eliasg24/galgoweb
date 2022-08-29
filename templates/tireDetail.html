@@ -633,18 +633,18 @@
     // adjust x axis
     chart.xAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
             
     // adjust y axis       
     chart.yAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     var legend = chart.legend();
         legend.enabled(true)
-                .fontColor("#fff")
+                .fontColor("#000")
                 .fontSize(12);
 
     // set container id for the chart
@@ -708,29 +708,29 @@
     // adjust x axis
     chart.xAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
             
     // adjust y axis       
     chart.yAxis()
             .title('')
-            .stroke("#fff")
-            .labels().fontColor("#fff");
+            .stroke("#000")
+            .labels().fontColor("#000");
 
     // enable major grids
     chart.xGrid().enabled(true);
     chart.yGrid().enabled(true);
 
     // set grid stroke appearance
-    chart.xGrid().stroke({color: "#fff"});
+    chart.xGrid().stroke({color: "#000"});
     // set grid stroke appearance
-    chart.yGrid().stroke({color: "#fff"});
+    chart.yGrid().stroke({color: "#000"});
 
     // set the chart title
     chart.title('Comportamiento de Desgaste');
     var title = chart.title();
     title.align('center');
-    title.fontColor('#fff');
+    title.fontColor('#000');
     title.fontSize(18);
     title.fontWeight(600);
 
