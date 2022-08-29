@@ -75,6 +75,7 @@
 
 .card__header {
   background-color: var(--colorv08);
+  color: #fff; /* No cambia */
   border-radius: 0.25rem 0.25rem 0 0;
   display: flex;
   justify-content: space-around;
