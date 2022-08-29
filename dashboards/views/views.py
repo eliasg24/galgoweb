@@ -2410,9 +2410,7 @@ class usuarioFormularioView(LoginRequiredMixin, CreateView):
         talleres = Taller.objects.all()
         usuarios = User.objects.all()
         grupos = Group.objects.all()
-        for usuario in usuarios:
-            print(usuario)
-            print(usuario.perfil.companias.all())
+        
         context["aplicaciones"] = aplicaciones
         context["companias"] = companias
         context["grupos"] = grupos
@@ -4607,8 +4605,8 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
             a = Google.subir_archivo(ruta_archivo,id_folder, nombre)
             print(a)
         except:
-            a = ''
             image = ''
+            a = ''
             
         print(condicion)
         print(zona)
@@ -6424,6 +6422,7 @@ class VehiculoAPI(View):
         llantas = Llanta.objects.filter(vehiculo=vehiculo, inventario = 'Rodante')
         condicional = True
         numero = 1
+        condiciones_ = []
         for llanta in llantas:
             if llanta.tipo_de_eje != "SP1":
 
@@ -6433,8 +6432,13 @@ class VehiculoAPI(View):
                 llanta.presion_actual=jd['presion_de_salida']
                 min_presion = functions.min_presion(llanta)
                 max_presion = functions.max_presion(llanta)
+                
+                presion_ent = float(jd['presion_de_entrada'])
+                
                 nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
                 condicional = nueva_condicional
+                condiciones_.append(condicional)
+                functions.check_dif_presion_duales(llanta)
                 llanta.save()
                 if numero == 1:
                     bi.llanta_1 = llanta
@@ -6470,13 +6474,31 @@ class VehiculoAPI(View):
                     bi.llanta_11 = llanta
                     bi.presion_establecida_11 = int(functions.presion_establecida(llanta))
                 elif numero == 12:
-                    bi.llanta_1 = llanta
+                    bi.llanta_12 = llanta
                     bi.presion_establecida_12 = int(functions.presion_establecida(llanta))
                 
                 bi.llantas.add(llanta)
                 numero += 1
                 
+        mala_entrada = Observacion.objects.get(observacion='Mala entrada')
+        doble_mala_entrada = Observacion.objects.get(observacion='Doble mala entrada')
+        
+        if "Doble" in condiciones_:
+            bi.estado = 'Doble'
+            bi.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+        elif "Mala" in condiciones_:
+            bi.estado = 'Mala'
+            bi.vehiculo.observaciones_llanta.add(mala_entrada)
+        else:
+            bi.estado = 'Buena'
+            bi.vehiculo.observaciones_llanta.remove(mala_entrada)
+            bi.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
+
         bi.save()
+        
+        functions.asignar_obs_pulpo(bi.vehiculo)
+        functions.rectificar_observaciones_vehiculo(bi.vehiculo)
+        
         functions.send_mail(bi, 'pulpo')
         return JsonResponse(jd)
 
@@ -6490,8 +6512,6 @@ class PulpoProAPI(View):
     def post(self, request):
         jd = json.loads(request.body)
         
-        log = logging.getLogger("Pulpo Pro")
-        log.info(jd)
         print(f'Pulpo Pro: {jd} ')
         
         vehiculo = Vehiculo.objects.get(numero_economico=jd['numero_economico'], compania=Compania.objects.get(compania=jd['compania']))
@@ -6530,7 +6550,7 @@ class PulpoProAPI(View):
                         elif 'RI' in llanta_act[0].posicion:
                             lista_temp[1] = llanta_act
                     ejes.append(lista_temp)
-                    print(' 0---0')
+                    #print(' 0---0')
                 
                 elif len(eje) == 4:
                     lista_temp = ['', '', '', '']
@@ -6544,7 +6564,7 @@ class PulpoProAPI(View):
                         elif 'RO' in llanta_act[0].posicion:
                             lista_temp[3] = llanta_act
                     ejes.append(lista_temp)
-                    print('00---00')
+                    #print('00---00')
                 else:
                     pass
             loop_llantas = 0
@@ -6562,9 +6582,9 @@ class PulpoProAPI(View):
                                     fecha_de_inflado=timezone.now(),
                                     tiempo_de_inflado=jd['tiempo_de_inflado'],
             )
-            print("jd['presiones_de_entrada']", jd['presiones_de_entrada'])
+            #print("jd['presiones_de_entrada']", jd['presiones_de_entrada'])
 
-            print("presiones_de_entrada", presiones_de_entrada)
+            #print("presiones_de_entrada", presiones_de_entrada)
             if numero_de_llantas == len(presiones_de_entrada):
 
                 if len(presiones_de_entrada) >= 1:
@@ -6609,56 +6629,111 @@ class PulpoProAPI(View):
                 vehiculo.save()
                 condicional = True
                 numero = 1
-                for llanta in llantas:
-                    min_presion = functions.min_presion(llanta)
-                    max_presion = functions.max_presion(llanta)
+                condiciones_ = []
+                #print()
+                #print(ejes)
+                #print()
+                for eje in ejes:
+                    for ej in eje:
+                        for llant in ej:
+                            llanta = llant
+                            #print(llanta)
+                            min_presion = functions.min_presion(llanta)
+                            max_presion = functions.max_presion(llanta)
+                            
+                            nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
+                            condicional = nueva_condicional
+                            condiciones_.append(condicional)
+                            functions.check_dif_presion_duales(llanta)
+                            if numero == 1:
+                                bi.llanta_1 = llanta
+                                bi.presion_establecida_1 = functions.presion_establecida(llanta)
+                                bi.posicion_1  = llanta.posicion
+                                bi.estado_llanta_1 = functions.estado_llanta(llanta)
+                            elif numero == 2:
+                                bi.llanta_2 = llanta
+                                bi.presion_establecida_2 = functions.presion_establecida(llanta)
+                                bi.posicion_2  = llanta.posicion
+                                bi.estado_llanta_2 = functions.estado_llanta(llanta)
+                            elif numero == 3:
+                                bi.llanta_3 = llanta
+                                bi.presion_establecida_3 = functions.presion_establecida(llanta)
+                                bi.posicion_3  = llanta.posicion
+                                bi.estado_llanta_3 = functions.estado_llanta(llanta)
+                            elif numero == 4:
+                                bi.llanta_4 = llanta
+                                bi.presion_establecida_4 = functions.presion_establecida(llanta)
+                                bi.posicion_4  = llanta.posicion
+                                bi.estado_llanta_4 = functions.estado_llanta(llanta)
+                            elif numero == 5:
+                                bi.llanta_5 = llanta
+                                bi.presion_establecida_5 = functions.presion_establecida(llanta)
+                                bi.posicion_5  = llanta.posicion
+                                bi.estado_llanta_5 = functions.estado_llanta(llanta)
+                            elif numero == 6:
+                                bi.llanta_6 = llanta
+                                bi.presion_establecida_6 = functions.presion_establecida(llanta)
+                                bi.posicion_6  = llanta.posicion
+                                bi.estado_llanta_6 = functions.estado_llanta(llanta)
+                            elif numero == 7:
+                                bi.llanta_7 = llanta
+                                bi.presion_establecida_7 = functions.presion_establecida(llanta)
+                                bi.posicion_7  = llanta.posicion
+                                bi.estado_llanta_7 = functions.estado_llanta(llanta)
+                            elif numero == 8:
+                                bi.llanta_8 = llanta
+                                bi.presion_establecida_8 = functions.presion_establecida(llanta)
+                                bi.posicion_8  = llanta.posicion
+                                bi.estado_llanta_8 = functions.estado_llanta(llanta)
+                            elif numero == 9:
+                                bi.llanta_9 = llanta
+                                bi.presion_establecida_9 = functions.presion_establecida(llanta)
+                                bi.posicion_9  = llanta.posicion
+                                bi.estado_llanta_9 = functions.estado_llanta(llanta)
+                            elif numero == 10:
+                                bi.llanta_10 = llanta
+                                bi.presion_establecida_10 = functions.presion_establecida(llanta)
+                                bi.posicion_10 = llanta.posicion
+                                bi.estado_llanta_10 = functions.estado_llanta(llanta)
+                            elif numero == 11:
+                                bi.llanta_11 = llanta
+                                bi.presion_establecida_11 = functions.presion_establecida(llanta)
+                                bi.posicion_11 = llanta.posicion
+                                bi.estado_llanta_11 = functions.estado_llanta(llanta)
+                            elif numero == 12:
+                                bi.llanta_12 = llanta
+                                bi.presion_establecida_12 = functions.presion_establecida(llanta)
+                                bi.posicion_12 = llanta.posicion
+                                bi.estado_llanta_12 = functions.estado_llanta(llanta)
+                                
+                            bi.llantas.add(llanta)
+                                
+                            numero += 1
                     
-                    nueva_condicional = functions.check_presion_pulpo(llanta, min_presion, max_presion, condicional)
-                    condicional = nueva_condicional
-                    functions.check_dif_presion_duales(llanta)
-                    if numero == 1:
-                        bi.llanta_1 = llanta
-                        bi.presion_establecida_1 = functions.presion_establecida(llanta)
-                    elif numero == 2:
-                        bi.llanta_2 = llanta
-                        bi.presion_establecida_2 = functions.presion_establecida(llanta)
-                    elif numero == 3:
-                        bi.llanta_3 = llanta
-                        bi.presion_establecida_3 = functions.presion_establecida(llanta)
-                    elif numero == 4:
-                        bi.llanta_4 = llanta
-                        bi.presion_establecida_4 = functions.presion_establecida(llanta)
-                    elif numero == 5:
-                        bi.llanta_5 = llanta
-                        bi.presion_establecida_5 = functions.presion_establecida(llanta)
-                    elif numero == 6:
-                        bi.llanta_6 = llanta
-                        bi.presion_establecida_6 = functions.presion_establecida(llanta)
-                    elif numero == 7:
-                        bi.llanta_7 = llanta
-                        bi.presion_establecida_7 = functions.presion_establecida(llanta)
-                    elif numero == 8:
-                        bi.llanta_8 = llanta
-                        bi.presion_establecida_8 = functions.presion_establecida(llanta)
-                    elif numero == 9:
-                        bi.llanta_9 = llanta
-                        bi.presion_establecida_9 = functions.presion_establecida(llanta)
-                    elif numero == 10:
-                        bi.llanta_10 = llanta
-                        bi.presion_establecida_10 = functions.presion_establecida(llanta)
-                    elif numero == 11:
-                        bi.llanta_11 = llanta
-                        bi.presion_establecida_11 = functions.presion_establecida(llanta)
-                    elif numero == 12:
-                        bi.llanta_1 = llanta
-                        bi.presion_establecida_12 = functions.presion_establecida(llanta)
-                        
-                    bi.llantas.add(llanta)
-                        
-                    numero += 1
+                mala_entrada = Observacion.objects.get(observacion='Mala entrada')
+                doble_mala_entrada = Observacion.objects.get(observacion='Doble mala entrada')
+                
+                if "Doble" in condiciones_:
+                    bi.estado = 'Doble'
+                    bi.vehiculo.observaciones_llanta.add(doble_mala_entrada)
+                elif "Mala" in condiciones_:
+                    bi.estado = 'Mala'
+                    bi.vehiculo.observaciones_llanta.add(mala_entrada)
+                else:
+                    bi.estado = 'Buena'
+                    bi.vehiculo.observaciones_llanta.remove(mala_entrada)
+                    bi.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
+
+                bi.aplicacion = vehiculo.aplicacion
+                bi.ubicacion = vehiculo.ubicacion
                 bi.save()
                 
                 functions.check_presion__entre_duales_pulpo(vehiculo)
+                
+                #Correccion de obs:
+                functions.asignar_obs_pulpo(bi.vehiculo)
+                functions.rectificar_observaciones_vehiculo(bi.vehiculo)
+                
                 functions.send_mail(bi, 'pulpopro')
                 return JsonResponse(jd)
 

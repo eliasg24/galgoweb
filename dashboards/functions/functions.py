@@ -43,6 +43,38 @@ class CastDate(Func):
     function = 'date_trunc'
     template = "%(function)s('day', %(expressions)s)"    
 
+
+def asignar_obs_pulpo(vehiculo):
+    llantas = Llanta.objects.filter(vehiculo=vehiculo, inventario='Rodante').exclude(tipo_de_eje = 'SP1')
+    
+    objetivo = vehiculo.compania.objetivo / 100
+    
+    alta = Observacion.objects.get(observacion='Alta presion')
+    baja = Observacion.objects.get(observacion='Baja presión')
+    #print()
+    for llanta in llantas:
+        #print(llanta.observaciones.all())
+        
+        presion_actual = llanta.presion_actual
+        establecida = presion_establecida(llanta)
+        max_ = establecida + (objetivo * establecida)
+        min_ = establecida - (objetivo * establecida)
+        llanta.observaciones.remove(alta, baja)
+        #print(min_, presion_actual, max_)
+        if presion_actual > max_:
+            llanta.observaciones.add(alta)
+            #print('alta')
+        elif presion_actual < min_:
+            llanta.observaciones.add(min_)
+            #print('baja')
+            
+        else:
+            llanta.observaciones.remove(alta)
+            llanta.observaciones.remove(baja)
+            #print('nada')
+        
+
+
 def archivar_taller(POST, pk, servicio_vehiculo):
     print(POST)
     vehiculo_con_ejes = vehiculo_con_ejes_acomodados(pk)
@@ -801,11 +833,13 @@ def check_icon_pulpo(color):
 
 
 def check_presion_pulpo(llanta, min_presion, max_presion, condicional):
-    presion = int(llanta.presion_actual)
+    #print(llanta)
+    presion = float(llanta.presion_de_entrada)
     alta = Observacion.objects.get(observacion='Alta presion')
     baja = Observacion.objects.get(observacion='Baja presión')
     mala_entrada = Observacion.objects.get(observacion='Mala entrada')
     doble_mala_entrada = Observacion.objects.get(observacion='Doble mala entrada')
+    estado = 'Buena'
     llanta.observaciones.remove(alta)
     llanta.observaciones.remove(baja)
     
@@ -814,42 +848,34 @@ def check_presion_pulpo(llanta, min_presion, max_presion, condicional):
         llanta.vehiculo.observaciones_llanta.add(baja)
         if mala_entrada in llanta.observaciones.all() or doble_mala_entrada in llanta.observaciones.all() :
             llanta.observaciones.add(doble_mala_entrada)
+            llanta.observaciones.remove(mala_entrada)
+            estado = 'Doble'
+            
         else:
             llanta.observaciones.add(mala_entrada)
-        if mala_entrada in llanta.vehiculo.observaciones_llanta.all() or doble_mala_entrada in llanta.vehiculo.observaciones_llanta.all() :
-            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
-            condicional = False
-        else:
-            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
-            condicional = False
+            estado = 'Mala'
             
     elif presion > max_presion:
         llanta.observaciones.add(alta)
         llanta.vehiculo.observaciones_llanta.add(alta)
         if mala_entrada in llanta.observaciones.all() or doble_mala_entrada in llanta.observaciones.all() :
             llanta.observaciones.add(doble_mala_entrada)
+            llanta.observaciones.remove(mala_entrada)
+            estado = 'Doble'
         else:
             llanta.observaciones.add(mala_entrada)
-        if mala_entrada in llanta.vehiculo.observaciones_llanta.all() or doble_mala_entrada in llanta.vehiculo.observaciones_llanta.all() :
-            condicional = False
-            llanta.vehiculo.observaciones_llanta.add(doble_mala_entrada)
-        else:
-            llanta.vehiculo.observaciones_llanta.add(mala_entrada)
-            condicional = False
-            llanta.observaciones.add(mala_entrada)
+            estado = 'Mala'
+            
+        
         
     else:
-        if condicional:
-            llanta.vehiculo.observaciones_llanta.remove(doble_mala_entrada)
         llanta.observaciones.remove(doble_mala_entrada)
         
-        if condicional:
-            llanta.vehiculo.observaciones_llanta.remove(mala_entrada)
         llanta.observaciones.remove(mala_entrada)
     
     llanta.save()
 
-    return condicional
+    return estado
 
 
 def aplicaciones_mas_frecuentes(vehiculo_fecha, vehiculos, compania):
@@ -3362,6 +3388,19 @@ def entrada_correcta_actual(vehiculo):
     except:
         return None
 
+
+def estado_llanta(llanta):
+    mala_entrada = Observacion.objects.get(observacion = 'Mala entrada')
+    doble_mala_entrada = Observacion.objects.get(observacion = 'Doble mala entrada')
+    observaciones = llanta.observaciones.all()
+    if doble_mala_entrada in observaciones:
+        return 'Doble'
+    elif mala_entrada in observaciones:
+        return 'Mala'
+    else:
+        return 'Buena'
+
+
 def estatus_profundidad(llantas):
     estatus = llantas.select_related("ultima_inspeccion", "vehiculo__compania").annotate(llanta_eje=Substr(F("tipo_de_eje"),1,1)).annotate(punto_de_retiro=Case(When(llanta_eje="S", then=F("vehiculo__compania__punto_retiro_eje_direccion")),When(llanta_eje="D", then=F("vehiculo__compania__punto_retiro_eje_traccion")),When(llanta_eje="T", then=F("vehiculo__compania__punto_retiro_eje_arrastre")),When(llanta_eje="C", then=F("vehiculo__compania__punto_retiro_eje_loco")),When(llanta_eje="L", then=F("vehiculo__compania__punto_retiro_eje_retractil"))), nombre_eje=Case(When(llanta_eje="S", then=Value("direccion")),When(llanta_eje="D", then=Value("traccion")),When(llanta_eje="T",then=Value("arrastre")),When(llanta_eje="C", then=Value("loco")),When(llanta_eje="L", then=Value("retractil")), output_field=CharField())).annotate(estatus=Case(When(ultima_inspeccion__min_profundidad__gt=F("punto_de_retiro"), then=Value("verde")),When(ultima_inspeccion__min_profundidad__gte=F("punto_de_retiro"),then=Value("amarillo")),When(ultima_inspeccion__min_profundidad__lte=F("punto_de_retiro"),then=Value("rojo")), output_field=CharField())).values("nombre_eje").annotate(num_verde=Count("estatus",filter=Q(estatus="verde")),num_amarillo=Count("estatus",filter=Q(estatus="amarillo")),num_rojo=Count("estatus",filter=Q(estatus="rojo")))
     return estatus
@@ -4444,8 +4483,8 @@ def check_dif_presion_duales(llanta):
     diferencia_presion_duales = Observacion.objects.get(observacion = 'Diferencia de presión entre los duales')
     
     if dual_llanta != None:
-        presion_llanta_actual = llanta.presion_actual if llanta.presion_actual > 0 else 1
-        presion_llanta_dual_llanta = dual_llanta.presion_actual if dual_llanta.presion_actual > 0 else 1
+        presion_llanta_actual = float(llanta.presion_actual) if float(llanta.presion_actual) > 0 else 1
+        presion_llanta_dual_llanta = float(dual_llanta.presion_actual) if float(dual_llanta.presion_actual) > 0 else 1
         if (
             ( ( ( presion_llanta_actual - presion_llanta_dual_llanta ) / presion_llanta_actual ) ) > .1
             or

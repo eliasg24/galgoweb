@@ -423,41 +423,69 @@ class Bitacora(models.Model):
     tiempo_de_inflado = models.FloatField(blank=True, null=True, default=2)
     presion_de_entrada = models.IntegerField(blank=True, null=True, default=100)
     presion_de_salida = models.IntegerField(blank=True, null=True, default=100)
+    
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
+    aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
+    
     llanta_1 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_1_pulpo')
     presion_establecida_1 = models.IntegerField(null=True, blank=True)
+    posicion_1 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_1 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_2 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_2_pulpo')
     presion_establecida_2 = models.IntegerField(null=True, blank=True)
+    posicion_2 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_2 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_3 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_3_pulpo')
     presion_establecida_3 = models.IntegerField(null=True, blank=True)
+    posicion_3 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_3 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_4 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_4_pulpo')
     presion_establecida_4 = models.IntegerField(null=True, blank=True)
+    posicion_4 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_4 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_5 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_5_pulpo')
     presion_establecida_5 = models.IntegerField(null=True, blank=True)
+    posicion_5 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_5 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_6 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_6_pulpo')
     presion_establecida_6 = models.IntegerField(null=True, blank=True)
+    posicion_6 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_6 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_7 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_7_pulpo')
     presion_establecida_7 = models.IntegerField(null=True, blank=True)
+    posicion_7 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_7 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_8 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_8_pulpo')
     presion_establecida_8 = models.IntegerField(null=True, blank=True)
+    posicion_8 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_8 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_9 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_9_pulpo')
     presion_establecida_9 = models.IntegerField(null=True, blank=True)
+    posicion_9 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_9 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_10 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_10_pulpo')
     presion_establecida_10 = models.IntegerField(null=True, blank=True)
+    posicion_10 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_10 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_11 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_11_pulpo')
     presion_establecida_11 = models.IntegerField(null=True, blank=True)
+    posicion_11 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_11 = models.CharField(max_length=255, blank=True, null=True)
 
     llanta_12 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_12_pulpo')
     presion_establecida_12 = models.IntegerField(null=True, blank=True)
+    posicion_12 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_12 = models.CharField(max_length=255, blank=True, null=True)
 
     
     llantas = models.ManyToManyField(Llanta)
@@ -474,67 +502,94 @@ class Bitacora_Pro(models.Model):
 
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE)
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
+    aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
+    
     fecha_de_inflado = models.DateTimeField(null=True, blank=True)
     tiempo_de_inflado = models.FloatField(blank=True, null=True)
     
     presion_de_entrada_1 = models.IntegerField(blank=True, null=True)
     presion_de_salida_1 = models.IntegerField(blank=True, null=True)
     llanta_1 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_1_pulpopro')
+    posicion_1 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_1 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_1 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_2 = models.IntegerField(blank=True, null=True)
     presion_de_salida_2 = models.IntegerField(blank=True, null=True)
     llanta_2 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_2_pulpopro')
+    posicion_2 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_2 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_2 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_3 = models.IntegerField(blank=True, null=True)
     presion_de_salida_3 = models.IntegerField(blank=True, null=True)
     llanta_3 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_3_pulpopro')
+    posicion_3 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_3 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_3 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_4 = models.IntegerField(blank=True, null=True)
     presion_de_salida_4 = models.IntegerField(blank=True, null=True)
     llanta_4 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_4_pulpopro')
+    posicion_4 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_4 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_4 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_5 = models.IntegerField(blank=True, null=True)
     presion_de_salida_5 = models.IntegerField(blank=True, null=True)
     llanta_5 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_5_pulpopro')
+    posicion_5 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_5 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_5 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_6 = models.IntegerField(blank=True, null=True)
     presion_de_salida_6 = models.IntegerField(blank=True, null=True)
     llanta_6 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_6_pulpopro')
+    posicion_6 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_6 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_6 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_7 = models.IntegerField(blank=True, null=True)
     presion_de_salida_7 = models.IntegerField(blank=True, null=True)
     llanta_7 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_7_pulpopro')
+    posicion_7 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_7 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_7 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_8 = models.IntegerField(blank=True, null=True)
     presion_de_salida_8 = models.IntegerField(blank=True, null=True)
     llanta_8 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_8_pulpopro')
+    posicion_8 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_8 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_8 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_9 = models.IntegerField(blank=True, null=True)
     presion_de_salida_9 = models.IntegerField(blank=True, null=True)
     llanta_9 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_9_pulpopro')
+    posicion_9 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_9 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_9 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_10 = models.IntegerField(blank=True, null=True)
     presion_de_salida_10 = models.IntegerField(blank=True, null=True)
     llanta_10 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_10_pulpopro')
+    posicion_10 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_10 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_10 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_11 = models.IntegerField(blank=True, null=True)
     presion_de_salida_11 = models.IntegerField(blank=True, null=True)
     llanta_11 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_11_pulpopro')
+    posicion_11 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_11 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_11 = models.IntegerField(null=True, blank=True)
 
     presion_de_entrada_12 = models.IntegerField(blank=True, null=True)
     presion_de_salida_12 = models.IntegerField(blank=True, null=True)
     llanta_12 = models.ForeignKey(Llanta, null=True, on_delete=models.CASCADE, related_name='llanta_12_pulpopro')
+    posicion_12 = models.CharField(max_length=255, blank=True, null=True)
+    estado_llanta_12 = models.CharField(max_length=255, blank=True, null=True)
     presion_establecida_12 = models.IntegerField(null=True, blank=True)
     
     
@@ -836,6 +891,12 @@ class Rendimiento(models.Model):
     is_analizada = models.BooleanField(null=True, blank=True)
     cpk_proyectado = models.FloatField(null=True, blank=True)
     cpk_real = models.FloatField(null=True, blank=True)
+    km = models.FloatField(null=True, blank=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, null=True, blank=True)
+    vida = models.CharField(max_length=255, null=True, blank=True)
+    posicion = models.CharField(max_length=255, null=True, blank=True)
+    tipo_de_eje = models.CharField(max_length=255, null=True, blank=True)
+    
 
 class Presupuesto(models.Model):
     # Modelo de Presupuesto
@@ -856,7 +917,6 @@ class Tendencia(models.Model):
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
     clase = models.CharField(max_length=255 ,null=True, blank=True)
     correctas_pulpo = models.FloatField()
-    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
@@ -871,7 +931,6 @@ class TendenciaAplicacion(models.Model):
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
     aplicacion = models.ForeignKey(Aplicacion, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
-    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
@@ -885,7 +944,6 @@ class TendenciaUbicacion(models.Model):
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
-    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()
@@ -898,7 +956,6 @@ class TendenciaCompania(models.Model):
     fecha = models.DateField()
     compania = models.ForeignKey(Compania, on_delete=models.CASCADE, null=True, blank=True)
     correctas_pulpo = models.FloatField()
-    correctas_inspeccion = models.FloatField()
     inspecciones_a_tiempo = models.FloatField()
     pulpos_a_tiempo = models.FloatField()
     health = models.FloatField()

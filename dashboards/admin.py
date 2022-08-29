@@ -11,9 +11,9 @@ from dashboards.models import Aplicacion, Bitacora_Pro, Compania, Excel, FTP, Hi
 @admin.register(Bitacora)
 class BitacorasAdmin(admin.ModelAdmin):
     # Admin de las Bitácoras
-    list_display = ('vehiculo', 'presion_de_entrada', 'presion_de_salida', 'compania', 'fecha_de_inflado')
+    list_display = ('vehiculo', 'estado', 'presion_de_entrada', 'presion_de_salida', 'compania', 'fecha_de_inflado')
     search_fields= ('vehiculo__numero_economico',)
-    list_filter = ('fecha_de_inflado', 'compania')
+    list_filter = ('fecha_de_inflado', 'compania', 'estado')
     readonly_fields = (
         "llanta_1",
         "llanta_2",
@@ -26,7 +26,8 @@ class BitacorasAdmin(admin.ModelAdmin):
         "llanta_9",
         "llanta_10",
         "llanta_11",
-        "llanta_12"
+        "llanta_12",
+        "llantas"
 )
     def clase(self, obj):
         if obj.vehiculo:
@@ -35,9 +36,9 @@ class BitacorasAdmin(admin.ModelAdmin):
 @admin.register(Bitacora_Pro)
 class BitacorasProAdmin(admin.ModelAdmin):
     # Admin de las Bitácoras
-    list_display = ('vehiculo', 'presion_de_entrada_1', 'presion_de_salida_1', 'compania', 'fecha_de_inflado')
+    list_display = ('vehiculo', 'estado', 'presion_de_entrada_1', 'presion_de_salida_1', 'compania', 'fecha_de_inflado')
     search_fields= ('vehiculo__numero_economico',)
-    list_filter = ('fecha_de_inflado', 'compania')
+    list_filter = ('fecha_de_inflado', 'compania', 'estado')
     verbose_name_plural = "Bitacoras Pro"
     readonly_fields = (
         "llanta_1",
@@ -51,7 +52,9 @@ class BitacorasProAdmin(admin.ModelAdmin):
         "llanta_9",
         "llanta_10",
         "llanta_11",
-        "llanta_12"
+        "llanta_12",
+        "llantas"
+        
 )
 
 
@@ -95,7 +98,7 @@ class VehiculosAdmin(admin.ModelAdmin):
     # Admin de los Vehículos
     list_display = ('numero_economico', 'tirecheck', "compania", "km", "presion_establecida_1", 'clase', 'ubicacion', 'aplicacion', 'configuracion', 'fecha_de_creacion')
     search_fields= ('numero_economico',)
-    list_filter = ('compania', 'tirecheck', 'fecha_de_creacion', 'clase', "configuracion", "fecha_de_inflado")
+    list_filter = ('compania', 'tirecheck', 'fecha_de_creacion', 'clase', "configuracion", "fecha_de_inflado", "observaciones_llanta", "presion_establecida_1", "presion_establecida_2", "presion_establecida_3", "presion_establecida_4", "presion_establecida_5", "presion_establecida_6", "presion_establecida_7")
 
 @admin.register(Llanta)
 class LlantasAdmin(admin.ModelAdmin):
@@ -214,6 +217,8 @@ class ServicioLlantaAdmin(admin.ModelAdmin):
 class RendimientoAdmin(admin.ModelAdmin):
     # Admin del Perfil
     list_display = ('year' ,'mes', 'llanta')
+    list_filter = ('is_analizada',) 
+    readonly_fields = ('llanta',)
 
 @admin.register(Tendencia)
 class TendenciaAdmin(admin.ModelAdmin):

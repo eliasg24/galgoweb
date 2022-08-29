@@ -15,6 +15,35 @@ urlpatterns = [
         name="AgregarProductoAcciones"
     ),    
     
+    path(
+        route="utilidades/ArreglarBitacoras",
+        view=views.ArreglarBitacoras.as_view(),
+        name="ArreglarBitacoras"
+    ),
+    
+    path(
+        route="utilidades/Arreglar_Obs",
+        view=views.Arreglar_Obs.as_view(),
+        name="Arreglar_Obs"
+    ),
+    
+    path(
+        route="utilidades/AgregarPosiciones",
+        view=views.AgregarPosiciones.as_view(),
+        name="AgregarPosiciones"
+    ),
+    
+    path(
+        route="utilidades/ArreglarLlantasBitacoras",
+        view=views.ArreglarLlantasBitacoras.as_view(),
+        name="ArreglarLlantasBitacoras"
+    ),
+    
+    path(
+        route="utilidades/AgregarLlantas_bitacoras",
+        view=views.AgregarLlantas_bitacoras.as_view(),
+        name="AgregarLlantas_bitacoras"
+    ),
     #-----------------------B-----------------------
     
     path(
@@ -34,6 +63,12 @@ urlpatterns = [
         route="utilidades/CorregirPrimeraInspeccion",
         view=views.CorregirPrimeraInspeccion.as_view(),
         name="CorregirPrimeraInspeccion"
+    ),
+    
+    path(
+        route="utilidades/CorregirRendimientos",
+        view=views.CorregirRendimientos.as_view(),
+        name="CorregirRendimientos"
     ),
     
     #-----------------------D-----------------------
@@ -124,6 +159,12 @@ urlpatterns = [
     ),
 
     #-----------------------V-----------------------
+
+    path(
+        route="utilidades/VaciarBitacoras",
+        view=views.VaciarBitacoras.as_view(),
+        name="VaciarBitacoras"
+    ),  
 
     #-----------------------W-----------------------
 

@@ -29,7 +29,33 @@ class CompaniaData(View):
         print('************')
         print(compania)
         #Serializar data
-        compania = list(compania.values("compania", "periodo1_inflado", "periodo2_inflado", "objetivo_porcentaje", "periodo1_inspeccion", "periodo2_inspeccion", "punto_retiro_eje_direccion", "punto_retiro_eje_traccion", "punto_retiro_eje_arrastre", "punto_retiro_eje_loco", "punto_retiro_eje_retractil", "mm_de_desgaste_irregular", "mm_de_diferencia_entre_duales", "mm_parametro_sospechoso", "unidades_presion", "unidades_distancia", "unidades_profundidad", "valor_casco_nuevo", "valor_casco_1r", "valor_casco_2r", "valor_casco_3r", "valor_casco_4r", "valor_casco_5r"))
+        compania = list(compania.values(
+            "compania",
+             "periodo1_inflado",
+             "periodo2_inflado",
+             "objetivo_porcentaje",
+             "periodo1_inspeccion",
+             "periodo2_inspeccion",
+             "punto_retiro_eje_direccion",
+             "punto_retiro_eje_traccion",
+             "punto_retiro_eje_arrastre",
+             "punto_retiro_eje_loco",
+             "punto_retiro_eje_retractil",
+             "mm_de_desgaste_irregular",
+             "mm_de_diferencia_entre_duales",
+             "mm_parametro_sospechoso",
+             "unidades_presion",
+             "unidades_distancia",
+             "unidades_profundidad",
+             "valor_casco_nuevo",
+             "valor_casco_1r",
+             "valor_casco_2r",
+             "valor_casco_3r",
+             "valor_casco_4r",
+             "valor_casco_5r",
+             "objetivo"
+             
+             ))
         print(compania)
         
         dict_context = {
@@ -186,12 +212,7 @@ class VehicleData(View):
             ).annotate(
                 lista_observaciones=ArrayAgg(Observacion.objects.filter(id=OuterRef("observaciones_llanta")).values("observacion"))
             ).annotate(
-                estatus_pulpo=Case(
-                    When(dias_sin_inflar=None, then=Value("Nunca")), 
-                    When(lista_observaciones__icontains="Doble mala entrada", then=Value("Doble")), 
-                    When(lista_observaciones__icontains="Mala entrada", then=Value("Mala")), 
-                    default=Value("Correcta")
-                    ),
+                estatus_pulpo=F('ultima_bitacora_pro__estado'),
                 vencido_de_inflado= Case(
                     When(dias_sin_inflar=None, then=Value(True)),
                     When(dias_sin_inflar__gt=F('compania__periodo1_inflado'), then=Value(True)),
@@ -528,19 +549,26 @@ class RendimientoData(View):
             vehiculo__modelo = F('llanta__vehiculo__modelo'),
             vehiculo__clase = F('llanta__vehiculo__clase'),
             
-            producto__producto = F('llanta__producto__producto'),
+            producto__producto = F('producto__producto'),
             producto__profundidad_inicial = F('llanta__producto__profundidad_inicial'),
             
-            km_actual = F('llanta__km_actual'),
+            km_actual = F('km'),
             vehiculo__compania__compania = F('llanta__vehiculo__compania__compania'),
             vehiculo__ubicacion__nombre = F('llanta__vehiculo__ubicacion__nombre'),
             vehiculo__aplicacion__nombre = F('llanta__vehiculo__aplicacion__nombre'),
             vehiculo__numero_economico = F('llanta__vehiculo__numero_economico'),
             fecha_de_entrada_inventario = F('llanta__fecha_de_entrada_inventario'),
-            vida = F('llanta__vida'),
             taller__nombre = F('llanta__taller__nombre'),
             
-            km_montado = F('llanta__km_montado')
+            km_montado = F('llanta__km_montado'),
+            con_producto = Case(
+                When(producto__producto=None, then=Value(False)),
+                default = Value(True)
+            ),
+            desgaste_15 = Case(
+                When(porcentaje_de_desgaste__gt = 0.15, then=Value(True)),
+                default=Value(False)
+            )
             
         ).annotate(
             year_ = F('year'),
@@ -572,6 +600,8 @@ class RendimientoData(View):
             fecha_de_entrada_inventario_ = F('fecha_de_entrada_inventario'),
             vida_ = F('vida'),
             taller__nombre_ = F('taller__nombre'),
+            con_producto_ = F('con_producto'),
+            desgaste_15_ = F('desgaste_15')
         )
         #Serializar data
         """Mes, Numero economico de la llanta, inventario, nombre del eje, estatus_activo_vehiculo, modelo_vehiculo, clase_vehiculo,
@@ -609,6 +639,8 @@ class RendimientoData(View):
             "fecha_de_entrada_inventario_",
             "vida_",
             "taller__nombre_",
+            "con_producto_",
+            "desgaste_15_"
             
             
         ))
@@ -722,7 +754,15 @@ class RendimientoActualData(View):
                 When(producto__precio = None, then = None),
                 When(km_actual = None, then = None),
                 When(km_actual = 0, then = None),
-                default = F('producto__precio') / F('km_actual')
+                default = F('producto__precio') / F('km_actual'),
+            ),
+            con_producto = Case(
+                When(producto__producto=None, then=Value(False)),
+                default = Value(True)
+            ),
+            desgaste_15 = Case(
+                When(porcentaje_de_desgaste__gt = 0.15, then=Value(True)),
+                default=Value(False)
             )
             ).annotate(
             year_ = Value(date.today().year),
@@ -754,6 +794,8 @@ class RendimientoActualData(View):
             fecha_de_entrada_inventario_ = F('fecha_de_entrada_inventario'),
             vida_ = F('vida'),
             taller__nombre_ = F('taller__nombre'),
+            con_producto_ = F('con_producto'),
+            desgaste_15_ = F('desgaste_15')
         )
             
             
@@ -794,8 +836,8 @@ class RendimientoActualData(View):
             "fecha_de_entrada_inventario_",
             "vida_",
             "taller__nombre_",
-            
-            
+            "con_producto_",
+            "desgaste_15_"
         ))
         
         
@@ -1007,21 +1049,216 @@ class BitacorasData(View):
         bitacoras = Bitacora.objects.filter(compania=compania)
         bitacoras_pro = Bitacora_Pro.objects.filter(compania=compania)
 
-        entradas_correctas = functions.entrada_correcta_api(bitacoras, bitacoras_pro)
+        #entradas_correctas = functions.entrada_correcta_api(bitacoras, bitacoras_pro)
 
         #Serializar data
 
-        whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
-        bitacoras = bitacoras.annotate(presion_de_entrada_1=F("presion_de_entrada"), presion_de_salida_1=F("presion_de_salida"), presion_de_entrada_2=Value(None, output_field=IntegerField()), presion_de_salida_2=Value(None, output_field=IntegerField()), presion_de_entrada_3=Value(None, output_field=IntegerField()), presion_de_salida_3=Value(None, output_field=IntegerField()), presion_de_entrada_4=Value(None, output_field=IntegerField()), presion_de_salida_4=Value(None, output_field=IntegerField()), presion_de_entrada_5=Value(None, output_field=IntegerField()), presion_de_salida_5=Value(None, output_field=IntegerField()), presion_de_entrada_6=Value(None, output_field=IntegerField()), presion_de_salida_6=Value(None, output_field=IntegerField()), presion_de_entrada_7=Value(None, output_field=IntegerField()), presion_de_salida_7=Value(None, output_field=IntegerField()), presion_de_entrada_8=Value(None, output_field=IntegerField()), presion_de_salida_8=Value(None, output_field=IntegerField()), presion_de_entrada_9=Value(None, output_field=IntegerField()), presion_de_salida_9=Value(None, output_field=IntegerField()), presion_de_entrada_10=Value(None, output_field=IntegerField()), presion_de_salida_10=Value(None, output_field=IntegerField()), presion_de_entrada_11=Value(None, output_field=IntegerField()), presion_de_salida_11=Value(None, output_field=IntegerField()), presion_de_entrada_12=Value(None, output_field=IntegerField()), presion_de_salida_12=Value(None, output_field=IntegerField())).annotate(estatus_pulpo=Case(*whens, output_field=CharField()))
-        bitacoras = list(bitacoras.values("id", "vehiculo__numero_economico", "compania__compania", "fecha_de_inflado__date", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "estatus_pulpo"))
+        #whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
+        bitacoras = bitacoras.annotate(
+            presion_de_entrada_1=F("presion_de_entrada"),
+            presion_de_salida_1=F("presion_de_salida"),
+            presion_de_entrada_2=Value(None, output_field=IntegerField()),
+            presion_de_salida_2=Value(None, output_field=IntegerField()),
+            presion_de_entrada_3=Value(None, output_field=IntegerField()),
+            presion_de_salida_3=Value(None, output_field=IntegerField()),
+            presion_de_entrada_4=Value(None, output_field=IntegerField()),
+            presion_de_salida_4=Value(None, output_field=IntegerField()),
+            presion_de_entrada_5=Value(None, output_field=IntegerField()),
+            presion_de_salida_5=Value(None, output_field=IntegerField()),
+            presion_de_entrada_6=Value(None, output_field=IntegerField()),
+            presion_de_salida_6=Value(None, output_field=IntegerField()),
+            presion_de_entrada_7=Value(None, output_field=IntegerField()), 
+            presion_de_salida_7=Value(None, output_field=IntegerField()), 
+            presion_de_entrada_8=Value(None, output_field=IntegerField()), 
+            presion_de_salida_8=Value(None, output_field=IntegerField()), 
+            presion_de_entrada_9=Value(None, output_field=IntegerField()),
+            presion_de_salida_9=Value(None, output_field=IntegerField()), 
+            presion_de_entrada_10=Value(None, output_field=IntegerField()), 
+            presion_de_salida_10=Value(None, output_field=IntegerField()), 
+            presion_de_entrada_11=Value(None, output_field=IntegerField()), 
+            presion_de_salida_11=Value(None, output_field=IntegerField()), 
+            presion_de_entrada_12=Value(None, output_field=IntegerField()), 
+            presion_de_salida_12=Value(None, output_field=IntegerField())
+            ).annotate(
+                 estatus_pulpo=F('estado'),
+                 objetivo_porcentaje =  (Cast('compania__objetivo', output_field=FloatField()) / 100.0)
+                 )
+        bitacoras = list(
+            bitacoras.values(
+                "id",
+                "vehiculo__numero_economico",
+                "compania__compania",
+                "fecha_de_inflado__date",
+                "tiempo_de_inflado",
+                "llanta_1__numero_economico",
+                "posicion_1",
+                "presion_de_entrada_1",
+                "presion_de_salida_1",
+                "presion_establecida_1",
+                "estado_llanta_1",
+                "llanta_2__numero_economico",
+                "posicion_2",
+                "presion_de_entrada_2",
+                "presion_de_salida_2",
+                "presion_establecida_2",
+                "estado_llanta_2",
+                "llanta_3__numero_economico",
+                "posicion_3",
+                "presion_de_entrada_3",
+                "presion_de_salida_3",
+                "presion_establecida_3",
+                "estado_llanta_3",
+                "llanta_4__numero_economico",
+                "posicion_4",
+                "presion_de_entrada_4",
+                "presion_de_salida_4",
+                "presion_establecida_4",
+                "estado_llanta_4",
+                "llanta_5__numero_economico",
+                "posicion_5",
+                "presion_de_entrada_5",
+                "presion_de_salida_5",
+                "presion_establecida_5",
+                "estado_llanta_5",
+                "llanta_6__numero_economico",
+                "posicion_6",
+                "presion_de_entrada_6",
+                "presion_de_salida_6",
+                "presion_establecida_6",
+                "estado_llanta_6",
+                "llanta_7__numero_economico",
+                "posicion_7",
+                "presion_de_entrada_7",
+                "presion_de_salida_7",
+                "presion_establecida_7",
+                "estado_llanta_7",
+                "llanta_8__numero_economico",
+                "posicion_8",
+                "presion_de_entrada_8",
+                "presion_de_salida_8",
+                "presion_establecida_8",
+                "estado_llanta_8",
+                "llanta_9__numero_economico",
+                "posicion_9",
+                "presion_de_entrada_9",
+                "presion_de_salida_9",
+                "presion_establecida_9",
+                "estado_llanta_9",
+                "llanta_10__numero_economico",
+                "posicion_10",
+                "presion_de_entrada_10",
+                "presion_de_salida_10",
+                "presion_establecida_10",
+                "estado_llanta_10",
+                "llanta_11__numero_economico",
+                "posicion_11",
+                "presion_de_entrada_11",
+                "presion_de_salida_11",
+                "presion_establecida_11",
+                "estado_llanta_11",
+                "llanta_12__numero_economico",
+                "posicion_12",
+                "presion_de_entrada_12",
+                "presion_de_salida_12",
+                "presion_establecida_12",
+                "estado_llanta_12",
+                "estatus_pulpo",
+                "objetivo_porcentaje"
+            )
+                )
 
-        whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
-        bitacoras_pro = list(bitacoras_pro.annotate(estatus_pulpo=Case(*whens, output_field=CharField())).values("id", "vehiculo__numero_economico", "compania__compania", "fecha_de_inflado__date", "tiempo_de_inflado", "presion_de_entrada_1", "presion_de_salida_1", "presion_de_entrada_2", "presion_de_salida_2", "presion_de_entrada_3", "presion_de_salida_3", "presion_de_entrada_4", "presion_de_salida_4", "presion_de_entrada_5", "presion_de_salida_5", "presion_de_entrada_6", "presion_de_salida_6", "presion_de_entrada_7", "presion_de_salida_7", "presion_de_entrada_8", "presion_de_salida_8", "presion_de_entrada_9", "presion_de_salida_9", "presion_de_entrada_10", "presion_de_salida_10", "presion_de_entrada_11", "presion_de_salida_11", "presion_de_entrada_12", "presion_de_salida_12", "estatus_pulpo"))
+        #whens = [When(id=k, then=Value(str(v))) for k, v in entradas_correctas.items()]
+        bitacoras_pro = list(
+            bitacoras_pro.annotate(
+                estatus_pulpo=F('estado'),
+                objetivo_porcentaje =  (Cast('compania__objetivo', output_field=FloatField()) / 100.0)
+                ).values(
+                "id",
+                "vehiculo__numero_economico",
+                "compania__compania",
+                "fecha_de_inflado__date",
+                "tiempo_de_inflado",
+                "llanta_1__numero_economico",
+                "posicion_1",
+                "presion_de_entrada_1",
+                "presion_de_salida_1",
+                "presion_establecida_1",
+                "estado_llanta_1",
+                "llanta_2__numero_economico",
+                "posicion_2",
+                "presion_de_entrada_2",
+                "presion_de_salida_2",
+                "presion_establecida_2",
+                "estado_llanta_2",
+                "llanta_3__numero_economico",
+                "posicion_3",
+                "presion_de_entrada_3",
+                "presion_de_salida_3",
+                "presion_establecida_3",
+                "estado_llanta_3",
+                "llanta_4__numero_economico",
+                "posicion_4",
+                "presion_de_entrada_4",
+                "presion_de_salida_4",
+                "presion_establecida_4",
+                "estado_llanta_4",
+                "llanta_5__numero_economico",
+                "posicion_5",
+                "presion_de_entrada_5",
+                "presion_de_salida_5",
+                "presion_establecida_5",
+                "estado_llanta_5",
+                "llanta_6__numero_economico",
+                "posicion_6",
+                "presion_de_entrada_6",
+                "presion_de_salida_6",
+                "presion_establecida_6",
+                "estado_llanta_6",
+                "llanta_7__numero_economico",
+                "posicion_7",
+                "presion_de_entrada_7",
+                "presion_de_salida_7",
+                "presion_establecida_7",
+                "estado_llanta_7",
+                "llanta_8__numero_economico",
+                "posicion_8",
+                "presion_de_entrada_8",
+                "presion_de_salida_8",
+                "presion_establecida_8",
+                "estado_llanta_8",
+                "llanta_9__numero_economico",
+                "posicion_9",
+                "presion_de_entrada_9",
+                "presion_de_salida_9",
+                "presion_establecida_9",
+                "estado_llanta_9",
+                "llanta_10__numero_economico",
+                "posicion_10",
+                "presion_de_entrada_10",
+                "presion_de_salida_10",
+                "presion_establecida_10",
+                "estado_llanta_10",
+                "llanta_11__numero_economico",
+                "posicion_11",
+                "presion_de_entrada_11",
+                "presion_de_salida_11",
+                "presion_establecida_11",
+                "estado_llanta_11",
+                "llanta_12__numero_economico",
+                "posicion_12",
+                "presion_de_entrada_12",
+                "presion_de_salida_12",
+                "presion_establecida_12",
+                "estado_llanta_12",
+                "estatus_pulpo",
+                "objetivo_porcentaje"
+                ))
        
         bitacoras.extend(bitacoras_pro)
 
         dict_context = {
             'bitacoras': bitacoras,
+
         }
 
         json_context = json.dumps(dict_context, indent=None, sort_keys=False, default=str)
@@ -1177,7 +1414,6 @@ class TendenciaData(View):
             "aplicacion__nombre",
             "clase",
             "correctas_pulpo",
-            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "pulpos_a_tiempo",
             "health",
@@ -1208,7 +1444,6 @@ class TendenciaDataAplicacion(View):
             "ubicacion__nombre",
             "aplicacion__nombre",
             "correctas_pulpo",
-            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "pulpos_a_tiempo",
             "health",
@@ -1238,7 +1473,6 @@ class TendenciaDataUbicacion(View):
             "compania__compania",
             "ubicacion__nombre",
             "correctas_pulpo",
-            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "pulpos_a_tiempo",
             "health",
@@ -1267,7 +1501,6 @@ class TendenciaDataCompania(View):
             "fecha",
             "compania__compania",
             "correctas_pulpo",
-            "correctas_inspeccion",
             "inspecciones_a_tiempo",
             "pulpos_a_tiempo",
             "health",

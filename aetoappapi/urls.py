@@ -1,8 +1,9 @@
 # Django
-from django.urls import path, include
-from aetoappapi import views
-from django.contrib import admin
 from rest_framework.authtoken import views as rest
+from django.urls import path, include
+from django.contrib import admin
+from aetoappapi import views
+
 
 
 
@@ -16,8 +17,6 @@ urlpatterns = [
         view=views.AplicacionPerfilData.as_view(),
         name="apiAplicacion"
     ),   
-    
-    
     
     
     #-----------------------B-----------------------
@@ -36,16 +35,21 @@ urlpatterns = [
     #-----------------------F-----------------------
     
     #-----------------------G-----------------------
-    path(
-       route="app/login/",
-       view=rest.obtain_auth_token,
-       name="login"
-        ),   
+   path(
+        route="app/InspeccionVehiculo/",
+        view=views.InspeccionVehiculo.as_view(),
+        name="app/InspeccionVehiculo/"
+    ),     
     
     #-----------------------H-----------------------
 
     #-----------------------I-----------------------
     
+    path(
+       route="app/login/",
+       view=rest.obtain_auth_token,
+       name="login"
+        ),   
     #-----------------------J-----------------------
     
     #-----------------------K-----------------------
@@ -62,8 +66,7 @@ urlpatterns = [
      path(
        route="app/ordenaminto_vehiculo/",
        view=views.Ordenamientovehiculollantas.as_view(),
-       name="ordenaminto_vehiculo"
-       
+       name="ordenaminto_vehiculo" 
     ),  
       path(
        route="app/ordenamintoLlantas/",
@@ -89,8 +92,6 @@ urlpatterns = [
 
     #-----------------------U-----------------------
 
-    
-    
     
     path(
        route="app/user_compania_data/",

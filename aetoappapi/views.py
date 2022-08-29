@@ -1,4 +1,5 @@
-from aetoappapi.serializers import AplicacionDataSerializer, CompaniasPerfilSerializer, ContextPerfilSerializer, OrdenamientoPorllantaSerializer,  OrdenamientoPorvehiculoSerializer, TalleresDataSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer
+from sklearn import inspection
+from aetoappapi.serializers import AplicacionDataSerializer, CompaniasPerfilSerializer, ContextPerfilSerializer, InspeccionVehiculoSerializers, InspeccionesSerializers, OrdenamientoPorllantaSerializer,  OrdenamientoPorvehiculoSerializer, TalleresDataSerializer, UbicacionDataSerializer, UserDataSerializer, UserSerializer, llantaSerializer
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import login,logout,authenticate
@@ -134,11 +135,7 @@ class ContextoPerfil(mixins.UpdateModelMixin, GenericAPIView):
             compania = int(compania)
             ubicaciones = galgofunc.str_to_list_int(ubicaciones)
             aplicaciones = galgofunc.str_to_list_int(aplicaciones)
-            talleres = galgofunc.str_to_list_int(talleres)
-            print(compania)
-            print(ubicaciones)
-            print(aplicaciones)
-            print(talleres)        
+            talleres = galgofunc.str_to_list_int(talleres)      
         except:  
             return Response(status = status.HTTP_400_BAD_REQUEST)
         #?Consultas 
@@ -168,52 +165,90 @@ class ContextoPerfil(mixins.UpdateModelMixin, GenericAPIView):
             'talleres': talleres.values('nombre')
         })
 
-
 #? Metodo para ordenamiento de vehiculo y llantas
 class Ordenamientovehiculollantas(mixins.ListModelMixin, GenericAPIView):
-    
     serializer_class = OrdenamientoPorvehiculoSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication] 
-    
-    
     def get_queryset(self):
         user = self.request.user
         perfil = models.Perfil.objects.get(user=user)
         compania = perfil.compania
         vehiculo = models.Vehiculo.objects.filter(compania = compania)
-        
         return vehiculo
-    
     def get(self, request, *args, **kwargs): 
-    
+        llantas = self.get_queryset()
+        print(llantas[0].llanta_set.filter(inventario = 'Rodante'))
         return self.list(request, *args, **kwargs)
     
     
 #? ordenamiento por llanta/vehiculo
 class Ordenamientollantas(mixins.ListModelMixin, GenericAPIView):
-    
     serializer_class = OrdenamientoPorllantaSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication] 
-    
     
     def get_queryset(self):
         user = self.request.user
         perfil = models.Perfil.objects.get(user=user)
         compania = perfil.compania
         llantas = models.Llanta.objects.filter(compania = compania)
-        
         return llantas
-    
-    def get(self, request, *args, **kwargs):
-        
-        
+    def get(self, request, *args, **kwargs):        
         return self.list(request, *args, **kwargs)
 
-
+#? api para las inspecciones
+class InspeccionVehiculo(mixins.ListModelMixin, GenericAPIView):
     
-                                                                         
+    serializer_class = InspeccionesSerializers
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication] 
+    
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        perfil = models.Perfil.objects.get(user=user)
+        compania = perfil.compania
+        vehiculo = models.Vehiculo.objects.filter(compania = compania)
+        
+        #? Obtencion de los parametros
+        datos = request.data['results']
+        #print(datos)
+        for dato in datos:
+            #? Convercion de los datos vehiculo
+            vehiculo = int(dato['vehiculo'])
+            km = int(dato['km'])
+            tipo_de_evento = dato['tipo_de_evento']
+            
+            #? consulta
+            vehiculo = models.Vehiculo.objects.get(id = vehiculo)
+            vehiculo.km = km
+            
+            observaciones = dato['observaciones']
+            
+            for observacion in observaciones:
+                observacion = observacion["observacion"]
+                observacion = models.Observacion.objects.get(observacion = observacion)
+            
+        
+            llantas = dato['llantas']
+            for llanta in llantas:
+                llanta_id = int(llanta["llanta"])
+                
+                presion = int(llanta["presion"])
+                profundidad_izquierda = float(llanta["profundidad_izquierda"])
+                profundidad_central = float(llanta["profundidad_central"])
+                profundidad_derecha = float(llanta["profundidad_derecha"])
+                imagen = llanta["imagen"]
+                observaciones_llantas = llanta["observaciones_llantas"]
+                for observacion_llanta in observaciones_llantas:
+                    observacion_llanta = observacion_llanta["observacion_llanta"]
+                    print(observacion_llanta)
+                    
+        return Response({'hola':'hols'})
+    
+    
+    
+                                        
     
 
 

@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 
-from dashboards.models import Aplicacion, Compania, Llanta, Perfil, Taller, Ubicacion, Vehiculo
+from dashboards.models import Aplicacion, Compania, Inspeccion, InspeccionVehiculo, Llanta, Perfil, Taller, Ubicacion, Vehiculo
+
+from django.db.models import FloatField, F, Q, Case, When, Value, IntegerField, CharField, ExpressionWrapper, Func
+
+from django.contrib.auth.models import User
+from django.db.models.functions import Cast, ExtractMonth, ExtractDay, Now, Round, Substr, ExtractYear, Least, Greatest, TruncDate
+
+
 
 #? serializador   del Aeto token
 class UserSerializer(serializers.ModelSerializer):
@@ -20,7 +26,6 @@ class CompaniasSerializer(serializers.ModelSerializer):
             'compania'
             )
         
-        
 #? serializador para la ubicacion del user
 class UbicacionDataSerializer(serializers.ModelSerializer):
     
@@ -31,10 +36,7 @@ class UbicacionDataSerializer(serializers.ModelSerializer):
             'nombre',
         )
     
-        
-
 #? serializador para usuario
-
 class UserDataSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True, source="user.id")
     username = serializers.CharField(read_only=True, source="user.username")
@@ -45,8 +47,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'username',
-            'companias',
-            
+            'companias',    
         )
         
 #? serializador para compañia     
@@ -58,7 +59,6 @@ class CompaniasPerfilSerializer(serializers.ModelSerializer):
             'companias',
         )
         
-
 #? serializador para la aplicacion de user 
 class AplicacionDataSerializer(serializers.ModelSerializer):
     id_ubicacion = serializers.IntegerField(read_only=True, source="ubicacion.id")
@@ -76,7 +76,6 @@ class AplicacionDataSerializer(serializers.ModelSerializer):
 class TalleresDataSerializer(serializers.ModelSerializer):
     id_compania = serializers.IntegerField(read_only=True, source="compania.id")
     nombre_compania = serializers.CharField(read_only=True, source="compania.nombre")
-    
     class Meta:
         model = Taller
         fields = (
@@ -99,17 +98,79 @@ class ContextPerfilSerializer(serializers.ModelSerializer):
             'taller'
         )
         
-        
+#? Filtrado de llantas rodante de esta manera
+#! se puede serializar los annotat
+class FilteredLlantasListSerializer(serializers.ListSerializer):
+    
+    def to_representation(self, data):
+        data = data.filter(inventario = 'Rodante').annotate(
+            objetivo =  (Cast('vehiculo__compania__objetivo', output_field=FloatField()) / 100.0),
+            presion_establecida = Case(
+                When(eje = 1, then=F('vehiculo__presion_establecida_1')),
+                When(eje = 2, then=F('vehiculo__presion_establecida_2')),
+                When(eje = 3, then=F('vehiculo__presion_establecida_3')),
+                When(eje = 4, then=F('vehiculo__presion_establecida_4')),
+                When(eje = 5, then=F('vehiculo__presion_establecida_5')),
+                When(eje = 6, then=F('vehiculo__presion_establecida_6')),
+                When(eje = 7, then=F('vehiculo__presion_establecida_7')),
+                ),
+            max_presion = F('presion_establecida') + ( F('presion_establecida') * F('objetivo') ),
+            min_presion = F('presion_establecida') - ( F('presion_establecida') * F('objetivo') ),
+            color_midle = Case(
+                When(observaciones__color__in=["Rojo"], then=Value('bad')),
+                When(observaciones__color__in=["Amarillo"], then=Value('yellow')),
+                default=Value('good')
+            ),
+            ejemplo = Value('hola')
+        )
+        return super(FilteredLlantasListSerializer, self).to_representation(data) 
+    
+#? serealizador para implementar las llantas en vehiculos
 class llantaSerializer(serializers.ModelSerializer):
+    ejemplo = serializers.CharField()
+    objetivo = serializers.FloatField()
+    presion_establecida = serializers.FloatField()
+    max_presion = serializers.FloatField()
+    min_presion = serializers.FloatField()
+    dimension = serializers.CharField(read_only=True, source="producto.dimension")
+    color_midle = serializers.CharField()
     class Meta:
         model = Llanta
+        #! con esta libreria elejes el serializador que prefieres
+        list_serializer_class = FilteredLlantasListSerializer
         fields=(
             'numero_economico',
+            'compania',
             'vehiculo',
+            'ubicacion',
+            'aplicacion',
+            'taller',
+            'vida',
+            'tipo_de_eje',
+            'eje',
             'posicion',
+            'km_actual',
+            'presion_actual',
+            'profundidad_izquierda',
+            'profundidad_central',
+            'profundidad_derecha',
+            'km_actual',
+            'km_montado',
+            'producto',
+            'observaciones',
+            'inventario',
+            'ejemplo',
+            'presion_establecida',
+            'objetivo',
+            "max_presion",
+            "min_presion",
+            "dimension",
+            "color_midle"
         )
+        
 #? Ordenamiento de llantas por vehiculo acomiodado
 class OrdenamientoPorvehiculoSerializer(serializers.ModelSerializer):
+    llanta_set = llantaSerializer(many=True, read_only=True)
     class Meta:
         model = Vehiculo
         fields=(
@@ -131,17 +192,16 @@ class OrdenamientoPorvehiculoSerializer(serializers.ModelSerializer):
             'dias_inspeccion',
             'fecha_ultima_inspeccion',
             'fecha_ultima_alineacion',  
-        
-        )
-        
-#? Ordenamiento de llantas por vehiculo acomiodado
+            'llanta_set',   
+        )  
+   
+#? Ordenamiento de llantas 
 class OrdenamientoPorllantaSerializer(serializers.ModelSerializer):
-    Vehiculovehiculo = serializers.CharField(read_only=True, source="vehiculo.numero_economico")
-    
+    #Vehiculovehiculo = serializers.CharField(read_only=True, source="vehiculo.numero_economico")
     class Meta:
         model = Llanta
         fields=(
-            'Vehiculovehiculo',
+            #'Vehiculovehiculo',
             'numero_economico',
             'compania',
             'vehiculo',
@@ -163,48 +223,83 @@ class OrdenamientoPorllantaSerializer(serializers.ModelSerializer):
             'observaciones',
         )
         
+#? Inpecciones por vehiculos
+class InspeccionVehiculoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = InspeccionVehiculo
+        fields=(
+            'opciones_evento',
+            'tipo_de_evento',
+            'usuario',
+            'vehiculo',
+            'km',
+            'observaciones',
+            'fecha',
+        )
         
         
+class InspeccionesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Inspeccion
+        fields=(
+            'opciones_evento',
+            'tipo_de_evento',
+            'inspeccion_vehiculo',
+            'llanta',
+            'posicion',
+            'tipo_de_eje',
+            'eje',
+            'usuario',
+            'vehiculo',
+            'vida',
+            'km_vehiculo',
+            'presion',
+            'presion_establecida',
+            'profundidad_izquierda',
+            'profundidad_central',
+            'profundidad_derecha',
+            'observaciones',
+            'edicion_manual',
+            'evento',
+            'imagen',
+        )
         
-    #LLANTA_numero_economico = serializers.IntegerField(read_only=True, source="llanta.numero_economico")
-    #LLANTA_compania = serializers.IntegerField(read_only=True, source="llanta.compania")
-    #LLANTA_vehiculo = serializers.IntegerField(read_only=True, source="llanta.vehiculo")
-    #LLANTA_ubicacion = serializers.IntegerField(read_only=True, source="llanta.ubicacion")
-    #LLANTA_aplicacion = serializers.IntegerField(read_only=True, source="llanta.aplicacion")
-    #LLANTA_taller = serializers.IntegerField(read_only=True, source="llanta.taller")
-    #LLANTA_renovador = serializers.IntegerField(read_only=True, source="llanta.renovador")
-    #LLANTA_vida = serializers.IntegerField(read_only=True, source="llanta.vida")
-    #LLANTA_tipo_de_eje = serializers.IntegerField(read_only=True, source="llanta.tipo_de_eje")
-    #LLANTA_eje = serializers.IntegerField(read_only=True, source="llanta. eje")
-    #LLANTA_posicion = serializers.IntegerField(read_only=True, source="llanta.posicion")
-    #LLANTA_km_actual = serializers.IntegerField(read_only=True, source="llanta.km_actual")
-            #vehiculo
-            #' compania',
-            #'aplicacion',
-            #'numero_de_llantas',
-            #'configuracion',
-            #'km',
-            #'observaciones',
-            #'observaciones_llanta',
-            #'estatus_activo',
-            #'nuevo',
-            #'fecha_de_creacion',
-            #'dias_inspeccion',
-            #'fecha_ultima_inspeccion',
-            #'fecha_ultima_alineacion',  
-            #
-            #'ubicacion',
-            
-            #'LLANTA_numero_economico',
-            #'LLANTA_compania',
-            #'LLANTA_vehiculo',
-            #'LLANTA_ubicacion',
-            #'LLANTA_aplicacion',
-            #'LLANTA_taller',
-            #'LLANTA_renovador',
-            #'LLANTA_vida',
-            #'LLANTA_tipo_de_eje',
-            #'LLANTA_eje',
-            #'LLANTA_posicion',
-            #'LLANTA_km_actual',
-             
+
+
+
+"""  
+{
+  "results": [
+    {
+      "vehiculo": 115,
+      "km": 454,
+      "usuario": 19,
+      "tipo_de_evento": "Inspección",
+      
+      "observaciones": [
+        ],
+      "llantas": [
+          {
+            "llanta":54489,
+            "presion": 90,
+            "profundidad_izquierda": 10.0,
+            "profundidad_central": 10.0,
+            "profundidad_derecha": 10.0,
+            "imagen": "null"
+          },
+          
+          {
+            "llanta":54489,
+            "presion": 90,
+            "profundidad_izquierda": 10.0,
+            "profundidad_central": 10.0,
+            "profundidad_derecha": 10.0,
+            "imagen": "null"
+          }
+        
+        ]
+    }
+    
+    ]
+}
+"""
