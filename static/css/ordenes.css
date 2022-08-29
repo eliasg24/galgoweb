@@ -42,6 +42,10 @@ tr:nth-child(even) {
   color: var(--colorv02);
 } */
 
+.reporte {
+color: var(--colorv02);
+}
+
 .main__content {
   display: grid;
   gap: 1rem;

@@ -17,6 +17,10 @@ select{
   color: black;
 }
 
+.imagen{
+  color: #000;
+}
+
 /* body {
   margin: 0;
   font-family: Arial;

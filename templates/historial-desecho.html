@@ -67,7 +67,7 @@
               {{orden.fecha.day}}/{{orden.fecha.month}}/{{orden.fecha.year}}
             </td>
             <td>{{orden.ids|length}}</td>
-            <td> <a href="{% url 'dashboards:ordenDesechoTemplete' %}?ids={{orden.ids}}&fecha={{orden.fecha.day}}/{{orden.fecha.month}}/{{orden.fecha.year}}"> Ver Reporte </a></td>
+            <td> <a class="reporte" href="{% url 'dashboards:ordenDesechoTemplete' %}?ids={{orden.ids}}&fecha={{orden.fecha.day}}/{{orden.fecha.month}}/{{orden.fecha.year}}"> Ver Reporte </a></td>
           </tr>
           {% endfor %}
         </tbody>
