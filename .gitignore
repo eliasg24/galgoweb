@@ -176,7 +176,6 @@ cython_debug/
 desktop.ini
 *.pyc
 *.pyc
-*.png
 *.pyc
 dashboards/__pycache__/
 aeto/credentials.py
