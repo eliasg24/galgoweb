@@ -4599,7 +4599,7 @@ class procesoDesechoView(LoginRequiredMixin, TemplateView):
             image = request.FILES.getlist('image')[0]
             print()
             ruta_archivo = TemporaryUploadedFile.temporary_file_path(image)
-            id_folder = '1kEOreah3tuxntZwAUGc5Wzgu-LqFWKoE'
+            id_folder = '1SwbkExxc9pF25QFQUPJXr_pu9heE2LcG'
             nombre = ''
             print()
             a = Google.subir_archivo(ruta_archivo,id_folder, nombre)
@@ -5305,6 +5305,7 @@ class stockDestinoView(LoginRequiredMixin, TemplateView):
         #Obtecion de la lista de destinos
         inventarios = [
             "Antes de Renovar", 
+            "Antes de Desechar", 
             "Servicio",
         ]
         
